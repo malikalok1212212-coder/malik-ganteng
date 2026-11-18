@@ -1,0 +1,13 @@
+{
+  "name": "malik-tools",
+  "version": "1.0.16",
+  "private": true,
+  "description": "Kumpulan tools Malik (magic link, cek status, link WhatsApp) untuk Vercel",
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "@vercel/blob": "^1.0.0",
+    "nodemailer": "^6.9.16"
+  }
+}
