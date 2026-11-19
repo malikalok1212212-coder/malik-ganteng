@@ -110,3 +110,6 @@ Hanya id, nama, deskripsi, kategori, dan tipe tool yang dikirim. Gagal kirim tid
 - **Moderasi Family:** hapus pesan, sematkan (maks. 3), dan mute sementara ada di menu pesan di halaman Family (bukan di panel Developer). Mute kini minta durasi (1-10080 menit) dan bisa dicabut dari menu yang sama.
 - **Pengumuman:** kolom **Mulai tampil**, **Berakhir otomatis**, dan **Tampilkan ke** role tertentu (kosong = semua). Dicek di server saat halaman dimuat; developer tetap melihat semuanya di panel, lengkap dengan status.
 - **Cadangan:** tab Cadangan mengunduh pengguna (CSV) dan cadangan lengkap (JSON: pengguna, paket, harga, tool nonaktif, pengumuman, log). Kata sandi akun dan foto tidak ikut. Belum ada fitur impor.
+
+## NexaDev (Reaksi Channel WhatsApp)
+Tool `rch` memakai NexaDev (`api/tool.js` fungsi `reactChannel`). Isi `NEXADEV_API_KEY` di Vercel (opsional `NEXADEV_BASE_URL`), lalu redeploy. Dibatasi 4 kali per 10 menit per IP supaya kuota provider tidak habis. Tool GenCipta lain tidak terpengaruh.

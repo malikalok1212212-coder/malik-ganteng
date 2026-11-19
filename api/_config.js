@@ -132,6 +132,8 @@ module.exports = {
     'open-graph': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_OPENGRAPH || '/api/tools/web/open-graph', method: 'GET', param: 'url', shape: 'gcopengraph', timeout: 40000 }
     ,
     // Cek Situs: dikerjakan langsung oleh server ini (tanpa provider), lihat siteCheck() di tool.js.
-    'cek-situs': { local: 'sitecheck', type: 'url' }
+    'cek-situs': { local: 'sitecheck', type: 'url' },
+    // NexaDev: GET /api/rch?key=&url=&reaction= (kunci dari env NEXADEV_API_KEY, ditangani di api/tool.js)
+    'rch': { local: 'nexarch', type: 'multi' }
   }
 };

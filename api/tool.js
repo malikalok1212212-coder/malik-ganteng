@@ -295,6 +295,7 @@ function gcDailymotion(raw) {
 function gcSpotify(raw, origin) {
   if (!raw || typeof raw !== 'object' || !Array.isArray(raw.data)) return null;
   const data = {};
+  const tracks = [];
   let first = null, n = 0;
   for (const t of raw.data) {
     if (n >= 15) break;
@@ -308,8 +309,11 @@ function gcSpotify(raw, origin) {
     const label = n + ' \u00b7 ' + String(t.title).replace(/\./g, '').slice(0, 70) + (t.artist ? ' \u2013 ' + String(t.artist).replace(/\./g, '').slice(0, 50) : '') + (t.duration ? ' (' + t.duration + ')' : '');
     data[label] = url;
     if (!first) first = url;
+    // Data terstruktur untuk pemutar custom di browser (cover, judul, artis). Hanya alamat https yang diteruskan.
+    const cover = isHttp(t.cover_url) && /^https:/i.test(String(t.cover_url)) ? String(t.cover_url).slice(0, 500) : '';
+    tracks.push({ title: String(t.title).slice(0, 120), artist: String(t.artist || '').slice(0, 100), album: String(t.album || '').slice(0, 100), duration: String(t.duration || '').slice(0, 12), cover, url });
   }
-  return n ? { link: first, data } : null;
+  return n ? { link: first, data, tracks } : null;
 }
 
 // ---- AM Generator (GenCipta). Token akun (idToken, refreshToken) dan data pribadi lain TIDAK diteruskan ke browser ----
@@ -556,6 +560,38 @@ async function siteCheck(input) {
   return { ok: true, data: d };
 }
 
+// NexaDev: kirim reaksi emoji ke postingan channel WhatsApp. Kunci hanya dari env NEXADEV_API_KEY (server), tidak pernah ke browser.
+async function reactChannel(f) {
+  const key = process.env.NEXADEV_API_KEY || '';
+  if (!key) return { ok: false, code: 500, error: 'NEXADEV_API_KEY belum diatur di Environment Variables Vercel.' };
+  const base = (process.env.NEXADEV_BASE_URL || 'https://api.nexadev.my.id').replace(/\/$/, '');
+  const url = String(f.url || '').trim();
+  if (!/^https:\/\/(www\.)?whatsapp\.com\/channel\/[A-Za-z0-9]{10,40}\/\d{1,12}$/.test(url))
+    return { ok: false, code: 400, error: 'Link harus link postingan channel WhatsApp, contoh https://whatsapp.com/channel/XXXX/123 (ada angka di belakang).' };
+  const list = String(f.reaction || '').split(/[,，\s]+/).map(x => x.trim()).filter(Boolean);
+  if (!list.length || list.length > 6) return { ok: false, code: 400, error: 'Isi 1 sampai 6 emoji, pisahkan dengan koma.' };
+  if (!list.every(e => e.length <= 16 && /^[\p{Extended_Pictographic}‍️\u{1F3FB}-\u{1F3FF}]+$/u.test(e)))
+    return { ok: false, code: 400, error: 'Reaksi harus berupa emoji saja, pisahkan dengan koma.' };
+  const reaction = list.join(',');
+  const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 52000);
+  let j;
+  try {
+    const r = await fetch(base + '/api/rch?key=' + encodeURIComponent(key) + '&url=' + encodeURIComponent(url) + '&reaction=' + encodeURIComponent(reaction), { signal: ac.signal, headers: { Accept: 'application/json' } });
+    const t = await r.text();
+    try { j = JSON.parse(t); } catch { return { ok: false, code: 502, error: 'Provider mengirim balasan yang tidak bisa dibaca. Coba lagi nanti.' }; }
+  } catch (e) {
+    return { ok: false, code: 504, error: 'Provider tidak merespons. Coba lagi sebentar lagi.' };
+  } finally { clearTimeout(tm); }
+  const res = j && j.result;
+  if (!res || res.success !== true) {
+    const msg = String((res && res.message) || (j && (j.message || j.error)) || '');
+    if (/limit|quota|habis/i.test(msg)) return { ok: false, code: 503, error: 'Kuota provider sedang habis. Hubungi developer.' };
+    if (/timed out|timeout/i.test(msg)) return { ok: false, code: 504, error: 'Provider tidak merespons (timeout). Pastikan link postingan benar, lalu coba lagi.' };
+    return { ok: false, code: 502, error: 'Reaksi gagal dikirim. Pastikan link postingan channel benar dan masih ada.' };
+  }
+  return { ok: true, data: { status: 'Reaksi terkirim', postingan: url, reaksi: reaction, waktu_respons: String((j && j.response_time) || '') } };
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   const fail = (code, error) => res.status(code).json({ ok: false, error });
@@ -593,6 +629,13 @@ module.exports = async (req, res) => {
     const in0 = String(body.input || '').trim();
     if (!in0 || in0.length > 2000) return fail(400, 'Isi link situs yang mau diperiksa.');
     const r = await siteCheck(in0);
+    if (!r.ok) return fail(r.code || 400, r.error);
+    return res.status(200).json({ ok: true, link: null, data: r.data });
+  }
+  if (tool.local === 'nexarch') {
+    if (await rate.limited('rch', ip, 4, 600)) return fail(429, 'Terlalu sering. Tunggu beberapa menit sebelum mengirim reaksi lagi.');
+    const fl = body.fields && typeof body.fields === 'object' ? body.fields : {};
+    const r = await reactChannel(fl);
     if (!r.ok) return fail(r.code || 400, r.error);
     return res.status(200).json({ ok: true, link: null, data: r.data });
   }
@@ -740,7 +783,7 @@ module.exports = async (req, res) => {
         const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(',')[0].trim();
         const x = gcSpotify(data, /^[A-Za-z0-9.-]+(:\d+)?$/.test(host) ? 'https://' + host : '');
         if (!x) return { ok: false, code: 404, error: 'Lagu tidak ditemukan. Coba judul atau nama artis lain.' };
-        return { ok: true, link: x.link, data: x.data };
+        return { ok: true, link: x.link, data: x.data, tracks: x.tracks };
       }
       if (t.shape === 'gcamsend' || t.shape === 'gcamverif') {
         const x = t.shape === 'gcamsend' ? gcAmSend(data) : gcAmVerif(data);
@@ -850,7 +893,7 @@ module.exports = async (req, res) => {
       return fail(out.code, msg);
     }
     done = true;
-    return res.status(200).json({ ok: true, link: out.link, data: out.data, credits: cr });
+    return res.status(200).json({ ok: true, link: out.link, data: out.data, tracks: out.tracks, credits: cr });
   } catch (e) {
     sMsg = 'Gagal menghubungi provider';
     return fail(504, 'Gagal menghubungi provider.');
