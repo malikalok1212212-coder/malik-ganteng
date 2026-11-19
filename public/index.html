@@ -2684,6 +2684,23 @@ main[data-tool="spotify-play"] #c input:-webkit-autofill,main[data-tool="spotify
 main[data-tool="spotify-play"] #c input{caret-color:#1ed760}
 main[data-tool="spotify-play"] button,main[data-tool="spotify-play"] .spl li,main[data-tool="spotify-play"] .spr{-webkit-tap-highlight-color:transparent}
 main[data-tool="spotify-play"] .spr:focus-visible,main[data-tool="spotify-play"] .spw :focus-visible{outline:2px solid #1ed760;outline-offset:2px}
+/* v215: pemutar dikecilkan agar pas dengan lebar halaman; bingkai ganda dibuang */
+main[data-tool="spotify-play"] #c .out.spw{padding:0;margin-top:14px;border:1px solid #282828;border-radius:16px;background:#121212;box-shadow:none}
+main[data-tool="spotify-play"] .spw,main[data-tool="spotify-play"] .spn,main[data-tool="spotify-play"] .spl{max-width:100%;min-width:0;box-sizing:border-box}
+main[data-tool="spotify-play"] .spn{padding:12px 16px 14px}
+main[data-tool="spotify-play"] .spcv{max-width:min(100%,230px);margin-bottom:16px}
+main[data-tool="spotify-play"] .spm b{font-size:19px}
+main[data-tool="spotify-play"] .spm span{font-size:13.5px}
+main[data-tool="spotify-play"] .spc button{width:42px;height:42px}
+main[data-tool="spotify-play"] .spc .spp{width:58px;height:58px}
+main[data-tool="spotify-play"] .spl{padding:2px 6px 10px}
+main[data-tool="spotify-play"] .spcnt{padding:6px 16px 4px;font-size:15px}
+/* v216: lebar kartu dikunci sama dengan kotak pencarian di atasnya; isi tidak boleh melebarkan kartu */
+main[data-tool="spotify-play"] #res{width:100%;max-width:100%;min-width:0;contain:inline-size}
+main[data-tool="spotify-play"] #c .out.spw{width:100%;max-width:100%;margin-left:0;margin-right:0;contain:inline-size;overflow:hidden}
+main[data-tool="spotify-play"] .spn{width:100%;contain:inline-size}
+main[data-tool="spotify-play"] .spcv{width:min(100%,230px)}
+main[data-tool="spotify-play"] .sphd b,main[data-tool="spotify-play"] .spm b,main[data-tool="spotify-play"] .spm span{max-width:100%}
 </style>
 </head>
 <body>
