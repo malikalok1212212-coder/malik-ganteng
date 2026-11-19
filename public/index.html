@@ -2539,63 +2539,151 @@ dd .mtvw.mtiw,li .mtvw.mtiw{margin:10px auto 0}
 </style>
 
 <style>
-/* Spotify Play: pemutar custom (palet hijau/hitam situs sendiri) */
-.spw{padding:0;overflow:hidden;border-radius:20px;background:#0b0f0d;color:#f2f7f4;border:1px solid #1f3a2b}
-.spn{position:relative;padding:16px 16px 12px;isolation:isolate;overflow:hidden}
-.spbg{position:absolute;inset:-30px;z-index:-1;background:#0b0f0d center/cover no-repeat;filter:blur(34px) saturate(1.5) brightness(.55);transform:scale(1.1);transition:background-image .4s}
-.spn::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(11,15,13,.1),rgba(11,15,13,.55) 55%,#0b0f0d)}
-.spcv{width:min(62%,216px);aspect-ratio:1;margin:0 auto 14px;border-radius:10px;overflow:hidden;position:relative;background:#16231b;box-shadow:0 18px 40px rgba(0,0,0,.55);display:grid;place-items:center}
-.spcv svg{width:38%;height:38%;color:#3f6a52}
-.spcv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.spm{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.spm div{min-width:0;flex:1}
-.spm b{display:block;font:800 18px/1.25 Inter,system-ui,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.spm span{display:block;font:500 14px/1.3 Inter,system-ui,sans-serif;color:#b6c9bd;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.spr{-webkit-appearance:none;appearance:none;width:100%;height:18px;margin:0;background:transparent;cursor:pointer;--p:0%}
-.spr::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,#fff var(--p),rgba(255,255,255,.28) var(--p))}
-.spr::-moz-range-track{height:4px;border-radius:4px;background:rgba(255,255,255,.28)}
+/* Spotify Play: pemutar bergaya aplikasi Spotify (Now Playing) + Dynamic Island */
+.spw{padding:0;overflow:hidden;border-radius:18px;background:#121212;color:#fff;border:1px solid #282828;font-family:Inter,system-ui,sans-serif}
+.spn{position:relative;padding:14px 20px 16px;isolation:isolate;overflow:hidden}
+.spbg{position:absolute;inset:-40px;z-index:-1;background:#2a2a2a center/cover no-repeat;filter:blur(46px) saturate(1.6) brightness(.62);transform:scale(1.2);transition:background-image .5s,opacity .6s}
+.spgr{position:absolute;inset:0;z-index:-1;background:var(--c,#2a2a2a);opacity:0;transition:background-color .6s,opacity .6s}
+.spw.hc .spgr{opacity:1}.spw.hc .spbg{opacity:0}
+.spn::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(18,18,18,0) 0,rgba(18,18,18,.35) 45%,#121212 100%)}
+.sphd{text-align:center;margin:0 0 14px;min-width:0}
+.sphd small{display:block;font:500 10px/1.2 Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.sphd b{display:block;font:700 13px/1.3 Inter,system-ui,sans-serif;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spcv{width:100%;max-width:320px;aspect-ratio:1;margin:0 auto 22px;border-radius:8px;overflow:hidden;position:relative;background:#282828;box-shadow:0 16px 40px rgba(0,0,0,.55);display:grid;place-items:center;transition:transform .45s cubic-bezier(.3,.9,.3,1)}
+.spw:not(.plg) .spcv{transform:scale(.88)}
+.spcv svg{width:38%;height:38%;color:#727272}
+.spcv img,.spci img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.spm{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.spm>div{min-width:0;flex:1}
+.spm b{display:block;font:800 22px/1.25 Inter,system-ui,sans-serif;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spm span{display:block;font:500 15px/1.3 Inter,system-ui,sans-serif;color:rgba(255,255,255,.7);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sphe{flex:none;border:0;background:transparent;color:#fff;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0;box-shadow:none}
+.sphe svg{width:26px;height:26px;fill:none}
+.sphe.on{color:#1ed760}.sphe.on svg{fill:currentColor;animation:sppop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes sppop{0%{transform:scale(.7)}100%{transform:scale(1)}}
+.spr{-webkit-appearance:none;appearance:none;width:100%;height:18px;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:transparent;cursor:pointer;--p:0%;display:block}
+.spr::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,#fff var(--p),rgba(255,255,255,.3) var(--p))}
+.spr::-moz-range-track{height:4px;border-radius:4px;background:rgba(255,255,255,.3)}
 .spr::-moz-range-progress{height:4px;border-radius:4px;background:#fff}
 .spr::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;margin-top:-4px;box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .spr::-moz-range-thumb{width:12px;height:12px;border:0;border-radius:50%;background:#fff}
-.spr:hover::-webkit-slider-runnable-track{background:linear-gradient(90deg,#1ed760 var(--p),rgba(255,255,255,.28) var(--p))}
-.spt{display:flex;justify-content:space-between;font:600 11px/1 Inter,system-ui,sans-serif;color:#b6c9bd;margin-top:2px;font-variant-numeric:tabular-nums}
-.spc{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:10px}
-.spc button{border:0;background:transparent;color:#f2f7f4;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .15s,background .15s;box-shadow:none}
-@media (hover:hover){.spc button:hover{background:rgba(255,255,255,.1)}}
+.spt{display:flex;justify-content:space-between;font:500 11.5px/1 Inter,system-ui,sans-serif;color:rgba(255,255,255,.7);margin-top:4px;font-variant-numeric:tabular-nums}
+.spc{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.spc button{position:relative;border:0;background:transparent;color:#fff;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .15s,color .15s;box-shadow:none;-webkit-tap-highlight-color:transparent}
 .spc button:hover,.spc button:focus-visible{box-shadow:none}
-.spc button:focus-visible{outline:2px solid #1ed760;outline-offset:2px}
-.spc button:active{transform:scale(.92)}
-.spc button svg{width:24px;height:24px}
-.spc .spp{width:62px;height:62px;background:#1ed760;color:#07100b}
-@media (hover:hover){.spc .spp:hover{background:#3ae879;transform:scale(1.05)}}
-.spc .spp svg{width:28px;height:28px}
-.spc .spdl{width:auto;height:44px;padding:0 4px}
-.spc .spdl svg{width:22px;height:22px}
-.spc button:disabled{opacity:.5}
-.spl{list-style:none;margin:0;padding:6px 8px 10px;background:#0b0f0d}
-.spl li{display:flex;align-items:center;gap:12px;padding:8px;border-radius:10px;cursor:pointer;transition:background .15s}
-@media (hover:hover){.spl li:hover{background:rgba(255,255,255,.07)}}
-.spl li{-webkit-tap-highlight-color:transparent;outline:none}
+.spc button:focus-visible,.sphe:focus-visible,.spft button:focus-visible{outline:2px solid #1ed760;outline-offset:2px}
+.spc button:active{transform:scale(.9)}
+.spc button svg{width:26px;height:26px}
+.spc .sps,.spc .sprp{color:rgba(255,255,255,.7)}
+.spc .sps svg,.spc .sprp svg{width:24px;height:24px}
+.spc .sps.on,.spc .sprp.on{color:#1ed760}
+.spc .sps.on::after,.spc .sprp.on::after{content:"";position:absolute;bottom:3px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#1ed760}
+.spc .spp{width:66px;height:66px;background:#fff;color:#000}
+.spc .spp svg{width:30px;height:30px}
+@media (hover:hover){.spc .spp:hover{transform:scale(1.06)}}
+.spc .spp:active{transform:scale(.94)}
+.spc button:disabled{opacity:.6}
+.spft{display:flex;justify-content:center;margin-top:12px}
+.spft .spdl{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:999px;padding:0 16px;height:34px;font:700 13px/1 Inter,system-ui,sans-serif;cursor:pointer;box-shadow:none;transition:transform .15s,border-color .15s}
+.spft .spdl svg{width:16px;height:16px}
+@media (hover:hover){.spft .spdl:hover{border-color:#fff;transform:scale(1.03)}}
+.spft .spdl:active{transform:scale(.96)}
+.spcnt{padding:6px 20px 4px;font:800 17px/1.3 Inter,system-ui,sans-serif;color:#fff;background:#121212}
+.spl{list-style:none;margin:0;padding:2px 10px 12px;background:#121212}
+.spl li{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:6px;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent;outline:none}
+@media (hover:hover){.spl li:hover{background:#1f1f1f}}
 .spl li:focus-visible{box-shadow:inset 0 0 0 2px #1ed760}
-.spl li:active{background:rgba(255,255,255,.1)}
-.spl li.on{background:rgba(30,215,96,.12)}
-.spl .tn{width:20px;text-align:center;font:600 13px/1 Inter,system-ui,sans-serif;color:#9bb2a4;flex:none}
-.spl .tc{width:46px;height:46px;border-radius:6px;overflow:hidden;position:relative;background:#16231b;flex:none;display:grid;place-items:center}
-.spl .tc svg{width:46%;height:46%;color:#3f6a52}
+.spl li:active{background:#2a2a2a}
+.spl li.on{background:#1f1f1f}
+.spl .tc{width:48px;height:48px;border-radius:4px;overflow:hidden;position:relative;background:#282828;flex:none;display:grid;place-items:center}
+.spl .tc svg{width:46%;height:46%;color:#727272}
 .spl .tc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .spl .ti{min-width:0;flex:1}
-.spl .ti b{display:block;font:700 14.5px/1.3 Inter,system-ui,sans-serif;color:#f2f7f4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spl .ti b{display:block;font:600 15px/1.3 Inter,system-ui,sans-serif;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .spl li.on .ti b{color:#1ed760}
-.spl .ti span{display:block;font:500 12.5px/1.3 Inter,system-ui,sans-serif;color:#9bb2a4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.spl .td{font:500 12px/1 Inter,system-ui,sans-serif;color:#9bb2a4;flex:none;font-variant-numeric:tabular-nums}
-.spl .eq{display:none;align-items:flex-end;gap:2px;height:14px;width:20px;justify-content:center;flex:none}
-.spl .eq i{width:3px;background:#1ed760;border-radius:1px;height:30%}
-.spl li.on.pl .tn{display:none}.spl li.on.pl .eq{display:flex}
-.spl li.on.pl .eq i{animation:speq .9s ease-in-out infinite}
+.spl .ti span{display:block;font:500 13px/1.3 Inter,system-ui,sans-serif;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spl .td{font:500 12px/1 Inter,system-ui,sans-serif;color:rgba(255,255,255,.6);flex:none;font-variant-numeric:tabular-nums}
+.spl .eq{display:none;position:absolute;inset:0;background:rgba(0,0,0,.55);align-items:flex-end;justify-content:center;gap:3px;padding-bottom:13px}
+.spl .eq i{width:3px;background:#1ed760;border-radius:1px;height:30%;max-height:16px;min-height:4px}
+.spl li.on.spon .eq{display:flex}
+.spl li.on.spon .eq i{animation:speq .9s ease-in-out infinite}
 .spl .eq i:nth-child(2){animation-delay:.25s!important}.spl .eq i:nth-child(3){animation-delay:.5s!important}
 @keyframes speq{0%,100%{height:25%}50%{height:100%}}
-@media (prefers-reduced-motion:reduce){.spl li.on.pl .eq i{animation:none;height:70%}}
-.spcnt{padding:2px 16px 2px;font:600 12px/1 Inter,system-ui,sans-serif;color:#9bb2a4;background:#0b0f0d}
+/* Dynamic Island */
+.dyn{position:fixed;left:50%;top:max(10px,env(safe-area-inset-top));z-index:9990;width:158px;height:38px;border-radius:19px;background:#000;color:#fff;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.07);transform:translate(-50%,-160%) scale(.7);opacity:0;pointer-events:none;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;font-family:Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent;transition:transform .55s cubic-bezier(.32,1.35,.4,1),width .5s cubic-bezier(.32,1.2,.4,1),height .5s cubic-bezier(.32,1.2,.4,1),border-radius .5s cubic-bezier(.32,1.2,.4,1),opacity .25s}
+.dyn.show{transform:translate(-50%,var(--dy,0px)) scale(1);opacity:1;pointer-events:auto}
+.dyn.drag{transition:width .5s,height .5s,border-radius .5s,opacity .25s}
+.dyn.open{width:min(calc(100vw - 20px),380px);height:158px;border-radius:36px;cursor:default}
+.dyc,.dye{position:absolute;inset:0;transition:opacity .28s,filter .28s}
+.dyc{display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 7px}
+.dye{padding:16px 18px 12px;opacity:0;filter:blur(8px);pointer-events:none}
+.dyn.open .dyc{opacity:0;filter:blur(8px);pointer-events:none}
+.dyn.open .dye{opacity:1;filter:none;pointer-events:auto;transition-delay:.12s}
+.dyi{position:relative;display:block;width:26px;height:26px;border-radius:7px;overflow:hidden;background:#2a2a2a;flex:none}
+.dyi img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dyl{width:56px;height:56px;border-radius:10px}
+.dyw{display:flex;align-items:center;gap:2.5px;height:16px;flex:none}
+.dyw i{display:block;width:3px;height:30%;border-radius:2px;background:#1ed760}
+.dyn.spon .dyw i{animation:dyeq .8s ease-in-out infinite}
+.dyw i:nth-child(2){animation-delay:.2s!important}.dyw i:nth-child(3){animation-delay:.4s!important}.dyw i:nth-child(4){animation-delay:.1s!important}
+@keyframes dyeq{0%,100%{height:25%}50%{height:100%}}
+.dyh{display:flex;align-items:center;gap:12px}
+.dyh div{min-width:0;flex:1}
+.dyh b{display:block;font:700 15px/1.3 Inter,system-ui,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dyh span.dta{display:block;font:500 13px/1.3 Inter,system-ui,sans-serif;color:rgba(255,255,255,.62);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dyb{display:flex;align-items:center;gap:8px;margin-top:12px;font:500 10.5px/1 Inter,system-ui,sans-serif;color:rgba(255,255,255,.62);font-variant-numeric:tabular-nums}
+.dpb{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.25);overflow:hidden}
+.dpb i{display:block;height:100%;width:0;background:#fff;border-radius:4px}
+.dyk{display:flex;align-items:center;justify-content:center;gap:26px;margin-top:4px}
+.dyk button{border:0;background:transparent;color:#fff;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0;box-shadow:none}
+.dyk button:active{transform:scale(.88)}
+.dyk button svg{width:24px;height:24px}
+.dyk .dkl{background:#fff;color:#000;width:44px;height:44px}
+.dyk .dkl svg{width:22px;height:22px}
+.dyx{position:absolute;top:10px;right:12px;border:0;background:rgba(255,255,255,.14);color:#fff;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0;box-shadow:none;z-index:1}
+.dyx svg{width:12px;height:12px}
+.dyn .dyx~.dyh{padding-right:30px}
+.dyh .dyw{display:none}
+.dyn button:focus-visible{outline:2px solid #1ed760;outline-offset:1px}
+@media (prefers-reduced-motion:reduce){.spl li.on.spon .eq i,.dyn.spon .dyw i{animation:none;height:70%}.dyn,.dyc,.dye,.spcv{transition-duration:.01s}.sphe.on svg{animation:none}}
+</style>
+
+<style>
+/* Halaman Spotify Play: kerangka, kolom cari, dan tombol bergaya Spotify */
+main[data-tool="spotify-play"] .panel{background:#121212;border:1px solid #282828;border-radius:18px;box-shadow:0 18px 44px rgba(0,0,0,.45)}
+main[data-tool="spotify-play"] .panel .bar{background:#121212;color:#b3b3b3;border-bottom:1px solid #282828;font:600 11px/1 Inter,system-ui,sans-serif;letter-spacing:.06em}
+main[data-tool="spotify-play"] .panel .bar .pill{background:#1ed760;color:#000;border:0;font:800 10px/1 Inter,system-ui,sans-serif;padding:5px 9px;letter-spacing:.04em}
+main[data-tool="spotify-play"] .panel .thero{border-bottom:0;padding-bottom:0;margin-bottom:18px}
+main[data-tool="spotify-play"] .panel .thero:before,main[data-tool="spotify-play"] .panel .thero:after{display:none}
+main[data-tool="spotify-play"] .panel .thero .tile{background:#1ed760;color:#000;border:0;box-shadow:none;border-radius:50%;width:48px;height:48px;animation:none}
+main[data-tool="spotify-play"] .panel .thero h2{font:800 24px/1.15 Inter,system-ui,sans-serif;letter-spacing:-.01em;color:#fff}
+main[data-tool="spotify-play"] .panel .thero .sub{color:#b3b3b3;font:500 13.5px/1.45 Inter,system-ui,sans-serif}
+main[data-tool="spotify-play"] #c label[for="e"]{position:absolute;width:1px;height:1px;margin:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+main[data-tool="spotify-play"] #c label[for="k"]{color:#b3b3b3;font:700 12px/1.2 Inter,system-ui,sans-serif;text-transform:none;letter-spacing:0}
+main[data-tool="spotify-play"] #c label[for="k"]:before{display:none}
+main[data-tool="spotify-play"] #c input{background-color:#242424;color:#fff;border:2px solid transparent;border-radius:999px;padding:13px 18px;font:500 16px/1.4 Inter,system-ui,sans-serif;box-shadow:none;margin-bottom:12px;transition:background-color .15s,border-color .15s}
+main[data-tool="spotify-play"] #c input#e{padding-left:48px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b3b3b3' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='M16 16l4.5 4.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:16px 50%;background-size:22px}
+main[data-tool="spotify-play"] #c input::placeholder{color:#a7a7a7}
+@media (hover:hover){main[data-tool="spotify-play"] #c input:hover{background-color:#2a2a2a}}
+main[data-tool="spotify-play"] #c input:focus{background-color:#2a2a2a;border-color:#fff;box-shadow:none;transform:none}
+main[data-tool="spotify-play"] #c .row{gap:0}
+main[data-tool="spotify-play"] #c button.primary{flex:1 1 100%;background:#1ed760;background-image:none;color:#000;border:0;border-radius:999px;box-shadow:none;padding:14px 24px;font:800 15px/1 Inter,system-ui,sans-serif;letter-spacing:0;transition:transform .15s,background-color .15s}
+@media (hover:hover){main[data-tool="spotify-play"] #c button.primary:hover:not(:disabled){background:#3be477;transform:scale(1.02)}}
+main[data-tool="spotify-play"] #c button.primary:active:not(:disabled){background:#169c46;transform:scale(.97)}
+main[data-tool="spotify-play"] #c button.primary:focus-visible{outline:2px solid #fff;outline-offset:2px}
+main[data-tool="spotify-play"] #c button.primary:disabled{background:#1ed760;background-image:none;opacity:.6;animation:none}
+main[data-tool="spotify-play"] #c .msg{color:#b3b3b3;font:600 13px/1.4 Inter,system-ui,sans-serif;margin:12px 2px 0}
+main[data-tool="spotify-play"] #c .msg.good{color:#1ed760}
+main[data-tool="spotify-play"] #c .msg.bad{color:#f3727f}
+main[data-tool="spotify-play"] #res{margin-top:14px}
+/* Kunci warna ke hijau Spotify: aksen pilihan pengguna, blok teks, isi otomatis Chrome, dan sorotan sentuh tidak boleh memunculkan biru */
+main[data-tool="spotify-play"]{--tc:#1ed760!important;accent-color:#1ed760}
+main[data-tool="spotify-play"] ::selection{background:#1ed760;color:#000}
+main[data-tool="spotify-play"] .panel .bar,main[data-tool="spotify-play"] .thero,main[data-tool="spotify-play"] #c label,main[data-tool="spotify-play"] #c button,main[data-tool="spotify-play"] .spw button,main[data-tool="spotify-play"] .spcnt,main[data-tool="spotify-play"] .spl li{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+main[data-tool="spotify-play"] #c input:-webkit-autofill,main[data-tool="spotify-play"] #c input:-webkit-autofill:hover,main[data-tool="spotify-play"] #c input:-webkit-autofill:focus{-webkit-text-fill-color:#fff;caret-color:#fff;box-shadow:0 0 0 100px #242424 inset;-webkit-box-shadow:0 0 0 100px #242424 inset;transition:background-color 9999s}
+main[data-tool="spotify-play"] #c input{caret-color:#1ed760}
+main[data-tool="spotify-play"] button,main[data-tool="spotify-play"] .spl li,main[data-tool="spotify-play"] .spr{-webkit-tap-highlight-color:transparent}
+main[data-tool="spotify-play"] .spr:focus-visible,main[data-tool="spotify-play"] .spw :focus-visible{outline:2px solid #1ed760;outline-offset:2px}
 </style>
 </head>
 <body>
@@ -2746,42 +2834,101 @@ function emailInit(r,id,showLink,check){
  go.onclick=run;e.onkeydown=ev=>{if(ev.key==='Enter')run()}}
 
 
-// Spotify Play: pemutar custom dengan cover lagu (satu elemen audio, daftar hasil di bawahnya).
+// Spotify Play: pemutar bergaya aplikasi Spotify (Now Playing) + Dynamic Island.
 const SPN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>',
 SPPV='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2.5v14H6zM19 5v14L9.5 12z"/></svg>',
-SPNX='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.5 5H18v14h-2.5zM5 5l9.5 7L5 19z"/></svg>';
+SPNX='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.5 5H18v14h-2.5zM5 5l9.5 7L5 19z"/></svg>',
+SPSV=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>',
+SPSH=SPSV('<path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/>'),
+SPRP=SPSV('<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 013-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 01-3 3H3"/>'),
+SPR1=SPSV('<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 013-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 01-3 3H3"/><path d="M11 10l1.4-1v6.5" stroke-width="1.8"/>'),
+SPHT=SPSV('<path d="M12 20.5s-7.5-4.6-9.3-9.2C1.5 8 3.4 5 6.6 5c2 0 3.5 1 5.4 3 1.9-2 3.4-3 5.4-3 3.2 0 5.1 3 3.9 6.3-1.8 4.6-9.3 9.2-9.3 9.2z"/>'),
+SPXI=SPSV('<path d="M6 6l12 12M18 6L6 18"/>'),
+SPLK={get(){try{const a=JSON.parse(localStorage.getItem('mt_spk_like')||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}},set(a){try{localStorage.setItem('mt_spk_like',JSON.stringify(a.slice(-300)))}catch(e){}}},
+SPG={stop:null},SPCC=new Map();
+// Warna dominan cover (kanvas 24x24, piksel jenuh dibobot lebih besar). Bila server cover tidak mengizinkan CORS, kembali ke latar cover buram.
+function spTint(u,cb){if(!u){cb(null);return}if(SPCC.has(u)){cb(SPCC.get(u));return}
+ const im=new Image();im.crossOrigin='anonymous';im.referrerPolicy='no-referrer';
+ im.onload=()=>{let r=null;try{const c=document.createElement('canvas');c.width=c.height=24;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0,24,24);const d=x.getImageData(0,0,24,24).data;let R=0,G=0,B=0,W=0;
+  for(let i=0;i<d.length;i+=4){if(d[i+3]<200)continue;const mx=Math.max(d[i],d[i+1],d[i+2]),mn=Math.min(d[i],d[i+1],d[i+2]),sat=mx?(mx-mn)/mx:0,w=Math.max(.02,.15+sat*sat*2-(mx>40?0:.1));R+=d[i]*w;G+=d[i+1]*w;B+=d[i+2]*w;W+=w}
+  if(W){R/=W;G/=W;B/=W;const m=Math.max(R,G,B)||1,k=m<70?70/m:Math.min(1,150/m);r=[Math.min(255,Math.round(R*k)),Math.min(255,Math.round(G*k)),Math.min(255,Math.round(B*k))]}}catch(e){r=null}
+  SPCC.set(u,r);cb(r)};
+ im.onerror=()=>{SPCC.set(u,null);cb(null)};im.src=u}
+// Dynamic Island: pil hitam di atas layar. Ringkas = cover + equalizer; ketuk (atau ganti lagu) = membesar dengan kontrol.
+const SPI=(()=>{let el=null,ctl=null,tm=0,open=false;
+ const q=s=>el.querySelector(s),fm=s=>{s=Math.floor(s);return isFinite(s)&&s>=0?Math.floor(s/60)+':'+String(s%60).padStart(2,'0'):'0:00'};
+ const img=(n,u)=>{n.innerHTML=u?`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:''};
+ const collapse=()=>{clearTimeout(tm);open=false;if(el){el.classList.remove('open');el.setAttribute('aria-expanded','false')}};
+ const expand=ms=>{if(!el)return;open=true;el.classList.add('open');el.setAttribute('aria-expanded','true');clearTimeout(tm);tm=setTimeout(collapse,ms||5000)};
+ const mk=()=>{if(el)return;el=document.createElement('div');el.className='dyn';el.setAttribute('role','region');el.setAttribute('aria-label','Sedang diputar');el.setAttribute('aria-expanded','false');
+  el.innerHTML=`<div class="dyc"><span class="dyi"><span class="dci"></span></span><span class="dyw" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div><div class="dye"><button type="button" class="dyx" aria-label="Tutup pemutar">${SPXI}</button><div class="dyh"><span class="dyi dyl"><span class="dci"></span></span><div><b class="dti"></b><span class="dta"></span></div></div><div class="dyb"><span class="dtc">0:00</span><div class="dpb"><i></i></div><span class="dtd">0:00</span></div><div class="dyk"><button type="button" class="dkp" aria-label="Sebelumnya">${SPPV}</button><button type="button" class="dkl" aria-label="Putar">${PLI}</button><button type="button" class="dkn" aria-label="Berikutnya">${SPNX}</button></div></div>`;
+  let sy=null,mv=false;const rs=()=>{sy=null;el.classList.remove('drag');el.style.removeProperty('--dy')};
+  el.onpointerdown=e=>{if(e.target.closest('button'))return;sy=e.clientY;mv=false;try{el.setPointerCapture(e.pointerId)}catch(x){}};
+  el.onpointermove=e=>{if(sy===null)return;const dy=e.clientY-sy;if(Math.abs(dy)>6){mv=true;el.classList.add('drag');el.style.setProperty('--dy',Math.max(-30,Math.min(30,dy*.45))+'px')}};
+  el.onpointerup=e=>{if(sy===null)return;const dy=e.clientY-sy,m=mv;rs();if(m){setTimeout(()=>{mv=false},60);
+    if(Math.abs(dy)>34){if(open)collapse();else if(dy<0){collapse();if(ctl&&ctl.close)ctl.close();el.classList.remove('show')}else expand(7000)}}};
+  el.onpointercancel=rs;
+  el.onclick=e=>{if(e.target.closest('button'))return;if(mv){mv=false;return}open?collapse():expand(7000)};
+  const b=(s,f)=>{q(s).onclick=e=>{e.stopPropagation();f();if(open)expand(5000)}};
+  b('.dkp',()=>ctl&&ctl.prev());b('.dkl',()=>ctl&&ctl.toggle());b('.dkn',()=>ctl&&ctl.next());
+  q('.dyx').onclick=e=>{e.stopPropagation();collapse();if(ctl&&ctl.close)ctl.close();el.classList.remove('show')};
+  document.addEventListener('pointerdown',e=>{if(open&&el&&!el.contains(e.target))collapse()});
+  document.body.appendChild(el)};
+ return{
+  bind(c){ctl=c},
+  show(){mk();requestAnimationFrame(()=>el.classList.add('show'))},
+  hide(){if(el){collapse();el.classList.remove('show','spon')}},
+  set(t,c,pop){mk();img(q('.dyi .dci'),c);img(q('.dyl .dci'),c);q('.dti').textContent=t.title||'';q('.dta').textContent=t.artist||'-';q('.dtd').textContent=t.duration||'0:00';q('.dtc').textContent='0:00';q('.dpb i').style.width='0%';if(pop)expand(3800)},
+  playing(on){if(!el)return;el.classList.toggle('spon',on);const k=q('.dkl');k.innerHTML=on?PSI:PLI;k.setAttribute('aria-label',on?'Jeda':'Putar')},
+  prog(c,d){if(!el)return;q('.dtc').textContent=fm(c);if(d>0)q('.dtd').textContent=fm(d);q('.dpb i').style.width=(d>0?Math.min(100,c/d*100):0)+'%'}}})();
 function spotCard(res,j){const T=(j.tracks||[]).filter(t=>t&&t.url);if(!T.length)return false;
+ if(SPG.stop){try{SPG.stop()}catch(e){}}
  const cov=t=>t.cover&&/^https:\/\//i.test(t.cover)?t.cover:'',fm=s=>{s=Math.floor(s);return isFinite(s)&&s>=0?Math.floor(s/60)+':'+String(s%60).padStart(2,'0'):'0:00'};
  const nm=t=>(t.title+'-'+t.artist).replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'lagu';
  const img=u=>u?`<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:'';
- res.innerHTML=`<div class="out spw"><div class="spn"><div class="spbg"></div><div class="spcv">${SPN}<span class="spci"></span></div>
-<div class="spm"><div><b class="spti"></b><span class="spar"></span></div></div>
+ const qv=document.querySelector('#e'),qs=qv&&qv.value?qv.value.trim():'';
+ res.innerHTML=`<div class="out spw"><div class="spn"><div class="spbg"></div><div class="spgr"></div><div class="sphd"><small>Memutar dari pencarian</small><b class="spq"></b></div><div class="spcv">${SPN}<span class="spci"></span></div>
+<div class="spm"><div><b class="spti"></b><span class="spar"></span></div><button type="button" class="sphe" aria-label="Sukai lagu" aria-pressed="false">${SPHT}</button></div>
 <input class="spr" type="range" min="0" max="1000" value="0" step="1" aria-label="Posisi lagu"><div class="spt"><span class="spcu">0:00</span><span class="spdu">0:00</span></div>
-<div class="spc"><button type="button" class="spv" aria-label="Sebelumnya">${SPPV}</button><button type="button" class="spp" aria-label="Putar">${PLI}</button><button type="button" class="spx" aria-label="Berikutnya">${SPNX}</button><button type="button" class="spdl" aria-label="Unduh audio" data-unduh="" data-n="lagu">${DLI}</button></div>
+<div class="spc"><button type="button" class="sps" aria-label="Acak" aria-pressed="false">${SPSH}</button><button type="button" class="spv" aria-label="Sebelumnya">${SPPV}</button><button type="button" class="spp" aria-label="Putar">${PLI}</button><button type="button" class="spx" aria-label="Berikutnya">${SPNX}</button><button type="button" class="sprp" aria-label="Ulangi: mati" aria-pressed="false">${SPRP}</button></div>
+<div class="spft"><button type="button" class="spdl" aria-label="Unduh audio" data-unduh="" data-n="lagu">${DLI}<span>Unduh MP3</span></button></div>
 <audio class="mtp" preload="none" playsinline></audio></div>
-<div class="spcnt">${T.length} lagu ditemukan</div>
-<ul class="spl">${T.map((t,i)=>`<li data-i="${i}" tabindex="0" role="button" aria-label="Putar ${esc(t.title)}"><span class="tn">${i+1}</span><span class="eq"><i></i><i></i><i></i></span><span class="tc">${SPN}${img(cov(t))}</span><div class="ti"><b>${esc(t.title)}</b><span>${esc(t.artist||'-')}${t.album?' · '+esc(t.album):''}</span></div><span class="td">${esc(t.duration||'')}</span></li>`).join('')}</ul></div>`;
- const q=s=>res.querySelector(s),a=q('audio'),rg=q('.spr'),pp=q('.spp'),lis=[...res.querySelectorAll('.spl li')];let cur=0,seek=false;
- const setP=()=>{const d=a.duration,c=seek?rg.value/1000*(d||0):a.currentTime;const v=d>0?Math.min(1000,c/d*1000):0;if(!seek)rg.value=v;rg.style.setProperty('--p',(v/10)+'%');q('.spcu').textContent=fm(c);q('.spdu').textContent=d>0?fm(d):(T[cur].duration||'0:00')};
- const ui=on=>{pp.innerHTML=on?PSI:PLI;pp.setAttribute('aria-label',on?'Jeda':'Putar');lis.forEach((l,i)=>l.classList.toggle('pl',on&&i===cur))};
- const pick=(i,go)=>{cur=(i+T.length)%T.length;const t=T[cur];lis.forEach((l,k)=>l.classList.toggle('on',k===cur));
-  const c=cov(t);q('.spci').outerHTML=`<span class="spci">${img(c)}</span>`;q('.spbg').style.backgroundImage=c?`url("${c.replace(/["\\()\s]/g,encodeURIComponent)}")`:'none';
-  q('.spti').textContent=t.title;q('.spar').textContent=t.artist||'-';
-  const d=q('.spdl');d.setAttribute('data-unduh',t.url);d.setAttribute('data-n',nm(t));
+<div class="spcnt">Hasil pencarian</div>
+<ul class="spl">${T.map((t,i)=>`<li data-i="${i}" tabindex="0" role="button" aria-label="Putar ${esc(t.title)}"><span class="tc">${SPN}${img(cov(t))}<span class="eq"><i></i><i></i><i></i></span></span><div class="ti"><b>${esc(t.title)}</b><span>${esc(t.artist||'-')}${t.album?' · '+esc(t.album):''}</span></div><span class="td">${esc(t.duration||'')}</span></li>`).join('')}</ul></div>`;
+ const q=s=>res.querySelector(s),a=q('audio'),rg=q('.spr'),pp=q('.spp'),hb=q('.sphe'),sb=q('.sps'),rb=q('.sprp'),W=q('.spw'),lis=[...res.querySelectorAll('.spl li')];
+ let cur=0,seek=false,shuf=false,rep=0,hist=[],likes=SPLK.get(),tint=0;
+ q('.spq').textContent=qs||'Hasil pencarian';
+ const rnd=()=>{if(T.length<2)return 0;let n;do{n=Math.floor(Math.random()*T.length)}while(n===cur);return n};
+ const setP=()=>{const d=a.duration,c=seek?rg.value/1000*(d||0):a.currentTime;const v=d>0?Math.min(1000,c/d*1000):0;if(!seek)rg.value=v;rg.style.setProperty('--p',(v/10)+'%');q('.spcu').textContent=fm(c);q('.spdu').textContent=d>0?fm(d):(T[cur].duration||'0:00');SPI.prog(c||0,d||0)};
+ const ui=on=>{pp.innerHTML=on?PSI:PLI;pp.setAttribute('aria-label',on?'Jeda':'Putar');W.classList.toggle('plg',on);lis.forEach((l,i)=>l.classList.toggle('spon',on&&i===cur));SPI.playing(on)};
+ const meta=(t,c)=>{const tk=++tint;spTint(c,rgb=>{if(tk!==tint)return;if(rgb){W.style.setProperty('--c','rgb('+rgb.join(',')+')');W.classList.add('hc')}else W.classList.remove('hc')});q('.spci').outerHTML=`<span class="spci">${img(c)}</span>`;q('.spbg').style.backgroundImage=c?`url("${c.replace(/["\\()\s]/g,encodeURIComponent)}")`:'none';
+  q('.spti').textContent=t.title;q('.spar').textContent=t.artist||'-';const lk=likes.includes(t.url);hb.classList.toggle('on',lk);hb.setAttribute('aria-pressed',lk?'true':'false');hb.setAttribute('aria-label',lk?'Hapus dari lagu disukai':'Sukai lagu');
+  const d=q('.spdl');d.setAttribute('data-unduh',t.url);d.setAttribute('data-n',nm(t));q('.spdu').textContent=t.duration||'0:00';
+  if('mediaSession' in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:t.artist||'',album:t.album||'',artwork:c?[{src:c,sizes:'512x512'}]:[]})}catch(e){}}};
+ const pick=(i,go,back)=>{const started=!!a.getAttribute('src'),old=cur;cur=(i+T.length)%T.length;if(!back&&started&&old!==cur){hist.push(old);if(hist.length>50)hist.shift()}
+  const t=T[cur],c=cov(t);lis.forEach((l,k)=>l.classList.toggle('on',k===cur));meta(t,c);SPI.set(t,c,go);
   a.src=t.url;rg.value=0;setP();ui(false);
-  if('mediaSession' in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:t.artist||'',album:t.album||'',artwork:c?[{src:c,sizes:'512x512'}]:[]})}catch(e){}}
   if(go){pp.disabled=true;a.play().catch(()=>{ui(false)}).finally(()=>{pp.disabled=false})}};
  // Lagu pertama sudah terpilih (cover tampil), tetapi belum dimuat sampai diputar.
- {const t=T[0];lis[0].classList.add('on');const c=cov(t);q('.spci').outerHTML=`<span class="spci">${img(c)}</span>`;q('.spbg').style.backgroundImage=c?`url("${c.replace(/["\\()\s]/g,encodeURIComponent)}")`:'none';q('.spti').textContent=t.title;q('.spar').textContent=t.artist||'-';const d=q('.spdl');d.setAttribute('data-unduh',t.url);d.setAttribute('data-n',nm(t));q('.spdu').textContent=t.duration||'0:00';
-  if('mediaSession' in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:t.artist||'',artwork:c?[{src:c,sizes:'512x512'}]:[]})}catch(e){}}}
- pp.onclick=()=>{if(!a.getAttribute('src')){pick(cur,true);return}a.paused?a.play().catch(()=>{}):a.pause()};
- q('.spv').onclick=()=>{if(a.currentTime>3){a.currentTime=0}else pick(cur-1,true)};q('.spx').onclick=()=>pick(cur+1,true);
+ lis[0].classList.add('on');meta(T[0],cov(T[0]));
+ const toggle=()=>{if(!a.getAttribute('src')){pick(cur,true);return}a.paused?a.play().catch(()=>{}):a.pause()};
+ const prev=()=>{if(a.currentTime>3){a.currentTime=0}else if(hist.length)pick(hist.pop(),true,true);else pick(cur-1,true)};
+ const next=()=>pick(shuf?rnd():cur+1,true);
+ pp.onclick=toggle;q('.spv').onclick=prev;q('.spx').onclick=next;
+ hb.onclick=()=>{const u=T[cur].url,i=likes.indexOf(u);if(i>=0)likes.splice(i,1);else likes.push(u);SPLK.set(likes);const lk=likes.includes(u);hb.classList.remove('on');void hb.offsetWidth;hb.classList.toggle('on',lk);hb.setAttribute('aria-pressed',lk?'true':'false');hb.setAttribute('aria-label',lk?'Hapus dari lagu disukai':'Sukai lagu');if(navigator.vibrate){try{navigator.vibrate(10)}catch(e){}}};
+ sb.onclick=()=>{shuf=!shuf;sb.classList.toggle('on',shuf);sb.setAttribute('aria-pressed',shuf?'true':'false');sb.setAttribute('aria-label',shuf?'Acak: nyala':'Acak: mati')};
+ rb.onclick=()=>{rep=(rep+1)%3;rb.classList.toggle('on',rep>0);rb.innerHTML=rep===2?SPR1:SPRP;rb.setAttribute('aria-pressed',rep>0?'true':'false');rb.setAttribute('aria-label',['Ulangi: mati','Ulangi: semua lagu','Ulangi: satu lagu'][rep])};
  lis.forEach(l=>{const go=()=>{const i=+l.getAttribute('data-i');if(i===cur&&a.getAttribute('src')){a.paused?a.play().catch(()=>{}):a.pause()}else pick(i,true)};l.onclick=go;l.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
- a.onplay=()=>ui(true);a.onpause=()=>ui(false);a.onended=()=>{if(cur<T.length-1)pick(cur+1,true);else{ui(false);a.currentTime=0;setP()}};
- a.ontimeupdate=setP;a.onloadedmetadata=setP;a.ondurationchange=setP;
- a.onerror=()=>{ui(false);const m=document.querySelector('#m');if(m){m.className='msg bad';m.textContent='Lagu ini tidak bisa diputar. Coba lagu lain atau unduh dulu.'}};
+ a.onplay=()=>{ui(true);SPI.show()};a.onpause=()=>ui(false);
+ a.onended=()=>{if(rep===2){a.currentTime=0;a.play().catch(()=>{});return}
+  if(shuf&&T.length>1){pick(rnd(),true);return}
+  if(cur<T.length-1)pick(cur+1,true);else if(rep===1)pick(0,true);else{ui(false);a.currentTime=0;setP()}};
+ a.ontimeupdate=()=>{setP();if('mediaSession' in navigator&&navigator.mediaSession.setPositionState&&a.duration>0){try{navigator.mediaSession.setPositionState({duration:a.duration,position:Math.min(a.currentTime,a.duration),playbackRate:1})}catch(e){}}};a.onloadedmetadata=setP;a.ondurationchange=setP;
+ a.onerror=()=>{ui(false);const m=res.isConnected?document.querySelector('#m'):null;if(m){m.className='msg bad';m.textContent='Lagu ini tidak bisa diputar. Coba lagu lain atau unduh dulu.'}};
  rg.oninput=()=>{seek=true;setP()};rg.onchange=()=>{if(a.duration>0)a.currentTime=rg.value/1000*a.duration;seek=false;setP()};
- if('mediaSession' in navigator){try{const ms=navigator.mediaSession;ms.setActionHandler('play',()=>pp.click());ms.setActionHandler('pause',()=>a.pause());ms.setActionHandler('previoustrack',()=>pick(cur-1,true));ms.setActionHandler('nexttrack',()=>pick(cur+1,true))}catch(e){}}
+ SPI.bind({toggle,prev,next,close:()=>a.pause()});
+ SPG.stop=()=>{a.onerror=null;a.onpause=null;a.onplay=null;a.onended=null;a.ontimeupdate=null;a.pause();a.removeAttribute('src');try{a.load()}catch(e){}SPI.hide()};
+ if('mediaSession' in navigator){try{const ms=navigator.mediaSession;ms.setActionHandler('play',()=>toggle());ms.setActionHandler('pause',()=>a.pause());ms.setActionHandler('previoustrack',prev);ms.setActionHandler('nexttrack',next);ms.setActionHandler('seekto',e=>{if(a.duration>0&&typeof e.seekTime==='number')a.currentTime=Math.min(a.duration,Math.max(0,e.seekTime))})}catch(e){}}
  return true}
 function stalkCard(res,raw){const d=raw&&typeof raw.data==='object'&&raw.data?raw.data:raw;if(!d||typeof d!=='object'||(!d.username&&!d.name))return false;
  const n=v=>(v===undefined||v===null||v==='')?'-':(/^\d+$/.test(String(v))?nf(+v):esc(v)),un=String(d.username||'').replace(/[^A-Za-z0-9._]/g,''),ph=typeof d.photo==='string'&&/^https:\/\//.test(d.photo)?d.photo:'';
@@ -2948,7 +3095,7 @@ const tools=[
   $(r,'#vf').onclick=ev=>run(ev.target,$(r,'#m2'),'am-verif','Permintaan verifikasi terkirim.',lk.value.trim());
   $(r,'#ps').onclick=async()=>{const m=$(r,'#m2');try{const t=(await navigator.clipboard.readText()).trim();if(!t)throw 0;lk.value=t;lk.focus();m.className='msg';m.textContent=''}catch(x){m.className='msg bad';m.textContent='Clipboard tidak bisa dibaca. Tempel manual di kolom di atas.'}};
   e.onkeydown=ev=>{if(ev.key==='Enter')$(r,'#go').click()}}},
-linkTool({id:'spotify-play',name:'Spotify Play',desc:'Cari lagu Spotify berdasarkan judul atau artis, lalu putar atau unduh audionya (MP3).',label:'Judul lagu atau artis',ph:'starboy',btn:'Cari lagu',text:true}),
+linkTool({id:'spotify-play',name:'Spotify Play',desc:'Cari lagu Spotify berdasarkan judul atau artis, lalu putar atau unduh audionya (MP3).',label:'Judul lagu atau artis',ph:'Apa yang ingin kamu putar?',btn:'Cari lagu',text:true}),
 linkTool({id:'ig-dl',name:'Instagram Downloader',desc:'Unduh foto, video, Reels, atau Carousel Instagram secara instan.',label:'Link Instagram',ph:'https://www.instagram.com/reel/...',btn:'Ambil media'}),
 linkTool({id:'mediafire-dl',name:'Mediafire Downloader',desc:'Ambil link unduh langsung dari URL Mediafire, lengkap dengan nama file, ukuran, dan tipe file.',label:'Link Mediafire',ph:'https://www.mediafire.com/file/...',btn:'Ambil link unduh'}),
 linkTool({id:'youtube-dl',name:'YouTube Downloader',desc:'Unduh video YouTube (360p dengan suara, atau resolusi tinggi tanpa suara) dan audio M4A.',label:'Link YouTube',ph:'https://www.youtube.com/watch?v=...',btn:'Ambil video'}),
@@ -3197,7 +3344,7 @@ const ls={get:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return
 const nf=n=>Number(n).toLocaleString('id-ID');
 function rec(tool,ok){const k=tool==='am-send'||tool==='am-verif'?'am-premium':tool,s=ls.get('mt_stats')||{},r=s[k]||{ok:0,err:0};ok?r.ok++:r.err++;s[k]=r;ls.set('mt_stats',s)}
 async function api(...a){const j=await api0(...a);rec(a[0],!!(j&&j.ok));return j}
-const CHANGELOG=[{d:'19 November 2026',t:'Pembaruan',i:[['baru','Spotify Play kini punya pemutar custom: cover lagu besar, judul dan artis rapi, bilah progres bisa digeser, tombol putar bulat, sebelumnya/berikutnya, dan tiap hasil pencarian tampil dengan thumbnail.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Reaksi Channel WhatsApp di kategori Tools: kirim reaksi emoji ke postingan channel WhatsApp lewat link postingan.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Dailymotion Downloader di kategori Downloader: unduh video Dailymotion publik, pilih kualitas 1080p, 720p, atau 480p, lengkap dengan judul dan durasi.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Videy Downloader di kategori Downloader: ambil MP4 asli dari link share Videy.co, ada pratinjau dan tombol Unduh Video.']]},{d:'18 November 2026',t:'Chat Global jadi Family',i:[['update','Chat Global diganti nama menjadi Family, dengan tampilan baru: gelembung pesan lebih jelas, pesanmu di kanan dan pesan orang lain di kiri, kolom ketik berbentuk pil, dan ikon tautan tidak dobel lagi.']]},{d:'18 November 2026',t:'Kode redeem',i:[['baru','Tukar kode redeem di halaman Beli Role atau Profil untuk langsung mengaktifkan Premium atau VIP.'],['baru','Panel Developer tab Kode: buat satu atau banyak kode sekaligus dengan role, masa aktif, kredit per hari, batas pemakaian, dan tanggal kedaluwarsa, lihat siapa yang memakai, dan hapus kapan saja.']]},{d:'18 November 2026',t:'Panel Developer lebih lengkap',i:[['baru','Statistik global: pengguna aktif dan baru, tool paling dipakai, tingkat error per tool, dan penanda provider bermasalah.'],['baru','Daftar role yang akan habis (3 hari) dan yang baru habis, filter pengguna, kredit bonus dan reset kredit, log aktivitas, jadwal dan target role untuk pengumuman, serta ekspor data.']]},{d:'18 November 2026',t:'Tampilan baru',i:[['update','Beranda dan tampilan diperbarui: kartu sambutan besar bergradasi hijau, font baru, dan navigasi tool berbentuk pil.']]},{d:'18 November 2026',t:'Kategori dihapus',i:[['update','Kategori OSINT / Stalk dihapus beserta isinya: Instagram, Roblox, Free Fire, dan Mobile Legends Stalker.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Carbon Code di kategori Maker: ubah potongan kode jadi gambar bersyntax highlight bergaya Carbon.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','GetContact Verifikasi di kategori GetContact: mulai verifikasi lewat WhatsApp, dapat link dan kode yang berlaku 15 menit.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Spotify Play: ada tombol Putar Audio dengan pemutar bawaan. Image to Prompt: sekarang bisa pilih foto dari perangkat, tidak hanya link. Instagram Downloader kembali berfungsi untuk video. Tombol Kirim di Family tidak lagi menutupi kolom pesan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Hapus Background di kategori Tools: hapus latar foto otomatis, hasil PNG transparan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Alight Motion Data di kategori Tools: judul, ukuran, versi, jumlah efek, UID, dan PID dari link share Alight Motion.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','AI Image Upscaler di kategori Tools: perbesar dan perjelas gambar 2x dengan AI, unggah foto atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Image to Prompt di kategori Tools: ubah gambar jadi prompt AI yang detail.'],['baru','Bypass Cloudflare Turnstile di kategori Tools: buat token Turnstile untuk sebuah situs.']]},{d:'18 November 2026',t:'Tombol unduh baru',i:[['update','Tombol Unduh Foto dan Unduh Video kini bergambar ikon dan lebih jelas di semua tool.'],['update','Tool Maker yang butuh foto: pilih file dari perangkat sampai 50 MB atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Instagram Quick Chat di kategori Maker: mockup menu pesan Instagram dengan pesan, gambar, jam menu, dan bar reaksi emoji.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Jarvis Meme di kategori Maker: buat meme Jarvis dengan teks sendiri yang otomatis dibungkus dan disesuaikan ukurannya.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Call WhatsApp di kategori Maker: mockup layar panggilan iOS dengan foto profil, nama kontak, dan durasi panggilan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Channel WhatsApp di kategori Maker: mockup halaman Info Saluran iOS dengan foto profil, nama saluran, jumlah pengikut, dan jam status bar.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Video Generator di kategori Maker: buat video teks gaya Brat dengan warna latar dan warna teks pilihan, lalu unduh sebagai MP4.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Generator V1 di kategori Maker: buat gambar teks gaya Brat dengan warna latar dan warna teks pilihan.']]},{d:'18 November 2026',t:'Nonaktifkan tool sementara',i:[['baru','Developer bisa menonaktifkan tool yang sedang error dari panel Developer tab Tools, dan mengaktifkannya lagi kapan saja.']]},{d:'18 November 2026',t:'Harga role bisa diatur',i:[['baru','Panel Developer tab Harga: atur paket role (Premium/VIP), masa aktif, harga, dan kredit per hari, contoh 1 hari Rp1.000 5 kredit.'],['update','Halaman Beli Role kini menampilkan paket dari panel, dan role pengguna bisa diaktifkan lewat paket.']]},{d:'18 November 2026',t:'Poles tampilan',i:[['update','Beli role: paket Premium dan VIP kini punya daftar manfaat, penanda pilihan, dan peringatan login yang lebih jelas.'],['update','Stats: tampilan kosong kini punya ikon dan tombol menuju daftar tool.'],['update','Feedback: ada penghitung karakter dan petunjuk kapan pesan siap dikirim.'],['update','Changelog: entri terbaru diberi penanda.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Indikator status di pojok kanan atas kini bulat (mahkota untuk Developer), bukan kotak polos.'],['update','Tombol chat melayang tidak lagi menutupi konten di bagian bawah halaman.'],['update','Akun developer di mode demo tidak lagi menampilkan kotak kredit.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Mediafire Downloader di kategori Downloader: link unduh langsung beserta nama file, ukuran, dan tipe.']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Duar Viral di kategori Maker.']]},{d:'17 November 2026',t:'Kategori disederhanakan',i:[['update','Kategori kini ada tiga: Tools, Downloader, dan Maker (sebelumnya bernama Canvas).']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Scan Slop di kategori Tools: skor, vonis, dan sinyal AI untuk sebuah situs web.']]},{d:'17 November 2026',t:'Kategori Maker',i:[['baru','Kategori Maker dengan tool IQC Dark dan Fake Call.']]},{d:'17 November 2026',t:'Kategori Downloader',i:[['baru','Kategori Downloader di beranda dan menu samping.'],['baru','Tool AIO Downloader: unduh video, audio, atau reels dari TikTok, Instagram, YouTube, Facebook, Twitter, dan lainnya.'],['baru','Tool Snaptik, CapCut, Facebook, Instagram, dan Spotify Play di kategori Downloader.'],['update','TikTok Downloader pindah ke kategori Downloader.']]},{d:'17 November 2026',t:'TikTok Downloader',i:[['baru','Tool TikTok Downloader: unduh video tanpa watermark, foto slide, dan musik dari link TikTok.'],['update','Fitur Tambah tool di panel Developer dihapus.']]},{d:'17 November 2026',t:'Perbaikan tampilan',i:[['update','Halaman Beli role dirapikan: kartu Premium dan VIP tertata, teks tidak menyatu lagi.'],['update','Family tampilan baru: bubble, foto profil dengan warna role, pemisah tanggal.'],['update','Konfirmasi hapus memakai kotak dialog sendiri, bukan popup browser.'],['update','Panel Developer: tombol Tes koneksi bot dan alasan gagal kirim yang lebih jelas.']]},{d:'16 November 2026',t:'Sistem developer dan role',i:[['baru','Panel Developer: lihat pengguna, kirim peringatan, blokir.'],['baru','Role pengguna (Member, Premium, VIP) bisa diatur developer dan tampil sebagai badge.'],['baru','Developer bisa menambah tool baru tanpa edit kode.'],['baru','Family: ngobrol dengan semua pengguna, balas, dan tag @nama.'],['baru','Pengumuman dari developer di beranda.'],['baru','Favorit: ketuk ☆ untuk menaruh tool di atas.']]},{d:'16 November 2026',t:'Tampilan baru dan menu samping',i:[['baru','Beranda baru dengan banner Malik Tools.'],['baru','Menu samping dengan kategori dan pencarian tool.'],['baru','Halaman Changelog, Feedback, Stats, dan Profil.'],['update','Warna situs diganti ke hitam dan hijau.']]}];
+const CHANGELOG=[{d:'19 November 2026',t:'Pembaruan',i:[['baru','Spotify Play kini tampil persis seperti Now Playing di aplikasi Spotify: cover besar yang mengecil saat dijeda, tombol suka, acak, ulangi (mati/semua/satu lagu), dan daftar hasil bergaya Spotify. Halaman Spotify Play ikut bergaya Spotify (kolom cari bulat dengan ikon kaca pembesar, tombol hijau) dan warnanya dikunci hijau, tanpa biru dari aksen, blok teks, atau isi otomatis. Latar mengikuti warna dominan cover. Ditambah Dynamic Island: pil hitam di atas layar yang menampilkan cover dan equalizer, ketuk untuk membuka kontrol putar, gesek ke bawah untuk menutup, gesek ke atas untuk menyembunyikan.'],['baru','Spotify Play kini punya pemutar custom: cover lagu besar, judul dan artis rapi, bilah progres bisa digeser, tombol putar bulat, sebelumnya/berikutnya, dan tiap hasil pencarian tampil dengan thumbnail.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Reaksi Channel WhatsApp di kategori Tools: kirim reaksi emoji ke postingan channel WhatsApp lewat link postingan.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Dailymotion Downloader di kategori Downloader: unduh video Dailymotion publik, pilih kualitas 1080p, 720p, atau 480p, lengkap dengan judul dan durasi.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Videy Downloader di kategori Downloader: ambil MP4 asli dari link share Videy.co, ada pratinjau dan tombol Unduh Video.']]},{d:'18 November 2026',t:'Chat Global jadi Family',i:[['update','Chat Global diganti nama menjadi Family, dengan tampilan baru: gelembung pesan lebih jelas, pesanmu di kanan dan pesan orang lain di kiri, kolom ketik berbentuk pil, dan ikon tautan tidak dobel lagi.']]},{d:'18 November 2026',t:'Kode redeem',i:[['baru','Tukar kode redeem di halaman Beli Role atau Profil untuk langsung mengaktifkan Premium atau VIP.'],['baru','Panel Developer tab Kode: buat satu atau banyak kode sekaligus dengan role, masa aktif, kredit per hari, batas pemakaian, dan tanggal kedaluwarsa, lihat siapa yang memakai, dan hapus kapan saja.']]},{d:'18 November 2026',t:'Panel Developer lebih lengkap',i:[['baru','Statistik global: pengguna aktif dan baru, tool paling dipakai, tingkat error per tool, dan penanda provider bermasalah.'],['baru','Daftar role yang akan habis (3 hari) dan yang baru habis, filter pengguna, kredit bonus dan reset kredit, log aktivitas, jadwal dan target role untuk pengumuman, serta ekspor data.']]},{d:'18 November 2026',t:'Tampilan baru',i:[['update','Beranda dan tampilan diperbarui: kartu sambutan besar bergradasi hijau, font baru, dan navigasi tool berbentuk pil.']]},{d:'18 November 2026',t:'Kategori dihapus',i:[['update','Kategori OSINT / Stalk dihapus beserta isinya: Instagram, Roblox, Free Fire, dan Mobile Legends Stalker.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Carbon Code di kategori Maker: ubah potongan kode jadi gambar bersyntax highlight bergaya Carbon.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','GetContact Verifikasi di kategori GetContact: mulai verifikasi lewat WhatsApp, dapat link dan kode yang berlaku 15 menit.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Spotify Play: ada tombol Putar Audio dengan pemutar bawaan. Image to Prompt: sekarang bisa pilih foto dari perangkat, tidak hanya link. Instagram Downloader kembali berfungsi untuk video. Tombol Kirim di Family tidak lagi menutupi kolom pesan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Hapus Background di kategori Tools: hapus latar foto otomatis, hasil PNG transparan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Alight Motion Data di kategori Tools: judul, ukuran, versi, jumlah efek, UID, dan PID dari link share Alight Motion.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','AI Image Upscaler di kategori Tools: perbesar dan perjelas gambar 2x dengan AI, unggah foto atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Image to Prompt di kategori Tools: ubah gambar jadi prompt AI yang detail.'],['baru','Bypass Cloudflare Turnstile di kategori Tools: buat token Turnstile untuk sebuah situs.']]},{d:'18 November 2026',t:'Tombol unduh baru',i:[['update','Tombol Unduh Foto dan Unduh Video kini bergambar ikon dan lebih jelas di semua tool.'],['update','Tool Maker yang butuh foto: pilih file dari perangkat sampai 50 MB atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Instagram Quick Chat di kategori Maker: mockup menu pesan Instagram dengan pesan, gambar, jam menu, dan bar reaksi emoji.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Jarvis Meme di kategori Maker: buat meme Jarvis dengan teks sendiri yang otomatis dibungkus dan disesuaikan ukurannya.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Call WhatsApp di kategori Maker: mockup layar panggilan iOS dengan foto profil, nama kontak, dan durasi panggilan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Channel WhatsApp di kategori Maker: mockup halaman Info Saluran iOS dengan foto profil, nama saluran, jumlah pengikut, dan jam status bar.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Video Generator di kategori Maker: buat video teks gaya Brat dengan warna latar dan warna teks pilihan, lalu unduh sebagai MP4.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Generator V1 di kategori Maker: buat gambar teks gaya Brat dengan warna latar dan warna teks pilihan.']]},{d:'18 November 2026',t:'Nonaktifkan tool sementara',i:[['baru','Developer bisa menonaktifkan tool yang sedang error dari panel Developer tab Tools, dan mengaktifkannya lagi kapan saja.']]},{d:'18 November 2026',t:'Harga role bisa diatur',i:[['baru','Panel Developer tab Harga: atur paket role (Premium/VIP), masa aktif, harga, dan kredit per hari, contoh 1 hari Rp1.000 5 kredit.'],['update','Halaman Beli Role kini menampilkan paket dari panel, dan role pengguna bisa diaktifkan lewat paket.']]},{d:'18 November 2026',t:'Poles tampilan',i:[['update','Beli role: paket Premium dan VIP kini punya daftar manfaat, penanda pilihan, dan peringatan login yang lebih jelas.'],['update','Stats: tampilan kosong kini punya ikon dan tombol menuju daftar tool.'],['update','Feedback: ada penghitung karakter dan petunjuk kapan pesan siap dikirim.'],['update','Changelog: entri terbaru diberi penanda.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Indikator status di pojok kanan atas kini bulat (mahkota untuk Developer), bukan kotak polos.'],['update','Tombol chat melayang tidak lagi menutupi konten di bagian bawah halaman.'],['update','Akun developer di mode demo tidak lagi menampilkan kotak kredit.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Mediafire Downloader di kategori Downloader: link unduh langsung beserta nama file, ukuran, dan tipe.']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Duar Viral di kategori Maker.']]},{d:'17 November 2026',t:'Kategori disederhanakan',i:[['update','Kategori kini ada tiga: Tools, Downloader, dan Maker (sebelumnya bernama Canvas).']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Scan Slop di kategori Tools: skor, vonis, dan sinyal AI untuk sebuah situs web.']]},{d:'17 November 2026',t:'Kategori Maker',i:[['baru','Kategori Maker dengan tool IQC Dark dan Fake Call.']]},{d:'17 November 2026',t:'Kategori Downloader',i:[['baru','Kategori Downloader di beranda dan menu samping.'],['baru','Tool AIO Downloader: unduh video, audio, atau reels dari TikTok, Instagram, YouTube, Facebook, Twitter, dan lainnya.'],['baru','Tool Snaptik, CapCut, Facebook, Instagram, dan Spotify Play di kategori Downloader.'],['update','TikTok Downloader pindah ke kategori Downloader.']]},{d:'17 November 2026',t:'TikTok Downloader',i:[['baru','Tool TikTok Downloader: unduh video tanpa watermark, foto slide, dan musik dari link TikTok.'],['update','Fitur Tambah tool di panel Developer dihapus.']]},{d:'17 November 2026',t:'Perbaikan tampilan',i:[['update','Halaman Beli role dirapikan: kartu Premium dan VIP tertata, teks tidak menyatu lagi.'],['update','Family tampilan baru: bubble, foto profil dengan warna role, pemisah tanggal.'],['update','Konfirmasi hapus memakai kotak dialog sendiri, bukan popup browser.'],['update','Panel Developer: tombol Tes koneksi bot dan alasan gagal kirim yang lebih jelas.']]},{d:'16 November 2026',t:'Sistem developer dan role',i:[['baru','Panel Developer: lihat pengguna, kirim peringatan, blokir.'],['baru','Role pengguna (Member, Premium, VIP) bisa diatur developer dan tampil sebagai badge.'],['baru','Developer bisa menambah tool baru tanpa edit kode.'],['baru','Family: ngobrol dengan semua pengguna, balas, dan tag @nama.'],['baru','Pengumuman dari developer di beranda.'],['baru','Favorit: ketuk ☆ untuk menaruh tool di atas.']]},{d:'16 November 2026',t:'Tampilan baru dan menu samping',i:[['baru','Beranda baru dengan banner Malik Tools.'],['baru','Menu samping dengan kategori dan pencarian tool.'],['baru','Halaman Changelog, Feedback, Stats, dan Profil.'],['update','Warna situs diganti ke hitam dan hijau.']]}];
 const shell=(bar,body)=>`<section class="panel"><div class="bar"><span>${bar}</span></div><div class="in">${body}</div></section>`;
 const hero=(ic,h,sub)=>`<div class="thero"><span class="tile">${svg(IC[ic])}</span><div><h2>${h}</h2><p class="sub">${sub}</p></div></div>`;
 const AUTH={user:null,clientId:'',requireLogin:false,ready:false};
