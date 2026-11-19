@@ -19,6 +19,10 @@ module.exports = {
     'ig-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_INSTAGRAM || '/api/downloader/instagram-v2', method: 'GET', param: 'url', shape: 'gcinstagram', timeout: 45000, host: /(^|\.)instagram\.com$/i, hostMsg: 'Link harus dari Instagram (instagram.com).' },
     // GET /api/downloader/mediafire?url= -> { status, data:{ fileName, fileSize, fileExtension, directDownloadUrl, mediafireUrl, requiresLogin, isPasswordProtected } }
     'mediafire-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_MEDIAFIRE || '/api/downloader/mediafire', method: 'GET', param: 'url', shape: 'file', timeout: 45000, host: /(^|\.)mediafire\.com$/i, hostMsg: 'Link harus dari Mediafire (mediafire.com).' },
+    // GET /api/downloader/videy?url= -> { status, data:{ source_url, url, url2, type, provider } } (MP4 mentah dari link share Videy.co)
+    'videy-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_VIDEY || '/api/downloader/videy', method: 'GET', param: 'url', shape: 'gcvidey', timeout: 40000, host: /(^|\.)videy\.co$/i, hostMsg: 'Link harus dari Videy (videy.co), contoh https://videy.co/v?id=...' },
+    // GET /api/downloader/dailymotion?url= -> { status, creator, data:{ title, thumbnail, duration(detik), qualities:[{ quality, url, type }] } }
+    'dailymotion-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_DAILYMOTION || '/api/downloader/dailymotion', method: 'GET', param: 'url', shape: 'gcdailymotion', timeout: 45000, host: /(^|\.)(dailymotion\.com|dai\.ly)$/i, hostMsg: 'Link harus dari Dailymotion (dailymotion.com atau dai.ly).' },
     // GET /api/downloader/youtube?url=&raw=false -> { meta:{title,uploader,duration_string,...}, formats:{progressive[],video_only[],audio_only[]}, best:{...} }
     'youtube-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_YOUTUBE || '/api/downloader/youtube', method: 'GET', param: 'url', qs: { raw: 'false' }, shape: 'gcyoutube', timeout: 50000, host: /(^|\.)(youtube\.com|youtu\.be|youtube-nocookie\.com)$/i, hostMsg: 'Link harus dari YouTube (youtube.com atau youtu.be).' }
     ,
@@ -102,5 +106,32 @@ module.exports = {
       fields: [
         { key: 'url', label: 'Gambar', req: true, kind: 'url', max: 2000 }
       ] }
+    ,
+    // GET /api/tools/toqr?... -> gambar QR Code PNG biner langsung (Content-Type image/png). Cepat. Nama parameter teks dikirim sebagai text, url, dan target sekaligus supaya cocok dengan dokumentasi gateway.
+    'qr-code': { gc: true, base: GC_BASE, type: 'multi', path: process.env.GENCIPTA_PATH_TOQR || '/api/tools/toqr', method: 'GET', shape: 'image', timeout: 30000,
+      fields: [
+        { key: 'text', label: 'Target URL/Teks', req: true, max: 1000, as: ['text', 'url', 'target'] }
+      ] }
+    ,
+    // GET /api/tools/ssweb?url=&viewport=&fullpage= -> gambar screenshot situs (PNG/JPG) biner langsung. viewport: pc | tablet | android. fullpage: true | false. Hasil besar (>3,2 MB) disimpan sementara di Blob uploads/.
+    'ssweb': { gc: true, base: GC_BASE, type: 'multi', path: process.env.GENCIPTA_PATH_SSWEB || '/api/tools/ssweb', method: 'GET', shape: 'image', timeout: 52000, bigToBlob: true,
+      fields: [
+        { key: 'url', label: 'Link situs', req: true, kind: 'url', max: 2000 },
+        { key: 'viewport', label: 'Viewport', kind: 'enum', opts: ['pc', 'tablet', 'android'] },
+        { key: 'fullpage', label: 'Full page', kind: 'enum', opts: ['true', 'false'], as: ['fullpage', 'fullPage', 'full_page'] }
+      ] }
+    ,
+    // GET /api/tools/tts-google?text=&language= -> audio MP3 biner langsung (Google TTS / Gemini). Cepat (<1 detik untuk teks pendek). language contoh: ja-JP.
+    'tts-google': { gc: true, base: GC_BASE, type: 'multi', path: process.env.GENCIPTA_PATH_TTSGOOGLE || '/api/tools/tts-google', method: 'GET', shape: 'image', timeout: 40000,
+      fields: [
+        { key: 'text', label: 'Teks', req: true, max: 1000, as: ['text', 'input'] },
+        { key: 'language', label: 'Bahasa', kind: 'enum', opts: ['ja-JP', 'id-ID', 'en-US', 'en-GB', 'ko-KR', 'zh-CN', 'ar-XA', 'hi-IN', 'es-ES', 'fr-FR', 'de-DE', 'pt-BR', 'ru-RU', 'th-TH', 'vi-VN', 'tr-TR'] }
+      ] }
+    ,
+    // GET /api/tools/web/open-graph?url= -> { hybridGraph, openGraph, htmlInferred, requestInfo, ... } metadata situs. requestInfo tidak ditampilkan ke pengguna.
+    'open-graph': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_OPENGRAPH || '/api/tools/web/open-graph', method: 'GET', param: 'url', shape: 'gcopengraph', timeout: 40000 }
+    ,
+    // Cek Situs: dikerjakan langsung oleh server ini (tanpa provider), lihat siteCheck() di tool.js.
+    'cek-situs': { local: 'sitecheck', type: 'url' }
   }
 };

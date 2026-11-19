@@ -20,6 +20,13 @@ function sniffVideo(b) {
   if (b[0] === 0x1a && b[1] === 0x45 && b[2] === 0xdf && b[3] === 0xa3) return 'video/webm';
   return null;
 }
+function sniffAudio(b) {
+  if (!b || b.length < 12) return null;
+  if (b.toString('ascii', 0, 3) === 'ID3' || (b[0] === 0xff && (b[1] & 0xe0) === 0xe0)) return 'audio/mpeg';
+  if (b.toString('ascii', 0, 4) === 'RIFF' && b.toString('ascii', 8, 12) === 'WAVE') return 'audio/wav';
+  if (b.toString('ascii', 0, 4) === 'OggS') return 'audio/ogg';
+  return null;
+}
 function sniffImage(b) {
   if (!b || b.length < 12) return null;
   if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return 'image/png';
@@ -246,6 +253,44 @@ function gcTiktok(raw) {
   return link ? { link, data } : null;
 }
 
+// ---- Videy Downloader (GenCipta /api/downloader/videy): data{ source_url, url, url2, type } ----
+function gcVidey(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const d = raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data) ? raw.data : raw;
+  const u1 = isHttp(d.url) ? d.url : null, u2 = isHttp(d.url2) ? d.url2 : null;
+  const link = u1 || u2;
+  if (!link) return null;
+  const data = { video: link };
+  if (u2 && u2 !== link) data.video_cadangan = u2;
+  if (isHttp(d.source_url)) data.sumber = d.source_url;
+  return { link, data };
+}
+
+// ---- Dailymotion Downloader (GenCipta /api/downloader/dailymotion): data{ title, thumbnail, duration, qualities[{quality,url,type}] } ----
+function gcDailymotion(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const d = raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data) ? raw.data : raw;
+  const list = (Array.isArray(d.qualities) ? d.qualities : []).filter((q) => q && isHttp(q.url));
+  const isMp4 = (q) => !/mpegurl|m3u8/i.test(String(q.type || '') + q.url);
+  let vids = list.filter(isMp4);
+  if (!vids.length) vids = list;
+  if (!vids.length) return null;
+  vids = vids.slice().sort((a, b) => (parseInt(b.quality, 10) || 0) - (parseInt(a.quality, 10) || 0));
+  const data = {};
+  if (d.title) data.judul = String(d.title).slice(0, 300);
+  const sec = Math.round(Number(d.duration));
+  if (sec > 0) data.durasi = Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+  if (isHttp(d.thumbnail)) data.thumbnail = d.thumbnail;
+  const used = {};
+  for (const q of vids.slice(0, 8)) {
+    const lb = String(q.quality || '').replace(/[^A-Za-z0-9]/g, '');
+    const base = 'video_' + (lb ? (/^\d+$/.test(lb) ? lb + 'p' : lb) : 'video');
+    used[base] = (used[base] || 0) + 1;
+    data[used[base] > 1 ? base + '_' + used[base] : base] = q.url;
+  }
+  return { link: vids[0].url, data };
+}
+
 // ---- Spotify Track Search (GenCipta /api/spotify/search) ----
 function gcSpotify(raw, origin) {
   if (!raw || typeof raw !== 'object' || !Array.isArray(raw.data)) return null;
@@ -294,6 +339,27 @@ function gcPrompt(raw) {
   if (!t.trim()) return null;
   return { link: null, data: { prompt: t.trim().slice(0, 4000) } };
 }
+// ---- Open Graph Scraper (GenCipta /api/tools/web/open-graph): metadata situs (judul, deskripsi, gambar, favicon). requestInfo dan originalUrl dari provider sengaja dibuang ----
+function gcOpenGraph(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const r = raw.hybridGraph || raw.openGraph || raw.htmlInferred ? raw : (raw.result && typeof raw.result === 'object' ? raw.result : (raw.data && typeof raw.data === 'object' ? raw.data : raw));
+  const srcs = [r.hybridGraph, r.openGraph, r.htmlInferred].filter((x) => x && typeof x === 'object');
+  if (!srcs.length) return null;
+  const pick = (k) => { for (const o of srcs) { const v = o[k]; if (typeof v === 'string' && v.trim()) return v.trim(); } return ''; };
+  const imgOf = () => { for (const o of srcs) { const v = o.image; if (typeof v === 'string' && isHttp(v)) return v; if (v && typeof v === 'object' && isHttp(v.url)) return v.url; } return ''; };
+  const data = {};
+  const title = pick('title'); if (title) data.judul = title.slice(0, 300);
+  const desc = pick('description'); if (desc) data.deskripsi = desc.slice(0, 600);
+  const site = pick('site_name'); if (site) data.sumber = site.slice(0, 100);
+  const type = pick('type'); if (type) data.jenis = type.slice(0, 30);
+  const loc = pick('locale'); if (loc) data.bahasa = loc.slice(0, 20);
+  const img = imgOf(); if (img) data.image = img;
+  const w = pick('imageWidth'), h = pick('imageHeight'); if (w && h) data.ukuran_gambar = (w + ' x ' + h).slice(0, 20);
+  const u = pick('url') || (typeof r.url === 'string' ? r.url : ''); if (isHttp(u)) data.url = u;
+  const fav = pick('favicon'); if (isHttp(fav)) data.favicon = fav;
+  return Object.keys(data).length ? { link: null, data } : null;
+}
+
 // ---- Bypass Cloudflare Turnstile (GenCipta /api/tools/bypass-cf) ----
 function gcBypass(raw) {
   if (!raw || typeof raw !== 'object' || typeof raw.token !== 'string' || !raw.token) return null;
@@ -405,6 +471,91 @@ function htmlProblem(status, text) {
   return { msg: 'Provider membalas halaman yang tidak dikenali (HTTP ' + status + '). Coba lagi nanti.' };
 }
 
+
+// ---- Cek Situs (lokal, tanpa provider): status HTTP, waktu respons, redirect, dan info SSL ----
+// Aman dari SSRF: alamat internal/pribadi diblokir, IP hasil DNS dikunci ke koneksi, hanya port 80/443, redirect dicek ulang tiap lompatan.
+const scDns = require('dns').promises, scNet = require('net'), scHttp = require('http'), scHttps = require('https');
+const SC_BL = new scNet.BlockList();
+[['0.0.0.0', 8], ['10.0.0.0', 8], ['100.64.0.0', 10], ['127.0.0.0', 8], ['169.254.0.0', 16], ['172.16.0.0', 12], ['192.0.0.0', 24], ['192.0.2.0', 24], ['192.168.0.0', 16], ['198.18.0.0', 15], ['198.51.100.0', 24], ['203.0.113.0', 24], ['224.0.0.0', 4], ['240.0.0.0', 4]].forEach(([a, p]) => SC_BL.addSubnet(a, p, 'ipv4'));
+[['::', 128], ['::1', 128], ['fc00::', 7], ['fe80::', 10], ['ff00::', 8], ['64:ff9b::', 96], ['2001:db8::', 32]].forEach(([a, p]) => SC_BL.addSubnet(a, p, 'ipv6'));
+function scPrivate(addr, fam) {
+  const m = String(addr).match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i);
+  if (m) return SC_BL.check(m[1], 'ipv4');
+  try { return SC_BL.check(addr, Number(fam) === 6 ? 'ipv6' : 'ipv4'); } catch (e) { return true; }
+}
+function scClean(v, n) { return String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, n || 120); }
+function scPortOk(u) { return !u.port || u.port === '80' || u.port === '443'; }
+async function scHop(u) {
+  const host = u.hostname.replace(/^\[|\]$/g, '');
+  const lit = scNet.isIP(host);
+  const addrs = lit ? [{ address: host, family: lit }] : await scDns.lookup(host, { all: true });
+  if (!addrs.length || addrs.some((x) => scPrivate(x.address, x.family))) { const e = new Error('blocked'); e.code = 'EBLOCKED'; throw e; }
+  const a = addrs[0], isHttps = u.protocol === 'https:', mod = isHttps ? scHttps : scHttp;
+  return new Promise((resolve, reject) => {
+    const t0 = Date.now();
+    const req = mod.request({
+      host, port: u.port || (isHttps ? 443 : 80), path: (u.pathname || '/') + (u.search || ''), method: 'GET', timeout: 9000,
+      headers: { 'User-Agent': 'MalikTools-SiteCheck/1.0', Accept: '*/*' }, rejectUnauthorized: false, servername: lit ? undefined : host,
+      lookup: (h, o, cb) => (o && o.all ? cb(null, [{ address: a.address, family: a.family }]) : cb(null, a.address, a.family))
+    }, (r) => {
+      const ms = Date.now() - t0, sk = r.socket;
+      let cert = null, authorized = null, authErr = null, proto = null;
+      if (isHttps && sk && sk.getPeerCertificate) { try { cert = sk.getPeerCertificate(); authorized = sk.authorized; authErr = sk.authorizationError; proto = sk.getProtocol(); } catch (e) { /* abaikan */ } }
+      r.destroy();
+      resolve({ status: r.statusCode, headers: r.headers || {}, ms, ip: a.address, cert, authorized, authErr, proto, https: isHttps });
+    });
+    req.on('timeout', () => req.destroy(Object.assign(new Error('timeout'), { code: 'ETIMEDOUT' })));
+    req.on('error', reject);
+    req.end();
+  });
+}
+function scReason(e) {
+  const c = e && e.code;
+  if (c === 'ENOTFOUND' || c === 'EAI_AGAIN') return 'Domain tidak ditemukan (DNS gagal).';
+  if (c === 'ECONNREFUSED') return 'Koneksi ditolak oleh server.';
+  if (c === 'ETIMEDOUT') return 'Server tidak merespons dalam 9 detik.';
+  if (c === 'ECONNRESET') return 'Koneksi diputus oleh server.';
+  return 'Tidak bisa terhubung' + (c ? ' (' + scClean(c, 30) + ')' : '') + '.';
+}
+async function siteCheck(input) {
+  let u;
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(input) && !/^https?:\/\//i.test(input)) return { ok: false, code: 400, error: 'Link situs harus diawali http:// atau https://.' };
+  try { u = new URL(/^https?:\/\//i.test(input) ? input : 'https://' + input); } catch (e) { return { ok: false, code: 400, error: 'Link situs tidak valid.' }; }
+  if (!/^https?:$/.test(u.protocol) || u.username || u.password) return { ok: false, code: 400, error: 'Link situs tidak valid.' };
+  if (!scPortOk(u)) return { ok: false, code: 400, error: 'Hanya port web standar (80 dan 443) yang bisa diperiksa.' };
+  const t0 = Date.now(); let hops = 0, last = null, cur = u, first = null;
+  try {
+    for (;;) {
+      const r = await scHop(cur); if (!first) first = r; last = r;
+      const loc = r.status >= 300 && r.status < 400 && r.headers.location;
+      if (!loc || hops >= 5 || Date.now() - t0 > 20000) break;
+      let nx; try { nx = new URL(loc, cur); } catch (e) { break; }
+      if (!/^https?:$/.test(nx.protocol) || !scPortOk(nx)) break;
+      cur = nx; hops++;
+    }
+  } catch (e) {
+    if (e && e.code === 'EBLOCKED') return { ok: false, code: 400, error: 'Alamat ini tidak bisa diperiksa (alamat internal atau pribadi).' };
+    return { ok: true, data: { status: 'Offline', alasan: scReason(e), url: scClean(cur.href, 200) } };
+  }
+  const st = last.status, d = {};
+  d.status = st < 400 ? 'Online' : st < 500 ? 'Online, tapi halaman bermasalah (HTTP ' + st + ')' : 'Server bermasalah (HTTP ' + st + ')';
+  d.kode_http = String(st);
+  d.waktu_respons = last.ms + ' ms' + (last.ms < 800 ? ' (cepat)' : last.ms < 2500 ? ' (sedang)' : ' (lambat)');
+  d.alamat_ip = scClean(last.ip, 60);
+  if (hops) d.redirect = hops + ' kali';
+  if (hops || cur.href !== u.href) d.url_akhir = scClean(cur.href, 200);
+  if (last.headers.server) d.server = scClean(last.headers.server, 60);
+  if (last.headers['content-type']) d.jenis_konten = scClean(String(last.headers['content-type']).split(';')[0], 60);
+  if (last.https && last.cert && last.cert.valid_to) {
+    d.ssl = last.authorized ? 'Valid' : 'Tidak valid' + (last.authErr ? ' (' + scClean(last.authErr.message || last.authErr, 60) + ')' : '');
+    const dt = Date.parse(last.cert.valid_to);
+    if (Number.isFinite(dt)) { d.ssl_berlaku_hingga = new Date(dt).toISOString().slice(0, 10); d.ssl_sisa_hari = String(Math.floor((dt - Date.now()) / 864e5)) + ' hari'; }
+    const iss = last.cert.issuer && (last.cert.issuer.O || last.cert.issuer.CN); if (iss) d.ssl_penerbit = scClean(iss, 60);
+    if (last.proto) d.protokol_tls = scClean(last.proto, 20);
+  } else if (!last.https) d.ssl = 'Tidak memakai HTTPS';
+  return { ok: true, data: d };
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   const fail = (code, error) => res.status(code).json({ ok: false, error });
@@ -437,6 +588,13 @@ module.exports = async (req, res) => {
   if (store.ready() && !(me && isOwner(me.email))) { // dinonaktifkan sementara oleh developer (developer sendiri tetap bisa mencoba)
     try { const o = await store.getTool('__off'); if (o && Array.isArray(o.list) && o.list.includes(tid)) return fail(503, 'Tool ini sedang dinonaktifkan sementara karena ada gangguan. Coba lagi nanti.'); }
     catch (e) { /* Redis bermasalah: biarkan lewat */ }
+  }
+  if (tool.local === 'sitecheck') {
+    const in0 = String(body.input || '').trim();
+    if (!in0 || in0.length > 2000) return fail(400, 'Isi link situs yang mau diperiksa.');
+    const r = await siteCheck(in0);
+    if (!r.ok) return fail(r.code || 400, r.error);
+    return res.status(200).json({ ok: true, link: null, data: r.data });
   }
   if (!cfg.gcKey) return fail(500, 'GENCIPTA_API_KEY belum diatur di Environment Variables Vercel.');
 
@@ -528,7 +686,7 @@ module.exports = async (req, res) => {
       if (t.method === 'GET') {
         const u = new URL((t.base || cfg.base) + t.path);
         if (t.keyParam && !t.gc) u.searchParams.set(t.keyParam, cfg.key);
-        if (multi) { for (const k of Object.keys(multi)) u.searchParams.set(k, multi[k]); }
+        if (multi) { for (const k of Object.keys(multi)) { const fd = (tool.fields || []).find(x => x.key === k); const names = fd && Array.isArray(fd.as) ? fd.as : [k]; for (const n of names) u.searchParams.set(n, multi[k]); } }
         else { u.searchParams.set(t.param, input); if (t.linkParam) u.searchParams.set(t.linkParam, link2); }
         if (t.qs) for (const k of Object.keys(t.qs)) u.searchParams.set(k, t.qs[k]);
         r = await fetch(u, { headers, signal: ctrl.signal });
@@ -543,9 +701,9 @@ module.exports = async (req, res) => {
       }
       const ct = r.headers.get('content-type') || '';
       let text;
-      if (r.ok && (ct.startsWith('image/') || ct.startsWith('video/') || /octet-stream|binary/i.test(ct) || !ct)) { // gambar atau video langsung (biner)
+      if (r.ok && (ct.startsWith('image/') || ct.startsWith('video/') || ct.startsWith('audio/') || /octet-stream|binary/i.test(ct) || !ct)) { // gambar atau video langsung (biner)
         const buf = Buffer.from(await r.arrayBuffer());
-        const mime = (ct.startsWith('image/') || ct.startsWith('video/')) ? ct.split(';')[0] : (sniffImage(buf) || sniffVideo(buf));
+        const mime = (ct.startsWith('image/') || ct.startsWith('video/') || ct.startsWith('audio/')) ? ct.split(';')[0] : (sniffImage(buf) || sniffVideo(buf) || sniffAudio(buf));
         if (mime) {
           if (buf.length > MAX_IMG_RAW) {
             // Hasil besar (mis. upscale): simpan sementara di Blob uploads/ (dibersihkan cron) dan kirim linknya
@@ -599,6 +757,11 @@ module.exports = async (req, res) => {
         if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan data proyek. Pastikan link share Alight Motion benar dan publik, lalu coba lagi.', retry: true };
         return { ok: true, link: null, data: x.data };
       }
+      if (t.shape === 'gcopengraph') {
+        const x = gcOpenGraph(data);
+        if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan metadata Open Graph. Pastikan link situs benar dan bisa dibuka publik, lalu coba lagi.', retry: true };
+        return { ok: true, link: null, data: x.data };
+      }
       if (t.shape === 'gcprompt') {
         const x = gcPrompt(data);
         if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan prompt. Pastikan link gambar publik dan langsung menuju file gambar, lalu coba lagi.', retry: true };
@@ -612,6 +775,16 @@ module.exports = async (req, res) => {
       if (t.shape === 'gctiktok') {
         const x = gcTiktok(data);
         if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan video. Pastikan link TikTok publik, lalu coba lagi.', retry: true };
+        return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'gcvidey') {
+        const x = gcVidey(data);
+        if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan video. Pastikan link Videy benar dan video masih ada, lalu coba lagi.', retry: true };
+        return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'gcdailymotion') {
+        const x = gcDailymotion(data);
+        if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan link unduhan. Pastikan video Dailymotion publik, lalu coba lagi.', retry: true };
         return { ok: true, link: x.link, data: x.data };
       }
       if (t.shape === 'file') {
