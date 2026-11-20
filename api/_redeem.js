@@ -41,6 +41,7 @@ const release = (code, sub) => R.run([['EVAL', RELEASE, 3, H, U, S(code), code, 
 // roleActive dari _auth: true bila Premium/VIP masih berlaku.
 function apply(rec, c, now, roleActive) {
   const cur = roleActive(rec, now) ? rec.role : 'member';
+  if (cur === 'owner') return 'Role OWNER sudah punya limit tak terbatas, tidak perlu memakai kode.';
   const ms = c.days > 0 ? c.days * DAY : 0;
   if (cur === 'vip' && c.role === 'premium') return 'Kamu sedang VIP. Kode Premium tidak bisa dipakai selama VIP masih aktif.';
   if (cur === c.role) {

@@ -1,5 +1,6 @@
 const cfg = require('./_config');
-const { getUser, isOwner, ROLES, roleOf, roleUntilOf } = require('./_auth');
+const { getUser, isOwner, ROLES, ASSIGN_ROLES, BADGE_COLORS, badgeOf, roleOf, roleUntilOf } = require('./_auth');
+const R = require('./_redis');
 const store = require('./_store');
 const rate = require('./_rate');
 const credits = require('./_credits');
@@ -23,7 +24,7 @@ async function dropPoster(url) { // hanya file poster/ di host Blob, best effort
   } catch (e) { /* abaikan */ }
 }
 
-// Harga tool yang diatur developer: { idTool: jumlahKredit }. 0 = gratis. Tool tanpa entri memakai harga bawaan.
+// Harga tool yang diatur developer: { idTool: jumlahLimit }. 0 = gratis. Tool tanpa entri memakai harga bawaan.
 function pricesOf(m) {
   const out = {};
   for (const id of Object.keys(m || {})) {
@@ -34,7 +35,7 @@ function pricesOf(m) {
   return out;
 }
 
-// Paket role yang dijual (diatur developer): { id, role: premium|vip, days, price (Rp), credit (kredit AM Premium per hari) }.
+// Paket role yang dijual (diatur developer): { id, role: premium|vip, days, price (Rp), credit (limit AM Premium per hari) }.
 const DEFAULT_PLANS = [{ id: 'premium-7', role: 'premium', days: 7, price: 2500, credit: 15 }, { id: 'vip-7', role: 'vip', days: 7, price: 5000, credit: 30 }];
 function cleanPlans(a) {
   const out = [], seen = new Set();
@@ -113,7 +114,7 @@ module.exports = async (req, res) => {
         const role = body.role, days = Math.floor(Number(body.days)), credit = Math.floor(Number(body.credit) || 0), max = Math.floor(Number(body.max) || 1), n = Math.floor(Number(body.count) || 1);
         if (!['premium', 'vip'].includes(role)) return fail(400, 'Role kode harus Premium atau VIP.');
         if (!(days >= 0 && days <= 3650)) return fail(400, 'Masa aktif harus 0 (permanen) sampai 3650 hari.');
-        if (!(credit >= 0 && credit <= 999)) return fail(400, 'Kredit per hari harus 0 (bawaan role) sampai 999.');
+        if (!(credit >= 0 && credit <= 999)) return fail(400, 'Limit per hari harus 0 (bawaan role) sampai 999.');
         if (!(max >= 1 && max <= 10000)) return fail(400, 'Batas pemakaian harus 1 sampai 10000.');
         if (!(n >= 1 && n <= 50)) return fail(400, 'Jumlah kode harus 1 sampai 50.');
         const exp = Math.floor(Number(body.exp)) || 0;
@@ -145,7 +146,7 @@ module.exports = async (req, res) => {
         const role = roleOf(u.email, u), o = { sub, ...u, owner: isOwner(u.email), role, roleUntil: roleUntilOf(u.email, u) };
         if (!o.owner && ['premium', 'vip'].includes(u.role) && u.roleUntil && u.roleUntil <= now) o.lapsed = { role: u.role, at: u.roleUntil }; // role sudah habis (otomatis jadi member)
         o.credit = credits.info(u, role);
-        delete o.cr; delete o.crBonus; delete o.picture; delete o.dpic; // hemat ukuran; info kredit sudah ada di o.credit
+        delete o.cr; delete o.crBonus; delete o.picture; delete o.dpic; // hemat ukuran; info limit sudah ada di o.credit
         return o;
       }).sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
       return res.status(200).json({ ok: true, store: true, now, dayStart: stats.dayStart(now), users, tools: [], prices: pricesOf(st.tools), plans: plansOf(st.tools), off: offOf(st.tools), announce: st.announce, annState: annState(st.announce, now) });
@@ -168,25 +169,26 @@ module.exports = async (req, res) => {
       const op = body.op;
       if ((op === 'ban' || op === 'remove' || op === 'warn' || op === 'role' || op === 'credit') && isOwner(u.email)) return fail(400, 'Akun developer tidak bisa diubah.');
       let detail = '';
-      if (op === 'credit') { // kompensasi kredit: tambah (bonus, dipakai lebih dulu) atau reset pemakaian harian. Atomik, tidak menimpa data lain.
+      if (op === 'credit') { // kompensasi limit: tambah (bonus, dipakai lebih dulu) atau reset pemakaian harian. Atomik, tidak menimpa data lain.
         const mode = body.mode, n = Math.floor(Number(body.n));
-        if (mode !== 'add' && mode !== 'reset') return fail(400, 'Mode kredit tidak dikenal.');
-        if (mode === 'add' && !(n >= 1 && n <= 999)) return fail(400, 'Jumlah kredit harus 1 sampai 999.');
+        if (mode !== 'add' && mode !== 'reset') return fail(400, 'Mode limit tidak dikenal.');
+        if (mode === 'add' && !(n >= 1 && n <= 999)) return fail(400, 'Jumlah limit harus 1 sampai 999.');
         const rec = await store.mutateUser(body.sub, (r) => {
           if (!r) return null;
           if (mode === 'reset') delete r.cr; else r.crBonus = Math.min(9999, (r.crBonus || 0) + n);
           return r;
         });
         if (!rec) return fail(404, 'Pengguna tidak ditemukan.');
-        await logIt('credit', u, body.sub, mode === 'reset' ? 'Reset pemakaian kredit harian' : '+' + n + ' kredit bonus' + (body.note ? ' (' + clip(body.note, 80) + ')' : ''));
+        await logIt('credit', u, body.sub, mode === 'reset' ? 'Reset pemakaian limit harian' : '+' + n + ' limit bonus' + (body.note ? ' (' + clip(body.note, 80) + ')' : ''));
         return res.status(200).json({ ok: true, credit: credits.info(rec, roleOf(u.email, rec)) });
       }
       if (op === 'warn') { const t = clip(body.text, 300); if (!t) return fail(400, 'Isi peringatan dulu.'); u.warning = t; u.warnedAt = Date.now(); detail = t; }
       else if (op === 'unwarn') delete u.warning;
       else if (op === 'role') {
-        if (!ROLES.includes(body.role)) return fail(400, 'Role tidak dikenal.');
+        if (!ASSIGN_ROLES.includes(body.role)) return fail(400, 'Role tidak dikenal.');
         const was = roleOf(u.email, u);
         if (body.role === 'member') { delete u.role; delete u.roleUntil; delete u.crMax; detail = 'Role dicabut (sebelumnya ' + was.toUpperCase() + ')'; }
+        else if (body.role === 'owner') { u.role = 'owner'; delete u.roleUntil; delete u.crMax; delete u.cr; delete u.crBonus; detail = 'OWNER (permanen, limit tak terbatas)' + (was !== 'member' ? '; sebelumnya ' + was.toUpperCase() : ''); } // owner: tanpa durasi
         else {
           // days: jumlah hari masa aktif (1-3650), 0 = permanen. Tanpa days = 7 hari. Memberi ulang role = hitung dari sekarang.
           const plan = body.plan ? plansOf(st.tools).find((x) => x.id === body.plan && x.role === body.role) : null;
@@ -194,9 +196,18 @@ module.exports = async (req, res) => {
           const days = plan ? plan.days : (body.days === undefined ? 7 : Math.floor(Number(body.days)));
           if (!Number.isFinite(days) || days < 0 || days > 3650) return fail(400, 'Durasi harus 0 (permanen) sampai 3650 hari.');
           u.role = body.role;
-          if (plan) u.crMax = plan.credit; else delete u.crMax; // paket = jatah kredit per hari sendiri; tanpa paket = jatah bawaan role
+          if (plan) u.crMax = plan.credit; else delete u.crMax; // paket = jatah limit per hari sendiri; tanpa paket = jatah bawaan role
           if (days === 0) delete u.roleUntil; else u.roleUntil = Date.now() + days * 24 * 60 * 60 * 1000;
           detail = body.role.toUpperCase() + (days === 0 ? ' permanen' : ' ' + days + ' hari') + (plan ? ', paket ' + plan.id + ' (Rp' + plan.price + ')' : '') + (was !== 'member' ? '; sebelumnya ' + was.toUpperCase() : '');
+        }
+      }
+      else if (op === 'badge') { // badge kustom di samping role: teks maks. 14 karakter + warna dari daftar. Teks kosong = hapus badge.
+        const t = clip(String(body.text == null ? '' : body.text).replace(/[\u0000-\u001f<>]/g, ''), 14);
+        if (!t) { if (!u.badge) return fail(400, 'Pengguna ini belum punya badge kustom.'); delete u.badge; detail = 'Badge kustom dihapus'; }
+        else {
+          const c = String(body.color || '').toLowerCase();
+          if (!BADGE_COLORS.includes(c)) return fail(400, 'Warna badge tidak dikenal.');
+          u.badge = { t, c }; detail = 'Badge kustom "' + t + '" ' + c;
         }
       }
       else if (op === 'ban') u.banned = true;
@@ -205,6 +216,7 @@ module.exports = async (req, res) => {
       else return fail(400, 'Aksi tidak dikenal.');
       await store.save(st);
       await logIt(op, u, body.sub, detail);
+      if (op === 'role' || op === 'badge') await R.run([['INCR', 'mt:chat:ver']]).catch(() => {}); // chat Family memuat ulang supaya badge/role baru langsung tampil
       return res.status(200).json({ ok: true });
     }
 
@@ -222,21 +234,21 @@ module.exports = async (req, res) => {
     if (action === 'plans') { // simpan daftar paket harga role
       if (!Array.isArray(body.plans) || body.plans.length > 12) return fail(400, 'Daftar paket tidak valid (maksimal 12 paket).');
       const list = cleanPlans(body.plans);
-      if (list.length !== body.plans.length) return fail(400, 'Ada paket yang tidak valid. Durasi 1-3650 hari, harga 0-100.000.000, kredit 1-999 per hari.');
+      if (list.length !== body.plans.length) return fail(400, 'Ada paket yang tidak valid. Durasi 1-3650 hari, harga 0-100.000.000, limit 1-999 per hari.');
       st.tools.__plans = { id: '__plans', list };
       await store.save(st);
       await logIt('plans', null, undefined, list.length + ' paket disimpan');
       return res.status(200).json({ ok: true });
     }
 
-    if (action === 'price') { // atur tool gratis atau berkredit
+    if (action === 'price') { // atur tool gratis atau memakai limit
       const id = String(body.tool || '');
       if (!Object.prototype.hasOwnProperty.call(cfg.tools, id)) return fail(400, 'Tool tidak dikenal.');
       const n = Math.floor(Number(body.credit));
-      if (!Number.isFinite(n) || n < 0 || n > 99) return fail(400, 'Biaya harus angka 0 sampai 99 kredit.');
+      if (!Number.isFinite(n) || n < 0 || n > 99) return fail(400, 'Biaya harus angka 0 sampai 99 limit.');
       st.tools[id] = { id, credit: n };
       await store.save(st);
-      await logIt('price', null, undefined, id + ' = ' + n + ' kredit');
+      await logIt('price', null, undefined, id + ' = ' + n + ' limit');
       return res.status(200).json({ ok: true });
     }
 

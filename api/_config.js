@@ -1,9 +1,18 @@
 // Semua pengaturan provider ada di sini. Tambah tool baru = tambah satu entri di "tools".
 // Provider: GenCipta (https://api.gencipta.com/id/docs). Kunci dikirim lewat header Authorization: Bearer, hanya dari server.
 const GC_BASE = (process.env.GENCIPTA_BASE_URL || 'https://gateway.gencipta.com').replace(/\/$/, '');
+const NX_BASE = (process.env.NEXADEV_BASE_URL || 'https://api.nexadev.my.id').replace(/\/$/, '');
 module.exports = {
   gcBase: GC_BASE,
   gcKey: process.env.GENCIPTA_API_KEY || '',
+  nxBase: NX_BASE,
+  // Jalur cadangan dua arah GenCipta <-> NexaDev untuk tool dengan id yang sama. Sengaja BUKAN bagian dari "tools":
+  // pengguna tidak bisa memanggilnya langsung (harga/limit tetap mengikuti id tool aslinya). Dipakai oleh api/tool.js dan api/status.js.
+  // NexaDev: GET /am/send/?key=&email=  dan  GET /am/verif/?key=&email=&link=  (kunci dari env NEXADEV_API_KEY)
+  alts: {
+    'am-send': { nx: true, base: NX_BASE, type: 'email', path: process.env.NEXADEV_PATH_AM_SEND || '/am/send/', method: 'GET', param: 'email', keyParam: 'key', shape: 'nxamsend', timeout: 25000 },
+    'am-verif': { nx: true, base: NX_BASE, type: 'email-link', path: process.env.NEXADEV_PATH_AM_VERIF || '/am/verif/', method: 'GET', param: 'email', linkParam: 'link', keyParam: 'key', shape: 'nxamverif', timeout: 32000 }
+  },
   tools: {
     // GET /api/spotify/search?q=&limit= -> { status, query, total, data:[{ id, title, artist, album, duration, cover_url, spotify_url, stream_url }] }
     // stream_url butuh API key di header, jadi tidak diberikan ke browser. Unduh/stream menyusul dari endpoint Spotify lain.
@@ -23,6 +32,8 @@ module.exports = {
     'videy-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_VIDEY || '/api/downloader/videy', method: 'GET', param: 'url', shape: 'gcvidey', timeout: 40000, host: /(^|\.)videy\.co$/i, hostMsg: 'Link harus dari Videy (videy.co), contoh https://videy.co/v?id=...' },
     // GET /api/downloader/dailymotion?url= -> { status, creator, data:{ title, thumbnail, duration(detik), qualities:[{ quality, url, type }] } }
     'dailymotion-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_DAILYMOTION || '/api/downloader/dailymotion', method: 'GET', param: 'url', shape: 'gcdailymotion', timeout: 45000, host: /(^|\.)(dailymotion\.com|dai\.ly)$/i, hostMsg: 'Link harus dari Dailymotion (dailymotion.com atau dai.ly).' },
+    // GET /api/downloader/soundcloud?url= -> { status, data:{ source_url, title, thumb, description, downloads:[{quality,link}] } }. Provider tidak selalu memberi file MP3 langsung.
+    'soundcloud-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_SOUNDCLOUD || '/api/downloader/soundcloud', method: 'GET', param: 'url', shape: 'gcsoundcloud', timeout: 45000, host: /(^|\.)(soundcloud\.com|snd\.sc)$/i, hostMsg: 'Link harus dari SoundCloud (soundcloud.com atau on.soundcloud.com).' },
     // GET /api/downloader/youtube?url=&raw=false -> { meta:{title,uploader,duration_string,...}, formats:{progressive[],video_only[],audio_only[]}, best:{...} }
     'youtube-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_YOUTUBE || '/api/downloader/youtube', method: 'GET', param: 'url', qs: { raw: 'false' }, shape: 'gcyoutube', timeout: 50000, host: /(^|\.)(youtube\.com|youtu\.be|youtube-nocookie\.com)$/i, hostMsg: 'Link harus dari YouTube (youtube.com atau youtu.be).' }
     ,

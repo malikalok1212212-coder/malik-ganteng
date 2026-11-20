@@ -46,11 +46,19 @@ const devList = () => ((process.env.DEVELOPER_EMAILS || '') + ',' + (process.env
 const isOwner = (email) => !!email && devList().includes(String(email).toLowerCase());
 
 // Role yang bisa diberikan developer ke pengguna. Developer ditentukan dari env, bukan dari daftar ini.
-const ROLES = ['member', 'premium', 'vip']; // member = role bawaan semua pengguna
+const ROLES = ['member', 'premium', 'vip']; // member = role bawaan semua pengguna (dipakai target pengumuman)
+// Role yang bisa diberikan developer lewat panel. OWNER: permanen (tanpa durasi), limit tak terbatas, centang verified. Developer tetap dari env.
+const ASSIGN_ROLES = [...ROLES, 'owner'];
 // Masa aktif role: rec.roleUntil = waktu habis (ms). Kosong/0 = permanen. Yang sudah lewat otomatis dianggap member (tanpa cron).
-const roleActive = (rec, now = Date.now()) => !!(rec && ['premium', 'vip'].includes(rec.role) && !(rec.roleUntil && rec.roleUntil <= now));
+const roleActive = (rec, now = Date.now()) => !!(rec && (rec.role === 'owner' || (['premium', 'vip'].includes(rec.role) && !(rec.roleUntil && rec.roleUntil <= now))));
 const roleOf = (email, rec) => (isOwner(email) ? 'developer' : (roleActive(rec) ? rec.role : 'member'));
-const roleUntilOf = (email, rec) => (!isOwner(email) && roleActive(rec) && rec.roleUntil ? rec.roleUntil : 0); // 0 = permanen / bukan role berbayar
+const roleUntilOf = (email, rec) => (!isOwner(email) && roleActive(rec) && rec.role !== 'owner' && rec.roleUntil ? rec.roleUntil : 0);
+// Developer dan Owner: limit tak terbatas + centang verified.
+const isTop = (role) => role === 'developer' || role === 'owner';
+
+// Badge kustom (diatur developer): { t: teks maks. 14 huruf, c: warna dari daftar tetap }. Warna dibatasi daftar ini agar aman dipakai di CSS.
+const BADGE_COLORS = ['#ffd166', '#5de59b', '#ff6b6b', '#4da3ff', '#b794f6', '#ff8fc8', '#38d9e8', '#ff9f43', '#e8e8f0'];
+const badgeOf = (rec) => (rec && rec.badge && typeof rec.badge.t === 'string' && rec.badge.t && BADGE_COLORS.includes(rec.badge.c) ? { t: rec.badge.t, c: rec.badge.c } : null); // 0 = permanen / bukan role berbayar
 
 // Login wajib secara bawaan. Isi REQUIRE_LOGIN=0 hanya bila halaman memang ingin dibuka untuk tamu.
 const loginRequired = () => process.env.REQUIRE_LOGIN !== '0';
@@ -60,4 +68,4 @@ function checkPw(pw, salt, hash) {
   try { const a = Buffer.from(hashPw(pw, salt), 'hex'), b = Buffer.from(String(hash), 'hex'); return a.length === b.length && crypto.timingSafeEqual(a, b); } catch { return false; }
 }
 
-module.exports = { loginRequired, hashPw, checkPw, isOwner, ROLES, roleActive, roleOf, roleUntilOf, sign, verify, getUser, cookie, secret, MAX_AGE };
+module.exports = { loginRequired, hashPw, checkPw, isOwner, ROLES, ASSIGN_ROLES, isTop, BADGE_COLORS, badgeOf, roleActive, roleOf, roleUntilOf, sign, verify, getUser, cookie, secret, MAX_AGE };

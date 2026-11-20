@@ -1,6 +1,6 @@
-// Kredit harian per pengguna. Hanya tool di CREDIT_TOOLS yang memakai kredit; tool lain gratis.
+// Limit harian per pengguna. Hanya tool di CREDIT_TOOLS yang memakai limit; tool lain gratis.
 // Jatah per role bisa diubah lewat env: CREDIT_MEMBER, CREDIT_PREMIUM, CREDIT_VIP.
-// Reset 24 jam dihitung sejak kredit pertama dipakai (bukan jam 00.00).
+// Reset 24 jam dihitung sejak limit pertama dipakai (bukan jam 00.00).
 const DAY = 24 * 60 * 60 * 1000;
 const num = (v, d) => { const n = parseInt(v, 10); return Number.isFinite(n) && n >= 0 ? n : d; };
 const LIMITS = {
@@ -18,17 +18,17 @@ const cost = (id, custom) => {
 
 // rec = data pengguna di state developer; role dari roleOf().
 function info(rec, role, now = Date.now()) {
-  if (role === 'developer') return { unlimited: true, left: null, max: null, resetAt: null };
+  if (role === 'developer' || role === 'owner') return { unlimited: true, left: null, max: null, resetAt: null }; // developer & owner: tanpa limit
   let max = LIMITS[role] !== undefined ? LIMITS[role] : LIMITS.member;
   if (role !== 'member' && rec && rec.crMax > 0) max = rec.crMax; // jatah per hari dari paket yang dibeli (diatur developer)
   const c = rec && rec.cr;
   const active = !!(c && c.at > now);
   const used = active ? c.used : 0;
-  const bonus = rec && rec.crBonus > 0 ? rec.crBonus : 0; // kredit tambahan dari developer (kompensasi), tidak ikut reset 24 jam
+  const bonus = rec && rec.crBonus > 0 ? rec.crBonus : 0; // limit tambahan dari developer (kompensasi), tidak ikut reset 24 jam
   return { unlimited: false, max: max + bonus, left: Math.max(0, max - used) + bonus, bonus, resetAt: active && used > 0 ? c.at : null };
 }
 
-// Kredit bonus dipakai lebih dulu. Mengembalikan jumlah yang diambil dari bonus (untuk refund yang tepat).
+// Limit bonus dipakai lebih dulu. Mengembalikan jumlah yang diambil dari bonus (untuk refund yang tepat).
 function charge(rec, n = 1, now = Date.now()) {
   const fromBonus = Math.min(rec.crBonus > 0 ? rec.crBonus : 0, n);
   if (fromBonus) { rec.crBonus -= fromBonus; if (rec.crBonus <= 0) delete rec.crBonus; }
@@ -37,7 +37,7 @@ function charge(rec, n = 1, now = Date.now()) {
   return fromBonus;
 }
 
-// Kembalikan kredit yang sudah dipesan bila provider gagal. Jendela 24 jam yang sudah lewat tidak dikembalikan (sudah reset sendiri).
+// Kembalikan limit yang sudah dipesan bila provider gagal. Jendela 24 jam yang sudah lewat tidak dikembalikan (sudah reset sendiri).
 function refund(rec, n = 1, now = Date.now(), fromBonus = 0) {
   if (rec && fromBonus > 0) { rec.crBonus = (rec.crBonus || 0) + fromBonus; n -= fromBonus; }
   const c = rec && rec.cr;

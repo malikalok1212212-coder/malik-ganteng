@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { sign, getUser, cookie, secret, MAX_AGE, isOwner, roleActive, roleOf, roleUntilOf, loginRequired, hashPw, checkPw } = require('./_auth');
+const { sign, getUser, cookie, secret, MAX_AGE, isOwner, roleActive, roleOf, roleUntilOf, badgeOf, loginRequired, hashPw, checkPw } = require('./_auth');
 const store = require('./_store');
 const stats = require('./_stats');
 const mail = require('./_mail');
@@ -23,7 +23,7 @@ const CODE_TTL = 10 * 60 * 1000;
 async function startSession(res, user) {
   const now = Math.floor(Date.now() / 1000);
   const owner = isOwner(user.email);
-  let role = roleOf(user.email), roleUntil = 0;
+  let role = roleOf(user.email), roleUntil = 0, badge = null;
   try {
     if (store.ready()) {
       let banned = false;
@@ -36,11 +36,11 @@ async function startSession(res, user) {
         return u;
       });
       if (banned) return { error: 'Akun ini diblokir oleh developer.' };
-      if (rec) { role = roleOf(user.email, rec); roleUntil = roleUntilOf(user.email, rec); }
+      if (rec) { role = roleOf(user.email, rec); roleUntil = roleUntilOf(user.email, rec); badge = badgeOf(rec); }
     }
   } catch (e) { /* login tetap jalan bila penyimpanan bermasalah */ }
   res.setHeader('Set-Cookie', cookie(sign({ ...user, iat: now, exp: now + MAX_AGE }), MAX_AGE));
-  return { user: { ...user, isOwner: owner, role, roleUntil } };
+  return { user: { ...user, isOwner: owner, role, roleUntil, badge } };
 }
 
 module.exports = async (req, res) => {
@@ -57,7 +57,7 @@ module.exports = async (req, res) => {
       try { const u = await store.getUser(user.sub); if (u && u.warning) user.warning = u.warning; if (u && !isOwner(user.email) && Date.now() - (u.lastSeen || 0) > 30 * 60e3) { // tandai aktif (paling sering tiap 30 menit), untuk statistik dan filter terakhir aktif
         await Promise.all([store.mutateUser(user.sub, (r) => { if (!r) return null; r.lastSeen = Date.now(); return r; }).catch(() => {}), stats.active(user.sub)]);
       }
-      if (u) { user.role = roleOf(user.email, u); user.roleUntil = roleUntilOf(user.email, u); if (u.dname) user.name = u.dname; if (typeof u.dpic === 'string') user.picture = u.dpic; } } catch (e) { /* abaikan */ }
+      if (u) { user.role = roleOf(user.email, u); user.roleUntil = roleUntilOf(user.email, u); user.badge = badgeOf(u); if (u.dname) user.name = u.dname; if (typeof u.dpic === 'string') user.picture = u.dpic; } } catch (e) { /* abaikan */ }
     }
     return res.status(200).json({ ok: true, user, clientId, requireLogin: loginRequired(), smtp: mail.ready() });
   }

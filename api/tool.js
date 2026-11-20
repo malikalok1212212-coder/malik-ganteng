@@ -2,6 +2,7 @@ const cfg = require('./_config');
 const { getUser, isOwner, loginRequired, roleOf } = require('./_auth');
 const credits = require('./_credits');
 const store = require('./_store');
+const R = require('./_redis');
 const stats = require('./_stats');
 let blob = null;
 try { blob = require('@vercel/blob'); } catch (e) { /* opsional */ }
@@ -290,6 +291,27 @@ function gcDailymotion(raw) {
   }
   return { link: vids[0].url, data };
 }
+function gcSoundcloud(raw, input) {
+  if (!raw || typeof raw !== 'object') return null;
+  const d = raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data) ? raw.data : raw;
+  const host = (u) => { try { return new URL(String(u)).hostname; } catch (e) { return ''; } };
+  // Halaman lagu di soundcloud.com (m.soundcloud.com dinormalkan). Tautan pendek on.soundcloud.com tidak bisa dipakai untuk pemutar.
+  const page = (u) => { try { const x = new URL(String(u)); if (!/(^|\.)soundcloud\.com$/i.test(x.hostname) || /^on\./i.test(x.hostname)) return ''; x.hostname = 'soundcloud.com'; x.search = ''; x.hash = ''; return x.toString(); } catch (e) { return ''; } };
+  const embed = page(d.source_url) || page(input);
+  // Hanya file audio asli yang dianggap unduhan. "Listen in app" dan halaman soundloadmate.com bukan file.
+  const audio = (Array.isArray(d.downloads) ? d.downloads : []).map((q) => q && q.link)
+    .find((u) => isHttp(u) && (/\.(mp3|m4a|aac|ogg|wav)(\?|#|$)/i.test(u) || /(^|\.)sndcdn\.com$/i.test(host(u)))) || '';
+  if (!embed && !audio) return null;
+  const title = d.title ? String(d.title).slice(0, 300) : '';
+  const desc = d.description && !/Play over [\d.,]+ million tracks/i.test(String(d.description)) ? String(d.description).slice(0, 300) : '';
+  const thumb = isHttp(d.thumb) ? d.thumb : '';
+  const data = {};
+  if (title) data.judul = title;
+  if (desc) data.deskripsi = desc;
+  if (embed) data.link_soundcloud = embed;
+  if (audio) data.audio_mp3 = audio;
+  return { link: audio || embed, data, sc: { title, desc, thumb, embed, audio } };
+}
 
 // ---- Spotify Track Search (GenCipta /api/spotify/search) ----
 function gcSpotify(raw, origin) {
@@ -334,6 +356,41 @@ function gcAmVerif(raw) {
   if (d.membershipStatus) data.status_premium = String(d.membershipStatus).slice(0, 40);
   if (d.validUntil) data.berlaku_hingga = String(d.validUntil).slice(0, 40);
   return { link: null, data };
+}
+
+// ---- AM Generator jalur NexaDev (GET /am/send/ dan /am/verif/): { status, statusCode, message, result:{ email, orderId, status } }. orderId dan data internal lain tidak diteruskan ----
+const nxKey = () => process.env.NEXADEV_API_KEY || '';
+function nxAmSend(raw, email) {
+  if (!raw || typeof raw !== 'object' || raw.status !== true || (Number(raw.statusCode) >= 400)) return null;
+  const data = { status: String(raw.message || 'Email verifikasi terkirim.').slice(0, 200) };
+  if (email) data.email = String(email).slice(0, 120);
+  return { link: null, data };
+}
+function nxAmVerif(raw, email) {
+  if (!raw || typeof raw !== 'object' || raw.status !== true || (Number(raw.statusCode) >= 400)) return null;
+  const r = raw.result && typeof raw.result === 'object' ? raw.result : {};
+  const data = { status: String(raw.message || 'Verifikasi berhasil.').slice(0, 200) };
+  const em = r.email || email;
+  if (em) data.email = String(em).slice(0, 120);
+  if (r.status) data.status_premium = String(r.status).slice(0, 40);
+  return { link: null, data };
+}
+// Urutan jalur AM: yang terakhir berhasil dipakai lebih dulu, jadi bila GenCipta error otomatis pindah ke NexaDev dan sebaliknya.
+// AM_PROVIDER=gencipta atau nexadev mengunci jalur pertama (bawaan: auto). Disimpan di Redis (mt:prov:am) agar sama di semua instance.
+let amMem = { v: '', at: 0 };
+const amPin = () => { const p = String(process.env.AM_PROVIDER || '').toLowerCase(); return p === 'gencipta' ? 'gc' : p === 'nexadev' ? 'nx' : ''; };
+async function amPref() {
+  const pin = amPin(); if (pin) return pin;
+  if (amMem.at && Date.now() - amMem.at < 20000) return amMem.v;
+  let v = '';
+  if (store.ready()) { try { const [x] = await R.run([['GET', 'mt:prov:am']]); v = x === 'nx' ? 'nx' : x === 'gc' ? 'gc' : ''; } catch (e) { /* Redis bermasalah: pakai urutan bawaan */ } }
+  amMem = { v, at: Date.now() };
+  return v;
+}
+async function amSetPref(v) {
+  if (amPin() || (amMem.at && Date.now() - amMem.at < 20000 && amMem.v === v)) return;
+  amMem = { v, at: Date.now() };
+  if (store.ready()) { try { await R.run([['SET', 'mt:prov:am', v]]); } catch (e) { /* abaikan */ } }
 }
 
 // ---- Image to Prompt (GenCipta /api/tools/image-to-prompt) ----
@@ -596,13 +653,13 @@ module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   const fail = (code, error) => res.status(code).json({ ok: false, error });
 
-  if (req.method === 'GET' && req.query && req.query.credits) { // sisa kredit pengguna yang sedang masuk
+  if (req.method === 'GET' && req.query && req.query.credits) { // sisa limit pengguna yang sedang masuk
     const u = getUser(req);
-    if (!u) return fail(401, 'Masuk dulu untuk melihat kredit.');
+    if (!u) return fail(401, 'Masuk dulu untuk melihat limit.');
     try {
       const rec = await store.getUser(u.sub);
       return res.status(200).json({ ok: true, credits: credits.info(rec, roleOf(u.email, rec)) });
-    } catch (e) { return fail(503, 'Data kredit belum bisa dibaca.'); }
+    } catch (e) { return fail(503, 'Data limit belum bisa dibaca.'); }
   }
   if (req.method !== 'POST') return fail(405, 'Metode tidak diizinkan.');
   if (process.env.ACCESS_CODE && req.headers['x-access-code'] !== process.env.ACCESS_CODE)
@@ -639,7 +696,8 @@ module.exports = async (req, res) => {
     if (!r.ok) return fail(r.code || 400, r.error);
     return res.status(200).json({ ok: true, link: null, data: r.data });
   }
-  if (!cfg.gcKey) return fail(500, 'GENCIPTA_API_KEY belum diatur di Environment Variables Vercel.');
+  const altCfg = Object.prototype.hasOwnProperty.call(cfg.alts || {}, tid) ? cfg.alts[tid] : null; // jalur cadangan dua arah (AM Premium)
+  if (!cfg.gcKey && !(altCfg && nxKey())) return fail(500, 'GENCIPTA_API_KEY belum diatur di Environment Variables Vercel.');
 
   let input = String(body.input !== undefined ? body.input : body.email || '').trim();
   let link2 = '', multi = null;
@@ -693,7 +751,7 @@ module.exports = async (req, res) => {
     catch (e) { /* Redis bermasalah: pakai harga bawaan */ }
   }
   let reserved = 0, fromBonus = 0, done = false, cr = null, sKind = 'e', sMsg = '';
-  if (price) { // tool berkredit: wajib login. Kredit dipesan (dipotong) atomik dulu; bila provider gagal, dikembalikan di blok finally
+  if (price) { // tool yang memakai limit: wajib login. Limit dipesan (dipotong) atomik dulu; bila provider gagal, dikembalikan di blok finally
     if (!me) return fail(401, 'Masuk dulu untuk memakai tool ini.');
     if (isOwner(me.email)) cr = credits.info(null, 'developer');
     else if (store.ready()) {
@@ -710,8 +768,8 @@ module.exports = async (req, res) => {
         reserved = price; cr = credits.info(rec, roleOf(me.email, rec));
       } catch (e) {
         if (e && e.message === 'NOCREDIT')
-          return res.status(429).json({ ok: false, error: 'Kredit harian habis. Kredit kembali setelah 24 jam sejak pemakaian pertama.', credits: e.ci });
-        return fail(503, 'Data kredit belum bisa dibaca. Coba lagi sebentar lagi.');
+          return res.status(429).json({ ok: false, error: 'Limit harian habis. Limit kembali setelah 24 jam sejak pemakaian pertama.', credits: e.ci });
+        return fail(503, 'Data limit belum bisa dibaca. Coba lagi sebentar lagi.');
       }
     }
   }
@@ -728,7 +786,7 @@ module.exports = async (req, res) => {
       let r;
       if (t.method === 'GET') {
         const u = new URL((t.base || cfg.base) + t.path);
-        if (t.keyParam && !t.gc) u.searchParams.set(t.keyParam, cfg.key);
+        if (t.keyParam && !t.gc) u.searchParams.set(t.keyParam, t.nx ? nxKey() : cfg.key);
         if (multi) { for (const k of Object.keys(multi)) { const fd = (tool.fields || []).find(x => x.key === k); const names = fd && Array.isArray(fd.as) ? fd.as : [k]; for (const n of names) u.searchParams.set(n, multi[k]); } }
         else { u.searchParams.set(t.param, input); if (t.linkParam) u.searchParams.set(t.linkParam, link2); }
         if (t.qs) for (const k of Object.keys(t.qs)) u.searchParams.set(k, t.qs[k]);
@@ -790,6 +848,11 @@ module.exports = async (req, res) => {
         if (!x) return { ok: false, code: 502, error: 'Balasan provider tidak dikenali. Coba lagi.', retry: true };
         return { ok: true, link: null, data: x.data };
       }
+      if (t.shape === 'nxamsend' || t.shape === 'nxamverif') {
+        const x = t.shape === 'nxamsend' ? nxAmSend(data, input) : nxAmVerif(data, input);
+        if (!x) return { ok: false, code: 502, error: 'Balasan provider tidak dikenali. Coba lagi.', retry: true };
+        return { ok: true, link: null, data: x.data };
+      }
       if (t.shape === 'gcyoutube') {
         const x = gcYoutube(data);
         if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan link unduhan. Pastikan video YouTube publik, lalu coba lagi.', retry: true };
@@ -830,6 +893,11 @@ module.exports = async (req, res) => {
         if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan link unduhan. Pastikan video Dailymotion publik, lalu coba lagi.', retry: true };
         return { ok: true, link: x.link, data: x.data };
       }
+      if (t.shape === 'gcsoundcloud') {
+        const x = gcSoundcloud(data, input);
+        if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan data lagu. Pastikan link SoundCloud publik, lalu coba lagi.', retry: true };
+        return { ok: true, link: x.link, data: x.data, sc: x.sc };
+      }
       if (t.shape === 'file') {
         const x = fileInfo(data);
         if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan info file. Pastikan link Mediafire publik, lalu coba lagi.', retry: true };
@@ -862,26 +930,30 @@ module.exports = async (req, res) => {
     // Jalur utama, lalu jalur cadangan (tool.fallback, mis. AIO Nexa) bila provider utama gagal/diblokir.
     // Total waktu dijaga di bawah batas fungsi Vercel (45 detik).
     const T0 = Date.now(), BUDGET = 57000;
-    const chain = [tool];
+    let chain = [tool];
     const fb = tool.fallback && cfg.key && Object.prototype.hasOwnProperty.call(cfg.tools, tool.fallback) ? cfg.tools[tool.fallback] : null;
     if (fb) chain.push(fb);
+    if (altCfg) { // GenCipta <-> NexaDev: hanya jalur yang kuncinya ada; yang terakhir berhasil dipakai lebih dulu
+      chain = [tool, altCfg].filter((t) => (t.nx ? !!nxKey() : !!cfg.gcKey));
+      if (chain.length > 1 && (await amPref()) === 'nx') chain.reverse();
+    }
     // Kegagalan sementara (HTTP 5xx / koneksi putus) diulang otomatis, tetapi hanya untuk tool yang aman diulang (t.retries).
-    const run = async (t, minLeft) => {
+    const run = async (t, minLeft, cap) => {
       let o = null;
       for (let n = 0; n <= (t.retries || 0); n++) {
         const left = BUDGET - (Date.now() - T0);
         if (left < (n === 0 ? minLeft : 6000)) break;
-        o = await attempt(t, Math.max(3000, Math.min(t.timeout || 25000, left)));
+        o = await attempt(t, Math.max(3000, Math.min(t.timeout || 25000, left, cap || 1e9)));
         if (o.ok || !o.transient || n === (t.retries || 0)) break;
         await new Promise((r) => setTimeout(r, 1200));
       }
       return o;
     };
-    let out = null, first = null;
+    let out = null, first = null, wi = 0;
     for (let i = 0; i < chain.length; i++) {
-      const o = await run(chain[i], i === 0 ? 0 : 8000);
+      const o = await run(chain[i], i === 0 ? 0 : 8000, i === 0 && altCfg && chain.length > 1 ? 32000 : 0); // jalur pertama dibatasi 32 dtk supaya jalur cadangan masih kebagian waktu
       if (!o) break;
-      out = o;
+      out = o; wi = i;
       if (out.ok || !out.retry) break;
       if (i === 0) first = out;
     }
@@ -893,13 +965,14 @@ module.exports = async (req, res) => {
       return fail(out.code, msg);
     }
     done = true;
+    if (altCfg && chain.length > 1) await amSetPref(chain[wi].nx ? 'nx' : 'gc');
     return res.status(200).json({ ok: true, link: out.link, data: out.data, tracks: out.tracks, credits: cr });
   } catch (e) {
     sMsg = 'Gagal menghubungi provider';
     return fail(504, 'Gagal menghubungi provider.');
   } finally {
     if (!(me && isOwner(me.email))) await stats.record(tid, done ? 'o' : sKind, me && me.sub, sMsg); // statistik global; tes developer tidak dihitung
-    if (reserved && !done) { // provider gagal / timeout / hasil ditolak: kredit yang sudah dipesan dikembalikan
+    if (reserved && !done) { // provider gagal / timeout / hasil ditolak: limit yang sudah dipesan dikembalikan
       try { await store.mutateUser(me.sub, (r) => { if (!r) return null; credits.refund(r, reserved, Date.now(), fromBonus); return r; }); }
       catch (e) { console.error('[refund]', e && e.message); }
     }

@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { getUser, isOwner, roleOf, loginRequired } = require('./_auth');
+const { getUser, isOwner, roleOf, badgeOf, loginRequired } = require('./_auth');
 const store = require('./_store');
 const R = require('./_redis');
 const alog = require('./_log');
@@ -19,6 +19,7 @@ const BAD = (process.env.CHAT_BAD_WORDS || '').split(',').map((x) => x.trim().to
 const esc = (w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const BADRX = BAD.length ? new RegExp(BAD.map(esc).join('|'), 'gi') : null;
 const clean = (t) => (BADRX ? t.replace(BADRX, (m) => '*'.repeat(m.length)) : t);
+const ALLRX = /(^|\s)@(semua|everyone|all)(?=$|[\s.,!?])/i; // tag semua orang: hanya Developer yang dihitung
 const MAX_IMG = 1.5 * 1024 * 1024; // foto sudah dikecilkan di browser, ini batas pengaman
 
 function sniff(b) {
@@ -73,7 +74,7 @@ module.exports = async (req, res) => {
       const msgs = list || st.msgs.slice(-60);
       // Nama + foto terbaru dari profil, hanya untuk pengirim pesan yang tampil (bukan seluruh pengguna)
       const prof = await store.getUsers(msgs.map((m) => m.sub)).catch(() => ({}));
-      const fresh = (m) => { const u = prof[m.sub]; if (!u) return m; const o = { ...m }; if (u.dname) o.name = u.dname; if (typeof u.dpic === 'string') o.pic = u.dpic; return o; };
+      const fresh = (m) => { const u = prof[m.sub]; if (!u) return m; const o = { ...m }; if (u.dname) o.name = u.dname; if (typeof u.dpic === 'string') o.pic = u.dpic; if (u.email) o.role = roleOf(u.email, u); const bd = badgeOf(u); if (bd) o.badge = bd; else delete o.badge; return o; }; // role + badge kustom selalu terbaru, termasuk di pesan lama
       const rxOut = (m) => { const o = {}; for (const [e, a] of Object.entries(m.rx || {})) if (a.length) o[e] = { n: a.length, me: !!me && a.includes(me.sub) }; return Object.keys(o).length ? o : undefined; };
       const pub = (m) => { const o = fresh(m); const { sub, rx, ...rest } = o; return { ...rest, rx: rxOut(m), uid: uidOf(sub), mine: !!me && sub === me.sub }; };
       return res.status(200).json({ ok: true, messages: msgs.map(pub), v: v || ver0, more: !list && st.msgs.length > 60, typing: await typers(), online: await online(), ...extra });
@@ -104,7 +105,7 @@ module.exports = async (req, res) => {
       if (!m.text || Number.isInteger(m.stk)) return fail(400, 'Hanya pesan teks yang bisa diedit.');
       const t = clean(clip(b.text, 500));
       if (!t) return fail(400, 'Pesan kosong.');
-      if (t !== m.text) { m.text = t; m.edited = true; await store.save(st, 'chat'); return out(await bump()); }
+      if (t !== m.text) { m.text = t; m.edited = true; if (m.all && !ALLRX.test(t)) delete m.all; await store.save(st, 'chat'); return out(await bump()); }
       return out(await getVer());
     }
     if (b.op === 'pin') { // hanya developer, maksimal 3 pesan tersemat
@@ -176,16 +177,19 @@ module.exports = async (req, res) => {
       imgUrl = up.url;
     }
 
+    const mrole = roleOf(me.email, rec);
+    const tagAll = !!text && ALLRX.test(text) && mrole === 'developer';
     const pr = await store.getUser(me.sub).catch(() => null); // profil terbaru (nama + foto) agar sama dengan halaman Profil
     const r = b.replyTo && st.msgs.find((m) => m.id === b.replyTo);
     const now = Date.now();
     const msg = {
       id: now.toString(36) + Math.random().toString(36).slice(2, 6), ts: now, sub: me.sub,
       name: clip((pr && pr.dname) || me.name || String(me.email).split('@')[0], 40), pic: pr && typeof pr.dpic === 'string' ? pr.dpic : (me.picture || ''),
-      role: roleOf(me.email, rec), text,
+      role: mrole, text,
       reply: r ? { name: r.name, text: (r.text || (r.img ? '[Foto]' : '[Sticker]')).slice(0, 80) } : null
     };
     if (imgUrl) msg.img = imgUrl;
+    if (tagAll) msg.all = true; // klien memakai ini untuk notifikasi dan sorotan @semua
     if (stk !== null) msg.stk = stk;
     st.msgs.push(msg);
     const dropped = st.msgs.length > 200 ? st.msgs.slice(0, st.msgs.length - 200) : [];
