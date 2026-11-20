@@ -62,7 +62,7 @@ module.exports = async (req, res) => {
     return res.status(200).json({ ok: true, user, clientId, requireLogin: loginRequired(), smtp: mail.ready() });
   }
 
-  // Simpan nama tampilan + foto profil di server supaya ikut tampil di Family
+  // Simpan nama tampilan + foto profil di server supaya ikut tampil di Global Chat
   if (action === 'profile' && req.method === 'POST') {
     const me = getUser(req);
     if (!me) return fail(401, 'Masuk dulu.');

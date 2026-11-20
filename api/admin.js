@@ -35,13 +35,14 @@ function pricesOf(m) {
   return out;
 }
 
-// Paket role yang dijual (diatur developer): { id, role: premium|vip, days, price (Rp), credit (limit AM Premium per hari) }.
+// Paket role yang dijual (diatur developer): { id, role: premium|vip|owner, days, price (Rp), credit (limit per hari) }. Owner: permanen, tanpa limit (days/credit hanya pengisi).
 const DEFAULT_PLANS = [{ id: 'premium-7', role: 'premium', days: 7, price: 2500, credit: 15 }, { id: 'vip-7', role: 'vip', days: 7, price: 5000, credit: 30 }];
 function cleanPlans(a) {
   const out = [], seen = new Set();
   for (const p of Array.isArray(a) ? a : []) {
-    if (!p || !['premium', 'vip'].includes(p.role)) continue;
-    const days = Math.floor(Number(p.days)), price = Math.floor(Number(p.price)), credit = Math.floor(Number(p.credit));
+    if (!p || !['premium', 'vip', 'owner'].includes(p.role)) continue;
+    const isO = p.role === 'owner';
+    const days = isO ? 3650 : Math.floor(Number(p.days)), price = Math.floor(Number(p.price)), credit = isO ? 999 : Math.floor(Number(p.credit));
     if (!(days >= 1 && days <= 3650 && price >= 0 && price <= 1e8 && credit >= 1 && credit <= 999)) continue;
     let id = String(p.id || '').replace(/[^a-z0-9-]/gi, '').slice(0, 20) || ('p' + out.length);
     while (seen.has(id)) id += 'x';
@@ -188,7 +189,7 @@ module.exports = async (req, res) => {
         if (!ASSIGN_ROLES.includes(body.role)) return fail(400, 'Role tidak dikenal.');
         const was = roleOf(u.email, u);
         if (body.role === 'member') { delete u.role; delete u.roleUntil; delete u.crMax; detail = 'Role dicabut (sebelumnya ' + was.toUpperCase() + ')'; }
-        else if (body.role === 'owner') { u.role = 'owner'; delete u.roleUntil; delete u.crMax; delete u.cr; delete u.crBonus; detail = 'OWNER (permanen, limit tak terbatas)' + (was !== 'member' ? '; sebelumnya ' + was.toUpperCase() : ''); } // owner: tanpa durasi
+        else if (body.role === 'owner') { u.role = 'owner'; delete u.roleUntil; delete u.crMax; delete u.cr; delete u.crBonus; const op0 = body.plan ? plansOf(st.tools).find((x) => x.id === body.plan && x.role === 'owner') : null; detail = 'OWNER (permanen, limit tak terbatas)' + (op0 ? ', paket ' + op0.id + ' (Rp' + op0.price + ')' : '') + (was !== 'member' ? '; sebelumnya ' + was.toUpperCase() : ''); } // owner: tanpa durasi
         else {
           // days: jumlah hari masa aktif (1-3650), 0 = permanen. Tanpa days = 7 hari. Memberi ulang role = hitung dari sekarang.
           const plan = body.plan ? plansOf(st.tools).find((x) => x.id === body.plan && x.role === body.role) : null;
@@ -216,7 +217,7 @@ module.exports = async (req, res) => {
       else return fail(400, 'Aksi tidak dikenal.');
       await store.save(st);
       await logIt(op, u, body.sub, detail);
-      if (op === 'role' || op === 'badge') await R.run([['INCR', 'mt:chat:ver']]).catch(() => {}); // chat Family memuat ulang supaya badge/role baru langsung tampil
+      if (op === 'role' || op === 'badge') await R.run([['INCR', 'mt:chat:ver']]).catch(() => {}); // chat Global Chat memuat ulang supaya badge/role baru langsung tampil
       return res.status(200).json({ ok: true });
     }
 

@@ -692,9 +692,44 @@ module.exports = async (req, res) => {
   if (tool.local === 'nexarch') {
     if (await rate.limited('rch', ip, 4, 600)) return fail(429, 'Terlalu sering. Tunggu beberapa menit sebelum mengirim reaksi lagi.');
     const fl = body.fields && typeof body.fields === 'object' ? body.fields : {};
-    const r = await reactChannel(fl);
-    if (!r.ok) return fail(r.code || 400, r.error);
-    return res.status(200).json({ ok: true, link: null, data: r.data });
+    // Limit harian (jatah yang sama dengan AM Generator). Dipesan dulu, dikembalikan bila reaksi gagal.
+    let price = credits.cost(tid, null), reserved = 0, fromBonus = 0, cr = null;
+    if (store.ready()) {
+      try { const ov = await store.getTool(tid); const n = ov ? parseInt(ov.credit, 10) : NaN; if (Number.isFinite(n)) price = Math.max(0, Math.min(99, n)); }
+      catch (e) { /* Redis bermasalah: pakai harga bawaan */ }
+    }
+    if (price) {
+      if (!me) return fail(401, 'Masuk dulu untuk memakai tool ini.');
+      if (isOwner(me.email)) cr = credits.info(null, 'developer');
+      else if (store.ready()) {
+        try {
+          const rec = await store.mutateUser(me.sub, (r0) => {
+            r0 = r0 || { firstSeen: Date.now(), logins: 0, email: me.email, name: me.name };
+            const ci = credits.info(r0, roleOf(me.email, r0));
+            if (!ci.unlimited) {
+              if (ci.left < price) { const err = new Error('NOCREDIT'); err.ci = ci; throw err; }
+              fromBonus = credits.charge(r0, price);
+            }
+            return r0;
+          });
+          reserved = price; cr = credits.info(rec, roleOf(me.email, rec));
+        } catch (e) {
+          if (e && e.message === 'NOCREDIT')
+            return res.status(429).json({ ok: false, error: 'Limit harian habis. Limit kembali setelah 24 jam sejak pemakaian pertama.', credits: e.ci });
+          return fail(503, 'Data limit belum bisa dibaca. Coba lagi sebentar lagi.');
+        }
+      }
+    }
+    let r;
+    try { r = await reactChannel(fl); } catch (e) { r = { ok: false, code: 504, error: 'Gagal menghubungi provider.' }; }
+    if (!r.ok) {
+      if (reserved) {
+        try { await store.mutateUser(me.sub, (r0) => { if (!r0) return null; credits.refund(r0, reserved, Date.now(), fromBonus); return r0; }); }
+        catch (e) { console.error('[refund]', e && e.message); }
+      }
+      return fail(r.code || 400, r.error);
+    }
+    return res.status(200).json({ ok: true, link: null, data: r.data, credits: cr });
   }
   const altCfg = Object.prototype.hasOwnProperty.call(cfg.alts || {}, tid) ? cfg.alts[tid] : null; // jalur cadangan dua arah (AM Premium)
   if (!cfg.gcKey && !(altCfg && nxKey())) return fail(500, 'GENCIPTA_API_KEY belum diatur di Environment Variables Vercel.');

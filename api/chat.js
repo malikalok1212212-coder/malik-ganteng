@@ -13,7 +13,7 @@ const RX = ['👍', '❤️', '😂', '🔥', '🙏']; // reaksi yang diizinkan
 const VK = 'mt:chat:ver'; // naik tiap ada perubahan chat; klien membandingkannya agar polling murah
 const getVer = async () => { try { const [v] = await R.run([['GET', VK]]); return v || '0'; } catch (e) { return ''; } };
 const bump = async () => { try { const [v] = await R.run([['INCR', VK]]); return String(v); } catch (e) { return ''; } };
-const OK_ = 'mt:chat:online'; // zset pengguna yang sedang membuka Family (skor = waktu terakhir terlihat)
+const OK_ = 'mt:chat:online'; // zset pengguna yang sedang membuka Global Chat (skor = waktu terakhir terlihat)
 const MK = 'mt:chat:mutes', TK = 'mt:chat:typing'; // mute per akun (hash) dan "sedang mengetik" (zset, kedaluwarsa 6 detik)
 const BAD = (process.env.CHAT_BAD_WORDS || '').split(',').map((x) => x.trim().toLowerCase()).filter(Boolean); // kata terlarang, pisah koma di env Vercel
 const esc = (w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -186,7 +186,7 @@ module.exports = async (req, res) => {
       id: now.toString(36) + Math.random().toString(36).slice(2, 6), ts: now, sub: me.sub,
       name: clip((pr && pr.dname) || me.name || String(me.email).split('@')[0], 40), pic: pr && typeof pr.dpic === 'string' ? pr.dpic : (me.picture || ''),
       role: mrole, text,
-      reply: r ? { name: r.name, text: (r.text || (r.img ? '[Foto]' : '[Sticker]')).slice(0, 80) } : null
+      reply: r ? { id: r.id, role: r.role, name: r.name, text: (r.text || (r.img ? '[Foto]' : '[Sticker]')).slice(0, 80) } : null
     };
     if (imgUrl) msg.img = imgUrl;
     if (tagAll) msg.all = true; // klien memakai ini untuk notifikasi dan sorotan @semua

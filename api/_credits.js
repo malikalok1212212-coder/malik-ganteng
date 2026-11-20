@@ -8,8 +8,8 @@ const LIMITS = {
   premium: num(process.env.CREDIT_PREMIUM, 15),
   vip: num(process.env.CREDIT_VIP, 30)
 };
-// Dipotong saat verifikasi AM Generator (langkah 2) berhasil. Tool lain gratis. Developer bisa mengatur harga lewat panel Tools.
-const CREDIT_TOOLS = { 'am-verif': 1 };
+// Dipotong saat verifikasi AM Generator (langkah 2) berhasil dan saat Reaksi Channel terkirim (jatah harian yang sama). Tool lain gratis. Developer bisa mengatur harga lewat panel Tools.
+const CREDIT_TOOLS = { 'am-verif': 1, 'rch': 1 };
 // Harga tool: bawaan dari CREDIT_TOOLS (hanya kunci miliknya sendiri), tool kustom dari field `credit` yang diisi developer.
 const cost = (id, custom) => {
   if (custom) { const n = parseInt(custom.credit, 10); return Number.isFinite(n) ? Math.max(0, Math.min(99, n)) : 1; }

@@ -30,7 +30,7 @@ Changelog, Feedback, Stats, dan Profil ada di `public/index.html`. `CONTACT_WA` 
 Saat ini semua tool gratis (`CREDIT_TOOLS` di `api/_credits.js` kosong); developer tetap bisa memberi harga per tool lewat panel Tools. Limit dikembalikan kalau provider gagal. Jatah per 24 jam: **Member 5**, **Premium 15**, **VIP 30**, **Developer tidak memakai limit sama sekali (tanpa batas, kotak limit disembunyikan)**. Reset 24 jam dihitung sejak limit pertama dipakai. AM Premium wajib login karena limit dicatat per akun (di Upstash Redis bersama data developer, jadi Redis harus aktif; pemotongan limit atomik). Jatah bisa diubah lewat env `CREDIT_MEMBER`, `CREDIT_PREMIUM`, `CREDIT_VIP`; tool lain yang berlimit diatur di `api/_credits.js` (`CREDIT_TOOLS`).
 
 ## Role
-Di panel Developer tab Pengguna, tiap pengguna punya pilihan role: **Member** (bawaan semua pengguna), **Premium**, dan **VIP**. Role tampil sebagai badge di Profil dan Family. **Developer** otomatis untuk email di `DEVELOPER_EMAILS` dan tidak bisa diubah dari panel. **Masa aktif role:** saat memilih Premium atau VIP, developer juga memilih durasi (1 hari, 1 minggu, 2 minggu, 1 bulan, atau **Permanen**; bawaan 1 minggu). Waktu habis disimpan di `roleUntil` pada data pengguna. Begitu lewat, `roleOf()` otomatis menganggap pengguna Member (badge dan jatah limit ikut kembali), tanpa cron. Role lama yang dibuat sebelum fitur ini tidak punya `roleUntil`, jadi tetap permanen. Memberi ulang role menghitung durasi dari sekarang (bukan menambah sisa). Pilih Member untuk mencabut role kapan saja. Masa aktif tampil di panel developer, Profil, dan halaman Beli Role. Saat ini role hanya berupa badge, belum membuka atau membatasi fitur. Badge di pesan chat lama tidak ikut berubah, hanya pesan baru yang memakai role terbaru.
+Di panel Developer tab Pengguna, tiap pengguna punya pilihan role: **Member** (bawaan semua pengguna), **Premium**, dan **VIP**. Role tampil sebagai badge di Profil dan Global Chat. **Developer** otomatis untuk email di `DEVELOPER_EMAILS` dan tidak bisa diubah dari panel. **Masa aktif role:** saat memilih Premium atau VIP, developer juga memilih durasi (1 hari, 1 minggu, 2 minggu, 1 bulan, atau **Permanen**; bawaan 1 minggu). Waktu habis disimpan di `roleUntil` pada data pengguna. Begitu lewat, `roleOf()` otomatis menganggap pengguna Member (badge dan jatah limit ikut kembali), tanpa cron. Role lama yang dibuat sebelum fitur ini tidak punya `roleUntil`, jadi tetap permanen. Memberi ulang role menghitung durasi dari sekarang (bukan menambah sisa). Pilih Member untuk mencabut role kapan saja. Masa aktif tampil di panel developer, Profil, dan halaman Beli Role. Saat ini role hanya berupa badge, belum membuka atau membatasi fitur. Badge di pesan chat lama tidak ikut berubah, hanya pesan baru yang memakai role terbaru.
 
 ### Nonaktifkan tool sementara
 Panel Developer tab **Tools** punya tombol **Nonaktifkan sementara** / **Aktifkan lagi** per tool (mis. saat provider AM Preset error). Tool yang nonaktif tampil dengan label NONAKTIF, halamannya menampilkan pesan gangguan, dan server menolak pemakaiannya (503) untuk semua pengguna kecuali developer, yang tetap bisa menguji. Daftar tersimpan di Upstash Redis (kunci `__off`). Menonaktifkan AM Premium mematikan langkah kirim dan verifikasi sekaligus.
@@ -48,8 +48,8 @@ Data di Upstash Redis: `mt:redeem:codes` (hash kode), `mt:redeem:used` (hash jum
 ## Pengumuman dan Favorit
 Developer bisa memasang pengumuman (maks. 300 karakter) di panel Developer tab Pengumuman. Tampil di beranda dan bisa ditutup per sesi. Pengguna bisa menandai tool favorit dengan ☆, tersimpan di perangkat masing-masing, dan tool favorit naik ke atas daftar.
 
-## Family
-Halaman **Family** ada di menu samping. Semua orang bisa membaca, kirim pesan wajib login Google. Nama dan foto Google tampil publik di chat. Ada balas, tag `@nama`, badge role (DEVELOPER, PREMIUM, VIP, MEMBER), jeda 2 detik per pengguna, pengguna yang diblokir tidak bisa kirim, dan developer bisa menghapus pesan. Pesan disimpan (200 terakhir) di Upstash Redis dan dimuat ulang tiap 5 detik.
+## Global Chat
+Halaman **Global Chat** ada di menu samping. Semua orang bisa membaca, kirim pesan wajib login Google. Nama dan foto Google tampil publik di chat. Ada balas, tag `@nama`, badge role (DEVELOPER, PREMIUM, VIP, MEMBER), jeda 2 detik per pengguna, pengguna yang diblokir tidak bisa kirim, dan developer bisa menghapus pesan. Pesan disimpan (200 terakhir) di Upstash Redis dan dimuat ulang tiap 5 detik.
 
 ### Foto dan sticker di chat
 Tombol kamera mengirim foto (JPG, PNG, WebP). Foto dikecilkan di browser (maks. 1280 px, JPG) lalu disimpan di Vercel Blob folder `chat/`, jeda 8 detik per pengguna. Foto ikut terhapus dari Blob saat developer menghapus pesannya atau saat pesan lama terpotong dari 200 pesan terakhir. Alamat foto bersifat publik bagi yang punya link. Tombol senyum membuka 30 sticker bawaan (24 emoji dan 6 stiker teks). Untuk menambah sticker, ubah array `STK` di `public/index.html` dan angka `STICKERS` di `api/chat.js`.
@@ -64,7 +64,7 @@ Tombol kamera mengirim foto (JPG, PNG, WebP). Foto dikecilkan di browser (maks. 
 Selama consent screen berstatus Testing, hanya akun yang didaftarkan sebagai test user yang bisa masuk. Ubah ke Production agar terbuka untuk umum.
 
 ## Wajib login + akun username/password + SMTP
-Semua orang yang membuka situs harus masuk dulu. Layar login muncul di atas halaman, dan server juga menolak (401) pemakaian tool, unggah foto, dan Family tanpa sesi login. Isi `REQUIRE_LOGIN=0` hanya bila situs ingin dibuka untuk tamu.
+Semua orang yang membuka situs harus masuk dulu. Layar login muncul di atas halaman, dan server juga menolak (401) pemakaian tool, unggah foto, dan Global Chat tanpa sesi login. Isi `REQUIRE_LOGIN=0` hanya bila situs ingin dibuka untuk tamu.
 
 Cara masuk: **Google** atau **username + kata sandi**. Daftar akun baru memakai email, lalu kode 6 digit dikirim lewat SMTP dan harus dimasukkan sebelum akun dibuat. Ada juga **Lupa kata sandi** (kode reset lewat email).
 
@@ -108,7 +108,7 @@ Hanya id, nama, deskripsi, kategori, dan tipe tool yang dikirim. Gagal kirim tid
 - **Filter pengguna:** cari, Role, Status (diblokir/diperingati/normal), Terakhir aktif (hari ini, 7, 30, >30 hari), dan Reset filter.
 - **Limit:** tombol **+ Limit** (bonus 1-999, dipakai lebih dulu, tidak ikut reset 24 jam, dikembalikan bila provider gagal) dan **Reset limit** (pemakaian 24 jam jadi nol). Sisa limit tampil di kartu pengguna.
 - **Log aktivitas:** tab Log dan tombol **Riwayat** per pengguna. Mencatat role (plus paket dan harga), limit, blokir, peringatan, hapus pengguna, harga/paket/tool nonaktif, pengumuman, serta mute dan hapus pesan chat. 1000 catatan terakhir (`mt:log`).
-- **Moderasi Family:** hapus pesan, sematkan (maks. 3), dan mute sementara ada di menu pesan di halaman Family (bukan di panel Developer). Mute kini minta durasi (1-10080 menit) dan bisa dicabut dari menu yang sama.
+- **Moderasi Global Chat:** hapus pesan, sematkan (maks. 3), dan mute sementara ada di menu pesan di halaman Global Chat (bukan di panel Developer). Mute kini minta durasi (1-10080 menit) dan bisa dicabut dari menu yang sama.
 - **Pengumuman:** kolom **Mulai tampil**, **Berakhir otomatis**, dan **Tampilkan ke** role tertentu (kosong = semua). Dicek di server saat halaman dimuat; developer tetap melihat semuanya di panel, lengkap dengan status.
 - **Cadangan:** tab Cadangan mengunduh pengguna (CSV) dan cadangan lengkap (JSON: pengguna, paket, harga, tool nonaktif, pengumuman, log). Kata sandi akun dan foto tidak ikut. Belum ada fitur impor.
 
@@ -117,12 +117,12 @@ Tool `rch` memakai NexaDev (`api/tool.js` fungsi `reactChannel`). Isi `NEXADEV_A
 
 ## Role Owner, centang verified, badge kustom
 - **Owner** dipilih di panel Developer tab Pengguna (pilihan Role). Tanpa durasi (selalu permanen, pilihan durasi disembunyikan), **limit tak terbatas**, dan dapat **centang verified** biru seperti Developer. Owner bukan Developer: tidak bisa membuka panel Developer. Kode redeem tidak berlaku untuk Owner.
-- **Badge kustom**: di tiap pengguna ada kotak Badge kustom (teks maks. 14 karakter, 9 pilihan warna). Tampil di samping badge role di Family, Profil, dan menu samping; hapus lewat tombol Hapus badge. Berlaku juga di pesan lama dan langsung memuat ulang chat. Tercatat di tab Log.
+- **Badge kustom**: di tiap pengguna ada kotak Badge kustom (teks maks. 14 karakter, 9 pilihan warna). Tampil di samping badge role di Global Chat, Profil, dan menu samping; hapus lewat tombol Hapus badge. Berlaku juga di pesan lama dan langsung memuat ulang chat. Tercatat di tab Log.
 - Istilah "kredit" di seluruh situs kini bernama **limit** (nama env `CREDIT_*` tidak berubah).
 
-## Tag semua dan notifikasi Family
+## Tag semua dan notifikasi Global Chat
 - **@semua** (juga `@everyone` / `@all`): hanya Developer yang menandai semua orang (Owner tidak). Dari akun lain, tulisan itu hanya teks biasa. Saat mengetik `@` muncul saran `@semua`. Pesannya diberi tanda `all` di server, jadi tidak bisa dipalsukan dari browser.
-- **Notifikasi** (lonceng di header Family, bawaan aktif): saat ada pesan yang menyebut `@nama` kamu atau `@semua`, muncul popup di dalam situs; bila izin notifikasi browser diberikan dan tab ada di latar belakang, muncul notifikasi browser (ketuk untuk membuka Family). Pengecekan memakai polling 45 detik yang sudah ada, jadi tidak menambah beban saat situs ditutup.
+- **Notifikasi** (lonceng di header Global Chat, bawaan aktif): saat ada pesan yang menyebut `@nama` kamu atau `@semua`, muncul popup di dalam situs; bila izin notifikasi browser diberikan dan tab ada di latar belakang, muncul notifikasi browser (ketuk untuk membuka Global Chat). Pengecekan memakai polling 45 detik yang sudah ada, jadi tidak menambah beban saat situs ditutup.
 - Batasan: ini bukan push sungguhan. Notifikasi tidak masuk saat situs/tab benar-benar ditutup. Untuk itu perlu Web Push (kunci VAPID, paket `web-push`, simpan langganan di Redis), belum dipasang.
 
 ## AM Premium: jalur cadangan GenCipta dan NexaDev
