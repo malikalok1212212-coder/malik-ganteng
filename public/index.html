@@ -3070,7 +3070,7 @@ html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2{font-size:7px
 <style id="neo-v248">
 /* v248: tema neobrutalist komik. Palet, garis tebal, dan bayangan keras mengikuti Global Chat. Global Chat sendiri tidak diubah. */
 :root,:root[data-theme="light"]{--bg:#fff6e5;--panel:#ffffff;--field:#ffefd1;--bd:#14121f;--ink:#14121f;--muted:#6b6878;--sh:#14121f;--dot:#d9d1c4;--ac2:#b45309;--cy:#ffd33f;--cp:#ff8fc7;--cg:#5be49c;--cv:#8f7bff;--cb:#45b8ee;--on:#141413;--ok:#12874f;--bad:#c0392b;--tc:#ffd33f;--hp:#ffd33f;--nb:3px;color-scheme:light}
-:root[data-theme="dark"]{--bg:#151515;--panel:#1e1e1d;--field:#181817;--bd:#f2efe6;--ink:#faf9f5;--muted:#a9a79d;--sh:#8a897f;--dot:#202020;--on:#141413;--ok:#5de0a5;--bad:#f0907f;--tc:#ffd33f;--hp:#ffd33f;--nb:3px;--ac2:#ffd33f;--cy:#ffd33f;--cp:#ff8fc7;--cg:#5be49c;--cv:#8f7bff;--cb:#45b8ee;color-scheme:dark}
+:root[data-theme="dark"]{--bg:#141310;--panel:#1d1c17;--field:#27251d;--bd:#f2d56b;--ink:#faf9f5;--muted:#e4dfc9;--sh:#b8942a;--dot:#1d1b15;--on:#141413;--ok:#5de0a5;--bad:#f0907f;--tc:#ffd33f;--hp:#ffd33f;--nb:3px;--ac2:#ffd33f;--cy:#ffd33f;--cp:#ff8fc7;--cg:#5be49c;--cv:#8f7bff;--cb:#45b8ee;color-scheme:dark}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="dark"]){--bg:#151515;--panel:#1e1e1d;--field:#181817;--bd:#f2efe6;--ink:#faf9f5;--muted:#a9a79d;--sh:#8a897f;--dot:#202020;color-scheme:dark}}
 [style*="--tc:#34d399"]{--tc:#5de0a5!important}
 [style*="--tc: #34d399"]{--tc:#5de0a5!important}
@@ -3551,6 +3551,17 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .cl p{display:flex;align-items:flex-start;gap:8px}
 .cl p .badge{flex:none;margin:2px 0 0}
 main input:not([type=checkbox]):not([type=radio]):not([type=range]){text-overflow:ellipsis}
+/* v259: menu samping, daftar kategori dan tool */
+#drw .cg>.cat{border:2.5px solid var(--bd)!important;border-radius:14px!important;background:var(--panel)!important;box-shadow:2px 2px 0 var(--sh)!important;margin:6px 0 0!important;padding:9px 12px!important}
+#drw .cg.on>.cat{border-color:var(--tc)!important}
+#drw .cg .cat .ct small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#drw .sub2>div{margin:0 0 0 22px!important;padding:6px 0 4px 12px!important;border-left:2px solid color-mix(in srgb,var(--tc) 60%,var(--bd))!important;display:grid;gap:4px}
+#drw .cg .dl{border:0!important;box-shadow:none!important;background:transparent!important;border-radius:12px!important;margin:0!important;padding:7px 8px!important;min-height:48px}
+#drw .cg .dl:active{background:color-mix(in srgb,var(--tc) 14%,transparent)!important}
+#drw .cg .dl[aria-current=page]{background:color-mix(in srgb,var(--tc) 22%,transparent)!important;color:var(--ink)!important}
+#drw .cg .dl .ic{width:34px;height:34px;flex:none;border:2px solid var(--bd)!important;border-radius:10px!important;background:var(--field)!important}
+#drw .cg .dl .tx b{font-size:14px;line-height:1.2}
+#drw .cg .dl .tx small{font-size:11.5px;margin-top:2px}
 </style>
 </head>
 <body>
