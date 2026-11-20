@@ -9,7 +9,7 @@ try { blob = require('@vercel/blob'); } catch (e) { /* opsional */ }
 const rate = require('./_rate'); // jeda kirim per pengguna, terpusat di Redis
 const clip = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
 const STICKERS = 30; // jumlah sticker di index.html (STK), id valid 0..29
-const RX = ['👍', '❤️', '😂', '🔥', '🙏']; // reaksi yang diizinkan
+const RX = ['👍', '❤️', '😂', '😮', '😢', '🙏', '🔥']; // reaksi yang diizinkan
 const VK = 'mt:chat:ver'; // naik tiap ada perubahan chat; klien membandingkannya agar polling murah
 const getVer = async () => { try { const [v] = await R.run([['GET', VK]]); return v || '0'; } catch (e) { return ''; } };
 const bump = async () => { try { const [v] = await R.run([['INCR', VK]]); return String(v); } catch (e) { return ''; } };
