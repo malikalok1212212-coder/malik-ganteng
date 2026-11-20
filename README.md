@@ -14,6 +14,11 @@ Endpoint mengikuti dokumentasi GenCipta: `GET https://gateway.gencipta.com/api/d
 - Server: tambah entri di `api/_config.js` → `tools` (beri `gc: true`, `base`, `path`, `param`, dan `shape` untuk membaca balasan; tambah fungsi pembaca di `api/tool.js` bila format balasannya baru).
 - Tampilan: tambah objek di array `tools` pada `public/index.html`.
 
+## Provider api-cloud
+Tool dengan `ac: true` di `api/_config.js` memakai api-cloud.my.id (saat ini **IQC Dark**, `GET /canvas/iqcdark?text=`, balasan JSON `{ status, mime, base64 }` dibaca bentuk `cloudimg` di `api/tool.js`). `CLOUDAPI_API_KEY` opsional (kosong = dipanggil tanpa key); bila docs meminta key, isi di Vercel; bila Docs api-cloud memakai nama parameter kunci selain `apikey`, isi `CLOUDAPI_KEY_PARAM`. Status situs mengecek api-cloud terpisah dari GenCipta.
+
+**Duar Viral** (`GET /maker/duarviral?url=`, `url` = link gambar; foto yang diunggah pengguna otomatis dijadikan link oleh `api/upload.js`) membalas JSON `{ status, creator, result: "data:image/jpeg;base64,...", backgroundRemoved, quota }`. `result` dibaca bentuk `cloudimg` di `api/tool.js` (kini menerima `{ mime, base64 }` maupun `result` data URI); field `quota` dibuang dan tidak dikirim ke browser. **AM Find** (`GET /tools/amfind?url=`, `url` = link video TikTok, termasuk vt.tiktok.com) memindai komentar dan balasan untuk mencari link preset Alight Motion; balasan `{ status, creator, result:{ videoId, video, author, scanned, presets[] }, quota }` dibaca `amFind()` di `api/tool.js`. `presets` kosong berarti tidak ada preset di komentar (bukan error). Contoh uji dari terminal (Duar Viral): `curl -s "https://api-cloud.my.id/maker/duarviral?url=https://contoh.com/foto.jpg"`.
+
 ## Unggah foto
 File foto sampai 50 MB diterima. Karena batas body fungsi Vercel 4,5 MB, foto di atas 4 MB dikecilkan otomatis di browser (maks. 3000 px, JPG) sebelum diunggah.
 

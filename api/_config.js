@@ -2,10 +2,14 @@
 // Provider: GenCipta (https://api.gencipta.com/id/docs). Kunci dikirim lewat header Authorization: Bearer, hanya dari server.
 const GC_BASE = (process.env.GENCIPTA_BASE_URL || 'https://gateway.gencipta.com').replace(/\/$/, '');
 const NX_BASE = (process.env.NEXADEV_BASE_URL || 'https://api.nexadev.my.id').replace(/\/$/, '');
+// api-cloud.my.id (paket Pro). Kunci hanya dari env CLOUDAPI_API_KEY (server), nama parameter kunci bisa diubah lewat CLOUDAPI_KEY_PARAM.
+const AC_BASE = (process.env.CLOUDAPI_BASE_URL || 'https://api-cloud.my.id').replace(/\/$/, '');
+const AC_KEY_PARAM = process.env.CLOUDAPI_KEY_PARAM || 'apikey';
 module.exports = {
   gcBase: GC_BASE,
   gcKey: process.env.GENCIPTA_API_KEY || '',
   nxBase: NX_BASE,
+  acBase: AC_BASE,
   // Jalur cadangan dua arah GenCipta <-> NexaDev untuk tool dengan id yang sama. Sengaja BUKAN bagian dari "tools":
   // pengguna tidak bisa memanggilnya langsung (harga/limit tetap mengikuti id tool aslinya). Dipakai oleh api/tool.js dan api/status.js.
   // NexaDev: GET /am/send/?key=&email=  dan  GET /am/verif/?key=&email=&link=  (kunci dari env NEXADEV_API_KEY)
@@ -141,6 +145,24 @@ module.exports = {
     ,
     // GET /api/tools/web/open-graph?url= -> { hybridGraph, openGraph, htmlInferred, requestInfo, ... } metadata situs. requestInfo tidak ditampilkan ke pengguna.
     'open-graph': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_OPENGRAPH || '/api/tools/web/open-graph', method: 'GET', param: 'url', shape: 'gcopengraph', timeout: 40000 }
+    ,
+    // api-cloud: GET /canvas/iqcdark?text=&image=&time= (image dan time opsional) -> { status, creator, mime:'image/png', base64:'...' } (gambar kartu chat gelap). status:false -> { error }.
+    'iqc-dark': { ac: true, base: AC_BASE, type: 'multi', path: process.env.CLOUDAPI_PATH_IQCDARK || '/canvas/iqcdark', method: 'GET', keyParam: AC_KEY_PARAM, shape: 'cloudimg', bigToBlob: true, timeout: 45000,
+      fields: [
+        { key: 'text', label: 'Pesan', req: true, max: 300 },
+        { key: 'image', label: 'Gambar', kind: 'url', max: 2000 },
+        { key: 'time', label: 'Jam', max: 20 }
+      ] }
+    ,
+    // api-cloud: GET /maker/duarviral?url= (url = link gambar) -> { status, creator, result:'data:image/jpeg;base64,...', backgroundRemoved, quota:{...} }. Gambar orang/karakter ditempel ke latar ledakan.
+    // result berupa data URI, dibaca bentuk 'cloudimg' di tool.js (juga menerima { mime, base64 }); quota tidak diteruskan ke browser. status:false -> { error }.
+    'duar-viral': { ac: true, base: AC_BASE, type: 'multi', path: process.env.CLOUDAPI_PATH_DUARVIRAL || '/maker/duarviral', method: 'GET', keyParam: AC_KEY_PARAM, shape: 'cloudimg', bigToBlob: true, timeout: 50000,
+      fields: [
+        { key: 'url', label: 'Gambar', req: true, kind: 'url', max: 2000 }
+      ] }
+    ,
+    // api-cloud: GET /tools/amfind?url= (link video TikTok) -> { status, creator, result:{ videoId, video, author, scanned:{comments,replies}, presets:[] }, quota }. Memindai komentar mencari link preset Alight Motion. status:false -> { error }.
+    'am-find': { ac: true, base: AC_BASE, type: 'url', path: process.env.CLOUDAPI_PATH_AMFIND || '/tools/amfind', method: 'GET', param: 'url', keyParam: AC_KEY_PARAM, shape: 'amfind', timeout: 60000, host: /(^|\.)tiktok\.com$/i, hostMsg: 'Link harus dari TikTok (tiktok.com, vt.tiktok.com, atau vm.tiktok.com).' }
     ,
     // Cek Situs: dikerjakan langsung oleh server ini (tanpa provider), lihat siteCheck() di tool.js.
     'cek-situs': { local: 'sitecheck', type: 'url' },

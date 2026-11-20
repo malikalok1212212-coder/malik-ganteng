@@ -360,6 +360,7 @@ function gcAmVerif(raw) {
 
 // ---- AM Generator jalur NexaDev (GET /am/send/ dan /am/verif/): { status, statusCode, message, result:{ email, orderId, status } }. orderId dan data internal lain tidak diteruskan ----
 const nxKey = () => process.env.NEXADEV_API_KEY || '';
+const acKey = () => process.env.CLOUDAPI_API_KEY || '';
 function nxAmSend(raw, email) {
   if (!raw || typeof raw !== 'object' || raw.status !== true || (Number(raw.statusCode) >= 400)) return null;
   const data = { status: String(raw.message || 'Email verifikasi terkirim.').slice(0, 200) };
@@ -401,6 +402,36 @@ function gcPrompt(raw) {
   return { link: null, data: { prompt: t.trim().slice(0, 4000) } };
 }
 // ---- Open Graph Scraper (GenCipta /api/tools/web/open-graph): metadata situs (judul, deskripsi, gambar, favicon). requestInfo dan originalUrl dari provider sengaja dibuang ----
+function amFind(raw) {
+  // api-cloud /tools/amfind: { status, result:{ videoId, video:{url,comments}, author:{uniqueId,bio,bioLink}, scanned:{comments,replies}, presets:[...] } }
+  const r = raw && typeof raw === 'object' && raw.result && typeof raw.result === 'object' ? raw.result : null;
+  if (!r || (!r.video && !r.author && !r.videoId)) return null;
+  const data = {};
+  const v = r.video && typeof r.video === 'object' ? r.video : {}, a = r.author && typeof r.author === 'object' ? r.author : {}, sc = r.scanned && typeof r.scanned === 'object' ? r.scanned : {};
+  if (a.uniqueId) data.akun = '@' + String(a.uniqueId).slice(0, 60);
+  if (r.videoId) data.id_video = String(r.videoId).slice(0, 30);
+  if (isHttp(v.url)) data.url = v.url;
+  if (v.description) data.deskripsi = String(v.description).slice(0, 300);
+  if (a.bio) data.bio = String(a.bio).slice(0, 300);
+  if (isHttp(a.bioLink)) data.link_bio = a.bioLink;
+  if (Number.isFinite(Number(sc.comments))) data.komentar_dipindai = String(Number(sc.comments));
+  if (Number.isFinite(Number(sc.replies))) data.balasan_dipindai = String(Number(sc.replies));
+  const list = Array.isArray(r.presets) ? r.presets : [];
+  data.jumlah_preset = String(list.length);
+  list.slice(0, 20).forEach((it, i) => {
+    let t = '';
+    if (typeof it === 'string') t = it;
+    else if (it && typeof it === 'object') {
+      const u = [it.url, it.link, it.shareUrl, it.share, it.href].find((x) => isHttp(x)) || '';
+      const n = [it.title, it.name, it.text, it.comment].find((x) => typeof x === 'string' && x.trim()) || '';
+      t = (n ? String(n).trim().slice(0, 120) + (u ? ' - ' : '') : '') + u;
+      if (!t) { const f = Object.values(it).find((x) => isHttp(x)); if (f) t = f; }
+    }
+    if (t.trim()) data['preset_' + (i + 1)] = t.trim().slice(0, 500);
+  });
+  if (!list.length) data.catatan = 'Tidak ada link preset di komentar video ini.';
+  return { link: null, data };
+}
 function gcOpenGraph(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw.hybridGraph || raw.openGraph || raw.htmlInferred ? raw : (raw.result && typeof raw.result === 'object' ? raw.result : (raw.data && typeof raw.data === 'object' ? raw.data : raw));
@@ -732,7 +763,8 @@ module.exports = async (req, res) => {
     return res.status(200).json({ ok: true, link: null, data: r.data, credits: cr });
   }
   const altCfg = Object.prototype.hasOwnProperty.call(cfg.alts || {}, tid) ? cfg.alts[tid] : null; // jalur cadangan dua arah (AM Premium)
-  if (!cfg.gcKey && !(altCfg && nxKey())) return fail(500, 'GENCIPTA_API_KEY belum diatur di Environment Variables Vercel.');
+  if (tool.ac) { /* key api-cloud opsional: bila CLOUDAPI_API_KEY kosong, dipanggil tanpa key seperti contoh di docs */ }
+  else if (!cfg.gcKey && !(altCfg && nxKey())) return fail(500, 'GENCIPTA_API_KEY belum diatur di Environment Variables Vercel.');
 
   let input = String(body.input !== undefined ? body.input : body.email || '').trim();
   let link2 = '', multi = null;
@@ -809,7 +841,7 @@ module.exports = async (req, res) => {
     }
   }
 
-  const mkHeaders = (t) => ({ ...(t.gc ? { Authorization: 'Bearer ' + cfg.gcKey } : t.base ? {} : { Authorization: 'Bearer ' + cfg.key, 'x-api-key': cfg.key }), 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', Accept: 'application/json, text/plain, */*' });
+  const mkHeaders = (t) => ({ ...(t.ac ? (acKey() ? { 'x-api-key': acKey() } : {}) : t.gc ? { Authorization: 'Bearer ' + cfg.gcKey } : t.base ? {} : { Authorization: 'Bearer ' + cfg.key, 'x-api-key': cfg.key }), 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', Accept: 'application/json, text/plain, */*' });
 
   // Satu percobaan ke satu provider. Hasil: { ok:true, link, data } atau { ok:false, code, error, retry }.
   // retry:true = kegagalan di sisi provider (boleh dicoba lewat jalur cadangan).
@@ -821,7 +853,7 @@ module.exports = async (req, res) => {
       let r;
       if (t.method === 'GET') {
         const u = new URL((t.base || cfg.base) + t.path);
-        if (t.keyParam && !t.gc) u.searchParams.set(t.keyParam, t.nx ? nxKey() : cfg.key);
+        if (t.keyParam && !t.gc && !(t.ac && !acKey())) u.searchParams.set(t.keyParam, t.ac ? acKey() : t.nx ? nxKey() : cfg.key);
         if (multi) { for (const k of Object.keys(multi)) { const fd = (tool.fields || []).find(x => x.key === k); const names = fd && Array.isArray(fd.as) ? fd.as : [k]; for (const n of names) u.searchParams.set(n, multi[k]); } }
         else { u.searchParams.set(t.param, input); if (t.linkParam) u.searchParams.set(t.linkParam, link2); }
         if (t.qs) for (const k of Object.keys(t.qs)) u.searchParams.set(k, t.qs[k]);
@@ -862,6 +894,15 @@ module.exports = async (req, res) => {
       if (data && (data.status === false || data.success === false)) // provider membalas HTTP 200 tetapi status:false
         return { ok: false, code: 502, error: errText(data, 'Provider menolak permintaan.'), retry: true };
       if (!r.ok) return { ok: false, code: 502, error: errText(data, 'Provider menolak permintaan (' + r.status + ').'), retry: true, transient: r.status >= 500 };
+      if (t.shape === 'cloudimg') { // api-cloud: { status, mime, base64 } atau { status, result:'data:image/...;base64,...' } -> data URI. Field lain (mis. quota) tidak diteruskan ke browser.
+        const raw = data && typeof data.base64 === 'string' ? data.base64 : (data && typeof data.result === 'string' ? data.result : '');
+        const b64 = raw.replace(/^data:[^,]*,/, '').replace(/\s+/g, '');
+        const dm = /^data:(image\/(?:png|jpe?g|webp|gif));base64,/i.exec(raw.trim());
+        const mm = data && /^image\/(png|jpe?g|webp|gif)$/i.test(String(data.mime || '')) ? String(data.mime).toLowerCase() : (dm ? dm[1].toLowerCase() : 'image/png');
+        if (!b64 || !/^[A-Za-z0-9+/=]+$/.test(b64)) return { ok: false, code: 502, error: 'Provider tidak mengembalikan gambar. Coba lagi.', retry: true };
+        if (b64.length > MAX_IMG_RAW * 1.34) return { ok: false, code: 502, error: 'Hasil gambar terlalu besar untuk ditampilkan (maksimal sekitar 3,2 MB).' };
+        return { ok: true, link: 'data:' + mm + ';base64,' + b64, data: {} };
+      }
       const dimg = findDataImage(data);
       if (dimg) {
         if (dimg.length > MAX_IMG_RAW * 1.34) return { ok: false, code: 502, error: 'Hasil gambar terlalu besar untuk ditampilkan (maksimal sekitar 3,2 MB).' };
@@ -896,6 +937,11 @@ module.exports = async (req, res) => {
       if (t.shape === 'gcamdata') {
         const x = gcAmData(data, input);
         if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan data proyek. Pastikan link share Alight Motion benar dan publik, lalu coba lagi.', retry: true };
+        return { ok: true, link: null, data: x.data };
+      }
+      if (t.shape === 'amfind') {
+        const x = amFind(data);
+        if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan data video. Pastikan link TikTok publik, lalu coba lagi.', retry: true };
         return { ok: true, link: null, data: x.data };
       }
       if (t.shape === 'gcopengraph') {

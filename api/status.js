@@ -19,8 +19,13 @@ module.exports = async (req, res) => {
   const nxOn = !!process.env.NEXADEV_API_KEY;
   const [gc, nx] = await Promise.all([ping(cfg.gcBase), nxOn ? ping(cfg.nxBase) : Promise.resolve({ ok: false, ms: 0 })]);
   // Tool dengan jalur cadangan (AM Premium) baru dianggap gangguan bila GenCipta dan NexaDev sama-sama mati
-  const down = gc.ok ? [] : Object.keys(cfg.tools || {}).filter((n) => !(cfg.alts && cfg.alts[n] && nxOn && nx.ok));
-  const body = { ok: gc.ok, gencipta: gc.ok, nexadev: nxOn ? nx.ok : null, down, at: Date.now() };
+  const acOn = Object.values(cfg.tools || {}).some((t) => t.ac);
+  const ac = acOn ? await ping(cfg.acBase) : { ok: false, ms: 0 };
+  const acTools = Object.keys(cfg.tools || {}).filter((n) => cfg.tools[n].ac);
+  // Tool GenCipta (dan cadangannya) dinilai dari GenCipta; tool api-cloud dinilai dari api-cloud
+  const down = (gc.ok ? [] : Object.keys(cfg.tools || {}).filter((n) => !acTools.includes(n) && !(cfg.alts && cfg.alts[n] && nxOn && nx.ok)))
+    .concat(acOn && !ac.ok ? acTools : []);
+  const body = { ok: gc.ok, gencipta: gc.ok, nexadev: nxOn ? nx.ok : null, apicloud: acOn ? ac.ok : null, down, at: Date.now() };
   cache = { at: Date.now(), body };
   return res.status(200).json(body);
 };
