@@ -44,7 +44,7 @@ textarea{width:100%;height:40vh;font:11px monospace;background:var(--fl);color:v
 <div class="bar"><button data-a="kotak">▭</button><button data-a="bulat">◯</button><button data-a="segitiga">△</button><button data-a="bintang">★</button><button data-a="teks">T</button><button data-a="foto">🖼 Foto</button><small>Preset:</small><button data-pr="Fade">Fade</button><button data-pr="Pop">Pop</button><button data-pr="Slide">Slide</button><button data-pr="Putar">Putar</button></div>
 <input type="file" id="fi" accept="image/*" multiple hidden><div id="ly" class="bar"></div><div id="pr"></div><div id="tk"></div><div id="kb"></div>
 </section>
-<dialog id="dg"><textarea id="cd" readonly></textarea><div class="bar"><button id="cp" class="p">Salin</button><button id="dn">Unduh .svg</button><button id="dx">Unduh .xml</button><button id="cl">Tutup</button></div></dialog>
+<dialog id="dg"><textarea id="cd" readonly></textarea><div class="bar"><button id="cp" class="p">Salin</button><button id="dn">Unduh .svg</button><button id="dx">Ke Alight XML</button><button id="cl">Tutup</button></div></dialog>
 <script>
 const $=s=>document.querySelector(s);
 let W=360,H=640,D=3,T=0,play=0,sel=null,sk=null,uid=1,L=[],last=0,dr=null;
@@ -123,7 +123,7 @@ st.onpointerup=()=>{if(dr){dr=null;ui()}};
 $('#ex').onclick=()=>{$('#cd').value=exp();$('#dg').showModal()};
 $('#cl').onclick=()=>$('#dg').close();
 $('#cp').onclick=async()=>{try{await navigator.clipboard.writeText($('#cd').value)}catch(_){$('#cd').select();document.execCommand('copy')}$('#cp').textContent='Tersalin ✓';setTimeout(()=>$('#cp').textContent='Salin',1500)};
-const dl=x=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([$('#cd').value],{type:x=='xml'?'application/xml':'image/svg+xml'}));a.download='animasi.'+x;a.click()};$('#dn').onclick=()=>dl('svg');$('#dx').onclick=()=>dl('xml');
+const dl=x=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([$('#cd').value],{type:x=='xml'?'application/xml':'image/svg+xml'}));a.download='animasi.'+x;a.click()};$('#dn').onclick=()=>dl('svg');$('#dx').onclick=()=>{try{sessionStorage.setItem('mt-svg',$('#cd').value)}catch(e){}location.href='/#svg-xml'};
 $('#fi').onchange=async e=>{for(const f of e.target.files){const im=new Image(),u=URL.createObjectURL(f);await new Promise(r=>{im.onload=r;im.onerror=r;im.src=u});if(!im.width)continue;const k=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);const mt=/png|webp|gif/.test(f.type)?'image/png':'image/jpeg',l=mk('foto'),sc=Math.min(W*.8/c.width,H*.8/c.height);l.img=c.toDataURL(mt,.85);l.w=Math.round(c.width*sc);l.h=Math.round(c.height*sc);URL.revokeObjectURL(u)}e.target.value='';ui();draw()};
 /* demo awal */
 mk('bintang');sel.b.y=250;PR.Pop(sel);PR.Putar(sel);

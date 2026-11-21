@@ -841,7 +841,9 @@ module.exports = async (req, res) => {
     }
   }
 
-  const mkHeaders = (t) => ({ ...(t.ac ? (acKey() ? { 'x-api-key': acKey() } : {}) : t.gc ? { Authorization: 'Bearer ' + cfg.gcKey } : t.base ? {} : { Authorization: 'Bearer ' + cfg.key, 'x-api-key': cfg.key }), 'User-Agent': t.ac ? (process.env.CLOUDAPI_UA || 'MalikTools/1.0 (API client)') : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', Accept: 'application/json, text/plain, */*' });
+  // Whitelist domain api-cloud: backend mengirim Origin/Referer situs sendiri (ubah lewat CLOUDAPI_ORIGIN, kosongkan "-" untuk mematikan)
+  const acOriginHeaders = () => { const o = (process.env.CLOUDAPI_ORIGIN || 'https://maliktools.biz.id').trim().replace(/\/$/, ''); return !o || o === '-' ? {} : { Origin: o, Referer: o + '/' }; };
+  const mkHeaders = (t) => ({ ...(t.ac ? (acKey() ? { 'x-api-key': acKey() } : {}) : t.gc ? { Authorization: 'Bearer ' + cfg.gcKey } : t.base ? {} : { Authorization: 'Bearer ' + cfg.key, 'x-api-key': cfg.key }), 'User-Agent': t.ac ? (process.env.CLOUDAPI_UA || 'MalikTools/1.0 (API client)') : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', Accept: 'application/json, text/plain, */*', ...(t.ac ? acOriginHeaders() : {}) });
 
   // Satu percobaan ke satu provider. Hasil: { ok:true, link, data } atau { ok:false, code, error, retry }.
   // retry:true = kegagalan di sisi provider (boleh dicoba lewat jalur cadangan).

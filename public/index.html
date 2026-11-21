@@ -8,7 +8,7 @@
 <meta name="description" content="Malik Tools: kumpulan tools gratis di browser. Downloader TikTok, Instagram, Facebook, YouTube, plus maker dan utilitas lain, langsung dari HP.">
 <meta name="theme-color" content="#fff6e5">
 <link rel="manifest" href="/manifest.webmanifest">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=252b">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=290">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Malik Tools">
@@ -36,11 +36,11 @@
 <script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"></noscript>
-<link rel="icon" href="/favicon.ico?v=254b" sizes="any">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=254b">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=254b">
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=254b">
-<link rel="shortcut icon" href="/favicon.ico?v=254b">
+<link rel="icon" href="/favicon.ico?v=290" sizes="any">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=290">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=290">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=290">
+<link rel="shortcut icon" href="/favicon.ico?v=290">
 <script>document.documentElement.classList.add('ldwait');try{if(sessionStorage.getItem('mt_ld')==='1'){sessionStorage.removeItem('mt_ld');document.documentElement.classList.add('noload')}}catch(e){}</script>
 <noscript><style>
 /* scan slop */
@@ -1815,6 +1815,29 @@ main:has(#c){padding-bottom:104px}
 #c .amt{min-width:0;flex:1}
 #c .amt b{display:block;font:700 16px/1.25 "Space Grotesk",system-ui,sans-serif;color:var(--ink)}
 #c .amt small{display:block;margin-top:2px;font:500 12.5px/1.4 "Space Grotesk",system-ui,sans-serif;color:var(--muted)}
+.sxgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.sxgrid>div{min-width:0}
+.sxchips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+.sxchips small{font:700 11px "Space Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.sxchips button{padding:6px 12px;font-size:13px;border-radius:999px}
+.sxhelp{margin:0 0 14px;padding:10px 12px;border:2px dashed var(--bd);border-radius:12px;font-size:12.5px;line-height:1.5;color:var(--muted)}
+.sxhelp b{color:var(--ink)}
+.sxst{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.sxst div{padding:10px 6px;border:2px solid var(--bd);border-radius:12px;background:var(--panel);text-align:center;min-width:0}
+.sxst b{display:block;font:700 16px/1.25 "Space Grotesk",system-ui,sans-serif;color:var(--ink);white-space:nowrap}
+.sxst small{display:block;margin-top:2px;font:700 10.5px "Space Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.sxl{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.sxl span{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:4px 10px;border:2px solid var(--bd);border-radius:999px;font:600 12px "Space Mono",monospace;background:var(--panel);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sxl i{flex:none;width:12px;height:12px;border-radius:4px;border:1.5px solid var(--bd)}
+.sxw{margin:0 0 12px;padding:10px 12px;border:2px solid var(--bad);border-radius:12px;background:color-mix(in srgb,var(--bad) 8%,var(--panel));font-size:13px;line-height:1.45;color:var(--ink)}
+.sxw b{display:block;margin-bottom:4px;color:var(--bad)}
+.sxw ul{margin:0;padding-left:18px}.sxw li{margin:2px 0}
+.sxpv{margin:0 0 12px;text-align:center}
+.sxpv img{max-width:100%;max-height:230px;border-radius:12px;border:2px solid var(--bd);background:repeating-conic-gradient(var(--dot) 0 25%,var(--field) 0 50%) 0 0/16px 16px}
+.sxpv figcaption{font:600 11.5px "Space Mono",monospace;color:var(--muted);margin-top:6px}
+.sxd{margin:0 0 12px}.sxd summary{cursor:pointer;font:700 13px "Space Mono",monospace;padding:8px 0;color:var(--ink)}
+.sxd textarea{margin:0;min-height:130px;font:12px/1.4 "Space Mono",monospace}
+@media(max-width:360px){.sxgrid{grid-template-columns:1fr}}
 #c .amps{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:36px;margin:0;padding:0 13px;border-radius:999px;cursor:pointer;font:700 13px "Space Grotesk",system-ui,sans-serif;color:var(--tc);background:transparent;border:1px solid color-mix(in srgb,var(--tc) 55%,var(--bd));box-shadow:none}
 #c .amps:active{background:color-mix(in srgb,var(--tc) 16%,transparent)}
 #c .crd{display:block}
@@ -4222,15 +4245,23 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
  html:()=>`<p class="msg" style="margin:0 0 12px">Buat animasi dari bentuk dan teks, atur posisi, ukuran, putaran, dan transparansi per keyframe. Hasil ekspornya berupa SVG animasi, bukan file preset .xml Alight Motion.</p>
 <div class="row"><a class="btn primary" id="sm" href="/svg-motion.html">Buka editor</a></div>`,
  init:r=>{}},
-{id:'svg-xml',name:'SVG ke Alight XML',desc:'Ubah SVG animasi (SMIL) jadi preset XML Alight Motion dengan keyframe yang bisa diedit. Diproses di perangkatmu, tanpa API key.',
- html:()=>`<label for="sxt">Tempel kode SVG animasi</label><textarea id="sxt" rows="7" spellcheck="false" placeholder="&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 240 160&quot;&gt;...&lt;/svg&gt;"></textarea>
+{id:'svg-xml',name:'SVG ke Alight XML',desc:'Ubah SVG animasi (SMIL atau CSS sederhana) jadi preset XML Alight Motion dengan keyframe yang bisa diedit. Diproses di perangkatmu, tanpa API key.',
+ html:()=>`<section class="amstep"><div class="amh"><span class="sn">1</span><div class="amt"><b>Masukkan SVG animasi</b><small>Tempel kode atau pilih file. Diproses di perangkatmu.</small></div></div>
+<label for="sxt">Kode SVG</label><textarea id="sxt" rows="7" spellcheck="false" placeholder="&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 240 160&quot;&gt;...&lt;/svg&gt;"></textarea>
 <label class="drop" id="sxd" for="sxf">${svg(IC.up)}<span><b>Atau pilih file .svg</b><span id="sxi">Maksimal 20 MB, file tidak diunggah.</span></span></label><input id="sxf" type="file" accept=".svg,image/svg+xml">
-<label for="sxr">Ukuran kanvas</label><select id="sxr"><option value="asli">Asli (sesuai SVG)</option><option value="1:1">1:1</option><option value="16:9">16:9</option><option value="9:16">9:16</option><option value="4:5">4:5</option><option value="4:3">4:3</option></select>
-<label for="sxp">FPS</label><select id="sxp"><option>24</option><option selected>30</option><option>60</option></select>
-<label for="sxu">Durasi (detik), kosongkan agar otomatis</label><input id="sxu" type="number" inputmode="decimal" min="0.5" max="120" step="0.1" placeholder="otomatis dari animasi">
-<label for="sxn">Nama project</label><input id="sxn" type="text" maxlength="60" placeholder="animasi-svg">
-<div class="row"><button class="primary" id="go">Ekspor ke XML</button></div><p class="msg" id="m" role="status"></p><div id="res"></div>`,
+<div class="sxchips"><small>Coba contoh:</small><button type="button" data-sx="smil">Gerak SMIL</button><button type="button" data-sx="css">CSS keyframes</button><button type="button" data-sx="use">use + gradient</button></div>
+<div class="sxhelp"><b>Didukung:</b> rect, circle, ellipse, polygon, path; animasi SMIL (geser, skala, rotasi, opacity) dan CSS @keyframes (opacity, translate, scale, rotate); &lt;use&gt;/&lt;symbol&gt;; gradient jadi warna rata-rata; stroke sebagai bayangan luar (mirip, tidak persis). <b>Belum:</b> skew, text, image, filter, mask.</div></section>
+<section class="amstep"><div class="amh"><span class="sn">2</span><div class="amt"><b>Atur proyek</b><small>Ukuran kanvas, FPS, durasi, dan nama file.</small></div></div>
+<div class="sxgrid"><div><label for="sxr">Ukuran kanvas</label><select id="sxr"><option value="asli">Asli</option><option value="1:1">1:1</option><option value="16:9">16:9</option><option value="9:16">9:16</option><option value="4:5">4:5</option><option value="4:3">4:3</option></select></div>
+<div><label for="sxp">FPS</label><select id="sxp"><option>24</option><option selected>30</option><option>60</option></select></div>
+<div><label for="sxu">Durasi (detik)</label><input id="sxu" type="number" inputmode="decimal" min="0.5" max="120" step="0.1" placeholder="otomatis"></div>
+<div><label for="sxn">Nama project</label><input id="sxn" type="text" maxlength="60" placeholder="animasi-svg"></div></div></section>
+<section class="amstep"><div class="amh"><span class="sn">3</span><div class="amt"><b>Ekspor ke XML</b><small>Hasilnya preset Alight Motion dengan keyframe yang bisa diedit.</small></div></div>
+<div class="row"><button class="primary" id="go">Ekspor ke XML</button></div><p class="msg" id="m" role="status"></p><div id="res"></div></section>`,
  init:r=>{const t=$(r,'#sxt'),f=$(r,'#sxf'),dz=$(r,'#sxd'),fi=$(r,'#sxi'),h0=fi.textContent,m=$(r,'#m'),res=$(r,'#res');let prev='',pv='';
+  const SX={smil:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160"><rect x="20" y="50" width="50" height="50" rx="8" fill="#ff4d6d" stroke="#ffffff" stroke-width="4"><animate attributeName="x" values="20;170;20" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></rect><circle cx="120" cy="125" r="14" fill="#35d07f"><animateTransform attributeName="transform" type="scale" values="1;1.8;1" dur="1.5s" repeatCount="indefinite"/></circle><rect x="190" y="110" width="30" height="30" fill="#3d9bff"><animateTransform attributeName="transform" type="rotate" values="0 205 125;360 205 125" dur="2s" repeatCount="indefinite"/></rect></svg>',css:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160"><style>@keyframes pulse{0%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.5)}100%{opacity:1;transform:scale(1)}}@keyframes slide{from{transform:translateX(0)}to{transform:translate(120px,0)}}.a{animation:pulse 2s linear infinite}#b{animation:slide 1s linear infinite alternate}</style><rect class="a" x="30" y="30" width="50" height="50" fill="#ff4d6d"/><circle id="b" cx="40" cy="120" r="14" fill="#3d9bff"/></svg>',use:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160"><defs><linearGradient id="g"><stop offset="0" stop-color="#ff0000"/><stop offset="1" stop-color="#0000ff"/></linearGradient><circle id="c" cx="14" cy="14" r="12" fill="#ffc83d"/></defs><rect x="20" y="20" width="90" height="120" rx="10" fill="url(#g)"/><use href="#c" x="140" y="30"/><use href="#c" x="180" y="90"/></svg>'};
+  r.querySelectorAll('[data-sx]').forEach(b=>b.onclick=()=>{t.value=SX[b.dataset.sx];if(!$(r,'#sxn').value)$(r,'#sxn').value='contoh-'+b.dataset.sx;m.className='msg';m.textContent='Contoh dimuat. Tekan Ekspor ke XML.'});
+    try{const q=sessionStorage.getItem('mt-svg');if(q){sessionStorage.removeItem('mt-svg');t.value=q;if(!$(r,'#sxn').value)$(r,'#sxn').value='animasi-motion-studio';m.className='msg';m.textContent='SVG dari Motion Studio sudah terisi. Tekan tombol konversi untuk membuat XML Alight Motion.'}}catch(e){}
   f.onchange=()=>{const x=f.files[0];dz.classList.toggle('on',!!x);if(!x){fi.textContent=h0;return}
    if(x.size>20*1024*1024){m.className='msg bad';m.textContent='Ukuran file maksimal 20 MB.';f.value='';dz.classList.remove('on');fi.textContent=h0;return}
    const rd=new FileReader();rd.onload=()=>{t.value=String(rd.result);fi.textContent=x.name+' · '+mb(x.size);if(!$(r,'#sxn').value)$(r,'#sxn').value=x.name.replace(/\.[^.]+$/,'').slice(0,60)};rd.readAsText(x)};
@@ -4242,10 +4273,11 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
     const nm=($(r,'#sxn').value.trim()||'animasi-svg').replace(/[^\w.-]+/g,'-').slice(0,60);
     if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(new Blob([rs.xml],{type:'application/xml'}));
     let pu='';try{const d=new DOMParser().parseFromString(src,'image/svg+xml');d.querySelectorAll('script,foreignObject').forEach(n=>n.remove());pu='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(d.documentElement))}catch(e){}
-    res.innerHTML=`<div class="out">${pu?`<div class="cmp"><figure><img src="${pu}" alt="Preview SVG" style="background:#fff;max-width:100%;max-height:220px"><figcaption>Preview SVG sumber, bukan hasil render Alight Motion</figcaption></figure></div>`:''}
-<p class="msg">${rs.layers.length} layer · ${rs.W} x ${rs.H} px · ${rs.D} detik · ${esc(rs.layers.map(l=>l.name).join(', ')).slice(0,160)}</p>
-${rs.warn.length?`<p class="msg bad">${rs.warn.map(esc).join('<br>')}</p>`:''}
-<textarea readonly rows="6" spellcheck="false">${esc(rs.xml)}</textarea>
+    res.innerHTML=`<div class="out"><div class="sxst"><div><b>${rs.layers.length}</b><small>Layer</small></div><div><b>${rs.W}×${rs.H}</b><small>Piksel</small></div><div><b>${rs.D} s</b><small>Durasi</small></div></div>
+${pu?`<figure class="sxpv"><img src="${pu}" alt="Preview SVG"><figcaption>Preview SVG sumber, bukan hasil render Alight Motion</figcaption></figure>`:''}
+<div class="sxl">${rs.layers.map(l=>`<span title="${esc(l.name)}"><i style="background:${esc(l.color)}"></i>${esc(l.name)}</span>`).join('')}</div>
+${rs.warn.length?`<div class="sxw"><b>${rs.warn.length} catatan</b><ul>${rs.warn.map(w=>`<li>${esc(w)}</li>`).join('')}</ul></div>`:''}
+<details class="sxd"><summary>Lihat kode XML</summary><textarea readonly rows="6" spellcheck="false">${esc(rs.xml)}</textarea></details>
 <div class="row"><a class="btn primary dlb" href="${prev}" download="${esc(nm)}.xml">${DLI}Unduh XML</a><button id="cp">Salin XML</button></div></div>`;
     $(r,'#cp').onclick=e=>copy(rs.xml,e.currentTarget);m.textContent=''}
    catch(e){res.innerHTML='';bad(e.message&&e.message.length<140?e.message:'Gagal memproses SVG.')}}}}
@@ -4268,11 +4300,11 @@ function svgToAm(src,o){
  if(rs){const r=rs[0]/rs[1];if(W/H<r)W2=Math.round(H*r);else H2=Math.round(W/r)}
  if(o.w>0&&o.h>0){W2=Math.round(o.w);H2=Math.round(o.h)}
  const ox=(W2-W)/2-vx,oy=(H2-H)/2-vy;
- if(/@keyframes/.test(src))wn('Animasi CSS (@keyframes) belum didukung, hanya animasi SMIL.');
- if(rt.querySelector('text,image,use,filter,linearGradient,radialGradient,clipPath,mask'))wn('Elemen text, image, use, gradient, filter, dan mask dilewati atau diganti warna polos.');
+ expandUse(rt,wn);
+ if(rt.querySelector('text,image,filter,clipPath,mask'))wn('Elemen text, image, filter, clipPath, dan mask dilewati.');
  // klon statis tanpa animasi untuk mengukur bbox
  const st=document.importNode(rt,true);
- st.querySelectorAll('animate,animateTransform,animateMotion,set').forEach(n=>n.remove());
+ st.querySelectorAll('animate,animateTransform,animateMotion,set,style,script').forEach(n=>n.remove());
  st.setAttribute('width',W);st.setAttribute('height',H);
  const host=document.createElement('div');host.style.cssText='position:fixed;left:-99999px;top:0;width:10px;height:10px;overflow:hidden;visibility:hidden';
  host.appendChild(st);document.body.appendChild(host);
@@ -4282,7 +4314,21 @@ function svgToAm(src,o){
  A.forEach((e,i)=>{if(!e.closest(ban))shapes.push([e,S[i]])});
  const cv=document.createElement('canvas').getContext('2d');
  const hx=n=>Math.max(0,Math.min(255,Math.round(n))).toString(16).padStart(2,'0');
- const col=(c,al)=>{if(c==='none')return null;if(/^url/i.test(c)){wn('Gradient atau pattern diganti warna hitam.');c='#000'}
+ const byId=id=>{for(const n of rt.querySelectorAll('[id]'))if(n.getAttribute('id')===id)return n;return null};
+ const prs=c=>{cv.fillStyle='#000';cv.fillStyle=c;const v=cv.fillStyle;if(v[0]==='#')return[parseInt(v.slice(1,3),16),parseInt(v.slice(3,5),16),parseInt(v.slice(5,7),16),1];const m=v.match(/[\d.]+/g);return[+m[0],+m[1],+m[2],m[3]==null?1:+m[3]]};
+ const sprop=(n,k)=>{const m=(n.getAttribute('style')||'').match(new RegExp('(?:^|;)\\s*'+k+'\\s*:\\s*([^;]+)'));return m?m[1].trim():n.getAttribute(k)};
+ const stopsOf=g=>{for(let i=0;g&&i<8;i++){const ss=[...g.children].filter(n=>n.localName==='stop');if(ss.length)return ss;const h=g.getAttribute('href')||g.getAttribute('xlink:href')||'';g=h[0]==='#'?byId(h.slice(1)):null}return[]};
+ const gradAvg=c=>{const m=String(c).match(/url\(\s*['"]?#([^'")\s]+)['"]?\s*\)/i),g=m&&byId(m[1]);
+  if(!g||!/^(linear|radial)Gradient$/.test(g.localName))return null;
+  const ss=stopsOf(g);if(!ss.length)return null;
+  let last=0;const sp=ss.map(n=>{let o=String(n.getAttribute('offset')||'0').trim();o=o.slice(-1)==='%'?parseFloat(o)/100:parseFloat(o);o=isFinite(o)?Math.max(last,Math.min(1,Math.max(0,o))):last;last=o;
+   const k=prs(sprop(n,'stop-color')||'#000'),so=parseFloat(sprop(n,'stop-opacity'));return{o,c:k,a:k[3]*(isFinite(so)?Math.max(0,Math.min(1,so)):1)}});
+  const z=sp[sp.length-1],seg=[[0,sp[0].o,sp[0],sp[0]],...sp.slice(1).map((s,i)=>[sp[i].o,s.o,sp[i],s]),[z.o,1,z,z]];
+  let wa=0,r=0,gg=0,b=0;
+  seg.forEach(([a0,a1,p,q])=>{const w=a1-a0;if(w<=0)return;[p,q].forEach(x=>{const k=w/2*x.a;wa+=k;r+=k*x.c[0];gg+=k*x.c[1];b+=k*x.c[2]})});
+  if(wa<1e-9)return'rgba(0,0,0,0)';
+  return'rgba('+Math.round(r/wa)+','+Math.round(gg/wa)+','+Math.round(b/wa)+','+(+wa.toFixed(4))+')'};
+ const col=(c,al)=>{if(c==='none')return null;if(/^url/i.test(c)){const ga=gradAvg(c);if(ga){wn('Gradient diganti satu warna rata-rata dari stop-nya.');c=ga}else{wn('Pattern atau referensi yang tidak ditemukan diganti warna hitam.');c='#000'}}
   cv.fillStyle='#000';cv.fillStyle=c;const v=cv.fillStyle;let a=al==null?1:al;
   if(v[0]==='#')return{c:'#'+hx(255*a)+v.slice(1),a};
   const m=v.match(/[\d.]+/g);a=a*(m[3]==null?1:+m[3]);return{c:'#'+hx(255*a)+hx(m[0])+hx(m[1])+hx(m[2]),a}};
@@ -4307,8 +4353,10 @@ function svgToAm(src,o){
   const rc=a.getAttribute('repeatCount');
   return{dur,beg,nums,kt,reps:rc==='indefinite'?Infinity:(parseFloat(rc)||1),el:a}};
  // kumpulkan driver tiap bentuk
+ const cx=cssAnim(rt,wn);let cssUsed=0;
  const info=shapes.map(([e,se])=>{
-  const tag=e.localName,d={x:[],y:[],sc:[],op:[]};
+  for(let n=e;n&&n.nodeType===1;n=n.parentNode)if(n.getAttribute('transform')){wn('Atribut transform statis pada bentuk atau grup belum diterapkan, posisi bisa meleset.');break}
+  const tag=e.localName,d={x:[],y:[],sc:[],op:[],rot:[]};
   [...e.children].forEach(a=>{
    const n=a.localName;if(!/^(animate|animateTransform|animateMotion|set)$/.test(n))return;
    if(n==='animateMotion'){wn('animateMotion belum didukung.');return}
@@ -4319,7 +4367,8 @@ function svgToAm(src,o){
     if(a.getAttribute('additive')==='sum'||a.getAttribute('additive')==='replace'){}
     if(ty==='translate'){d.x.push({tr,i:0,off:0});d.y.push({tr,i:1,off:0,dflt:0})}
     else if(ty==='scale')d.sc.push({tr,k:1});
-    else wn('Rotasi (animateTransform rotate/skew) belum didukung karena struktur XML-nya belum terverifikasi dari contoh.');
+    else if(ty==='rotate')d.rot.push({tr});
+    else wn('Skew (animateTransform skewX/skewY) belum didukung.');
     return}
    if(an==='opacity'||an==='fill-opacity')d.op.push({tr});
    else if(tag==='rect'&&an==='x')d.x.push({tr,i:0,off:parseFloat(e.getAttribute('x'))||0});
@@ -4328,7 +4377,9 @@ function svgToAm(src,o){
    else if((tag==='circle'||tag==='ellipse')&&an==='cy')d.y.push({tr,i:0,off:parseFloat(e.getAttribute('cy'))||0});
    else if(tag==='circle'&&an==='r')d.sc.push({tr,k:0,r:1});
    else wn('Animasi atribut "'+an+'" pada <'+tag+'> belum didukung.')});
+  cssUsed+=cx.apply(e,d,opac(e));
   return{e,se,tag,d}});
+ if(Object.keys(cx.frames).length&&!cssUsed)wn('@keyframes ditemukan tetapi tidak ada bentuk yang memakainya lewat animation, atau propertinya belum didukung.');
  // durasi
  let D=0;info.forEach(s=>Object.values(s.d).forEach(l=>l.forEach(x=>{const t=x.tr;D=Math.max(D,t.beg+t.dur*(isFinite(t.reps)?t.reps:1))})));
  if(o.dur>0)D=+o.dur;if(!(D>0))D=2;D=Math.min(D,120);
@@ -4352,9 +4403,12 @@ function svgToAm(src,o){
   const{e,se,tag,d}=s;
   const fillRaw=inh(e,'fill'),fo=inh(e,'fill-opacity'),strokeRaw=inh(e,'stroke');
   const fc=col(fillRaw==null?'#000':fillRaw,fo==null?1:+fo);
-  const hasStroke=strokeRaw&&strokeRaw!=='none';
-  if(hasStroke)wn('Stroke belum didukung, hanya warna isi (fill) yang dibawa.');
-  if(!fc){if(hasStroke)wn('Bentuk tanpa fill (hanya stroke) dilewati.');return}
+  const hasStroke=strokeRaw&&strokeRaw!=='none',swr=parseFloat(inh(e,'stroke-width')),swv=isFinite(swr)?swr:1;
+  let stc=null;
+  if(hasStroke&&swv>0){const so=inh(e,'stroke-opacity');stc=col(strokeRaw,so==null||!isFinite(+so)?1:+so);
+   const da=inh(e,'stroke-dasharray');if(da&&da!=='none')wn('stroke-dasharray (garis putus-putus) diabaikan.')}
+  if(!fc){if(stc)wn('Bentuk tanpa fill (hanya stroke) dilewati.');return}
+  if(stc)wn('Stroke dibuat dengan bayangan luar (shadow outside) sebagai pendekatan: tepinya bisa lembut dan tidak persis setebal stroke SVG.');
   n++;const id=(tag==='circle'?370000000:310000000)+n,label=e.getAttribute('id')||tag+'-'+n;
   const eo=opac(e);
   let circ=tag==='circle',path='',base={x:0,y:0},bs=1;
@@ -4363,7 +4417,7 @@ function svgToAm(src,o){
   if(circ){const cx=parseFloat(e.getAttribute('cx'))||0,cy=parseFloat(e.getAttribute('cy'))||0,r=parseFloat(e.getAttribute('r'))||0;
    if(!(r>0)){n--;return}P={x:cx,y:cy};bs=r/50}
   else{
-   if(hasScale){const b=se.getBBox();P={x:b.x+b.width/2,y:b.y+b.height/2}}
+   if(hasScale||d.rot.length){const b=se.getBBox();P={x:b.x+b.width/2,y:b.y+b.height/2}}
    let dd='';
    const num=k=>parseFloat(e.getAttribute(k))||0;
    if(tag==='rect'){const x=num('x'),y=num('y'),w=num('width'),h=num('height');
@@ -4399,12 +4453,17 @@ function svgToAm(src,o){
    const ts=times([sp,sp2]),k=x.r?1/50:bs;
    sc='<scale>'+ts.map(tt=>`<kf t="${tf(tt)}" v="${f8(at(sp,tt)*k)},${f8(at(sp2,tt)*k)}"/>`).join('')+'</scale>'}
   else if(Math.abs(bs-1)>1e-9)sc=`<scale value="${f8(bs)},${f8(bs)}"/>`;
+  let ro='';
+  if(d.rot.length){if(d.rot.length>1)wn('Hanya satu animasi rotasi per bentuk yang dipakai.');
+   const t=d.rot[0].tr,c0=t.nums[0],rp=pts({tr:t,i:0},0),ts=times([rp]);
+   if(!t.css&&(c0.length>=3?Math.hypot(c0[1]-P.x,c0[2]-P.y)>2:Math.hypot(P.x,P.y)>2))wn('Pusat rotasi SVG berbeda dari pusat bentuk, rotasi dihitung dari pusat bentuk.');
+   ro='<rotation>'+ts.map(tt=>`<kf t="${tf(tt)}" v="${f6(at(rp,tt))}"/>`).join('')+'</rotation>'}
   // opacity
   let op='';
   if(d.op.length){const p=pts(d.op[0],eo),ts=times([p]);
    op='<opacity>'+ts.map(t=>`<kf t="${tf(t)}" v="${f6(Math.max(0,Math.min(1,at(p,t)*(d.op[0].tr.el.getAttribute('attributeName')==='opacity'?1:eo))))}"/>`).join('')+'</opacity>'}
   else if(eo<.9999)op=`<opacity value="${f6(eo)}"/>`;
-  out+=`      <shape id="${id}" label="${xe(label)}" startTime="0" endTime="${mt}" fillType="color"${circ?' s=".circle"':''} mediaFillMode="fill">\n        <transform>\n          ${loc}\n${sc?'          '+sc+'\n':''}${op?'          '+op+'\n':''}        </transform>\n        <fillColor value="${fc.c}"/>\n${circ?'':`        <path d="${xe(path)}"/>\n`}      </shape>\n`;
+  out+=`      <shape id="${id}" label="${xe(label)}" startTime="0" endTime="${mt}" fillType="color"${circ?' s=".circle"':''} mediaFillMode="fill">\n        <transform>\n          ${loc}\n${sc?'          '+sc+'\n':''}${ro?'          '+ro+'\n':''}${op?'          '+op+'\n':''}        </transform>\n        <fillColor value="${fc.c}"/>\n${stc?`        <shadow direction="outside">\n          <color value="${stc.c}"/>\n          <size value="${f6(swv)}"/>\n          <offset value="0.000000,0.000000"/>\n        </shadow>\n`:''}${circ?'':`        <path d="${xe(path)}"/>\n`}      </shape>\n`;
   layers.push({name:label,tag,color:'#'+fc.c.slice(3)})});
  if(!layers.length)throw new Error('Tidak ada bentuk yang bisa dikonversi. Gunakan rect, circle, ellipse, polygon, atau path.');
  const fps=o.fps||30,name=xe(o.name||'animasi-svg'),ex=`width="${W2}" height="${H2}" exportWidth="${W2}" exportHeight="${H2}" bgcolor="#00000000" totalTime="${mt}" fps="${fps}"`,
@@ -4412,6 +4471,117 @@ function svgToAm(src,o){
  const xml=`<?xml version='1.0' encoding='UTF-8' ?>\n<scene title="${name}" ${ex} modifiedTime="${Date.now()}" ${ver} amplatform="android" retime="freeze" retimeAdaptFPS="false">\n  <embedScene id="300000001" label="SVG Lossless Layer" startTime="0" endTime="${mt}" fillType="intrinsic" outTime="${mt}" mediaFillMode="fill">\n    <transform>\n      <location value="${f6(W2/2)},${f6(H2/2)},0.000000"/>\n    </transform>\n    <fillColor value="#ff000000"/>\n<scene title="" ${ex} modifiedTime="0" ${ver} amplatform="android" retime="off" retimeAdaptFPS="false">\n${out}    </scene>\n  </embedScene>\n</scene>`;
  return{xml,warn,layers,D,W:W2,H:H2}
  }finally{host.remove()}
+}
+/* urai <use> jadi salinan bentuk biasa; x, y, dan translate dibakar ke koordinat salinan */
+function expandUse(rt,wn){
+ const BAN='defs,clipPath,mask,symbol,pattern,marker',ids={};let cnt=0;
+ rt.querySelectorAll('[id]').forEach(n=>{const i=n.getAttribute('id');if(!(i in ids))ids[i]=n});
+ const num=(e,k)=>parseFloat(e.getAttribute(k))||0,set=(e,k,v)=>e.setAttribute(k,String(+v.toFixed(6)));
+ const shift=(e,dx,dy)=>{const t=e.localName;
+  if(t==='rect'||t==='use'){set(e,'x',num(e,'x')+dx);set(e,'y',num(e,'y')+dy)}
+  else if(t==='circle'||t==='ellipse'){set(e,'cx',num(e,'cx')+dx);set(e,'cy',num(e,'cy')+dy)}
+  else if(t==='polygon'||t==='polyline'){const q=(e.getAttribute('points')||'').trim().split(/[\s,]+/).map(Number);
+   if(q.length>=2&&q.every(isFinite)){const o=[];for(let i=0;i+1<q.length;i+=2)o.push(+(q[i]+dx).toFixed(6)+','+ +(q[i+1]+dy).toFixed(6));e.setAttribute('points',o.join(' '))}}
+  else if(t==='path'){const r=shiftPath(e.getAttribute('d')||'',-dx,-dy);if(r)e.setAttribute('d',r);else wn('Path di dalam <use> tidak bisa digeser, posisinya bisa meleset.')}};
+ for(let pass=0;pass<8;pass++){
+  const us=[...rt.querySelectorAll('use')].filter(u=>!u.closest(BAN));
+  if(!us.length)return;
+  us.forEach(u=>{
+   const h=u.getAttribute('href')||u.getAttribute('xlink:href')||'',t=h[0]==='#'?ids[h.slice(1)]:null;
+   if(!t||t===u||t.contains(u)){wn('<use> yang merujuk ke '+(h||'tanpa target')+' tidak ditemukan atau berputar ke dirinya sendiri, dilewati.');u.remove();return}
+   let dx=num(u,'x'),dy=num(u,'y');
+   const tr=(u.getAttribute('transform')||'').trim();
+   if(tr){const m=tr.match(/^translate\(\s*(-?[\d.]+)(?:[\s,]+(-?[\d.]+))?\s*\)$/);if(m){dx+=+m[1];dy+=+(m[2]||0)}else wn('Transform pada <use> selain translate diabaikan.')}
+   if([...u.children].some(c=>/^(animate|animateTransform|animateMotion|set)$/.test(c.localName)))wn('Animasi langsung di dalam <use> belum didukung, hanya animasi pada bentuk aslinya.');
+   const sym=t.localName==='symbol'||t.localName==='svg';
+   if(sym&&t.getAttribute('viewBox')&&(u.getAttribute('width')||u.getAttribute('height')))wn('Ukuran <use> pada <symbol> ber-viewBox belum diterapkan.');
+   const g=u.ownerDocument.createElementNS(u.namespaceURI,'g');
+   [...u.attributes].forEach(a=>{if(!/^(href|xlink:href|x|y|width|height|transform|id)$/.test(a.name)&&!/^xmlns/.test(a.name))g.setAttribute(a.name,a.value)});
+   (sym?[...t.children]:[t]).forEach(k=>{const c=k.cloneNode(true);
+    [c,...c.querySelectorAll('*')].forEach(n=>{const i=n.getAttribute('id');if(i)n.setAttribute('id',i+'_'+(++cnt))});
+    if(dx||dy)[c,...c.querySelectorAll('*')].forEach(n=>shift(n,dx,dy));
+    g.appendChild(c)});
+   u.replaceWith(g)})}
+ if([...rt.querySelectorAll('use')].some(u=>!u.closest(BAN)))wn('Sebagian <use> bersarang terlalu dalam, dilewati.');
+}
+/* animasi CSS sederhana: @keyframes opacity dan transform translate/scale, dipetakan ke driver yang sama dengan SMIL */
+function cssAnim(rt,wn){
+ const css=[...rt.querySelectorAll('style')].map(s=>s.textContent).join('\n').replace(/\/\*[\s\S]*?\*\//g,'');
+ const decl=s=>{const o={};String(s).split(';').forEach(p=>{const i=p.indexOf(':');if(i>0)o[p.slice(0,i).trim().toLowerCase().replace(/^-webkit-/,'')]=p.slice(i+1).replace(/!important/i,'').trim()});return o};
+ const end=(s,i)=>{let d=0,j=i;for(;j<s.length;j++){if(s[j]==='{')d++;else if(s[j]==='}'&&--d===0)break}return j};
+ const frames={},rules=[];
+ for(let i=0;i<css.length;){const o=css.indexOf('{',i);if(o<0)break;const e=end(css,o),head=css.slice(i,o).trim(),body=css.slice(o+1,e);i=e+1;
+  const m=head.match(/^@(?:-webkit-)?keyframes\s+([\w-]+)$/i);
+  if(m){const fr=[];
+   for(let j=0;j<body.length;){const p=body.indexOf('{',j);if(p<0)break;const q=body.indexOf('}',p);if(q<0)break;const d=decl(body.slice(p+1,q));
+    body.slice(j,p).split(',').forEach(k=>{k=k.trim().toLowerCase();const v=k==='from'?0:k==='to'?1:/^[\d.]+%$/.test(k)?parseFloat(k)/100:NaN;if(v>=0&&v<=1)fr.push({k:v,d})});j=q+1}
+   frames[m[1]]=fr.sort((a,b)=>a.k-b.k);continue}
+  if(head&&head[0]!=='@')rules.push([head,decl(body)])}
+ const cmap=new Map(),add=(el,d)=>{const a={};let any=false;for(const k in d)if(k.indexOf('animation')===0){a[k]=d[k];any=true}if(any){const cur=cmap.get(el)||{};if('animation' in a)for(const k in cur)if(k!=='animation')delete cur[k];cmap.set(el,Object.assign(cur,a))}};
+ rules.forEach(([sel,d])=>{let ns;try{ns=rt.querySelectorAll(sel)}catch(_){return}ns.forEach(n=>add(n,d))});
+ rt.querySelectorAll('[style*="animation"]').forEach(n=>add(n,decl(n.getAttribute('style'))));
+ const TF=/^(linear|ease|ease-in|ease-out|ease-in-out|step-start|step-end|cubic-bezier\(.*|steps\(.*)$/;
+ const tm=s=>{const m=String(s).trim().match(/^(-?[\d.]+)(ms|s)$/);return m?+m[1]*(m[2]==='ms'?.001:1):NaN};
+ const lst=s=>String(s).replace(/\([^)]*\)/g,x=>x.replace(/,/g,'\u0001')).split(',').map(x=>x.replace(/\u0001/g,',').trim());
+ const blank=()=>({name:'',dur:0,delay:0,count:1,dir:'normal',tf:''});
+ const parse=a=>{let sp=[];
+  if(a.animation!=null)sp=lst(a.animation).filter(Boolean).map(it=>{const o=blank();let nt=0;
+   it.replace(/\([^)]*\)/g,x=>x.replace(/\s+/g,'')).split(/\s+/).forEach(t=>{
+    if(/^-?[\d.]+m?s$/.test(t)){if(nt++===0)o.dur=tm(t);else o.delay=tm(t)}
+    else if(t==='infinite')o.count=Infinity;
+    else if(/^[\d.]+$/.test(t))o.count=+t;
+    else if(/^(normal|reverse|alternate|alternate-reverse)$/.test(t))o.dir=t;
+    else if(TF.test(t))o.tf=t;
+    else if(!/^(none|forwards|backwards|both|running|paused)$/.test(t))o.name=t});
+   return o});
+  const lh=(k,f)=>{if(a[k]==null)return;lst(a[k]).forEach((v,i)=>{sp[i]=sp[i]||blank();f(sp[i],v)})};
+  lh('animation-name',(o,v)=>o.name=v==='none'?'':v);
+  lh('animation-duration',(o,v)=>o.dur=tm(v));
+  lh('animation-delay',(o,v)=>o.delay=tm(v));
+  lh('animation-iteration-count',(o,v)=>o.count=v==='infinite'?Infinity:(parseFloat(v)||1));
+  lh('animation-direction',(o,v)=>o.dir=v);
+  lh('animation-timing-function',(o,v)=>o.tf=v);
+  return sp.filter(o=>o.name)};
+ const tfp=s=>{const r={tx:0,ty:0,sx:1,sy:1,rot:0};if(!s||s==='none')return r;
+  s.replace(/([\w-]+)\(([^)]*)\)/g,(_,fn,args)=>{const v=args.split(/[\s,]+/).filter(Boolean),n=v.map(x=>/^-?[\d.]+(px)?$/.test(x)?parseFloat(x):NaN),c=v.map(x=>/^-?[\d.]+$/.test(x)?parseFloat(x):NaN),f=fn.toLowerCase();
+   if(f==='translate'&&v.length&&n.every(isFinite)){r.tx+=n[0];r.ty+=n[1]||0}
+   else if(f==='translatex'&&v.length===1&&isFinite(n[0]))r.tx+=n[0];
+   else if(f==='translatey'&&v.length===1&&isFinite(n[0]))r.ty+=n[0];
+   else if(f==='scale'&&v.length&&c.every(isFinite)){r.sx*=c[0];r.sy*=c.length>1?c[1]:c[0]}
+   else if(f==='scalex'&&v.length===1&&isFinite(c[0]))r.sx*=c[0];
+   else if(f==='scaley'&&v.length===1&&isFinite(c[0]))r.sy*=c[0];
+   else if(f==='rotate'&&/^\s*-?[\d.]+(deg|turn|rad|grad)?\s*$/.test(args)){const m=args.trim().match(/^(-?[\d.]+)(deg|turn|rad|grad)?$/);r.rot+=+m[1]*({turn:360,rad:180/Math.PI,grad:.9}[m[2]]||1)}
+   else wn('Transform CSS "'+fn+'('+args.trim()+')" belum didukung (didukung: translate, scale, dan rotate dalam px, angka, atau deg).');
+   return _});
+  return r};
+ const FAKE={getAttribute:k=>k==='attributeName'?'opacity':null};
+ const apply=(e,d,baseOp)=>{let used=0;
+  for(let n=e;n&&n.nodeType===1;n=n.parentNode){const a=cmap.get(n);if(!a)continue;
+   parse(a).forEach(sp=>{const fr=frames[sp.name];
+    if(!fr||!fr.length){wn('@keyframes "'+sp.name+'" tidak ditemukan.');return}
+    if(!(sp.dur>0)){wn('Animasi CSS "'+sp.name+'" tanpa durasi dilewati.');return}
+    if(!isFinite(sp.delay))sp.delay=0;
+    if(sp.delay<0){wn('animation-delay negatif dianggap 0.');sp.delay=0}
+    if(sp.tf!=='linear')wn('Easing CSS (timing-function) diabaikan, keyframe dibuat linear.');
+    const un=new Set(),O=[],T=[];
+    fr.forEach(f=>{for(const p in f.d){
+     if(p==='opacity'){const v=parseFloat(f.d[p]);if(isFinite(v))O.push({k:f.k,v:Math.max(0,Math.min(1,v))})}
+     else if(p==='transform')T.push(Object.assign({k:f.k},tfp(f.d[p])));
+     else if(p!=='animation-timing-function')un.add(p)}});
+    un.forEach(p=>wn('Properti CSS "'+p+'" di @keyframes belum didukung (yang didukung: opacity dan transform translate/scale/rotate).'));
+    const fill=(L,b)=>{if(!L.length)return L;L=L.slice();if(L[0].k>0)L.unshift(Object.assign({},b,{k:0}));if(L[L.length-1].k<1)L.push(Object.assign({},b,{k:1}));return L};
+    const Tn=fill(T,{tx:0,ty:0,sx:1,sy:1,rot:0}),On=fill(O,{v:baseOp==null?1:baseOp});
+    const mk=(L,pick)=>{let V=L.map(pick),K=L.map(f=>f.k),dur=sp.dur,reps=sp.count;const rv=a=>a.slice().reverse();
+     if(/reverse$/.test(sp.dir)){V=rv(V);K=rv(K).map(k=>1-k)}
+     if(/^alternate/.test(sp.dir)){const V2=rv(V),K2=rv(K).map(k=>1-k);V=V.concat(V2.slice(1));K=K.map(k=>k/2).concat(K2.slice(1).map(k=>.5+k/2));dur*=2;reps/=2}
+     return{dur,beg:sp.delay,nums:V,kt:K,reps,el:FAKE,css:1}};
+    if(Tn.length){
+     if(Tn.some(f=>f.tx||f.ty)){const tr=mk(Tn,f=>[f.tx,f.ty]);d.x.push({tr,i:0,off:0});d.y.push({tr,i:1,off:0,dflt:0});used++}
+     if(Tn.some(f=>f.sx!==1||f.sy!==1)){if(n!==e)wn('Skala CSS pada grup dipakai per bentuk (pusat tiap bentuk), bukan pusat grup.');d.sc.push({tr:mk(Tn,f=>[f.sx,f.sy]),k:1});used++}}
+    if(Tn.some(f=>f.rot)){if(n!==e)wn('Rotasi CSS pada grup dipakai per bentuk (pusat tiap bentuk), bukan pusat grup.');d.rot.push({tr:mk(Tn,f=>[f.rot])});used++}
+    if(On.length){d.op.push({tr:mk(On,f=>[f.v])});used++}})}
+  return used};
+ return{frames,apply}
 }
 function shiftPath(d,dx,dy){
  const N={M:2,L:2,H:1,V:1,C:6,S:4,Q:4,T:2,A:7,Z:0};let i=0;const len=d.length,seg=[];
@@ -4584,7 +4754,7 @@ const CATS=[
 const catOf=t=>CATS.some(c=>c.k===CAT[t.id])?CAT[t.id]:'tools';
 let hq='';let flt='all';const nxo=new Set(['tools']),NXN=Object.assign({fav:'Favorit'},Object.fromEntries(CATS.map(c=>[c.k,c.n])));let nxFirst=true;
 const main=$(document,'#main'),dock=$(document,'#dock'),root=document.documentElement;
-const LOGO='/logo.jpg?v=254',LOGO_HTML=`<img src="${LOGO}" alt="" width="36" height="36" onerror="this.replaceWith(document.createTextNode('M'))">`;
+const LOGO='/logo.jpg?v=290',LOGO_HTML=`<img src="${LOGO}" alt="" width="36" height="36" onerror="this.replaceWith(document.createTextNode('M'))">`;
 $(document,'#logo').innerHTML=LOGO_HTML;
 function buildDock(){dock.innerHTML=tools.map(t=>`<a href="#${t.id}" data-id="${t.id}" style="--tc:${META[t.id].c}">${svg(IC[t.id])}${esc(META[t.id].tab)}</a>`).join('');const cur=location.hash.slice(1);dock.querySelectorAll('a').forEach(a=>{if(a.dataset.id===cur)a.setAttribute('aria-current','page')})}
 buildDock();
@@ -4600,7 +4770,7 @@ const ls={get:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return
 const nf=n=>Number(n).toLocaleString('id-ID');
 function rec(tool,ok){const k=tool==='am-send'||tool==='am-verif'?'am-premium':tool,s=ls.get('mt_stats')||{},r=s[k]||{ok:0,err:0};ok?r.ok++:r.err++;s[k]=r;ls.set('mt_stats',s)}
 async function api(...a){const j=await api0(...a);rec(a[0],!!(j&&j.ok));return j}
-const CHANGELOG=[{d:'21 November 2026',t:'Before/After di Duar Viral',i:[['update','Hasil Duar Viral kini tampil dengan slider Before/After: bandingkan fotomu dengan hasil yang sudah ditempel ke latar ledakan, lengkap dengan zoom dan pan.']]},{d:'21 November 2026',t:'AI Image Upscaler jadi HD Gambar',i:[['update','Nama tool AI Image Upscaler diganti menjadi HD Gambar. Fungsinya sama: perbesar dan perjelas gambar 2x dengan AI, dengan slider Before/After.']]},{d:'21 November 2026',t:'Before/After di Hapus Background dan Upscaler',i:[['update','Hasil Hapus Background dan HD Gambar kini tampil dengan slider Before/After: geser garis ↔, zoom dengan cubit, roda mouse, atau tombol + −, dan geser gambar untuk pan.']]},{d:'21 November 2026',t:'Vektor Studio: ikon dan ASCII',i:[['baru','Vektor Studio kini bisa mengunduh paket ikon favicon (zip: favicon.ico, ikon 16/32/180/192/512, maskable, site.webmanifest, kode head) dan membuat ASCII art yang bisa disalin atau diunduh .txt.']]},{d:'21 November 2026',t:'Tool baru Vektor Studio',i:[['baru','Vektor Studio di kategori Tools: ubah gambar jadi SVG dengan preset Logo, Sketsa, Foto, dan Pixel art, bandingkan Before/After dengan zoom sampai 1000×, ganti warna, sembunyikan lapisan, tambah latar, lalu ekspor SVG, PNG, WebP, JPG, atau kode React/Vue.']]},{d:'20 November 2026',t:'Tool baru AM Find',i:[['baru','AM Find di kategori Tools: tempel link video TikTok, lalu cari link preset Alight Motion yang dibagikan di komentar dan balasannya.']]},{d:'20 November 2026',t:'Duar Viral kembali',i:[['baru','Tool Duar Viral di kategori Maker: pilih foto atau tempel link, latar dihapus otomatis lalu ditempel ke latar ledakan api.']]},{d:'20 November 2026',t:'Perbaikan tampilan',i:[['update','Teks melingkar di intro tidak lagi tertimpa bayangan, teks Tips di banner tidak menimpa wajah, dan pemberitahuan login di Global Chat kini rapi dan terbaca jelas di mode gelap maupun terang.']]},{d:'20 November 2026',t:'Masukan tanpa WhatsApp',i:[['update','Halaman Feedback sekarang mengirim masukan langsung ke developer di dalam Malik Tools, tidak perlu lagi lewat WhatsApp.']]},{d:'20 November 2026',t:'Tampilan Global Chat baru',i:[['update','Global Chat memakai gaya bersih: warna netral: putih dan abu muda, garis hitam tebal, bubble putih. Nama, badge role, jam, dan tombol balas kini tampil di atas bubble.']]},{d:'20 November 2026',t:'Badge role lebih profesional',i:[['update','Badge role dirapikan jadi chip kecil satu gaya: Developer hijau, Owner merah, Premium biru, VIP emas, Member abu. Dipakai seragam di Global Chat, menu samping, Profil, dan Beli Role. ']]},{d:'20 November 2026',t:'Warna Global Chat',i:[['update','Nama pengirim kini putih (mengikuti tema), bubble pesan sendiri hijau ala WhatsApp, dan chip role di bubble sendiri ikut serasi.']]},{d:'20 November 2026',t:'Menu samping dirapikan',i:[['update','Pilihan Warna aksen dihapus dari menu samping. Tombol Pasang ke layar utama tetap ada.']]},{d:'20 November 2026',t:'Global Chat',i:[['update','Family diganti nama menjadi Global Chat. Header kini menampilkan judul dan jumlah yang online.'],['update','Pesan sendiri sekarang juga menampilkan nama, centang, dan badge. Nama developer berwarna ungu dengan badge Developer.']]},{d:'20 November 2026',t:'Role Owner dan limit Reaksi Channel',i:[['baru','Paket role Owner bisa dijual dari panel developer (permanen, tanpa limit, centang verified) dan tampil di halaman Beli Role.'],['update','Reaksi Channel WhatsApp sekarang memakai limit harian yang sama dengan AM Generator (member 5 per hari). Limit dikembalikan bila reaksi gagal.'],['update','Chat Global Chat: nama pengirim tidak lagi terpotong badge, dan kutipan balasan ikut menampilkan centang serta badge pengirim.']]},{d:'20 November 2026',t:'SoundCloud Player',i:[['baru','Tool SoundCloud Player: tempel link lagu lalu putar lewat pemutar resmi SoundCloud. Tombol unduh muncul bila provider memberi file MP3.']]},{d:'20 November 2026',t:'Tampilan login baru',i:[['baru','Halaman login dirapikan: tab Masuk dan Daftar, kolom berikon, dan tombol yang lebih jelas.'],['update','Mode demo dihapus.']]},{d:'20 November 2026',t:'Tag semua dan notifikasi Family',i:[['baru','Tag semua orang di Family dengan @semua (khusus Developer). Saat mengetik @, muncul saran @semua.'],['baru','Notifikasi saat ada yang menyebut namamu atau menandai semua orang: popup di dalam situs, dan notifikasi browser bila diizinkan. Lonceng di header Family untuk menyalakan atau mematikan.']]},{d:'20 November 2026',t:'Role Owner, centang verified, badge kustom',i:[['baru','Role OWNER: permanen tanpa durasi, limit tak terbatas, dan centang verified biru seperti Developer.'],['baru','Panel Developer tab Pengguna: badge kustom (teks maks. 14 karakter + pilihan warna) yang bisa dipasang atau dihapus untuk pengguna mana pun, tampil di samping role di Family dan Profil.'],['update','Istilah "kredit" diganti menjadi "limit" di seluruh situs.']]},{d:'19 November 2026',t:'Pembaruan',i:[['baru','Spotify Play kini tampil persis seperti Now Playing di aplikasi Spotify: cover besar yang mengecil saat dijeda, tombol suka, acak, ulangi (mati/semua/satu lagu), dan daftar hasil bergaya Spotify. Halaman Spotify Play ikut bergaya Spotify (kolom cari bulat dengan ikon kaca pembesar, tombol hijau) dan warnanya dikunci hijau, tanpa biru dari aksen, blok teks, atau isi otomatis. Latar mengikuti warna dominan cover. Ditambah Dynamic Island: pil hitam di atas layar yang menampilkan cover dan equalizer, ketuk untuk membuka kontrol putar, gesek ke bawah untuk menutup, gesek ke atas untuk menyembunyikan.'],['baru','Spotify Play kini punya pemutar custom: cover lagu besar, judul dan artis rapi, bilah progres bisa digeser, tombol putar bulat, sebelumnya/berikutnya, dan tiap hasil pencarian tampil dengan thumbnail.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Reaksi Channel WhatsApp di kategori Tools: kirim reaksi emoji ke postingan channel WhatsApp lewat link postingan.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Dailymotion Downloader di kategori Downloader: unduh video Dailymotion publik, pilih kualitas 1080p, 720p, atau 480p, lengkap dengan judul dan durasi.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Videy Downloader di kategori Downloader: ambil MP4 asli dari link share Videy.co, ada pratinjau dan tombol Unduh Video.']]},{d:'18 November 2026',t:'Chat Global jadi Family',i:[['update','Chat Global diganti nama menjadi Family, dengan tampilan baru: gelembung pesan lebih jelas, pesanmu di kanan dan pesan orang lain di kiri, kolom ketik berbentuk pil, dan ikon tautan tidak dobel lagi.']]},{d:'18 November 2026',t:'Kode redeem',i:[['baru','Tukar kode redeem di halaman Beli Role atau Profil untuk langsung mengaktifkan Premium atau VIP.'],['baru','Panel Developer tab Kode: buat satu atau banyak kode sekaligus dengan role, masa aktif, limit per hari, batas pemakaian, dan tanggal kedaluwarsa, lihat siapa yang memakai, dan hapus kapan saja.']]},{d:'18 November 2026',t:'Panel Developer lebih lengkap',i:[['baru','Statistik global: pengguna aktif dan baru, tool paling dipakai, tingkat error per tool, dan penanda provider bermasalah.'],['baru','Daftar role yang akan habis (3 hari) dan yang baru habis, filter pengguna, limit bonus dan reset limit, log aktivitas, jadwal dan target role untuk pengumuman, serta ekspor data.']]},{d:'18 November 2026',t:'Tampilan baru',i:[['update','Beranda dan tampilan diperbarui: kartu sambutan besar bergradasi hijau, font baru, dan navigasi tool berbentuk pil.']]},{d:'18 November 2026',t:'Kategori dihapus',i:[['update','Kategori OSINT / Stalk dihapus beserta isinya: Instagram, Roblox, Free Fire, dan Mobile Legends Stalker.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Carbon Code di kategori Maker: ubah potongan kode jadi gambar bersyntax highlight bergaya Carbon.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','GetContact Verifikasi di kategori GetContact: mulai verifikasi lewat WhatsApp, dapat link dan kode yang berlaku 15 menit.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Spotify Play: ada tombol Putar Audio dengan pemutar bawaan. Image to Prompt: sekarang bisa pilih foto dari perangkat, tidak hanya link. Instagram Downloader kembali berfungsi untuk video. Tombol Kirim di Family tidak lagi menutupi kolom pesan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Hapus Background di kategori Tools: hapus latar foto otomatis, hasil PNG transparan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Alight Motion Data di kategori Tools: judul, ukuran, versi, jumlah efek, UID, dan PID dari link share Alight Motion.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','HD Gambar di kategori Tools: perbesar dan perjelas gambar 2x dengan AI, unggah foto atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Image to Prompt di kategori Tools: ubah gambar jadi prompt AI yang detail.'],['baru','Bypass Cloudflare Turnstile di kategori Tools: buat token Turnstile untuk sebuah situs.']]},{d:'18 November 2026',t:'Tombol unduh baru',i:[['update','Tombol Unduh Foto dan Unduh Video kini bergambar ikon dan lebih jelas di semua tool.'],['update','Tool Maker yang butuh foto: pilih file dari perangkat sampai 50 MB atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Instagram Quick Chat di kategori Maker: mockup menu pesan Instagram dengan pesan, gambar, jam menu, dan bar reaksi emoji.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Jarvis Meme di kategori Maker: buat meme Jarvis dengan teks sendiri yang otomatis dibungkus dan disesuaikan ukurannya.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Call WhatsApp di kategori Maker: mockup layar panggilan iOS dengan foto profil, nama kontak, dan durasi panggilan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Channel WhatsApp di kategori Maker: mockup halaman Info Saluran iOS dengan foto profil, nama saluran, jumlah pengikut, dan jam status bar.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Video Generator di kategori Maker: buat video teks gaya Brat dengan warna latar dan warna teks pilihan, lalu unduh sebagai MP4.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Generator V1 di kategori Maker: buat gambar teks gaya Brat dengan warna latar dan warna teks pilihan.']]},{d:'18 November 2026',t:'Nonaktifkan tool sementara',i:[['baru','Developer bisa menonaktifkan tool yang sedang error dari panel Developer tab Tools, dan mengaktifkannya lagi kapan saja.']]},{d:'18 November 2026',t:'Harga role bisa diatur',i:[['baru','Panel Developer tab Harga: atur paket role (Premium/VIP), masa aktif, harga, dan limit per hari, contoh 1 hari Rp1.000 5 limit.'],['update','Halaman Beli Role kini menampilkan paket dari panel, dan role pengguna bisa diaktifkan lewat paket.']]},{d:'18 November 2026',t:'Poles tampilan',i:[['update','Beli role: paket Premium dan VIP kini punya daftar manfaat, penanda pilihan, dan peringatan login yang lebih jelas.'],['update','Stats: tampilan kosong kini punya ikon dan tombol menuju daftar tool.'],['update','Feedback: ada penghitung karakter dan petunjuk kapan pesan siap dikirim.'],['update','Changelog: entri terbaru diberi penanda.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Indikator status di pojok kanan atas kini bulat (mahkota untuk Developer), bukan kotak polos.'],['update','Tombol chat melayang tidak lagi menutupi konten di bagian bawah halaman.'],['update','Akun developer di mode demo tidak lagi menampilkan kotak limit.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Mediafire Downloader di kategori Downloader: link unduh langsung beserta nama file, ukuran, dan tipe.']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Duar Viral di kategori Maker.']]},{d:'17 November 2026',t:'Kategori disederhanakan',i:[['update','Kategori kini ada tiga: Tools, Downloader, dan Maker (sebelumnya bernama Canvas).']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Scan Slop di kategori Tools: skor, vonis, dan sinyal AI untuk sebuah situs web.']]},{d:'17 November 2026',t:'Kategori Maker',i:[['baru','Kategori Maker dengan tool IQC Dark dan Fake Call.']]},{d:'17 November 2026',t:'Kategori Downloader',i:[['baru','Kategori Downloader di beranda dan menu samping.'],['baru','Tool AIO Downloader: unduh video, audio, atau reels dari TikTok, Instagram, YouTube, Facebook, Twitter, dan lainnya.'],['baru','Tool Snaptik, CapCut, Facebook, Instagram, dan Spotify Play di kategori Downloader.'],['update','TikTok Downloader pindah ke kategori Downloader.']]},{d:'17 November 2026',t:'TikTok Downloader',i:[['baru','Tool TikTok Downloader: unduh video tanpa watermark, foto slide, dan musik dari link TikTok.'],['update','Fitur Tambah tool di panel Developer dihapus.']]},{d:'17 November 2026',t:'Perbaikan tampilan',i:[['update','Halaman Beli role dirapikan: kartu Premium dan VIP tertata, teks tidak menyatu lagi.'],['update','Family tampilan baru: bubble, foto profil dengan warna role, pemisah tanggal.'],['update','Konfirmasi hapus memakai kotak dialog sendiri, bukan popup browser.'],['update','Panel Developer: tombol Tes koneksi bot dan alasan gagal kirim yang lebih jelas.']]},{d:'16 November 2026',t:'Sistem developer dan role',i:[['baru','Panel Developer: lihat pengguna, kirim peringatan, blokir.'],['baru','Role pengguna (Member, Premium, VIP) bisa diatur developer dan tampil sebagai badge.'],['baru','Developer bisa menambah tool baru tanpa edit kode.'],['baru','Family: ngobrol dengan semua pengguna, balas, dan tag @nama.'],['baru','Pengumuman dari developer di beranda.'],['baru','Favorit: ketuk ☆ untuk menaruh tool di atas.']]},{d:'16 November 2026',t:'Tampilan baru dan menu samping',i:[['baru','Beranda baru dengan banner Malik Tools.'],['baru','Menu samping dengan kategori dan pencarian tool.'],['baru','Halaman Changelog, Feedback, Stats, dan Profil.'],['update','Warna situs diganti ke hitam dan hijau.']]}];
+const CHANGELOG=[{d:'21 November 2026',t:'Rotasi dan stroke di SVG ke Alight XML',i:[['update','Konverter SVG ke Alight XML kini membawa rotasi (animateTransform rotate dan CSS rotate) dengan struktur rotation yang sama seperti ekspor Alight Motion, dan stroke diterjemahkan jadi bayangan luar berwarna stroke dengan ukuran setebal stroke. Hasil stroke berupa pendekatan, tepinya bisa lebih lembut dari SVG.']]},{d:'21 November 2026',t:'SVG ke Alight XML lebih lengkap',i:[['update','Konverter SVG ke Alight XML kini mengurai <use> jadi bentuk biasa (termasuk <symbol> dan posisi x, y), mengganti gradient dengan satu warna rata-rata dari stop-nya (bukan hitam lagi), dan membaca animasi CSS sederhana: @keyframes opacity serta transform translate dan scale, lengkap dengan delay, jumlah ulang, reverse, dan alternate. Stroke belum didukung.']]},{d:'21 November 2026',t:'Before/After di Duar Viral',i:[['update','Hasil Duar Viral kini tampil dengan slider Before/After: bandingkan fotomu dengan hasil yang sudah ditempel ke latar ledakan, lengkap dengan zoom dan pan.']]},{d:'21 November 2026',t:'AI Image Upscaler jadi HD Gambar',i:[['update','Nama tool AI Image Upscaler diganti menjadi HD Gambar. Fungsinya sama: perbesar dan perjelas gambar 2x dengan AI, dengan slider Before/After.']]},{d:'21 November 2026',t:'Before/After di Hapus Background dan Upscaler',i:[['update','Hasil Hapus Background dan HD Gambar kini tampil dengan slider Before/After: geser garis ↔, zoom dengan cubit, roda mouse, atau tombol + −, dan geser gambar untuk pan.']]},{d:'21 November 2026',t:'Vektor Studio: ikon dan ASCII',i:[['baru','Vektor Studio kini bisa mengunduh paket ikon favicon (zip: favicon.ico, ikon 16/32/180/192/512, maskable, site.webmanifest, kode head) dan membuat ASCII art yang bisa disalin atau diunduh .txt.']]},{d:'21 November 2026',t:'Tool baru Vektor Studio',i:[['baru','Vektor Studio di kategori Tools: ubah gambar jadi SVG dengan preset Logo, Sketsa, Foto, dan Pixel art, bandingkan Before/After dengan zoom sampai 1000×, ganti warna, sembunyikan lapisan, tambah latar, lalu ekspor SVG, PNG, WebP, JPG, atau kode React/Vue.']]},{d:'20 November 2026',t:'Tool baru AM Find',i:[['baru','AM Find di kategori Tools: tempel link video TikTok, lalu cari link preset Alight Motion yang dibagikan di komentar dan balasannya.']]},{d:'20 November 2026',t:'Duar Viral kembali',i:[['baru','Tool Duar Viral di kategori Maker: pilih foto atau tempel link, latar dihapus otomatis lalu ditempel ke latar ledakan api.']]},{d:'20 November 2026',t:'Perbaikan tampilan',i:[['update','Teks melingkar di intro tidak lagi tertimpa bayangan, teks Tips di banner tidak menimpa wajah, dan pemberitahuan login di Global Chat kini rapi dan terbaca jelas di mode gelap maupun terang.']]},{d:'20 November 2026',t:'Masukan tanpa WhatsApp',i:[['update','Halaman Feedback sekarang mengirim masukan langsung ke developer di dalam Malik Tools, tidak perlu lagi lewat WhatsApp.']]},{d:'20 November 2026',t:'Tampilan Global Chat baru',i:[['update','Global Chat memakai gaya bersih: warna netral: putih dan abu muda, garis hitam tebal, bubble putih. Nama, badge role, jam, dan tombol balas kini tampil di atas bubble.']]},{d:'20 November 2026',t:'Badge role lebih profesional',i:[['update','Badge role dirapikan jadi chip kecil satu gaya: Developer hijau, Owner merah, Premium biru, VIP emas, Member abu. Dipakai seragam di Global Chat, menu samping, Profil, dan Beli Role. ']]},{d:'20 November 2026',t:'Warna Global Chat',i:[['update','Nama pengirim kini putih (mengikuti tema), bubble pesan sendiri hijau ala WhatsApp, dan chip role di bubble sendiri ikut serasi.']]},{d:'20 November 2026',t:'Menu samping dirapikan',i:[['update','Pilihan Warna aksen dihapus dari menu samping. Tombol Pasang ke layar utama tetap ada.']]},{d:'20 November 2026',t:'Global Chat',i:[['update','Family diganti nama menjadi Global Chat. Header kini menampilkan judul dan jumlah yang online.'],['update','Pesan sendiri sekarang juga menampilkan nama, centang, dan badge. Nama developer berwarna ungu dengan badge Developer.']]},{d:'20 November 2026',t:'Role Owner dan limit Reaksi Channel',i:[['baru','Paket role Owner bisa dijual dari panel developer (permanen, tanpa limit, centang verified) dan tampil di halaman Beli Role.'],['update','Reaksi Channel WhatsApp sekarang memakai limit harian yang sama dengan AM Generator (member 5 per hari). Limit dikembalikan bila reaksi gagal.'],['update','Chat Global Chat: nama pengirim tidak lagi terpotong badge, dan kutipan balasan ikut menampilkan centang serta badge pengirim.']]},{d:'20 November 2026',t:'SoundCloud Player',i:[['baru','Tool SoundCloud Player: tempel link lagu lalu putar lewat pemutar resmi SoundCloud. Tombol unduh muncul bila provider memberi file MP3.']]},{d:'20 November 2026',t:'Tampilan login baru',i:[['baru','Halaman login dirapikan: tab Masuk dan Daftar, kolom berikon, dan tombol yang lebih jelas.'],['update','Mode demo dihapus.']]},{d:'20 November 2026',t:'Tag semua dan notifikasi Family',i:[['baru','Tag semua orang di Family dengan @semua (khusus Developer). Saat mengetik @, muncul saran @semua.'],['baru','Notifikasi saat ada yang menyebut namamu atau menandai semua orang: popup di dalam situs, dan notifikasi browser bila diizinkan. Lonceng di header Family untuk menyalakan atau mematikan.']]},{d:'20 November 2026',t:'Role Owner, centang verified, badge kustom',i:[['baru','Role OWNER: permanen tanpa durasi, limit tak terbatas, dan centang verified biru seperti Developer.'],['baru','Panel Developer tab Pengguna: badge kustom (teks maks. 14 karakter + pilihan warna) yang bisa dipasang atau dihapus untuk pengguna mana pun, tampil di samping role di Family dan Profil.'],['update','Istilah "kredit" diganti menjadi "limit" di seluruh situs.']]},{d:'19 November 2026',t:'Pembaruan',i:[['baru','Spotify Play kini tampil persis seperti Now Playing di aplikasi Spotify: cover besar yang mengecil saat dijeda, tombol suka, acak, ulangi (mati/semua/satu lagu), dan daftar hasil bergaya Spotify. Halaman Spotify Play ikut bergaya Spotify (kolom cari bulat dengan ikon kaca pembesar, tombol hijau) dan warnanya dikunci hijau, tanpa biru dari aksen, blok teks, atau isi otomatis. Latar mengikuti warna dominan cover. Ditambah Dynamic Island: pil hitam di atas layar yang menampilkan cover dan equalizer, ketuk untuk membuka kontrol putar, gesek ke bawah untuk menutup, gesek ke atas untuk menyembunyikan.'],['baru','Spotify Play kini punya pemutar custom: cover lagu besar, judul dan artis rapi, bilah progres bisa digeser, tombol putar bulat, sebelumnya/berikutnya, dan tiap hasil pencarian tampil dengan thumbnail.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Reaksi Channel WhatsApp di kategori Tools: kirim reaksi emoji ke postingan channel WhatsApp lewat link postingan.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Dailymotion Downloader di kategori Downloader: unduh video Dailymotion publik, pilih kualitas 1080p, 720p, atau 480p, lengkap dengan judul dan durasi.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Videy Downloader di kategori Downloader: ambil MP4 asli dari link share Videy.co, ada pratinjau dan tombol Unduh Video.']]},{d:'18 November 2026',t:'Chat Global jadi Family',i:[['update','Chat Global diganti nama menjadi Family, dengan tampilan baru: gelembung pesan lebih jelas, pesanmu di kanan dan pesan orang lain di kiri, kolom ketik berbentuk pil, dan ikon tautan tidak dobel lagi.']]},{d:'18 November 2026',t:'Kode redeem',i:[['baru','Tukar kode redeem di halaman Beli Role atau Profil untuk langsung mengaktifkan Premium atau VIP.'],['baru','Panel Developer tab Kode: buat satu atau banyak kode sekaligus dengan role, masa aktif, limit per hari, batas pemakaian, dan tanggal kedaluwarsa, lihat siapa yang memakai, dan hapus kapan saja.']]},{d:'18 November 2026',t:'Panel Developer lebih lengkap',i:[['baru','Statistik global: pengguna aktif dan baru, tool paling dipakai, tingkat error per tool, dan penanda provider bermasalah.'],['baru','Daftar role yang akan habis (3 hari) dan yang baru habis, filter pengguna, limit bonus dan reset limit, log aktivitas, jadwal dan target role untuk pengumuman, serta ekspor data.']]},{d:'18 November 2026',t:'Tampilan baru',i:[['update','Beranda dan tampilan diperbarui: kartu sambutan besar bergradasi hijau, font baru, dan navigasi tool berbentuk pil.']]},{d:'18 November 2026',t:'Kategori dihapus',i:[['update','Kategori OSINT / Stalk dihapus beserta isinya: Instagram, Roblox, Free Fire, dan Mobile Legends Stalker.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Carbon Code di kategori Maker: ubah potongan kode jadi gambar bersyntax highlight bergaya Carbon.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','GetContact Verifikasi di kategori GetContact: mulai verifikasi lewat WhatsApp, dapat link dan kode yang berlaku 15 menit.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Spotify Play: ada tombol Putar Audio dengan pemutar bawaan. Image to Prompt: sekarang bisa pilih foto dari perangkat, tidak hanya link. Instagram Downloader kembali berfungsi untuk video. Tombol Kirim di Family tidak lagi menutupi kolom pesan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Hapus Background di kategori Tools: hapus latar foto otomatis, hasil PNG transparan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Alight Motion Data di kategori Tools: judul, ukuran, versi, jumlah efek, UID, dan PID dari link share Alight Motion.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','HD Gambar di kategori Tools: perbesar dan perjelas gambar 2x dengan AI, unggah foto atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Image to Prompt di kategori Tools: ubah gambar jadi prompt AI yang detail.'],['baru','Bypass Cloudflare Turnstile di kategori Tools: buat token Turnstile untuk sebuah situs.']]},{d:'18 November 2026',t:'Tombol unduh baru',i:[['update','Tombol Unduh Foto dan Unduh Video kini bergambar ikon dan lebih jelas di semua tool.'],['update','Tool Maker yang butuh foto: pilih file dari perangkat sampai 50 MB atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Instagram Quick Chat di kategori Maker: mockup menu pesan Instagram dengan pesan, gambar, jam menu, dan bar reaksi emoji.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Jarvis Meme di kategori Maker: buat meme Jarvis dengan teks sendiri yang otomatis dibungkus dan disesuaikan ukurannya.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Call WhatsApp di kategori Maker: mockup layar panggilan iOS dengan foto profil, nama kontak, dan durasi panggilan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Channel WhatsApp di kategori Maker: mockup halaman Info Saluran iOS dengan foto profil, nama saluran, jumlah pengikut, dan jam status bar.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Video Generator di kategori Maker: buat video teks gaya Brat dengan warna latar dan warna teks pilihan, lalu unduh sebagai MP4.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Generator V1 di kategori Maker: buat gambar teks gaya Brat dengan warna latar dan warna teks pilihan.']]},{d:'18 November 2026',t:'Nonaktifkan tool sementara',i:[['baru','Developer bisa menonaktifkan tool yang sedang error dari panel Developer tab Tools, dan mengaktifkannya lagi kapan saja.']]},{d:'18 November 2026',t:'Harga role bisa diatur',i:[['baru','Panel Developer tab Harga: atur paket role (Premium/VIP), masa aktif, harga, dan limit per hari, contoh 1 hari Rp1.000 5 limit.'],['update','Halaman Beli Role kini menampilkan paket dari panel, dan role pengguna bisa diaktifkan lewat paket.']]},{d:'18 November 2026',t:'Poles tampilan',i:[['update','Beli role: paket Premium dan VIP kini punya daftar manfaat, penanda pilihan, dan peringatan login yang lebih jelas.'],['update','Stats: tampilan kosong kini punya ikon dan tombol menuju daftar tool.'],['update','Feedback: ada penghitung karakter dan petunjuk kapan pesan siap dikirim.'],['update','Changelog: entri terbaru diberi penanda.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Indikator status di pojok kanan atas kini bulat (mahkota untuk Developer), bukan kotak polos.'],['update','Tombol chat melayang tidak lagi menutupi konten di bagian bawah halaman.'],['update','Akun developer di mode demo tidak lagi menampilkan kotak limit.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Mediafire Downloader di kategori Downloader: link unduh langsung beserta nama file, ukuran, dan tipe.']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Duar Viral di kategori Maker.']]},{d:'17 November 2026',t:'Kategori disederhanakan',i:[['update','Kategori kini ada tiga: Tools, Downloader, dan Maker (sebelumnya bernama Canvas).']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Scan Slop di kategori Tools: skor, vonis, dan sinyal AI untuk sebuah situs web.']]},{d:'17 November 2026',t:'Kategori Maker',i:[['baru','Kategori Maker dengan tool IQC Dark dan Fake Call.']]},{d:'17 November 2026',t:'Kategori Downloader',i:[['baru','Kategori Downloader di beranda dan menu samping.'],['baru','Tool AIO Downloader: unduh video, audio, atau reels dari TikTok, Instagram, YouTube, Facebook, Twitter, dan lainnya.'],['baru','Tool Snaptik, CapCut, Facebook, Instagram, dan Spotify Play di kategori Downloader.'],['update','TikTok Downloader pindah ke kategori Downloader.']]},{d:'17 November 2026',t:'TikTok Downloader',i:[['baru','Tool TikTok Downloader: unduh video tanpa watermark, foto slide, dan musik dari link TikTok.'],['update','Fitur Tambah tool di panel Developer dihapus.']]},{d:'17 November 2026',t:'Perbaikan tampilan',i:[['update','Halaman Beli role dirapikan: kartu Premium dan VIP tertata, teks tidak menyatu lagi.'],['update','Family tampilan baru: bubble, foto profil dengan warna role, pemisah tanggal.'],['update','Konfirmasi hapus memakai kotak dialog sendiri, bukan popup browser.'],['update','Panel Developer: tombol Tes koneksi bot dan alasan gagal kirim yang lebih jelas.']]},{d:'16 November 2026',t:'Sistem developer dan role',i:[['baru','Panel Developer: lihat pengguna, kirim peringatan, blokir.'],['baru','Role pengguna (Member, Premium, VIP) bisa diatur developer dan tampil sebagai badge.'],['baru','Developer bisa menambah tool baru tanpa edit kode.'],['baru','Family: ngobrol dengan semua pengguna, balas, dan tag @nama.'],['baru','Pengumuman dari developer di beranda.'],['baru','Favorit: ketuk ☆ untuk menaruh tool di atas.']]},{d:'16 November 2026',t:'Tampilan baru dan menu samping',i:[['baru','Beranda baru dengan banner Malik Tools.'],['baru','Menu samping dengan kategori dan pencarian tool.'],['baru','Halaman Changelog, Feedback, Stats, dan Profil.'],['update','Warna situs diganti ke hitam dan hijau.']]}];
 const shell=(bar,body)=>`<section class="panel"><div class="bar"><span>${bar}</span></div><div class="in">${body}</div></section>`;
 const hero=(ic,h,sub)=>`<div class="thero"><span class="tile">${svg(IC[ic])}</span><div><h2>${h}</h2><p class="sub">${sub}</p></div></div>`;
 const AUTH={user:null,clientId:'',requireLogin:false,ready:false};
@@ -5148,7 +5318,7 @@ addEventListener('hashchange',route);route();
  function open(){
   if(g)return;
   g=document.createElement('div');g.className='gate';g.setAttribute('role','dialog');g.setAttribute('aria-modal','true');g.setAttribute('aria-label','Masuk');
-  g.innerHTML='<div class="gb"><div class="gbr"><img src="/logo.jpg?v=254" alt="" width="56" height="56"><span>Malik Tools<small>Tools gratis, langsung dari HP</small></span></div><div class="gc"></div><div class="chips" aria-hidden="true"><span style="--c:#38bdf8">AM Premium</span><span style="--c:#5de59b">Hapus BG</span><span style="--c:#ffd166">HD Gambar</span><span style="--c:#ff8fc8">Bypass Link</span><span style="--c:#c4b5fd">Global Chat</span></div></div>';
+  g.innerHTML='<div class="gb"><div class="gbr"><img src="/logo.jpg?v=290" alt="" width="56" height="56"><span>Malik Tools<small>Tools gratis, langsung dari HP</small></span></div><div class="gc"></div><div class="chips" aria-hidden="true"><span style="--c:#38bdf8">AM Premium</span><span style="--c:#5de59b">Hapus BG</span><span style="--c:#ffd166">HD Gambar</span><span style="--c:#ff8fc8">Bypass Link</span><span style="--c:#c4b5fd">Global Chat</span></div></div>';
   g.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-eye]');if(!t)return;
    if(t.dataset.go){go(t.dataset.go)}
    else{const i=g.querySelector('#'+t.dataset.eye);i.type=i.type==='password'?'text':'password'}});
