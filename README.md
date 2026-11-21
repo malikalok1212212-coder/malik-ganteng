@@ -138,3 +138,7 @@ Tool `rch` memakai NexaDev (`api/tool.js` fungsi `reactChannel`). Isi `NEXADEV_A
 - Penanda gangguan (`/api/status`) untuk tool ini baru menyala bila GenCipta dan NexaDev sama-sama mati.
 - NexaDev memotong 5 kredit akunmu per panggilan; pantau saldonya di dashboard Nexa.
 
+
+
+## Diblokir Cloudflare (api-cloud)
+Tool api-cloud kini memakai User-Agent `MalikTools/1.0 (API client)` (bukan penyamaran Chrome, karena sidik jari koneksi Node tidak cocok dengan Chrome dan sering memicu tantangan Cloudflare). Bila provider meminta User-Agent tertentu agar dilewatkan, isi env `CLOUDAPI_UA`. Pesan blokir kini memuat Ray ID Cloudflare untuk dilaporkan ke pemilik API. Bila tetap diblokir, pemilik API perlu mengecualikan permintaan ber-header `x-api-key` (atau IP Vercel) dari tantangan di WAF/Bot Fight Mode mereka.

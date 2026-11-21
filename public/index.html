@@ -60,6 +60,13 @@
 .sls{width:100%;border-radius:12px;display:block;max-height:340px;object-fit:cover;object-position:top}
 
 
+.bax{margin-bottom:14px}.bst{position:relative;width:100%;max-height:70vh;overflow:hidden;border-radius:14px;border:1px solid var(--bd);touch-action:none;background:var(--panel);cursor:grab;user-select:none;-webkit-user-select:none}
+.bl{position:absolute;inset:0}.bl img{width:100%;height:100%;object-fit:contain;transform-origin:0 0;display:block;pointer-events:none;border:0;border-radius:0}
+.bl.chk{background:repeating-conic-gradient(var(--dot) 0 25%,var(--field) 0 50%) 0 0/16px 16px}
+.bhd{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:#22c55e;cursor:ew-resize}
+.bhd:after{content:"↔";position:absolute;top:50%;left:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:#22c55e;color:#fff;display:grid;place-items:center;font-size:18px;border:3px solid var(--panel)}
+.blb{position:absolute;top:8px;padding:3px 8px;border-radius:5px;font:700 11px system-ui,sans-serif;color:#fff;pointer-events:none}.blb.a{left:8px;background:#1d4ed8}.blb.b{right:8px;background:#15803d}
+.bar2{display:flex;gap:6px;align-items:center;margin:8px 0}.bar2 output{min-width:48px;text-align:center}.bax input[type=range]{width:100%}
 </style></noscript>
 <style>:root{--bg:#eaf2ed;--panel:#fff;--field:#f4f9f6;--bd:#c3d3c8;--ink:#141413;--muted:#4a6355;--on:#141413;--ok:#1f6b3a;--bad:#c0262d;--sh:#a9bdb0;--dot:#cfdcd3;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--tc:#ffd33f}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151515;--panel:#1e1e1d;--field:#080b09;--bd:#2b4636;--ink:#faf9f5;--muted:#9bb2a4;--on:#141413;--ok:#ffd33f;--bad:#ff8a95;--sh:#1f4a33;--dot:#0f1713;color-scheme:dark}}
@@ -3587,6 +3594,102 @@ main input:not([type=checkbox]):not([type=radio]):not([type=range]){text-overflo
 </style>
 </head>
 <body>
+<style id="fix-v275">
+/* v275: bubble chat: sorotan mention tidak lagi pita merah muda yang kepotong, cukup cincin kuning di bubble */
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg.mnt{background:transparent!important;box-shadow:none!important;border-radius:0!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg.mnt .cb{box-shadow:0 0 0 3px #ffd33f!important}
+/* v275: strip hijau di bawah kolom ketik Global Chat: latar halaman disamakan dengan panel chat */
+:root[data-theme="light"] body:has(main.chatp){background:#f9f9f7!important}
+:root[data-theme="dark"] body:has(main.chatp){background:#151515!important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]):not([data-theme="dark"]) body:has(main.chatp){background:#151515!important}}
+/* v275: intro lebih hidup: latar melayang, masuk bertahap, kilau di logo, ledakan konfeti saat siap */
+.ix:before,.ix:after{content:"";position:absolute;z-index:0;border:4px solid var(--ni);border-radius:50%;pointer-events:none}
+.ix:before{width:118px;height:118px;right:-46px;top:4%;background:#ff8fc7}
+.ix:after{width:104px;height:104px;left:-44px;bottom:17%;background:#45b8ee}
+.ix .ixlogo:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.75) 50%,transparent 65%);transform:translateX(-120%)}
+.ix .ixb:before{content:"";position:absolute;inset:24px;border-radius:50%;border:4px solid #ff8fc7;opacity:0;pointer-events:none}
+.ix .ixb:after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;opacity:0;pointer-events:none;
+ box-shadow:0 -104px 0 #ffd33f,74px -74px 0 #ff8fc7,104px 0 0 #45b8ee,74px 74px 0 #5be49c,0 104px 0 #8f7bff,-74px 74px 0 #ffd33f,-104px 0 0 #ff8fc7,-74px -74px 0 #45b8ee,
+ 0 -78px 0 #5be49c,55px -55px 0 #8f7bff,78px 0 0 #ffd33f,55px 55px 0 #ff8fc7,0 78px 0 #45b8ee,-55px 55px 0 #5be49c,-78px 0 0 #8f7bff,-55px -55px 0 #ffd33f}
+@media (prefers-reduced-motion:no-preference){
+@keyframes ixdrift{0%,100%{transform:translate(0,0) rotate(0)}50%{transform:translate(18px,-24px) rotate(12deg)}}
+@keyframes ixdrift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-22px,20px)}}
+@keyframes ixbadge{0%{transform:scale(.25) rotate(-200deg);opacity:0}65%{transform:scale(1.1) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes ixup{from{transform:translateY(22px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ixrbin{from{transform:translateY(90px) rotate(-3deg)}to{transform:translateY(0) rotate(-3deg)}}
+@keyframes ixshine{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+@keyframes ixburst{0%{transform:scale(.2);opacity:1}100%{transform:scale(1.45);opacity:0}}
+@keyframes ixpulse{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.65);opacity:0}}
+@keyframes ixpcb{0%,100%{transform:scale(1)}40%{transform:scale(1.18) rotate(-3deg)}}
+.ix:before{animation:ixdrift 7s ease-in-out infinite}
+.ix:after{animation:ixdrift2 8s ease-in-out infinite}
+.ix .ixb{animation:ixbadge .8s cubic-bezier(.2,.9,.3,1.2) both}
+.ix .ixpc{animation:ixup .5s .35s both}
+.ix .ixbar{animation:ixup .5s .5s both}
+.ix .ixc{animation:ixup .5s .65s both}
+.ix .ixm{animation:ixup .5s .8s both}
+.ix .ixsk{animation:ixup .5s .95s both}
+.ix .ixrb{animation:ixrbin .7s .2s cubic-bezier(.2,.9,.3,1) both}
+.ix .ixlogo:after{animation:ixshine 2.4s 1s ease-in-out infinite}
+.ix.rdy .ixb:before{animation:ixpulse .9s ease-out both}
+.ix.rdy .ixb:after{animation:ixburst .9s ease-out both}
+.ix.rdy .ixpc{animation:ixpcb .5s ease both}
+}
+</style>
+<style id="chat-v276">
+/* v276: Global Chat dibesarkan sedikit */
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .cav{width:36px!important;height:36px!important;font-size:14px!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .chn b{font-size:14.5px!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .cb{font-size:15px!important;line-height:1.42!important;padding:7px 11px!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .cb .ct{font-size:11.5px!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cin input#ci{height:42px!important;font-size:16px!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cin .cib,html body main.chatp.chatp.chatp .cpanel.cpanel .cin #cs{width:40px!important;min-width:40px!important;height:42px!important;min-height:42px!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cin .cib svg,html body main.chatp.chatp.chatp .cpanel.cpanel .cin #cs svg{width:19px!important;height:19px!important}
+</style>
+<style id="dark-v277">
+/* v277: gradasi halus untuk beranda dan drawer mode gelap */
+:root[data-theme="dark"] body:not(:has(main.chatp)){background:radial-gradient(85% 40% at 100% 0%,rgba(143,123,255,.42),transparent 75%),radial-gradient(70% 34% at 0% 36%,rgba(69,184,238,.26),transparent 75%),radial-gradient(80% 38% at 100% 78%,rgba(255,143,199,.22),transparent 75%),radial-gradient(75% 34% at 0% 100%,rgba(255,211,63,.20),transparent 75%),#0e0e13!important;background-attachment:fixed!important}
+:root[data-theme="dark"] .top{background:linear-gradient(90deg,#1b1740 0%,#0e0e16 55%,#0c1c18 100%)!important}
+:root[data-theme="dark"] #drw{background:radial-gradient(90% 40% at 0% 0%,rgba(143,123,255,.30),transparent 70%),radial-gradient(80% 36% at 100% 100%,rgba(91,228,156,.16),transparent 70%),linear-gradient(180deg,#191636 0%,#12121b 50%,#0e1a17 100%)!important}
+:root[data-theme="dark"] .lhab{background:linear-gradient(150deg,rgba(143,123,255,.16),rgba(69,184,238,.06) 55%,transparent),var(--panel)!important}
+@media (prefers-color-scheme:dark){
+:root:not([data-theme="light"]):not([data-theme="dark"]) body:not(:has(main.chatp)){background:radial-gradient(85% 40% at 100% 0%,rgba(143,123,255,.42),transparent 75%),radial-gradient(70% 34% at 0% 36%,rgba(69,184,238,.26),transparent 75%),radial-gradient(80% 38% at 100% 78%,rgba(255,143,199,.22),transparent 75%),radial-gradient(75% 34% at 0% 100%,rgba(255,211,63,.20),transparent 75%),#0e0e13!important;background-attachment:fixed!important}
+:root:not([data-theme="light"]):not([data-theme="dark"]) .top{background:linear-gradient(90deg,#1b1740 0%,#0e0e16 55%,#0c1c18 100%)!important}
+:root:not([data-theme="light"]):not([data-theme="dark"]) #drw{background:radial-gradient(90% 40% at 0% 0%,rgba(143,123,255,.30),transparent 70%),radial-gradient(80% 36% at 100% 100%,rgba(91,228,156,.16),transparent 70%),linear-gradient(180deg,#191636 0%,#12121b 50%,#0e1a17 100%)!important}
+:root:not([data-theme="light"]):not([data-theme="dark"]) .lhab{background:linear-gradient(150deg,rgba(143,123,255,.16),rgba(69,184,238,.06) 55%,transparent),var(--panel)!important}
+}
+</style>
+<style id="intro-light-v279">
+/* v279: intro mode light mengikuti warna beranda light (ungu muda), bukan krem */
+:root:not([data-theme="dark"]) .ix{background:radial-gradient(80% 38% at 100% 0%,rgba(255,143,199,.38),transparent 72%),radial-gradient(70% 34% at 0% 42%,rgba(69,184,238,.30),transparent 72%),radial-gradient(80% 36% at 100% 82%,rgba(143,123,255,.28),transparent 72%),radial-gradient(70% 30% at 0% 100%,rgba(255,211,63,.34),transparent 72%),radial-gradient(#d8d0fb 1.3px,transparent 1.5px) 0 0/18px 18px,#f1eeff}
+:root:not([data-theme="dark"]) .ix .ixbar i{background:#f1eeff;border-color:rgba(20,18,31,.2)}
+:root:not([data-theme="dark"]) .ix .ixbar i.on{background:var(--k,#ffd33f);border-color:var(--ni)}
+:root:not([data-theme="dark"]) .ix:before{background:#ff8fc7}
+:root:not([data-theme="dark"]) .ix:after{background:#8f7bff}
+</style>
+<style id="intro-dark-v278">
+/* v278: intro mengikuti tema gelap */
+:root[data-theme="dark"] .ix{background:radial-gradient(85% 40% at 100% 0%,rgba(143,123,255,.42),transparent 75%),radial-gradient(70% 34% at 0% 40%,rgba(69,184,238,.24),transparent 75%),radial-gradient(80% 38% at 100% 80%,rgba(255,143,199,.20),transparent 75%),radial-gradient(75% 34% at 0% 100%,rgba(255,211,63,.18),transparent 75%),#0e0e13;color:#faf9f5}
+:root[data-theme="dark"] .ix .ixring text{fill:#faf9f5}
+:root[data-theme="dark"] .ix .ixdisc,:root[data-theme="dark"] .ix .ixlogo,:root[data-theme="dark"] .ix .ixbar,:root[data-theme="dark"] .ix .ixs,:root[data-theme="dark"] .ix .ixsk,:root[data-theme="dark"] .ix .ixrb,:root[data-theme="dark"] .ix .ixstamp,:root[data-theme="dark"] .ix:before,:root[data-theme="dark"] .ix:after{border-color:#f2efe6}
+:root[data-theme="dark"] .ix .ixsp path{stroke:#f2efe6}
+:root[data-theme="dark"] .ix .ixstamp,:root[data-theme="dark"] .ix .ixrt{color:#14121f}
+:root[data-theme="dark"] .ix .ixdisc,:root[data-theme="dark"] .ix .ixbar,:root[data-theme="dark"] .ix .ixsk,:root[data-theme="dark"] .ix .ixstamp{box-shadow:5px 5px 0 #06060a}
+:root[data-theme="dark"] .ix .ixbar i{background:#e9e5f7}
+:root[data-theme="dark"] .ix .ixbar i.on{background:var(--k,#ffd33f);border-color:#14121f}
+:root[data-theme="dark"] .ix .ixpc small{color:#faf9f5}
+@media (prefers-color-scheme:dark){
+:root:not([data-theme="light"]):not([data-theme="dark"]) .ix{background:radial-gradient(85% 40% at 100% 0%,rgba(143,123,255,.42),transparent 75%),radial-gradient(70% 34% at 0% 40%,rgba(69,184,238,.24),transparent 75%),radial-gradient(80% 38% at 100% 80%,rgba(255,143,199,.20),transparent 75%),radial-gradient(75% 34% at 0% 100%,rgba(255,211,63,.18),transparent 75%),#0e0e13;color:#faf9f5}
+:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixring text{fill:#faf9f5}
+:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixdisc,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixlogo,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixbar,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixs,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixsk,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixrb,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixstamp,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix:before,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix:after{border-color:#f2efe6}
+:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixsp path{stroke:#f2efe6}
+:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixstamp,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixrt{color:#14121f}
+:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixdisc,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixbar,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixsk,:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixstamp{box-shadow:5px 5px 0 #06060a}
+:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixbar i{background:#e9e5f7}
+:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixbar i.on{background:var(--k,#ffd33f);border-color:#14121f}
+:root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixpc small{color:#faf9f5}
+}
+</style>
 <div class="ix" id="ld" role="status" aria-label="Memuat Malik Tools"><div class="ixw"><div class="ixb" aria-hidden="true"><i class="ixdisc"></i><svg class="ixring" viewBox="0 0 208 208"><defs><path id="ixp" d="M104,104 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"/></defs><text><textPath href="#ixp" textLength="520" lengthAdjust="spacing">MALIK TOOLS • GRATIS • CEPAT • TANPA RIBET • </textPath></text></svg><span class="ixlogo"><img src="/yuu.jpg" alt="" width="104" height="104"></span><svg class="ixsp ixsp1" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 8 8 2.5-8 2.5L12 22.5l-2.6-8-8-2.5 8-2.5z"/></svg><svg class="ixsp ixsp2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 8 8 2.5-8 2.5L12 22.5l-2.6-8-8-2.5 8-2.5z"/></svg><svg class="ixsp ixsp3" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 8 8 2.5-8 2.5L12 22.5l-2.6-8-8-2.5 8-2.5z"/></svg><span class="ixstamp">SIAP!</span></div><div class="ixpc" aria-hidden="true"><span class="ixn">0</span><small>%</small></div><div class="ixbar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ixc" aria-hidden="true"><span class="ixs"><i></i>Sesi</span><span class="ixs"><i></i>Logo</span><span class="ixs"><i></i>Banner</span><span class="ixs"><i></i>Font</span><span class="ixs"><i></i>Menu</span></div><p class="ixm">Ngumpulin tools...</p><button type="button" class="ixsk" id="sk">Lewati</button></div><div class="ixrb" aria-hidden="true"><div class="ixrt"></div></div></div>
 <div class="shell">
 <header class="top"><button class="ib" id="mn" aria-label="Buka menu" aria-expanded="false" aria-controls="drw"></button><a class="brand" href="#" aria-label="Malik Tools, ke beranda"><span class="logo" id="logo"></span><span class="bt">Malik Tools</span></a><button class="ib" id="th" aria-label="Ganti tema"></button><span class="pill" title="Operasional">Operasional</span></header>
@@ -3885,6 +3988,20 @@ function imgTool(o){return{id:o.id,name:o.name,desc:o.desc,
    res.innerHTML=`<div class="out"><div class="cmp"><figure><img src="${esc(orig)}" alt="Gambar asli"><figcaption>Asli</figcaption></figure><figure><img${o.chk?' class="chk"':''} src="${esc(j.link)}" alt="Hasil"><figcaption>Hasil</figcaption></figure></div><div class="row"><a class="btn primary dlb" id="dl" href="${esc(dlh)}" download="${o.dl}">${DLI}Unduh Foto</a>${http?'<button id="cp">Salin link</button>':''}</div></div>`;
    res.querySelectorAll('.cmp img').forEach(im=>{im.onclick=()=>{const lb=document.createElement('div');lb.className='lbx';lb.innerHTML='<img alt="">'+unduhBtn(im.src,o.dl||'foto.jpg','Unduh Foto');lb.firstChild.src=im.src;if(im.classList.contains('chk'))lb.firstChild.className='chk';lb.onclick=e=>{if(!(e.target.closest&&e.target.closest('.unb')))lb.remove()};document.body.appendChild(lb)}});const cp=$(r,'#cp');if(cp)cp.onclick=x=>copy(j.link,x.target);const dl=$(r,'#dl');if(dl&&http)dl.onclick=async ev=>{ev.preventDefault();const t=dl.innerHTML;dl.textContent='Mengunduh...';try{const q=await fetch(dlh,{credentials:'same-origin'});if(!q.ok)throw 0;const bl=await q.blob(),a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=o.dl;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}catch(e){window.open(j.link,'_blank','noopener')}dl.innerHTML=t}};
   u.addEventListener('change',()=>{const p=$(r,'#lpv'),im=p.firstChild,v=u.value.trim();if(!/^https?:\/\//i.test(v)){p.hidden=true;return}im.onload=()=>{p.hidden=false};im.onerror=()=>{p.hidden=true};im.src=v});go.onclick=run;u.onkeydown=ev=>{if(ev.key==='Enter')run()}}}}
+function baEl(a,b,chk,lb){const e=document.createElement('div');e.className='bax';
+e.innerHTML=`<div class="bst"><div class="bl"><img alt="Asli" draggable="false"></div><div class="bl al${chk?' chk':''}"><img alt="Hasil" draggable="false"></div><i class="bhd"></i><span class="blb a">BEFORE · ASLI</span><span class="blb b">AFTER · ${lb||'HASIL'}</span></div><div class="bar2"><button type="button" data-z="-">−</button><output>Pas</output><button type="button" data-z="+">+</button><button type="button" data-z="0">Pas</button></div><input type="range" min="0" max="100" value="50" aria-label="Before / After">`;
+const st=e.querySelector('.bst'),[i1,i2]=st.querySelectorAll('img'),al=e.querySelector('.al'),hd=e.querySelector('.bhd'),rg=e.querySelector('input'),zo=e.querySelector('output');let P=.5,z=1,tx=0,ty=0,dg=0;const pt=new Map();
+i1.src=a;i2.src=b;i1.onload=()=>{st.style.aspectRatio=i1.naturalWidth+'/'+i1.naturalHeight};
+const ap=()=>{const w=st.clientWidth,h=st.clientHeight;z=Math.min(12,Math.max(1,z));tx=Math.min(0,Math.max(w-w*z,tx));ty=Math.min(0,Math.max(h-h*z,ty));i1.style.transform=i2.style.transform=`translate(${tx}px,${ty}px) scale(${z})`;al.style.clipPath=`inset(0 0 0 ${P*100}%)`;hd.style.left=P*100+'%';rg.value=P*100;zo.textContent=z<1.05?'Pas':z.toFixed(1)+'×'};
+const zm=(x,y,n)=>{n=Math.min(12,Math.max(1,n));const k=n/z;tx=x-(x-tx)*k;ty=y-(y-ty)*k;z=n;ap()};
+new ResizeObserver(ap).observe(st);rg.oninput=()=>{P=rg.value/100;ap()};
+e.querySelector('.bar2').onclick=ev=>{const d=ev.target.dataset.z;if(!d)return;const w=st.clientWidth,h=st.clientHeight;if(d==='0'){z=1;tx=ty=0;ap()}else zm(w/2,h/2,d==='+'?z*1.5:z/1.5)};
+st.onpointerdown=ev=>{st.setPointerCapture(ev.pointerId);pt.set(ev.pointerId,[ev.clientX,ev.clientY]);dg=ev.target===hd?1:0};
+st.onpointermove=ev=>{const o=pt.get(ev.pointerId);if(!o)return;const r=st.getBoundingClientRect();
+if(pt.size===2){const q=[...pt].find(x=>x[0]!==ev.pointerId)[1];zm((ev.clientX+q[0])/2-r.left,(ev.clientY+q[1])/2-r.top,z*Math.hypot(ev.clientX-q[0],ev.clientY-q[1])/(Math.hypot(o[0]-q[0],o[1]-q[1])||1))}
+else if(dg){P=Math.min(1,Math.max(0,(ev.clientX-r.left)/r.width));ap()}else{tx+=ev.clientX-o[0];ty+=ev.clientY-o[1];ap()}pt.set(ev.pointerId,[ev.clientX,ev.clientY])};
+st.onpointerup=st.onpointercancel=ev=>pt.delete(ev.pointerId);
+st.onwheel=ev=>{ev.preventDefault();const r=st.getBoundingClientRect();zm(ev.clientX-r.left,ev.clientY-r.top,z*Math.exp(-ev.deltaY*.002))};return e}
 function canvasTool(o){const nowT=()=>{const d=new Date();return String(d.getHours()).padStart(2,'0')+'.'+String(d.getMinutes()).padStart(2,'0')};
 return{id:o.id,name:o.name,desc:o.desc,
  html:()=>o.fields.map(f=>f.select?`<label for="t-${f.key}">${f.label}</label><select id="t-${f.key}">${f.select.map(x=>`<option value="${esc(x[0])}">${esc(x[1])}</option>`).join('')}</select>`:f.photo?`<label for="p-${f.key}">${f.label}</label><label class="drop" id="dz-${f.key}" for="p-${f.key}">${svg(IC.up)}<span><b>Pilih foto dari perangkat</b><span id="fi-${f.key}">JPG, PNG, atau WebP, sampai 50 MB. Foto besar dikecilkan otomatis.</span></span></label><input id="p-${f.key}" type="file" accept="image/jpeg,image/png,image/webp"><label for="u-${f.key}">Atau link gambar</label><input id="u-${f.key}" type="url" inputmode="url" autocomplete="off" placeholder="https://contoh.com/foto.jpg">`:f.area?`<label for="t-${f.key}">${f.label}</label><textarea id="t-${f.key}" rows="9" maxlength="${f.max||2000}" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" wrap="off" style="font-family:'Space Mono',monospace;font-size:14px;line-height:1.5;min-height:170px;resize:vertical;white-space:pre;overflow:auto" placeholder="${esc(f.ph||'')}">${esc(f.val||'')}</textarea>`:`<label for="t-${f.key}">${f.label}</label><input id="t-${f.key}" type="text" maxlength="${f.max||100}" autocomplete="off" value="${esc(f.time?nowT():(f.val||''))}" placeholder="${esc(f.ph||'')}">`).join('')+`<div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div><div class="row"><button class="primary" id="go">${o.btn}</button></div><p class="msg" id="m" role="status"></p><div id="res"></div>`,
@@ -3900,6 +4017,7 @@ return{id:o.id,name:o.name,desc:o.desc,
      vals[f.key]=file||v||''}
     else{const v=$(r,'#t-'+f.key).value.trim();if(!v&&f.req)return bad(f.label+' wajib diisi.');if(v)vals[f.key]=v}}
    go.disabled=true;m.className='msg';res.innerHTML=skx(typeof o!=='undefined'&&o?o.id:'');
+   let orig='';{const pf=o.fields.find(f=>f.photo),pv=pf&&vals[pf.key];if(pv)orig=typeof pv==='string'?pv:URL.createObjectURL(pv)}
    const fields={};
    for(const f of o.fields){let v=vals[f.key];if(v===undefined||v==='')continue;
     if(f.photo&&typeof v!=='string'){{m.textContent='Menyiapkan foto...';let blob;try{blob=await prepare(v)}catch(e){return fail(e.message)}m.textContent='Mengunggah '+mb(blob.size)+'...';const up=await upload(blob,code);if(!up.ok)return fail(up.error,up.code);v=up.url}}
@@ -3912,6 +4030,7 @@ return{id:o.id,name:o.name,desc:o.desc,
    m.className='msg good';m.textContent=o.ok+lim(j);
    const http=/^https?:/.test(j.link),dlh=http?'/api/dl?u='+encodeURIComponent(j.link)+'&n='+encodeURIComponent(o.dl):j.link;
    res.innerHTML=o.audio?`<div class="out"><div class="cmp"><figure><audio src="${esc(j.link)}" controls preload="auto" style="width:100%"></audio><figcaption>Hasil suara</figcaption></figure></div><div class="row"><a class="btn primary dlb" id="dl" href="${esc(dlh)}" download="${o.dl}">${DLI}Unduh Audio</a>${http?'<button id="cp">Salin link</button>':''}</div></div>`:o.video?`<div class="out"><div class="cmp"><figure><video src="${esc(j.link)}" controls playsinline loop autoplay muted style="width:100%;border-radius:12px;background:#000"></video><figcaption>Hasil</figcaption></figure></div><div class="row"><a class="btn primary dlb" id="dl" href="${esc(dlh)}" download="${o.dl}">${DLI}Unduh Video</a>${http?'<button id="cp">Salin link</button>':''}</div></div>`:`<div class="out"><div class="cmp"><figure><img src="${esc(j.link)}" alt="Hasil"><figcaption>Hasil</figcaption></figure></div><div class="row"><a class="btn primary dlb" id="dl" href="${esc(dlh)}" download="${o.dl}">${DLI}Unduh Foto</a>${http?'<button id="cp">Salin link</button>':''}</div></div>`;
+   if(o.ba&&orig&&!o.audio&&!o.video){const cm=res.querySelector('.cmp');if(cm){cm.innerHTML='';cm.style.display='block';cm.append(baEl(orig,j.link,o.chk,o.lbl))}}
    const im=res.querySelector('.cmp img');if(im)im.onclick=()=>{const lb=document.createElement('div');lb.className='lbx';lb.innerHTML='<img alt="">'+unduhBtn(im.src,o.dl||'foto.jpg','Unduh Foto');lb.firstChild.src=im.src;lb.onclick=e=>{if(!(e.target.closest&&e.target.closest('.unb')))lb.remove()};document.body.appendChild(lb)};
    const cp=$(r,'#cp');if(cp)cp.onclick=x=>copy(j.link,x.target);const dl=$(r,'#dl');
    if(dl&&http)dl.onclick=async ev=>{ev.preventDefault();const t=dl.innerHTML;dl.textContent='Mengunduh...';try{const q=await fetch(dlh,{credentials:'same-origin'});if(!q.ok)throw 0;const bl=await q.blob(),a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=o.dl;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}catch(e){window.open(j.link,'_blank','noopener')}dl.innerHTML=t}}}}}
@@ -3984,12 +4103,12 @@ linkTool({id:'spotify-play',name:'Spotify Play',desc:'Cari lagu Spotify berdasar
 linkTool({id:'ig-dl',name:'Instagram Downloader',desc:'Unduh foto, video, Reels, atau Carousel Instagram secara instan.',label:'Link Instagram',ph:'https://www.instagram.com/reel/...',btn:'Ambil media'}),
 linkTool({id:'mediafire-dl',name:'Mediafire Downloader',desc:'Ambil link unduh langsung dari URL Mediafire, lengkap dengan nama file, ukuran, dan tipe file.',label:'Link Mediafire',ph:'https://www.mediafire.com/file/...',btn:'Ambil link unduh'}),
 linkTool({id:'youtube-dl',name:'YouTube Downloader',desc:'Unduh video YouTube (360p dengan suara, atau resolusi tinggi tanpa suara) dan audio M4A.',label:'Link YouTube',ph:'https://www.youtube.com/watch?v=...',btn:'Ambil video'}),
-canvasTool({id:'hapus-background',name:'Hapus Background',desc:'Hapus latar belakang foto otomatis dan hasilkan PNG transparan.',btn:'Hapus background',wait:'Menghapus background, mohon tunggu...',ok:'Gambar transparan siap diunduh.',dl:'hapus-background.png',fields:[{key:'url',label:'Gambar',photo:true,req:true}]}),
+canvasTool({id:'hapus-background',name:'Hapus Background',desc:'Hapus latar belakang foto otomatis dan hasilkan PNG transparan.',btn:'Hapus background',wait:'Menghapus background, mohon tunggu...',ok:'Gambar transparan siap diunduh.',dl:'hapus-background.png',ba:true,chk:true,lbl:'TRANSPARAN',fields:[{key:'url',label:'Gambar',photo:true,req:true}]}),
 canvasTool({id:'tts-google',name:'Google TTS (Gemini)',desc:'Ubah teks menjadi suara natural dengan mesin Gemini milik Google. Hasil berupa audio MP3.',btn:'Buat suara',wait:'Membuat suara...',ok:'Suara siap diputar dan diunduh.',dl:'tts.mp3',audio:true,fields:[{key:'text',label:'Teks',req:true,area:true,max:1000,val:'Konbanwa, genki desu ka?',ph:'Tulis teks yang ingin dibacakan'},{key:'language',label:'Bahasa',select:[['ja-JP','Japanese (ja-JP)'],['id-ID','Indonesian (id-ID)'],['en-US','English US (en-US)'],['en-GB','English UK (en-GB)'],['ko-KR','Korean (ko-KR)'],['zh-CN','Chinese (zh-CN)'],['ar-XA','Arabic (ar-XA)'],['hi-IN','Hindi (hi-IN)'],['es-ES','Spanish (es-ES)'],['fr-FR','French (fr-FR)'],['de-DE','German (de-DE)'],['pt-BR','Portuguese (pt-BR)'],['ru-RU','Russian (ru-RU)'],['th-TH','Thai (th-TH)'],['vi-VN','Vietnamese (vi-VN)'],['tr-TR','Turkish (tr-TR)']]}]}),
 canvasTool({id:'ssweb',name:'Website Screenshot',desc:'Tangkap screenshot situs web, bisa satu halaman penuh, dengan tampilan PC, Tablet, atau Android. Prosesnya bisa sampai 30 detik.',btn:'Ambil screenshot',wait:'Mengambil screenshot, mohon tunggu...',ok:'Screenshot siap diunduh.',dl:'screenshot.png',fields:[{key:'url',label:'Link situs',req:true,max:2000,val:'https://',ph:'https://contoh.com'},{key:'viewport',label:'Viewport',select:[['pc','PC'],['tablet','Tablet'],['android','Android']]},{key:'fullpage',label:'Full page',select:[['true','Ya, satu halaman penuh'],['false','Tidak, hanya layar pertama']]}]}),
 canvasTool({id:'rch',name:'Reaksi Channel WhatsApp',desc:'Kirim reaksi emoji ke postingan channel WhatsApp. Tempel link postingan (yang ada angka di belakangnya) dan pilih emoji. Prosesnya bisa sampai 30 detik.',btn:'Kirim reaksi',wait:'Mengirim reaksi, mohon tunggu...',ok:'Reaksi terkirim.',data:true,fields:[{key:'url',label:'Link postingan channel',req:true,max:300,val:'https://whatsapp.com/channel/',ph:'https://whatsapp.com/channel/XXXX/123'},{key:'reaction',label:'Emoji (pisahkan dengan koma, maks. 6)',req:true,max:60,val:'😂,🤣',ph:'😂,🤣,❤️'}]}),
 canvasTool({id:'qr-code',name:'QR Code Generator',desc:'Ubah link atau teks apa saja menjadi gambar QR Code PNG berkualitas tinggi.',btn:'Buat QR Code',wait:'Membuat QR Code...',ok:'QR Code siap diunduh.',dl:'qrcode.png',fields:[{key:'text',label:'Target URL/Teks',req:true,max:1000,val:'https://gencipta.com',ph:'https://contoh.com atau teks bebas'}]}),
-canvasTool({id:'upscale',name:'AI Image Upscaler',desc:'Perbesar dan perjelas gambar beresolusi rendah 2x dengan AI. Prosesnya bisa sampai 30 detik.',btn:'Perbesar gambar',wait:'Memperbesar gambar, mohon tunggu...',ok:'Gambar siap diunduh.',dl:'upscale.png',fields:[{key:'url',label:'Gambar',photo:true,req:true}]}),
+canvasTool({id:'upscale',name:'HD Gambar',desc:'Perbesar dan perjelas gambar beresolusi rendah 2x dengan AI. Prosesnya bisa sampai 30 detik.',btn:'Perbesar gambar',wait:'Memperbesar gambar, mohon tunggu...',ok:'Gambar siap diunduh.',dl:'upscale.png',ba:true,lbl:'HD 2×',fields:[{key:'url',label:'Gambar',photo:true,req:true}]}),
 canvasTool({id:'brat-v1',name:'Brat Generator V1',desc:'Buat gambar teks gaya Brat (Charli XCX) dengan warna latar dan warna teks sesuka hati.',btn:'Buat gambar',wait:'Membuat gambar...',ok:'Gambar siap diunduh.',dl:'brat.png',fields:[{key:'text',label:'Teks',req:true,max:300,val:'Hello World',ph:'Hello World'},{key:'background',label:'Warna latar (hex)',max:7,val:'#ffffff',ph:'#ffffff'},{key:'color',label:'Warna teks (hex)',max:7,val:'#000000',ph:'#000000'}]}),
 canvasTool({id:'bratvid',name:'Brat Video Generator',desc:'Buat video teks gaya Brat (Charli XCX) dengan warna latar dan warna teks sesuka hati.',btn:'Buat video',wait:'Membuat video...',ok:'Video siap diunduh.',dl:'brat.mp4',video:true,fields:[{key:'text',label:'Teks',req:true,max:300,val:'Malik Ganteng',ph:'Malik Ganteng'},{key:'background',label:'Warna latar (hex)',max:7,val:'#ffffff',ph:'#ffffff'},{key:'color',label:'Warna teks (hex)',max:7,val:'#000000',ph:'#000000'}]}),
 canvasTool({id:'fake-channel',name:'Fake Channel WhatsApp',desc:'Buat mockup halaman Info Saluran WhatsApp iOS dengan foto profil, nama saluran, jumlah pengikut, dan jam status bar.',btn:'Buat mockup',wait:'Membuat mockup...',ok:'Mockup siap diunduh.',dl:'saluran.png',fields:[{key:'avatar',label:'Foto profil',photo:true,req:true},{key:'name',label:'Nama saluran',req:true,max:60,ph:'RINA IMUP'},{key:'followers',label:'Pengikut',req:true,max:20,val:'3.621',ph:'3.621'},{key:'time',label:'Jam status bar',req:true,max:8,time:true,ph:'13.10'}]}),
@@ -3997,7 +4116,7 @@ canvasTool({id:'fake-call',name:'Fake Call WhatsApp',desc:'Buat mockup layar pan
 canvasTool({id:'jarvis-meme',name:'Jarvis Meme',desc:'Buat meme Jarvis dengan teks sendiri. Teks otomatis dibungkus dan disesuaikan ukurannya.',btn:'Buat meme',wait:'Membuat meme...',ok:'Meme siap diunduh.',dl:'jarvis-meme.png',fields:[{key:'text',label:'Teks meme',req:true,max:300,val:'Jarvis, tolong diapakan dulu apa itu biar ga apa kali',ph:'Jarvis, tolong ...'}]}),
 canvasTool({id:'igqc',name:'Instagram Quick Chat',desc:'Buat mockup menu pesan Instagram (Quick Chat) dengan pesan, gambar, jam menu, dan bar reaksi emoji. Semua isian opsional, isi minimal satu.',btn:'Buat mockup',wait:'Membuat mockup...',ok:'Mockup siap diunduh.',dl:'igqc.png',fields:[{key:'text',label:'Pesan',max:300,ph:'Ini tuh namanya pap dari my mbg yh 🌹🌹'},{key:'image',label:'Gambar (opsional)',photo:true},{key:'time',label:'Jam menu',max:20,ph:'SAB 15.28'}]}),
 canvasTool({id:'iqc-dark',name:'IQC Dark',desc:'Buat kartu kutipan chat bertema gelap dengan pesan, gambar opsional, dan jam.',btn:'Buat gambar',wait:'Membuat gambar...',ok:'Gambar siap diunduh.',dl:'iqc-dark.png',fields:[{key:'text',label:'Pesan',req:true,max:300,ph:'Halo, ini contoh pesan'},{key:'image',label:'Gambar (opsional)',photo:true},{key:'time',label:'Jam',max:20,time:true,ph:'20.20'}]}),
-canvasTool({id:'duar-viral',name:'Duar Viral',desc:'Tempel fotomu ke latar ledakan api ala meme viral. Latar foto dihapus otomatis, hasil siap diunduh.',btn:'Buat gambar',wait:'Membuat gambar, mohon tunggu...',ok:'Gambar siap diunduh.',dl:'duar-viral.jpg',fields:[{key:'url',label:'Gambar',photo:true,req:true}]}),
+canvasTool({id:'duar-viral',name:'Duar Viral',desc:'Tempel fotomu ke latar ledakan api ala meme viral. Latar foto dihapus otomatis, hasil siap diunduh.',btn:'Buat gambar',wait:'Membuat gambar, mohon tunggu...',ok:'Gambar siap diunduh.',dl:'duar-viral.jpg',ba:true,lbl:'DUAR',fields:[{key:'url',label:'Gambar',photo:true,req:true}]}),
 canvasTool({id:'carbon',name:'Carbon Code',desc:'Ubah potongan kode menjadi gambar bersyntax highlight bergaya Carbon. Prosesnya bisa sampai 15 detik.',btn:'Buat gambar',wait:'Membuat gambar, mohon tunggu...',ok:'Gambar siap diunduh.',dl:'carbon.png',fields:[{key:'code',label:'Kode',req:true,area:true,max:5000,val:"console.log('Hello Carbon!');",ph:'Tempel kode di sini'}]}),
 linkTool({id:'soundcloud-dl',name:'SoundCloud Player',desc:'Putar lagu SoundCloud langsung di sini lewat pemutar resmi. Bila provider menyediakan file MP3, tombol unduh ikut muncul.',label:'Link SoundCloud',ph:'https://soundcloud.com/...',btn:'Putar lagu'}),
 linkTool({id:'dailymotion-dl',name:'Dailymotion Downloader',desc:'Ambil link unduh video Dailymotion publik dalam beberapa kualitas (1080p, 720p, 480p) beserta judul dan durasi.',label:'Link Dailymotion',ph:'https://www.dailymotion.com/video/...',btn:'Ambil video'}),
@@ -4082,8 +4201,231 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
    pv.textContent=t.value||'Pesan kamu tampil di sini';pv.classList.toggle('ph',!t.value)};
   n.oninput=t.oninput=up;
   $(r,'#ch').onclick=e=>{if(e.target.tagName==='BUTTON'){t.value=e.target.textContent;up()}};
-  $(r,'#cp').onclick=e=>{if(url)copy(url,e.target)};up()}}
+  $(r,'#cp').onclick=e=>{if(url)copy(url,e.target)};up()}},
+{id:'vektor',name:'Vektor Studio',desc:'Ubah gambar PNG/JPG jadi SVG: pilih preset, bandingkan Before/After dengan zoom sampai 1000×, ganti warna, tambah latar, lalu ekspor. Diproses di perangkatmu.',
+ html:()=>`<p class="msg" style="margin:0 0 12px">Trace gambar jadi vektor dengan preset Logo, Sketsa, Foto, atau Pixel art. Ada slider Before/After, edit warna per lapisan, latar, urungkan/ulangi, serta ekspor SVG, PNG, WebP, JPG, atau kode React/Vue. Dibuka di halaman sendiri, gambar tidak diunggah.</p>
+<div class="row"><a class="btn primary" href="/vektor.html">Buka Vektor Studio</a></div>`,
+ init:r=>{}},
+{id:'svg-motion',name:'Motion Studio',desc:'Editor animasi SVG: gerakkan objek dengan keyframe lalu ekspor sebagai SVG animasi. Dibuka di halaman sendiri, diproses di perangkatmu.',
+ html:()=>`<p class="msg" style="margin:0 0 12px">Buat animasi dari bentuk dan teks, atur posisi, ukuran, putaran, dan transparansi per keyframe. Hasil ekspornya berupa SVG animasi, bukan file preset .xml Alight Motion.</p>
+<div class="row"><a class="btn primary" id="sm" href="/svg-motion.html">Buka editor</a></div>`,
+ init:r=>{}},
+{id:'svg-xml',name:'SVG ke Alight XML',desc:'Ubah SVG animasi (SMIL) jadi preset XML Alight Motion dengan keyframe yang bisa diedit. Diproses di perangkatmu, tanpa API key.',
+ html:()=>`<label for="sxt">Tempel kode SVG animasi</label><textarea id="sxt" rows="7" spellcheck="false" placeholder="&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 240 160&quot;&gt;...&lt;/svg&gt;"></textarea>
+<label class="drop" id="sxd" for="sxf">${svg(IC.up)}<span><b>Atau pilih file .svg</b><span id="sxi">Maksimal 2 MB, file tidak diunggah.</span></span></label><input id="sxf" type="file" accept=".svg,image/svg+xml">
+<label for="sxr">Ukuran kanvas</label><select id="sxr"><option value="asli">Asli (sesuai SVG)</option><option value="1:1">1:1</option><option value="16:9">16:9</option><option value="9:16">9:16</option><option value="4:5">4:5</option><option value="4:3">4:3</option></select>
+<label for="sxp">FPS</label><select id="sxp"><option>24</option><option selected>30</option><option>60</option></select>
+<label for="sxu">Durasi (detik), kosongkan agar otomatis</label><input id="sxu" type="number" inputmode="decimal" min="0.5" max="120" step="0.1" placeholder="otomatis dari animasi">
+<label for="sxn">Nama project</label><input id="sxn" type="text" maxlength="60" placeholder="animasi-svg">
+<div class="row"><button class="primary" id="go">Ekspor ke XML</button></div><p class="msg" id="m" role="status"></p><div id="res"></div>`,
+ init:r=>{const t=$(r,'#sxt'),f=$(r,'#sxf'),dz=$(r,'#sxd'),fi=$(r,'#sxi'),h0=fi.textContent,m=$(r,'#m'),res=$(r,'#res');let prev='',pv='';
+  f.onchange=()=>{const x=f.files[0];dz.classList.toggle('on',!!x);if(!x){fi.textContent=h0;return}
+   if(x.size>2*1024*1024){m.className='msg bad';m.textContent='Ukuran file maksimal 2 MB.';f.value='';dz.classList.remove('on');fi.textContent=h0;return}
+   const rd=new FileReader();rd.onload=()=>{t.value=String(rd.result);fi.textContent=x.name+' · '+mb(x.size);if(!$(r,'#sxn').value)$(r,'#sxn').value=x.name.replace(/\.[^.]+$/,'').slice(0,60)};rd.readAsText(x)};
+  $(r,'#go').onclick=()=>{const bad=x=>{m.className='msg bad';m.textContent=x},src=t.value.trim();
+   if(!src)return bad('Tempel kode SVG atau pilih file dulu.');
+   if(src.length>2*1024*1024)return bad('Kode SVG maksimal 2 MB.');
+   m.className='msg';m.textContent='Memproses...';
+   try{const rs=svgToAm(src,{ratio:$(r,'#sxr').value,fps:parseInt($(r,'#sxp').value,10),dur:parseFloat($(r,'#sxu').value),name:($(r,'#sxn').value.trim()||'animasi-svg')+'.svg'});
+    const nm=($(r,'#sxn').value.trim()||'animasi-svg').replace(/[^\w.-]+/g,'-').slice(0,60);
+    if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(new Blob([rs.xml],{type:'application/xml'}));
+    let pu='';try{const d=new DOMParser().parseFromString(src,'image/svg+xml');d.querySelectorAll('script,foreignObject').forEach(n=>n.remove());pu='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(d.documentElement))}catch(e){}
+    res.innerHTML=`<div class="out">${pu?`<div class="cmp"><figure><img src="${pu}" alt="Preview SVG" style="background:#fff;max-width:100%;max-height:220px"><figcaption>Preview SVG sumber, bukan hasil render Alight Motion</figcaption></figure></div>`:''}
+<p class="msg">${rs.layers.length} layer · ${rs.W} x ${rs.H} px · ${rs.D} detik · ${esc(rs.layers.map(l=>l.name).join(', ')).slice(0,160)}</p>
+${rs.warn.length?`<p class="msg bad">${rs.warn.map(esc).join('<br>')}</p>`:''}
+<textarea readonly rows="6" spellcheck="false">${esc(rs.xml)}</textarea>
+<div class="row"><a class="btn primary dlb" href="${prev}" download="${esc(nm)}.xml">${DLI}Unduh XML</a><button id="cp">Salin XML</button></div></div>`;
+    $(r,'#cp').onclick=e=>copy(rs.xml,e.currentTarget);m.textContent=''}
+   catch(e){res.innerHTML='';bad(e.message&&e.message.length<140?e.message:'Gagal memproses SVG.')}}}}
 ];
+
+/* konverter SVG ke XML Alight Motion */
+function svgToAm(src,o){
+ o=o||{};
+ const warn=[],seen={},wn=m=>{if(!seen[m]){seen[m]=1;warn.push(m)}};
+ const f6=n=>(+n).toFixed(6),f8=n=>(+n).toFixed(8),fm=n=>String(+(+n).toFixed(7)),xe=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ const doc=new DOMParser().parseFromString(src,'image/svg+xml'),rt=doc.documentElement;
+ if(!rt||rt.localName!=='svg'||doc.getElementsByTagName('parsererror').length)throw new Error('Kode bukan SVG yang valid.');
+ rt.querySelectorAll('script,foreignObject').forEach(n=>n.remove());
+ let vx=0,vy=0,W,H;
+ const vb=(rt.getAttribute('viewBox')||'').trim().split(/[\s,]+/).map(Number);
+ if(vb.length===4&&vb.every(isFinite)&&vb[2]>0&&vb[3]>0)[vx,vy,W,H]=vb;
+ else{W=parseFloat(rt.getAttribute('width'))||300;H=parseFloat(rt.getAttribute('height'))||150}
+ W=Math.round(W);H=Math.round(H);
+ let W2=W,H2=H;const rs=o.ratio&&o.ratio!=='asli'?o.ratio.split(':').map(Number):null;
+ if(rs){const r=rs[0]/rs[1];if(W/H<r)W2=Math.round(H*r);else H2=Math.round(W/r)}
+ if(o.w>0&&o.h>0){W2=Math.round(o.w);H2=Math.round(o.h)}
+ const ox=(W2-W)/2-vx,oy=(H2-H)/2-vy;
+ if(/@keyframes/.test(src))wn('Animasi CSS (@keyframes) belum didukung, hanya animasi SMIL.');
+ if(rt.querySelector('text,image,use,filter,linearGradient,radialGradient,clipPath,mask'))wn('Elemen text, image, use, gradient, filter, dan mask dilewati atau diganti warna polos.');
+ // klon statis tanpa animasi untuk mengukur bbox
+ const st=document.importNode(rt,true);
+ st.querySelectorAll('animate,animateTransform,animateMotion,set').forEach(n=>n.remove());
+ st.setAttribute('width',W);st.setAttribute('height',H);
+ const host=document.createElement('div');host.style.cssText='position:fixed;left:-99999px;top:0;width:10px;height:10px;overflow:hidden;visibility:hidden';
+ host.appendChild(st);document.body.appendChild(host);
+ try{
+ const SEL='rect,circle,ellipse,path,polygon,polyline,line',ban='defs,clipPath,mask,symbol,pattern,marker';
+ const A=[...rt.querySelectorAll(SEL)],S=[...st.querySelectorAll(SEL)],shapes=[];
+ A.forEach((e,i)=>{if(!e.closest(ban))shapes.push([e,S[i]])});
+ const cv=document.createElement('canvas').getContext('2d');
+ const hx=n=>Math.max(0,Math.min(255,Math.round(n))).toString(16).padStart(2,'0');
+ const col=(c,al)=>{if(c==='none')return null;if(/^url/i.test(c)){wn('Gradient atau pattern diganti warna hitam.');c='#000'}
+  cv.fillStyle='#000';cv.fillStyle=c;const v=cv.fillStyle;let a=al==null?1:al;
+  if(v[0]==='#')return{c:'#'+hx(255*a)+v.slice(1),a};
+  const m=v.match(/[\d.]+/g);a=a*(m[3]==null?1:+m[3]);return{c:'#'+hx(255*a)+hx(m[0])+hx(m[1])+hx(m[2]),a}};
+ const inh=(el,k)=>{for(let n=el,i=0;n&&n.nodeType===1&&i<12;n=n.parentNode,i++){
+   const m=(n.getAttribute('style')||'').match(new RegExp('(?:^|;)\\s*'+k+'\\s*:\\s*([^;]+)'));if(m)return m[1].trim();
+   const a=n.getAttribute(k);if(a!=null&&a!=='')return a.trim()}return null};
+ const opac=el=>{let p=1;for(let n=el;n&&n.nodeType===1;n=n.parentNode){const m=(n.getAttribute('style')||'').match(/(?:^|;)\s*opacity\s*:\s*([^;]+)/),v=m?m[1]:n.getAttribute('opacity');if(v!=null&&v!==''&&isFinite(+v))p*=+v}return p};
+ const pt=(s,warnIt)=>{if(s==null||s==='')return 0;const m=String(s).trim().match(/^(-?[\d.]+)(ms|s|min)?$/);
+  if(!m){if(warnIt)wn('Waktu "'+s+'" (begin/dur) tidak didukung, dianggap 0.');return 0}
+  return +m[1]*(m[2]==='ms'?.001:m[2]==='min'?60:1)};
+ const trackOf=a=>{const dur=pt(a.getAttribute('dur'),1);if(!(dur>0)){wn('Animasi tanpa dur yang jelas dilewati.');return null}
+  const beg=pt(a.getAttribute('begin'),1);
+  let vs=a.getAttribute('values');
+  vs=vs?vs.split(';').map(s=>s.trim()).filter(s=>s!==''):[a.getAttribute('from'),a.getAttribute('to')].filter(v=>v!=null&&v!=='');
+  if(vs.length<2){wn('Animasi tanpa values atau from/to dilewati.');return null}
+  const nums=vs.map(s=>s.split(/[\s,]+/).filter(Boolean).map(Number));
+  if(nums.some(n=>!n.length||n.some(x=>!isFinite(x)))){wn('Animasi dengan nilai non-angka dilewati.');return null}
+  let kt=(a.getAttribute('keyTimes')||'').split(';').filter(s=>s!=='').map(Number);
+  if(kt.length!==vs.length||kt.some(x=>!isFinite(x)))kt=vs.map((_,i)=>i/(vs.length-1));
+  if(a.getAttribute('calcMode')==='spline'||a.getAttribute('keySplines'))wn('Easing (keySplines) diabaikan, keyframe dibuat tanpa kurva easing.');
+  if(a.getAttribute('calcMode')==='discrete')wn('calcMode discrete diperlakukan sebagai linear.');
+  const rc=a.getAttribute('repeatCount');
+  return{dur,beg,nums,kt,reps:rc==='indefinite'?Infinity:(parseFloat(rc)||1),el:a}};
+ // kumpulkan driver tiap bentuk
+ const info=shapes.map(([e,se])=>{
+  const tag=e.localName,d={x:[],y:[],sc:[],op:[]};
+  [...e.children].forEach(a=>{
+   const n=a.localName;if(!/^(animate|animateTransform|animateMotion|set)$/.test(n))return;
+   if(n==='animateMotion'){wn('animateMotion belum didukung.');return}
+   if(n==='set'){wn('Elemen <set> dilewati.');return}
+   const tr=trackOf(a);if(!tr)return;
+   const an=a.getAttribute('attributeName');
+   if(n==='animateTransform'){const ty=a.getAttribute('type');
+    if(a.getAttribute('additive')==='sum'||a.getAttribute('additive')==='replace'){}
+    if(ty==='translate'){d.x.push({tr,i:0,off:0});d.y.push({tr,i:1,off:0,dflt:0})}
+    else if(ty==='scale')d.sc.push({tr,k:1});
+    else wn('Rotasi (animateTransform rotate/skew) belum didukung karena struktur XML-nya belum terverifikasi dari contoh.');
+    return}
+   if(an==='opacity'||an==='fill-opacity')d.op.push({tr});
+   else if(tag==='rect'&&an==='x')d.x.push({tr,i:0,off:parseFloat(e.getAttribute('x'))||0});
+   else if(tag==='rect'&&an==='y')d.y.push({tr,i:0,off:parseFloat(e.getAttribute('y'))||0});
+   else if((tag==='circle'||tag==='ellipse')&&an==='cx')d.x.push({tr,i:0,off:parseFloat(e.getAttribute('cx'))||0});
+   else if((tag==='circle'||tag==='ellipse')&&an==='cy')d.y.push({tr,i:0,off:parseFloat(e.getAttribute('cy'))||0});
+   else if(tag==='circle'&&an==='r')d.sc.push({tr,k:0,r:1});
+   else wn('Animasi atribut "'+an+'" pada <'+tag+'> belum didukung.')});
+  return{e,se,tag,d}});
+ // durasi
+ let D=0;info.forEach(s=>Object.values(s.d).forEach(l=>l.forEach(x=>{const t=x.tr;D=Math.max(D,t.beg+t.dur*(isFinite(t.reps)?t.reps:1))})));
+ if(o.dur>0)D=+o.dur;if(!(D>0))D=2;D=Math.min(D,120);
+ const pts=(x,base)=>{const t=x.tr,out=[];
+  const cyc=isFinite(t.reps)?Math.ceil(t.reps):1e9,need=Math.ceil((D-t.beg)/t.dur-1e-9)||1;
+  for(let c=0;c<Math.min(cyc,need,400);c++)for(let i=0;i<t.nums.length;i++){
+   const v=t.nums[i],val=v.length>1||x.i?(v[x.i]!=null?v[x.i]:(x.dflt!=null?x.dflt:v[0])):v[0];
+   out.push({t:t.beg+(c+t.kt[i])*t.dur,v:val})}
+  if(t.beg>0)out.unshift({t:0,v:base},{t:t.beg,v:base});
+  out.sort((a,b)=>a.t-b.t);
+  return out.filter((p,i)=>!(i<out.length-1&&Math.abs(out[i+1].t-p.t)<1e-9))};
+ const at=(p,t)=>{if(t<=p[0].t)return p[0].v;const n=p.length-1;if(t>=p[n].t)return p[n].v;let i=0;while(p[i+1].t<=t)i++;
+  const a=p[i],b=p[i+1];return a.v+(b.v-a.v)*(t-a.t)/(b.t-a.t)};
+ const times=ls=>{const s=new Set([0]);let over=false;ls.forEach(p=>p.forEach(q=>{if(q.t<=D+1e-9)s.add(+q.t.toFixed(6));else over=true}));if(over)s.add(D);return[...s].sort((a,b)=>a-b)};
+ const tf=t=>f6(Math.min(1,t/D));
+ // jalankan
+ const P0={x:vx+W/2,y:vy+H/2};
+ let n=0,out='',layers=[];
+ const mt=Math.round(D*1000);
+ info.forEach(s=>{
+  const{e,se,tag,d}=s;
+  const fillRaw=inh(e,'fill'),fo=inh(e,'fill-opacity'),strokeRaw=inh(e,'stroke');
+  const fc=col(fillRaw==null?'#000':fillRaw,fo==null?1:+fo);
+  const hasStroke=strokeRaw&&strokeRaw!=='none';
+  if(hasStroke)wn('Stroke belum didukung, hanya warna isi (fill) yang dibawa.');
+  if(!fc){if(hasStroke)wn('Bentuk tanpa fill (hanya stroke) dilewati.');return}
+  n++;const id=(tag==='circle'?370000000:310000000)+n,label=e.getAttribute('id')||tag+'-'+n;
+  const eo=opac(e);
+  let circ=tag==='circle',path='',base={x:0,y:0},bs=1;
+  const hasScale=d.sc.length>0;
+  let P=P0;
+  if(circ){const cx=parseFloat(e.getAttribute('cx'))||0,cy=parseFloat(e.getAttribute('cy'))||0,r=parseFloat(e.getAttribute('r'))||0;
+   if(!(r>0)){n--;return}P={x:cx,y:cy};bs=r/50}
+  else{
+   if(hasScale){const b=se.getBBox();P={x:b.x+b.width/2,y:b.y+b.height/2}}
+   let dd='';
+   const num=k=>parseFloat(e.getAttribute(k))||0;
+   if(tag==='rect'){const x=num('x'),y=num('y'),w=num('width'),h=num('height');
+    let rx=e.getAttribute('rx'),ry=e.getAttribute('ry');rx=rx==null?(ry==null?0:parseFloat(ry)):parseFloat(rx);ry=ry==null?rx:parseFloat(ry);
+    rx=Math.min(rx||0,w/2);ry=Math.min(ry||0,h/2);
+    if(!(w>0&&h>0)){n--;return}
+    if(rx>0&&ry>0){const k=.5522847498;
+     dd=`M ${x+rx} ${y}L ${x+w-rx} ${y}C ${x+w-rx+rx*k} ${y}, ${x+w} ${y+ry-ry*k}, ${x+w} ${y+ry}L ${x+w} ${y+h-ry}C ${x+w} ${y+h-ry+ry*k}, ${x+w-rx+rx*k} ${y+h}, ${x+w-rx} ${y+h}L ${x+rx} ${y+h}C ${x+rx-rx*k} ${y+h}, ${x} ${y+h-ry+ry*k}, ${x} ${y+h-ry}L ${x} ${y+ry}C ${x} ${y+ry-ry*k}, ${x+rx-rx*k} ${y}, ${x+rx} ${y}Z`}
+    else dd=`M ${x} ${y}L ${x+w} ${y}L ${x+w} ${y+h}L ${x} ${y+h}Z`}
+   else if(tag==='ellipse'){const cx=num('cx'),cy=num('cy'),rx=num('rx'),ry=num('ry'),k=.5522847498;
+    if(!(rx>0&&ry>0)){n--;return}
+    dd=`M ${cx+rx} ${cy}C ${cx+rx} ${cy+ry*k}, ${cx+rx*k} ${cy+ry}, ${cx} ${cy+ry}C ${cx-rx*k} ${cy+ry}, ${cx-rx} ${cy+ry*k}, ${cx-rx} ${cy}C ${cx-rx} ${cy-ry*k}, ${cx-rx*k} ${cy-ry}, ${cx} ${cy-ry}C ${cx+rx*k} ${cy-ry}, ${cx+rx} ${cy-ry*k}, ${cx+rx} ${cy}Z`}
+   else if(tag==='polygon'||tag==='polyline'){const q=(e.getAttribute('points')||'').trim().split(/[\s,]+/).map(Number);
+    if(q.length<6||q.some(x=>!isFinite(x))){n--;return}
+    dd='M '+q[0]+' '+q[1];for(let i=2;i+1<q.length;i+=2)dd+='L '+q[i]+' '+q[i+1];dd+='Z'}
+   else if(tag==='line'){wn('<line> dilewati (hanya garis, tidak punya isi).');n--;return}
+   else dd=e.getAttribute('d')||'';
+   path=shiftPath(dd,P.x,P.y);
+   if(!path){n--;return}}
+  // lokasi
+  const L0={x:P.x+ox,y:P.y+oy};
+  const xp=d.x.map(x=>({p:pts(x,x.off),off:x.off})),yp=d.y.map(x=>({p:pts(x,x.off),off:x.off}));
+  const dxy=(ls,t)=>ls.reduce((a,l)=>a+at(l.p,t)-l.off,0);
+  let loc;
+  if(xp.length||yp.length){const ts=times([...xp,...yp].map(l=>l.p));
+   loc='<location>'+ts.map(t=>`<kf t="${tf(t)}" v="${f6(L0.x+dxy(xp,t))},${f6(L0.y+dxy(yp,t))},0.000000"/>`).join('')+'</location>'}
+  else loc=`<location value="${f6(L0.x)},${f6(L0.y)},0.000000"/>`;
+  // skala
+  let sc='';
+  if(d.sc.length){if(d.sc.length>1)wn('Hanya satu animasi skala per bentuk yang dipakai.');
+   const x=d.sc[0],t=x.tr,sp=pts({tr:t,i:0},x.r?parseFloat(e.getAttribute('r'))||1:1),
+    sp2=pts({tr:t,i:t.nums[0].length>1?1:0},x.r?parseFloat(e.getAttribute('r'))||1:1);
+   const ts=times([sp,sp2]),k=x.r?1/50:bs;
+   sc='<scale>'+ts.map(tt=>`<kf t="${tf(tt)}" v="${f8(at(sp,tt)*k)},${f8(at(sp2,tt)*k)}"/>`).join('')+'</scale>'}
+  else if(Math.abs(bs-1)>1e-9)sc=`<scale value="${f8(bs)},${f8(bs)}"/>`;
+  // opacity
+  let op='';
+  if(d.op.length){const p=pts(d.op[0],eo),ts=times([p]);
+   op='<opacity>'+ts.map(t=>`<kf t="${tf(t)}" v="${f6(Math.max(0,Math.min(1,at(p,t)*(d.op[0].tr.el.getAttribute('attributeName')==='opacity'?1:eo))))}"/>`).join('')+'</opacity>'}
+  else if(eo<.9999)op=`<opacity value="${f6(eo)}"/>`;
+  out+=`      <shape id="${id}" label="${xe(label)}" startTime="0" endTime="${mt}" fillType="color"${circ?' s=".circle"':''} mediaFillMode="fill">\n        <transform>\n          ${loc}\n${sc?'          '+sc+'\n':''}${op?'          '+op+'\n':''}        </transform>\n        <fillColor value="${fc.c}"/>\n${circ?'':`        <path d="${xe(path)}"/>\n`}      </shape>\n`;
+  layers.push({name:label,tag,color:'#'+fc.c.slice(3)})});
+ if(!layers.length)throw new Error('Tidak ada bentuk yang bisa dikonversi. Gunakan rect, circle, ellipse, polygon, atau path.');
+ const fps=o.fps||30,name=xe(o.name||'animasi-svg'),ex=`width="${W2}" height="${H2}" exportWidth="${W2}" exportHeight="${H2}" bgcolor="#00000000" totalTime="${mt}" fps="${fps}"`,
+  ver='precompose="dynamicResolution" amver="1028425" ffver="106" am="com.alightcreative.motion/5.0.273.1028425"';
+ const xml=`<?xml version='1.0' encoding='UTF-8' ?>\n<scene title="${name}" ${ex} modifiedTime="${Date.now()}" ${ver} amplatform="android" retime="freeze" retimeAdaptFPS="false">\n  <embedScene id="300000001" label="SVG Lossless Layer" startTime="0" endTime="${mt}" fillType="intrinsic" outTime="${mt}" mediaFillMode="fill">\n    <transform>\n      <location value="${f6(W2/2)},${f6(H2/2)},0.000000"/>\n    </transform>\n    <fillColor value="#ff000000"/>\n<scene title="" ${ex} modifiedTime="0" ${ver} amplatform="android" retime="off" retimeAdaptFPS="false">\n${out}    </scene>\n  </embedScene>\n</scene>`;
+ return{xml,warn,layers,D,W:W2,H:H2}
+ }finally{host.remove()}
+}
+function shiftPath(d,dx,dy){
+ const N={M:2,L:2,H:1,V:1,C:6,S:4,Q:4,T:2,A:7,Z:0};let i=0;const len=d.length,seg=[];
+ const ws=()=>{while(i<len&&/[\s,]/.test(d[i]))i++};
+ const num=()=>{ws();const m=/^[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/.exec(d.slice(i));if(!m)return null;i+=m[0].length;return parseFloat(m[0])};
+ let cmd='',first=true;
+ while(true){ws();if(i>=len)break;const ch=d[i];
+  if(/[A-Za-z]/.test(ch)){if(!(ch.toUpperCase() in N))return '';cmd=ch;i++;if(ch==='Z'||ch==='z'){seg.push({c:'Z',a:[]});continue}}
+  else if(!cmd||cmd==='Z'||cmd==='z')return '';
+  const U=cmd.toUpperCase(),a=[];
+  for(let k=0;k<N[U];k++){
+   if(U==='A'&&(k===3||k===4)){ws();const c=d[i];if(c!=='0'&&c!=='1')return '';i++;a.push(+c)}
+   else{const v=num();if(v==null)return '';a.push(v)}}
+  const abs=cmd===cmd.toUpperCase()||(first&&cmd==='m');
+  if(abs){if(U==='H')a[0]-=dx;else if(U==='V')a[0]-=dy;
+   else if(U==='A'){a[5]-=dx;a[6]-=dy}
+   else for(let k=0;k<a.length;k+=2){a[k]-=dx;a[k+1]-=dy}}
+  seg.push({c:abs?U:cmd,a});
+  if(first&&cmd==='m')cmd='l';else if(cmd==='M')cmd='L';
+  first=false}
+ const f=v=>String(+v.toFixed(7));
+ return seg.map(s=>{if(s.c==='Z')return 'Z';if(s.c==='A'||s.c==='a')return s.c+' '+s.a.map(f).join(' ');
+  if(s.c==='H'||s.c==='V')return s.c+' '+f(s.a[0]);
+  if(s.c==='h'||s.c==='v')return s.c+' '+f(s.a[0]);
+  const pr=[];for(let k=0;k<s.a.length;k+=2)pr.push(f(s.a[k])+' '+f(s.a[k+1]));return s.c+' '+pr.join(', ')}).join('')
+}
 
 const svg=p=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 const IC={
@@ -4141,6 +4483,9 @@ Object.assign(IC,{
  'carbon':'<path d="M8 8l-4 4 4 4"/><path d="M16 8l4 4-4 4"/><path d="M14 5l-4 14"/>',
  'open-graph':'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
  'cek-situs':'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+ 'svg-xml':'<path d="M8 6l-5 6 5 6"/><path d="M16 6l5 6-5 6"/><path d="M13.5 4l-3 16"/>',
+ 'vektor':'<path d="M4 18c3-9 6-12 8-12s5 3 8 12"/><circle cx="4" cy="18" r="1.6"/><circle cx="20" cy="18" r="1.6"/><circle cx="12" cy="6" r="1.6"/>',
+ 'svg-motion':'<path d="M12 3l4 4-4 4-4-4z"/><path d="M5 14l3 3-3 3-3-3z"/><path d="M19 14l3 3-3 3-3-3z"/><path d="M10.5 10.5L6.5 14.5M13.5 10.5l4 4"/>',
  'konversi-gambar':'<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/>',
  'am-data':'<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16"/><path d="M8 14h4M8 16.5h2.5"/>',
  'am-find':'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.500-4.500"/><path d="M9 11h4M11 9v4"/>',
@@ -4197,6 +4542,9 @@ const META={
  'hd-gambar':{c:'#8b9cff',note:'GRATIS',tab:'HD',lead:'Perjelas dan perbesar resolusi foto dengan AI'},
  'open-graph':{c:'#22d3ee',note:'GRATIS',tab:'OG',lead:'Judul, deskripsi, dan gambar pratinjau dari link situs'},
  'cek-situs':{c:'#4ade80',note:'GRATIS',tab:'Cek Situs',lead:'Status online, waktu respons, redirect, dan SSL'},
+ 'svg-xml':{c:'#a78bfa',note:'GRATIS',tab:'SVG',lead:'Ubah SVG animasi jadi preset XML Alight Motion'},
+ 'vektor':{c:'#34d399',note:'GRATIS',tab:'Vektor',lead:'Ubah gambar jadi SVG, bandingkan Before/After dan zoom sampai 1000×'},
+ 'svg-motion':{c:'#e8336b',note:'GRATIS',tab:'Motion',lead:'Buat animasi SVG dengan keyframe, ekspor langsung dari browser'},
  'konversi-gambar':{c:'#fb923c',note:'GRATIS',tab:'Konversi',lead:'Ubah format dan kecilkan ukuran gambar di perangkatmu'},
  'am-data':{c:'#ff8fc8',note:'GRATIS',tab:'AM Data',lead:'Metadata proyek, UID, dan PID dari link share Alight Motion'},
  'am-find':{c:'#ff8fc8',note:'GRATIS',tab:'AM Find',lead:'Cari link preset Alight Motion di komentar video TikTok'},
@@ -4205,12 +4553,12 @@ const META={
  'ssweb':{c:'#38b6f5',note:'GRATIS',tab:'SS Web',lead:'Screenshot situs web dengan tampilan PC, Tablet, atau Android'},
  'qr-code':{c:'#2dd4a0',note:'GRATIS',tab:'QR',lead:'Ubah link atau teks jadi QR Code PNG'},
  'rch':{c:'#fbbf24',note:'1 LIMIT',tab:'Reaksi',lead:'Kirim reaksi emoji ke postingan channel WhatsApp'},
- 'upscale':{c:'#8b9cff',note:'GRATIS',tab:'Upscale',lead:'Perbesar dan perjelas gambar 2x dengan AI'},
+ 'upscale':{c:'#8b9cff',note:'GRATIS',tab:'HD',lead:'Perbesar dan perjelas gambar 2x dengan AI'},
  'image-to-prompt':{c:'#38b6f5',note:'GRATIS',tab:'Prompt',lead:'Ubah gambar jadi prompt AI yang detail'},
  'bypass-cf':{c:'#f59e0b',note:'GRATIS',tab:'Turnstile',lead:'Token Cloudflare Turnstile untuk sebuah situs'},
  'link-wa':{c:'#25d366',note:'DI BROWSER',tab:'WA',lead:'Link chat WhatsApp dengan pesan yang sudah terisi'}};
 IC.owner='<path d="M4 19h16M4 8l4 4 4-7 4 7 4-4-2 11H6z"/>';IC.chat=IC.feedback||IC.go;IC.role=IC.owner;IC.custom=IC.go;
-const CAT={'rch':'tools','am-premium':'am','cek-prime':'tools','hapus-background':'tools','hd-gambar':'tools','wink':'tools','netflix-token':'tools','tiktok-stalker':'tools','am-preset':'tools','igqc':'canvas','carbon':'canvas','jarvis-meme':'canvas','fake-channel':'canvas','bratvid':'canvas','brat-v1':'canvas','iqc-dark':'canvas','duar-viral':'canvas','fake-call':'canvas','aio-dl':'dl','tiktok-dl':'dl','videy-dl':'dl','dailymotion-dl':'dl','soundcloud-dl':'dl','youtube-dl':'dl','mediafire-dl':'dl','ig-dl':'dl','capcut-dl':'dl','fb-dl':'dl','ig-dl':'dl','mediafire-dl':'dl','spotify-play':'spotify','bypass-link':'tools','image-to-prompt':'tools','bypass-cf':'tools','upscale':'tools','qr-code':'tools','ssweb':'tools','cek-situs':'tools','konversi-gambar':'tools','open-graph':'tools','tts-google':'tools','getcontact-start':'gc','am-data':'tools','am-find':'tools','link-wa':'tools','react-channel':'tools'};
+const CAT={'rch':'tools','am-premium':'am','cek-prime':'tools','hapus-background':'tools','hd-gambar':'tools','wink':'tools','netflix-token':'tools','tiktok-stalker':'tools','am-preset':'tools','igqc':'canvas','carbon':'canvas','jarvis-meme':'canvas','fake-channel':'canvas','bratvid':'canvas','brat-v1':'canvas','iqc-dark':'canvas','duar-viral':'canvas','fake-call':'canvas','aio-dl':'dl','tiktok-dl':'dl','videy-dl':'dl','dailymotion-dl':'dl','soundcloud-dl':'dl','youtube-dl':'dl','mediafire-dl':'dl','ig-dl':'dl','capcut-dl':'dl','fb-dl':'dl','ig-dl':'dl','mediafire-dl':'dl','spotify-play':'spotify','bypass-link':'tools','image-to-prompt':'tools','bypass-cf':'tools','upscale':'tools','qr-code':'tools','ssweb':'tools','cek-situs':'tools','konversi-gambar':'tools','svg-motion':'tools','vektor':'tools','svg-xml':'tools','open-graph':'tools','tts-google':'tools','getcontact-start':'gc','am-data':'tools','am-find':'tools','link-wa':'tools','react-channel':'tools'};
 Object.values(META).forEach(m=>m.c='#34d399');
 const FL=[['all','Semua'],['tools','Tools'],['dl','Downloader'],['canvas','Maker'],['fav','Favorit']],FC={all:'#5de59b',tools:'#ffa94d',dl:'#6d6cf5',canvas:'#f97316',fav:'#ffa94d'},FI={all:'<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>',fav:'<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>'};
 const CATS=[
@@ -4240,7 +4588,7 @@ const ls={get:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return
 const nf=n=>Number(n).toLocaleString('id-ID');
 function rec(tool,ok){const k=tool==='am-send'||tool==='am-verif'?'am-premium':tool,s=ls.get('mt_stats')||{},r=s[k]||{ok:0,err:0};ok?r.ok++:r.err++;s[k]=r;ls.set('mt_stats',s)}
 async function api(...a){const j=await api0(...a);rec(a[0],!!(j&&j.ok));return j}
-const CHANGELOG=[{d:'20 November 2026',t:'Tool baru AM Find',i:[['baru','AM Find di kategori Tools: tempel link video TikTok, lalu cari link preset Alight Motion yang dibagikan di komentar dan balasannya.']]},{d:'20 November 2026',t:'Duar Viral kembali',i:[['baru','Tool Duar Viral di kategori Maker: pilih foto atau tempel link, latar dihapus otomatis lalu ditempel ke latar ledakan api.']]},{d:'20 November 2026',t:'Perbaikan tampilan',i:[['update','Teks melingkar di intro tidak lagi tertimpa bayangan, teks Tips di banner tidak menimpa wajah, dan pemberitahuan login di Global Chat kini rapi dan terbaca jelas di mode gelap maupun terang.']]},{d:'20 November 2026',t:'Masukan tanpa WhatsApp',i:[['update','Halaman Feedback sekarang mengirim masukan langsung ke developer di dalam Malik Tools, tidak perlu lagi lewat WhatsApp.']]},{d:'20 November 2026',t:'Tampilan Global Chat baru',i:[['update','Global Chat memakai gaya bersih: warna netral: putih dan abu muda, garis hitam tebal, bubble putih. Nama, badge role, jam, dan tombol balas kini tampil di atas bubble.']]},{d:'20 November 2026',t:'Badge role lebih profesional',i:[['update','Badge role dirapikan jadi chip kecil satu gaya: Developer hijau, Owner merah, Premium biru, VIP emas, Member abu. Dipakai seragam di Global Chat, menu samping, Profil, dan Beli Role. ']]},{d:'20 November 2026',t:'Warna Global Chat',i:[['update','Nama pengirim kini putih (mengikuti tema), bubble pesan sendiri hijau ala WhatsApp, dan chip role di bubble sendiri ikut serasi.']]},{d:'20 November 2026',t:'Menu samping dirapikan',i:[['update','Pilihan Warna aksen dihapus dari menu samping. Tombol Pasang ke layar utama tetap ada.']]},{d:'20 November 2026',t:'Global Chat',i:[['update','Family diganti nama menjadi Global Chat. Header kini menampilkan judul dan jumlah yang online.'],['update','Pesan sendiri sekarang juga menampilkan nama, centang, dan badge. Nama developer berwarna ungu dengan badge Developer.']]},{d:'20 November 2026',t:'Role Owner dan limit Reaksi Channel',i:[['baru','Paket role Owner bisa dijual dari panel developer (permanen, tanpa limit, centang verified) dan tampil di halaman Beli Role.'],['update','Reaksi Channel WhatsApp sekarang memakai limit harian yang sama dengan AM Generator (member 5 per hari). Limit dikembalikan bila reaksi gagal.'],['update','Chat Global Chat: nama pengirim tidak lagi terpotong badge, dan kutipan balasan ikut menampilkan centang serta badge pengirim.']]},{d:'20 November 2026',t:'SoundCloud Player',i:[['baru','Tool SoundCloud Player: tempel link lagu lalu putar lewat pemutar resmi SoundCloud. Tombol unduh muncul bila provider memberi file MP3.']]},{d:'20 November 2026',t:'Tampilan login baru',i:[['baru','Halaman login dirapikan: tab Masuk dan Daftar, kolom berikon, dan tombol yang lebih jelas.'],['update','Mode demo dihapus.']]},{d:'20 November 2026',t:'Tag semua dan notifikasi Family',i:[['baru','Tag semua orang di Family dengan @semua (khusus Developer). Saat mengetik @, muncul saran @semua.'],['baru','Notifikasi saat ada yang menyebut namamu atau menandai semua orang: popup di dalam situs, dan notifikasi browser bila diizinkan. Lonceng di header Family untuk menyalakan atau mematikan.']]},{d:'20 November 2026',t:'Role Owner, centang verified, badge kustom',i:[['baru','Role OWNER: permanen tanpa durasi, limit tak terbatas, dan centang verified biru seperti Developer.'],['baru','Panel Developer tab Pengguna: badge kustom (teks maks. 14 karakter + pilihan warna) yang bisa dipasang atau dihapus untuk pengguna mana pun, tampil di samping role di Family dan Profil.'],['update','Istilah "kredit" diganti menjadi "limit" di seluruh situs.']]},{d:'19 November 2026',t:'Pembaruan',i:[['baru','Spotify Play kini tampil persis seperti Now Playing di aplikasi Spotify: cover besar yang mengecil saat dijeda, tombol suka, acak, ulangi (mati/semua/satu lagu), dan daftar hasil bergaya Spotify. Halaman Spotify Play ikut bergaya Spotify (kolom cari bulat dengan ikon kaca pembesar, tombol hijau) dan warnanya dikunci hijau, tanpa biru dari aksen, blok teks, atau isi otomatis. Latar mengikuti warna dominan cover. Ditambah Dynamic Island: pil hitam di atas layar yang menampilkan cover dan equalizer, ketuk untuk membuka kontrol putar, gesek ke bawah untuk menutup, gesek ke atas untuk menyembunyikan.'],['baru','Spotify Play kini punya pemutar custom: cover lagu besar, judul dan artis rapi, bilah progres bisa digeser, tombol putar bulat, sebelumnya/berikutnya, dan tiap hasil pencarian tampil dengan thumbnail.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Reaksi Channel WhatsApp di kategori Tools: kirim reaksi emoji ke postingan channel WhatsApp lewat link postingan.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Dailymotion Downloader di kategori Downloader: unduh video Dailymotion publik, pilih kualitas 1080p, 720p, atau 480p, lengkap dengan judul dan durasi.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Videy Downloader di kategori Downloader: ambil MP4 asli dari link share Videy.co, ada pratinjau dan tombol Unduh Video.']]},{d:'18 November 2026',t:'Chat Global jadi Family',i:[['update','Chat Global diganti nama menjadi Family, dengan tampilan baru: gelembung pesan lebih jelas, pesanmu di kanan dan pesan orang lain di kiri, kolom ketik berbentuk pil, dan ikon tautan tidak dobel lagi.']]},{d:'18 November 2026',t:'Kode redeem',i:[['baru','Tukar kode redeem di halaman Beli Role atau Profil untuk langsung mengaktifkan Premium atau VIP.'],['baru','Panel Developer tab Kode: buat satu atau banyak kode sekaligus dengan role, masa aktif, limit per hari, batas pemakaian, dan tanggal kedaluwarsa, lihat siapa yang memakai, dan hapus kapan saja.']]},{d:'18 November 2026',t:'Panel Developer lebih lengkap',i:[['baru','Statistik global: pengguna aktif dan baru, tool paling dipakai, tingkat error per tool, dan penanda provider bermasalah.'],['baru','Daftar role yang akan habis (3 hari) dan yang baru habis, filter pengguna, limit bonus dan reset limit, log aktivitas, jadwal dan target role untuk pengumuman, serta ekspor data.']]},{d:'18 November 2026',t:'Tampilan baru',i:[['update','Beranda dan tampilan diperbarui: kartu sambutan besar bergradasi hijau, font baru, dan navigasi tool berbentuk pil.']]},{d:'18 November 2026',t:'Kategori dihapus',i:[['update','Kategori OSINT / Stalk dihapus beserta isinya: Instagram, Roblox, Free Fire, dan Mobile Legends Stalker.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Carbon Code di kategori Maker: ubah potongan kode jadi gambar bersyntax highlight bergaya Carbon.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','GetContact Verifikasi di kategori GetContact: mulai verifikasi lewat WhatsApp, dapat link dan kode yang berlaku 15 menit.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Spotify Play: ada tombol Putar Audio dengan pemutar bawaan. Image to Prompt: sekarang bisa pilih foto dari perangkat, tidak hanya link. Instagram Downloader kembali berfungsi untuk video. Tombol Kirim di Family tidak lagi menutupi kolom pesan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Hapus Background di kategori Tools: hapus latar foto otomatis, hasil PNG transparan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Alight Motion Data di kategori Tools: judul, ukuran, versi, jumlah efek, UID, dan PID dari link share Alight Motion.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','AI Image Upscaler di kategori Tools: perbesar dan perjelas gambar 2x dengan AI, unggah foto atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Image to Prompt di kategori Tools: ubah gambar jadi prompt AI yang detail.'],['baru','Bypass Cloudflare Turnstile di kategori Tools: buat token Turnstile untuk sebuah situs.']]},{d:'18 November 2026',t:'Tombol unduh baru',i:[['update','Tombol Unduh Foto dan Unduh Video kini bergambar ikon dan lebih jelas di semua tool.'],['update','Tool Maker yang butuh foto: pilih file dari perangkat sampai 50 MB atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Instagram Quick Chat di kategori Maker: mockup menu pesan Instagram dengan pesan, gambar, jam menu, dan bar reaksi emoji.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Jarvis Meme di kategori Maker: buat meme Jarvis dengan teks sendiri yang otomatis dibungkus dan disesuaikan ukurannya.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Call WhatsApp di kategori Maker: mockup layar panggilan iOS dengan foto profil, nama kontak, dan durasi panggilan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Channel WhatsApp di kategori Maker: mockup halaman Info Saluran iOS dengan foto profil, nama saluran, jumlah pengikut, dan jam status bar.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Video Generator di kategori Maker: buat video teks gaya Brat dengan warna latar dan warna teks pilihan, lalu unduh sebagai MP4.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Generator V1 di kategori Maker: buat gambar teks gaya Brat dengan warna latar dan warna teks pilihan.']]},{d:'18 November 2026',t:'Nonaktifkan tool sementara',i:[['baru','Developer bisa menonaktifkan tool yang sedang error dari panel Developer tab Tools, dan mengaktifkannya lagi kapan saja.']]},{d:'18 November 2026',t:'Harga role bisa diatur',i:[['baru','Panel Developer tab Harga: atur paket role (Premium/VIP), masa aktif, harga, dan limit per hari, contoh 1 hari Rp1.000 5 limit.'],['update','Halaman Beli Role kini menampilkan paket dari panel, dan role pengguna bisa diaktifkan lewat paket.']]},{d:'18 November 2026',t:'Poles tampilan',i:[['update','Beli role: paket Premium dan VIP kini punya daftar manfaat, penanda pilihan, dan peringatan login yang lebih jelas.'],['update','Stats: tampilan kosong kini punya ikon dan tombol menuju daftar tool.'],['update','Feedback: ada penghitung karakter dan petunjuk kapan pesan siap dikirim.'],['update','Changelog: entri terbaru diberi penanda.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Indikator status di pojok kanan atas kini bulat (mahkota untuk Developer), bukan kotak polos.'],['update','Tombol chat melayang tidak lagi menutupi konten di bagian bawah halaman.'],['update','Akun developer di mode demo tidak lagi menampilkan kotak limit.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Mediafire Downloader di kategori Downloader: link unduh langsung beserta nama file, ukuran, dan tipe.']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Duar Viral di kategori Maker.']]},{d:'17 November 2026',t:'Kategori disederhanakan',i:[['update','Kategori kini ada tiga: Tools, Downloader, dan Maker (sebelumnya bernama Canvas).']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Scan Slop di kategori Tools: skor, vonis, dan sinyal AI untuk sebuah situs web.']]},{d:'17 November 2026',t:'Kategori Maker',i:[['baru','Kategori Maker dengan tool IQC Dark dan Fake Call.']]},{d:'17 November 2026',t:'Kategori Downloader',i:[['baru','Kategori Downloader di beranda dan menu samping.'],['baru','Tool AIO Downloader: unduh video, audio, atau reels dari TikTok, Instagram, YouTube, Facebook, Twitter, dan lainnya.'],['baru','Tool Snaptik, CapCut, Facebook, Instagram, dan Spotify Play di kategori Downloader.'],['update','TikTok Downloader pindah ke kategori Downloader.']]},{d:'17 November 2026',t:'TikTok Downloader',i:[['baru','Tool TikTok Downloader: unduh video tanpa watermark, foto slide, dan musik dari link TikTok.'],['update','Fitur Tambah tool di panel Developer dihapus.']]},{d:'17 November 2026',t:'Perbaikan tampilan',i:[['update','Halaman Beli role dirapikan: kartu Premium dan VIP tertata, teks tidak menyatu lagi.'],['update','Family tampilan baru: bubble, foto profil dengan warna role, pemisah tanggal.'],['update','Konfirmasi hapus memakai kotak dialog sendiri, bukan popup browser.'],['update','Panel Developer: tombol Tes koneksi bot dan alasan gagal kirim yang lebih jelas.']]},{d:'16 November 2026',t:'Sistem developer dan role',i:[['baru','Panel Developer: lihat pengguna, kirim peringatan, blokir.'],['baru','Role pengguna (Member, Premium, VIP) bisa diatur developer dan tampil sebagai badge.'],['baru','Developer bisa menambah tool baru tanpa edit kode.'],['baru','Family: ngobrol dengan semua pengguna, balas, dan tag @nama.'],['baru','Pengumuman dari developer di beranda.'],['baru','Favorit: ketuk ☆ untuk menaruh tool di atas.']]},{d:'16 November 2026',t:'Tampilan baru dan menu samping',i:[['baru','Beranda baru dengan banner Malik Tools.'],['baru','Menu samping dengan kategori dan pencarian tool.'],['baru','Halaman Changelog, Feedback, Stats, dan Profil.'],['update','Warna situs diganti ke hitam dan hijau.']]}];
+const CHANGELOG=[{d:'21 November 2026',t:'Before/After di Duar Viral',i:[['update','Hasil Duar Viral kini tampil dengan slider Before/After: bandingkan fotomu dengan hasil yang sudah ditempel ke latar ledakan, lengkap dengan zoom dan pan.']]},{d:'21 November 2026',t:'AI Image Upscaler jadi HD Gambar',i:[['update','Nama tool AI Image Upscaler diganti menjadi HD Gambar. Fungsinya sama: perbesar dan perjelas gambar 2x dengan AI, dengan slider Before/After.']]},{d:'21 November 2026',t:'Before/After di Hapus Background dan Upscaler',i:[['update','Hasil Hapus Background dan HD Gambar kini tampil dengan slider Before/After: geser garis ↔, zoom dengan cubit, roda mouse, atau tombol + −, dan geser gambar untuk pan.']]},{d:'21 November 2026',t:'Vektor Studio: ikon dan ASCII',i:[['baru','Vektor Studio kini bisa mengunduh paket ikon favicon (zip: favicon.ico, ikon 16/32/180/192/512, maskable, site.webmanifest, kode head) dan membuat ASCII art yang bisa disalin atau diunduh .txt.']]},{d:'21 November 2026',t:'Tool baru Vektor Studio',i:[['baru','Vektor Studio di kategori Tools: ubah gambar jadi SVG dengan preset Logo, Sketsa, Foto, dan Pixel art, bandingkan Before/After dengan zoom sampai 1000×, ganti warna, sembunyikan lapisan, tambah latar, lalu ekspor SVG, PNG, WebP, JPG, atau kode React/Vue.']]},{d:'20 November 2026',t:'Tool baru AM Find',i:[['baru','AM Find di kategori Tools: tempel link video TikTok, lalu cari link preset Alight Motion yang dibagikan di komentar dan balasannya.']]},{d:'20 November 2026',t:'Duar Viral kembali',i:[['baru','Tool Duar Viral di kategori Maker: pilih foto atau tempel link, latar dihapus otomatis lalu ditempel ke latar ledakan api.']]},{d:'20 November 2026',t:'Perbaikan tampilan',i:[['update','Teks melingkar di intro tidak lagi tertimpa bayangan, teks Tips di banner tidak menimpa wajah, dan pemberitahuan login di Global Chat kini rapi dan terbaca jelas di mode gelap maupun terang.']]},{d:'20 November 2026',t:'Masukan tanpa WhatsApp',i:[['update','Halaman Feedback sekarang mengirim masukan langsung ke developer di dalam Malik Tools, tidak perlu lagi lewat WhatsApp.']]},{d:'20 November 2026',t:'Tampilan Global Chat baru',i:[['update','Global Chat memakai gaya bersih: warna netral: putih dan abu muda, garis hitam tebal, bubble putih. Nama, badge role, jam, dan tombol balas kini tampil di atas bubble.']]},{d:'20 November 2026',t:'Badge role lebih profesional',i:[['update','Badge role dirapikan jadi chip kecil satu gaya: Developer hijau, Owner merah, Premium biru, VIP emas, Member abu. Dipakai seragam di Global Chat, menu samping, Profil, dan Beli Role. ']]},{d:'20 November 2026',t:'Warna Global Chat',i:[['update','Nama pengirim kini putih (mengikuti tema), bubble pesan sendiri hijau ala WhatsApp, dan chip role di bubble sendiri ikut serasi.']]},{d:'20 November 2026',t:'Menu samping dirapikan',i:[['update','Pilihan Warna aksen dihapus dari menu samping. Tombol Pasang ke layar utama tetap ada.']]},{d:'20 November 2026',t:'Global Chat',i:[['update','Family diganti nama menjadi Global Chat. Header kini menampilkan judul dan jumlah yang online.'],['update','Pesan sendiri sekarang juga menampilkan nama, centang, dan badge. Nama developer berwarna ungu dengan badge Developer.']]},{d:'20 November 2026',t:'Role Owner dan limit Reaksi Channel',i:[['baru','Paket role Owner bisa dijual dari panel developer (permanen, tanpa limit, centang verified) dan tampil di halaman Beli Role.'],['update','Reaksi Channel WhatsApp sekarang memakai limit harian yang sama dengan AM Generator (member 5 per hari). Limit dikembalikan bila reaksi gagal.'],['update','Chat Global Chat: nama pengirim tidak lagi terpotong badge, dan kutipan balasan ikut menampilkan centang serta badge pengirim.']]},{d:'20 November 2026',t:'SoundCloud Player',i:[['baru','Tool SoundCloud Player: tempel link lagu lalu putar lewat pemutar resmi SoundCloud. Tombol unduh muncul bila provider memberi file MP3.']]},{d:'20 November 2026',t:'Tampilan login baru',i:[['baru','Halaman login dirapikan: tab Masuk dan Daftar, kolom berikon, dan tombol yang lebih jelas.'],['update','Mode demo dihapus.']]},{d:'20 November 2026',t:'Tag semua dan notifikasi Family',i:[['baru','Tag semua orang di Family dengan @semua (khusus Developer). Saat mengetik @, muncul saran @semua.'],['baru','Notifikasi saat ada yang menyebut namamu atau menandai semua orang: popup di dalam situs, dan notifikasi browser bila diizinkan. Lonceng di header Family untuk menyalakan atau mematikan.']]},{d:'20 November 2026',t:'Role Owner, centang verified, badge kustom',i:[['baru','Role OWNER: permanen tanpa durasi, limit tak terbatas, dan centang verified biru seperti Developer.'],['baru','Panel Developer tab Pengguna: badge kustom (teks maks. 14 karakter + pilihan warna) yang bisa dipasang atau dihapus untuk pengguna mana pun, tampil di samping role di Family dan Profil.'],['update','Istilah "kredit" diganti menjadi "limit" di seluruh situs.']]},{d:'19 November 2026',t:'Pembaruan',i:[['baru','Spotify Play kini tampil persis seperti Now Playing di aplikasi Spotify: cover besar yang mengecil saat dijeda, tombol suka, acak, ulangi (mati/semua/satu lagu), dan daftar hasil bergaya Spotify. Halaman Spotify Play ikut bergaya Spotify (kolom cari bulat dengan ikon kaca pembesar, tombol hijau) dan warnanya dikunci hijau, tanpa biru dari aksen, blok teks, atau isi otomatis. Latar mengikuti warna dominan cover. Ditambah Dynamic Island: pil hitam di atas layar yang menampilkan cover dan equalizer, ketuk untuk membuka kontrol putar, gesek ke bawah untuk menutup, gesek ke atas untuk menyembunyikan.'],['baru','Spotify Play kini punya pemutar custom: cover lagu besar, judul dan artis rapi, bilah progres bisa digeser, tombol putar bulat, sebelumnya/berikutnya, dan tiap hasil pencarian tampil dengan thumbnail.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Reaksi Channel WhatsApp di kategori Tools: kirim reaksi emoji ke postingan channel WhatsApp lewat link postingan.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Dailymotion Downloader di kategori Downloader: unduh video Dailymotion publik, pilih kualitas 1080p, 720p, atau 480p, lengkap dengan judul dan durasi.']]},{d:'19 November 2026',t:'Tool baru',i:[['baru','Videy Downloader di kategori Downloader: ambil MP4 asli dari link share Videy.co, ada pratinjau dan tombol Unduh Video.']]},{d:'18 November 2026',t:'Chat Global jadi Family',i:[['update','Chat Global diganti nama menjadi Family, dengan tampilan baru: gelembung pesan lebih jelas, pesanmu di kanan dan pesan orang lain di kiri, kolom ketik berbentuk pil, dan ikon tautan tidak dobel lagi.']]},{d:'18 November 2026',t:'Kode redeem',i:[['baru','Tukar kode redeem di halaman Beli Role atau Profil untuk langsung mengaktifkan Premium atau VIP.'],['baru','Panel Developer tab Kode: buat satu atau banyak kode sekaligus dengan role, masa aktif, limit per hari, batas pemakaian, dan tanggal kedaluwarsa, lihat siapa yang memakai, dan hapus kapan saja.']]},{d:'18 November 2026',t:'Panel Developer lebih lengkap',i:[['baru','Statistik global: pengguna aktif dan baru, tool paling dipakai, tingkat error per tool, dan penanda provider bermasalah.'],['baru','Daftar role yang akan habis (3 hari) dan yang baru habis, filter pengguna, limit bonus dan reset limit, log aktivitas, jadwal dan target role untuk pengumuman, serta ekspor data.']]},{d:'18 November 2026',t:'Tampilan baru',i:[['update','Beranda dan tampilan diperbarui: kartu sambutan besar bergradasi hijau, font baru, dan navigasi tool berbentuk pil.']]},{d:'18 November 2026',t:'Kategori dihapus',i:[['update','Kategori OSINT / Stalk dihapus beserta isinya: Instagram, Roblox, Free Fire, dan Mobile Legends Stalker.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Carbon Code di kategori Maker: ubah potongan kode jadi gambar bersyntax highlight bergaya Carbon.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','GetContact Verifikasi di kategori GetContact: mulai verifikasi lewat WhatsApp, dapat link dan kode yang berlaku 15 menit.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Spotify Play: ada tombol Putar Audio dengan pemutar bawaan. Image to Prompt: sekarang bisa pilih foto dari perangkat, tidak hanya link. Instagram Downloader kembali berfungsi untuk video. Tombol Kirim di Family tidak lagi menutupi kolom pesan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Hapus Background di kategori Tools: hapus latar foto otomatis, hasil PNG transparan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Alight Motion Data di kategori Tools: judul, ukuran, versi, jumlah efek, UID, dan PID dari link share Alight Motion.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','HD Gambar di kategori Tools: perbesar dan perjelas gambar 2x dengan AI, unggah foto atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Image to Prompt di kategori Tools: ubah gambar jadi prompt AI yang detail.'],['baru','Bypass Cloudflare Turnstile di kategori Tools: buat token Turnstile untuk sebuah situs.']]},{d:'18 November 2026',t:'Tombol unduh baru',i:[['update','Tombol Unduh Foto dan Unduh Video kini bergambar ikon dan lebih jelas di semua tool.'],['update','Tool Maker yang butuh foto: pilih file dari perangkat sampai 50 MB atau tempel link.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Instagram Quick Chat di kategori Maker: mockup menu pesan Instagram dengan pesan, gambar, jam menu, dan bar reaksi emoji.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Jarvis Meme di kategori Maker: buat meme Jarvis dengan teks sendiri yang otomatis dibungkus dan disesuaikan ukurannya.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Call WhatsApp di kategori Maker: mockup layar panggilan iOS dengan foto profil, nama kontak, dan durasi panggilan.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Fake Channel WhatsApp di kategori Maker: mockup halaman Info Saluran iOS dengan foto profil, nama saluran, jumlah pengikut, dan jam status bar.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Video Generator di kategori Maker: buat video teks gaya Brat dengan warna latar dan warna teks pilihan, lalu unduh sebagai MP4.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Brat Generator V1 di kategori Maker: buat gambar teks gaya Brat dengan warna latar dan warna teks pilihan.']]},{d:'18 November 2026',t:'Nonaktifkan tool sementara',i:[['baru','Developer bisa menonaktifkan tool yang sedang error dari panel Developer tab Tools, dan mengaktifkannya lagi kapan saja.']]},{d:'18 November 2026',t:'Harga role bisa diatur',i:[['baru','Panel Developer tab Harga: atur paket role (Premium/VIP), masa aktif, harga, dan limit per hari, contoh 1 hari Rp1.000 5 limit.'],['update','Halaman Beli Role kini menampilkan paket dari panel, dan role pengguna bisa diaktifkan lewat paket.']]},{d:'18 November 2026',t:'Poles tampilan',i:[['update','Beli role: paket Premium dan VIP kini punya daftar manfaat, penanda pilihan, dan peringatan login yang lebih jelas.'],['update','Stats: tampilan kosong kini punya ikon dan tombol menuju daftar tool.'],['update','Feedback: ada penghitung karakter dan petunjuk kapan pesan siap dikirim.'],['update','Changelog: entri terbaru diberi penanda.']]},{d:'18 November 2026',t:'Perbaikan tampilan',i:[['update','Indikator status di pojok kanan atas kini bulat (mahkota untuk Developer), bukan kotak polos.'],['update','Tombol chat melayang tidak lagi menutupi konten di bagian bawah halaman.'],['update','Akun developer di mode demo tidak lagi menampilkan kotak limit.']]},{d:'18 November 2026',t:'Tool baru',i:[['baru','Mediafire Downloader di kategori Downloader: link unduh langsung beserta nama file, ukuran, dan tipe.']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Duar Viral di kategori Maker.']]},{d:'17 November 2026',t:'Kategori disederhanakan',i:[['update','Kategori kini ada tiga: Tools, Downloader, dan Maker (sebelumnya bernama Canvas).']]},{d:'17 November 2026',t:'Tool baru',i:[['baru','Tool Scan Slop di kategori Tools: skor, vonis, dan sinyal AI untuk sebuah situs web.']]},{d:'17 November 2026',t:'Kategori Maker',i:[['baru','Kategori Maker dengan tool IQC Dark dan Fake Call.']]},{d:'17 November 2026',t:'Kategori Downloader',i:[['baru','Kategori Downloader di beranda dan menu samping.'],['baru','Tool AIO Downloader: unduh video, audio, atau reels dari TikTok, Instagram, YouTube, Facebook, Twitter, dan lainnya.'],['baru','Tool Snaptik, CapCut, Facebook, Instagram, dan Spotify Play di kategori Downloader.'],['update','TikTok Downloader pindah ke kategori Downloader.']]},{d:'17 November 2026',t:'TikTok Downloader',i:[['baru','Tool TikTok Downloader: unduh video tanpa watermark, foto slide, dan musik dari link TikTok.'],['update','Fitur Tambah tool di panel Developer dihapus.']]},{d:'17 November 2026',t:'Perbaikan tampilan',i:[['update','Halaman Beli role dirapikan: kartu Premium dan VIP tertata, teks tidak menyatu lagi.'],['update','Family tampilan baru: bubble, foto profil dengan warna role, pemisah tanggal.'],['update','Konfirmasi hapus memakai kotak dialog sendiri, bukan popup browser.'],['update','Panel Developer: tombol Tes koneksi bot dan alasan gagal kirim yang lebih jelas.']]},{d:'16 November 2026',t:'Sistem developer dan role',i:[['baru','Panel Developer: lihat pengguna, kirim peringatan, blokir.'],['baru','Role pengguna (Member, Premium, VIP) bisa diatur developer dan tampil sebagai badge.'],['baru','Developer bisa menambah tool baru tanpa edit kode.'],['baru','Family: ngobrol dengan semua pengguna, balas, dan tag @nama.'],['baru','Pengumuman dari developer di beranda.'],['baru','Favorit: ketuk ☆ untuk menaruh tool di atas.']]},{d:'16 November 2026',t:'Tampilan baru dan menu samping',i:[['baru','Beranda baru dengan banner Malik Tools.'],['baru','Menu samping dengan kategori dan pencarian tool.'],['baru','Halaman Changelog, Feedback, Stats, dan Profil.'],['update','Warna situs diganti ke hitam dan hijau.']]}];
 const shell=(bar,body)=>`<section class="panel"><div class="bar"><span>${bar}</span></div><div class="in">${body}</div></section>`;
 const hero=(ic,h,sub)=>`<div class="thero"><span class="tile">${svg(IC[ic])}</span><div><h2>${h}</h2><p class="sub">${sub}</p></div></div>`;
 const AUTH={user:null,clientId:'',requireLogin:false,ready:false};
@@ -4415,7 +4763,7 @@ function siteCard(res,d){if(!d||typeof d!=='object'||!d.status)return false;
  const txt='Cek situs: '+lab+' - '+sub+(d.ssl?' - SSL '+d.ssl:'');
  res.innerHTML=`<div class="out sitec"><div class="scs" style="--c:${col}"><span class="scd"></span><div><strong>${esc(lab)}</strong><small>${esc(sub)}</small></div></div>${off?'':`<div class="scbar" aria-hidden="true"><i style="width:${Math.max(6,Math.min(100,Math.round(ms/30)))}%;background:${col}"></i></div>`}<div class="scg">${it.join('')}</div><div class="row"><button type="button" id="scc">Salin ringkasan</button></div></div>`;
  const b=res.querySelector('#scc');if(b)b.onclick=x=>copy(txt,x.target);return true}
-const NEWT={'rch':'2026-11-19','qr-code':'2026-11-19','ssweb':'2026-11-19','tts-google':'2026-11-19','open-graph':'2026-11-19','cek-situs':'2026-11-19','konversi-gambar':'2026-11-19'};
+const NEWT={'rch':'2026-11-19','qr-code':'2026-11-19','ssweb':'2026-11-19','tts-google':'2026-11-19','open-graph':'2026-11-19','cek-situs':'2026-11-19','konversi-gambar':'2026-11-19','svg-motion':'2026-11-21','svg-xml':'2026-11-21','vektor':'2026-11-21'};
 const isNew=id=>NEWT[id]&&(Date.now()-Date.parse(NEWT[id]))<14*864e5;
 function bump(id){const u=ls.get('mt_use')||{};u[id]=(u[id]||0)+1;ls.set('mt_use',u)}
 function hotHtml(){const by=id=>tools.find(x=>x.id===id),card=(x,i,a,bd)=>{const m=META[x.id];return `<a class="hc" href="#${x.id}" style="--tc:${m.c}"><span class="tri" aria-hidden="true">${svg(IC[x.id]||IC.go)}</span><b>${esc(x.name)}${bd&&isNew(x.id)?'<span class="nwb">BARU</span>':''}</b><small>${esc(m.lead)}</small></a>`};

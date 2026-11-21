@@ -841,7 +841,7 @@ module.exports = async (req, res) => {
     }
   }
 
-  const mkHeaders = (t) => ({ ...(t.ac ? (acKey() ? { 'x-api-key': acKey() } : {}) : t.gc ? { Authorization: 'Bearer ' + cfg.gcKey } : t.base ? {} : { Authorization: 'Bearer ' + cfg.key, 'x-api-key': cfg.key }), 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', Accept: 'application/json, text/plain, */*' });
+  const mkHeaders = (t) => ({ ...(t.ac ? (acKey() ? { 'x-api-key': acKey() } : {}) : t.gc ? { Authorization: 'Bearer ' + cfg.gcKey } : t.base ? {} : { Authorization: 'Bearer ' + cfg.key, 'x-api-key': cfg.key }), 'User-Agent': t.ac ? (process.env.CLOUDAPI_UA || 'MalikTools/1.0 (API client)') : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', Accept: 'application/json, text/plain, */*' });
 
   // Satu percobaan ke satu provider. Hasil: { ok:true, link, data } atau { ok:false, code, error, retry }.
   // retry:true = kegagalan di sisi provider (boleh dicoba lewat jalur cadangan).
@@ -889,7 +889,7 @@ module.exports = async (req, res) => {
         text = buf.toString('utf8'); // bukan gambar: lanjut sebagai teks/JSON
       } else text = await r.text();
       const hp = htmlProblem(r.status, text);
-      if (hp) return { ok: false, code: 502, error: hp.msg, retry: true, transient: !!hp.transient };
+      if (hp) { const ray = r.headers.get('cf-ray'); return { ok: false, code: 502, error: hp.msg + (ray && /Cloudflare/.test(hp.msg) ? ' (Ray ID: ' + ray + ')' : ''), retry: true, transient: !!hp.transient }; }
       let data; try { data = JSON.parse(text); } catch { data = { message: text.slice(0, 500) }; }
       if (data && (data.status === false || data.success === false)) // provider membalas HTTP 200 tetapi status:false
         return { ok: false, code: 502, error: errText(data, 'Provider menolak permintaan.'), retry: true };
