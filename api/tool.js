@@ -649,7 +649,49 @@ async function siteCheck(input) {
 }
 
 // NexaDev: kirim reaksi emoji ke postingan channel WhatsApp. Kunci hanya dari env NEXADEV_API_KEY (server), tidak pernah ke browser.
-async function reactChannel(f) {
+// V2 dan V3 lewat api-cloud (kunci CLOUDAPI_API_KEY): V2 = GET /tools/rch?link=&emoji= (maks. 6 emoji), V3 = GET /tools/reactch-v4?url=&reaction= (1 emoji).
+// Balasan memuat quota + apikey: tidak pernah diteruskan ke browser.
+async function reactChannelCloud(f, variant) {
+  const key = process.env.CLOUDAPI_API_KEY || '';
+  if (!key) return { ok: false, code: 500, error: 'CLOUDAPI_API_KEY belum diatur di Environment Variables Vercel.' };
+  const base = (process.env.CLOUDAPI_BASE_URL || 'https://api-cloud.my.id').replace(/\/$/, '');
+  const url = String(f.url || '').trim();
+  if (!/^https:\/\/(www\.)?whatsapp\.com\/channel\/[A-Za-z0-9]{10,40}\/\d{1,12}$/.test(url))
+    return { ok: false, code: 400, error: 'Link harus link postingan channel WhatsApp, contoh https://whatsapp.com/channel/XXXX/123 (ada angka di belakang).' };
+  const v3 = variant === 'v3';
+  const list = String(f.reaction || '').split(/[,，\s]+/).map(x => x.trim()).filter(Boolean);
+  if (!list.length || list.length > (v3 ? 1 : 6)) return { ok: false, code: 400, error: v3 ? 'Isi 1 emoji saja.' : 'Isi 1 sampai 6 emoji, pisahkan dengan koma.' };
+  if (!list.every(e => e.length <= 16 && /^[\p{Extended_Pictographic}‍️\u{1F3FB}-\u{1F3FF}]+$/u.test(e)))
+    return { ok: false, code: 400, error: 'Reaksi harus berupa emoji saja' + (v3 ? '.' : ', pisahkan dengan koma.') };
+  const reaction = list.join(',');
+  const u = new URL(base + (v3 ? '/tools/reactch-v4' : '/tools/rch'));
+  u.searchParams.set(process.env.CLOUDAPI_KEY_PARAM || 'apikey', key);
+  u.searchParams.set(v3 ? 'url' : 'link', url);
+  u.searchParams.set(v3 ? 'reaction' : 'emoji', reaction);
+  const o = (process.env.CLOUDAPI_ORIGIN || 'https://maliktools.biz.id').trim().replace(/\/$/, '');
+  const headers = { Accept: 'application/json', 'x-api-key': key, 'User-Agent': process.env.CLOUDAPI_UA || 'MalikTools/1.0 (API client)', ...(!o || o === '-' ? {} : { Origin: o, Referer: o + '/' }) };
+  const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 52000);
+  let j;
+  try {
+    const r = await fetch(u, { signal: ac.signal, headers });
+    const t = await r.text();
+    try { j = JSON.parse(t); } catch { return { ok: false, code: 502, error: 'Provider mengirim balasan yang tidak bisa dibaca. Coba lagi nanti.' }; }
+  } catch (e) {
+    return { ok: false, code: 504, error: 'Provider tidak merespons. Coba lagi sebentar lagi.' };
+  } finally { clearTimeout(tm); }
+  const res = j && j.result;
+  if (!j || j.status !== true || !res || typeof res !== 'object') {
+    const msg = String((j && (j.error || j.message)) || (res && res.message) || '');
+    if (/limit|quota|habis|plan|pro\b/i.test(msg)) return { ok: false, code: 503, error: 'Kuota atau plan provider sedang bermasalah. Hubungi developer.' };
+    if (/timed out|timeout/i.test(msg)) return { ok: false, code: 504, error: 'Provider tidak merespons (timeout). Pastikan link postingan benar, lalu coba lagi.' };
+    return { ok: false, code: 502, error: 'Reaksi gagal dikirim. Pastikan link postingan channel benar dan masih ada.' };
+  }
+  const wt = String(res.responseTime || j.time || '').slice(0, 20);
+  return { ok: true, data: { status: v3 ? 'Reaksi terkirim' : (String(res.message || '').slice(0, 60) || 'Reaksi sedang diproses'), postingan: url, reaksi: reaction, ...(wt ? { waktu_respons: wt } : {}) } };
+}
+
+async function reactChannel(f, variant) {
+  if (variant === 'v2' || variant === 'v3') return reactChannelCloud(f, variant);
   const key = process.env.NEXADEV_API_KEY || '';
   if (!key) return { ok: false, code: 500, error: 'NEXADEV_API_KEY belum diatur di Environment Variables Vercel.' };
   const base = (process.env.NEXADEV_BASE_URL || 'https://api.nexadev.my.id').replace(/\/$/, '');
@@ -752,7 +794,7 @@ module.exports = async (req, res) => {
       }
     }
     let r;
-    try { r = await reactChannel(fl); } catch (e) { r = { ok: false, code: 504, error: 'Gagal menghubungi provider.' }; }
+    try { r = await reactChannel(fl, tool.variant); } catch (e) { r = { ok: false, code: 504, error: 'Gagal menghubungi provider.' }; }
     if (!r.ok) {
       if (reserved) {
         try { await store.mutateUser(me.sub, (r0) => { if (!r0) return null; credits.refund(r0, reserved, Date.now(), fromBonus); return r0; }); }

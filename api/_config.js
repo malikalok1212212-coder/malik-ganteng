@@ -161,6 +161,14 @@ module.exports = {
         { key: 'url', label: 'Gambar', req: true, kind: 'url', max: 2000 }
       ] }
     ,
+    // api-cloud: GET /canvas/quotecard?text=&bold=&json=&template=&apikey= (text wajib; bold 0|1; template 1-5, kosong = default). json=0 -> gambar langsung (image/jpeg), dibaca sebagai biner di api/tool.js.
+    'quote-card': { ac: true, base: AC_BASE, type: 'multi', path: process.env.CLOUDAPI_PATH_QUOTECARD || '/canvas/quotecard', method: 'GET', keyParam: AC_KEY_PARAM, shape: 'cloudimg', bigToBlob: true, timeout: 45000, qs: { json: '0' },
+      fields: [
+        { key: 'text', label: 'Teks', req: true, max: 200 },
+        { key: 'bold', label: 'Gaya teks', kind: 'enum', opts: ['0', '1'] },
+        { key: 'template', label: 'Template', kind: 'enum', opts: ['1', '2', '3', '4', '5'] }
+      ] }
+    ,
     // api-cloud: GET /tools/amfind?url= (link video TikTok) -> { status, creator, result:{ videoId, video, author, scanned:{comments,replies}, presets:[] }, quota }. Memindai komentar mencari link preset Alight Motion. status:false -> { error }.
     'am-find': { ac: true, base: AC_BASE, type: 'url', path: process.env.CLOUDAPI_PATH_AMFIND || '/tools/amfind', method: 'GET', param: 'url', keyParam: AC_KEY_PARAM, shape: 'amfind', timeout: 60000, host: /(^|\.)tiktok\.com$/i, hostMsg: 'Link harus dari TikTok (tiktok.com, vt.tiktok.com, atau vm.tiktok.com).' }
     ,
@@ -168,5 +176,10 @@ module.exports = {
     'cek-situs': { local: 'sitecheck', type: 'url' },
     // NexaDev: GET /api/rch?key=&url=&reaction= (kunci dari env NEXADEV_API_KEY, ditangani di api/tool.js)
     'rch': { local: 'nexarch', type: 'multi' }
+    ,
+    // api-cloud (plan Pro): V2 GET /tools/rch?link=&emoji= dan V3 GET /tools/reactch-v4?url=&reaction=. Jatah limit harian sama dengan Reaksi Channel (lihat _credits.js). Ditangani reactChannelCloud() di api/tool.js.
+    'rch2': { local: 'nexarch', variant: 'v2', type: 'multi' }
+    ,
+    'rch3': { local: 'nexarch', variant: 'v3', type: 'multi' }
   }
 };

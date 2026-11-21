@@ -142,3 +142,7 @@ Tool `rch` memakai NexaDev (`api/tool.js` fungsi `reactChannel`). Isi `NEXADEV_A
 
 ## Diblokir Cloudflare (api-cloud)
 Tool api-cloud kini memakai User-Agent `MalikTools/1.0 (API client)` (bukan penyamaran Chrome, karena sidik jari koneksi Node tidak cocok dengan Chrome dan sering memicu tantangan Cloudflare). Bila provider meminta User-Agent tertentu agar dilewatkan, isi env `CLOUDAPI_UA`. Pesan blokir kini memuat Ray ID Cloudflare untuk dilaporkan ke pemilik API. Bila tetap diblokir, pemilik API perlu mengecualikan permintaan ber-header `x-api-key` (atau IP Vercel) dari tantangan di WAF/Bot Fight Mode mereka.
+
+**Quoted Card IG Viral** (`GET /canvas/quotecard?text=&bold=&json=0&template=`, `bold` 0 atau 1, `template` 1 sampai 5, kosong = default) membalas gambar `image/jpeg` langsung. Backend selalu mengirim `json=0`, hasilnya dibaca sebagai biner di `api/tool.js`. Kunci memakai `CLOUDAPI_API_KEY` di environment Vercel (jangan ditaruh di kode). Path bisa diubah lewat `CLOUDAPI_PATH_QUOTECARD`.
+
+**Reaksi Channel V2 dan V3** (api-cloud, plan Pro): V2 `GET /tools/rch?link=&emoji=` (maks. 6 emoji, dipisah koma), V3 `GET /tools/reactch-v4?url=&reaction=` (1 emoji). Keduanya lewat `reactChannelCloud()` di `api/tool.js`, memakai `CLOUDAPI_API_KEY`, dan limit harian yang sama dengan Reaksi Channel dan semua versi (termasuk Reaksi Channel versi 1) memakai 3 limit per kirim (id tool `rch2` dan `rch3` di `api/_credits.js`). Field `quota` (berisi apikey) dari balasan provider dibuang dan tidak dikirim ke browser.
