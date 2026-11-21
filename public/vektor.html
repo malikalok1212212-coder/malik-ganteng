@@ -21,14 +21,14 @@ button.on,button.p{background:var(--ac);border-color:var(--ac);color:#fff;font-w
 .lb{position:absolute;top:8px;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;color:#fff;pointer-events:none}.lb.a{left:8px;background:#45455c}.lb.b{right:8px;background:var(--ac)}
 #dz{position:absolute;inset:0;display:grid;place-content:center;gap:6px;text-align:center;background:var(--pn);cursor:pointer;color:var(--mu);padding:16px}#dz b{color:var(--ink);font-size:16px}
 input[type=range]{width:100%;accent-color:var(--ac)}input[type=color]{width:40px;height:34px;padding:2px;border:1px solid var(--bd);border-radius:8px;background:var(--fl)}
-#pn{background:var(--pn);border-top:1px solid var(--bd);max-height:50%;overflow:auto;padding:8px 10px 12px}#pn{display:flex;flex-direction:column;gap:8px}#pn .bar{margin:0}#sx{font-size:11px;margin:4px 0 0!important;max-height:2.9em;overflow:hidden}.tabs{display:flex;gap:6px;margin-bottom:10px;overflow:auto}.tab{display:none;gap:10px}.tab.on{display:grid}
+#pn{background:var(--pn);border-top:1px solid var(--bd);max-height:50%;overflow:auto;padding:8px 10px 12px}#pn{display:flex;flex-direction:column;gap:8px}#pn .bar{margin:0}#ld{position:absolute;inset:0;z-index:5;display:none;place-content:center;background:#0e0e13 center/contain no-repeat}#ld span{background:var(--ac);color:#fff;font-weight:700;padding:8px 16px;border-radius:999px}#sx{font-size:11px;margin:4px 0 0!important;max-height:2.9em;overflow:hidden}.tabs{display:flex;gap:6px;margin-bottom:10px;overflow:auto}.tab{display:none;gap:10px}.tab.on{display:grid}
 .rw{display:grid;grid-template-columns:96px 1fr 42px;gap:8px;align-items:center}.rw output{color:var(--mu);text-align:right}
 .pl{display:flex;gap:8px;align-items:center}.pl code{flex:1;color:var(--mu)}small,.mu{color:var(--mu)}
 </style></head><body>
 <header><a href="/#vektor" aria-label="Kembali ke Malik Tools">←</a><b>◆ Vektor Studio</b><button id="ub" disabled>Urungkan</button><button id="rb" disabled>Ulangi</button><button class="p" id="hx" onclick="document.querySelector('[data-t=e]').click()">Ekspor</button></header>
 <main><section>
 <div id="st"><canvas id="co"></canvas><div id="aw"><svg id="sv" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg></div><div id="hd"></div><span class="lb a" id="la">BEFORE · ASLI</span><span class="lb b" id="lb">AFTER · SVG</span>
-<label id="dz"><b>Pilih gambar</b><span>PNG, JPG, atau WebP. Bisa juga tempel (paste) atau seret ke sini. Tidak diunggah ke server.</span><input id="fi" type="file" accept="image/*" hidden></label></div>
+<div id="ld"><span>Memproses…</span></div><label id="dz"><b>Pilih gambar</b><span>PNG, JPG, atau WebP. Bisa juga tempel (paste) atau seret ke sini. Tidak diunggah ke server.</span><input id="fi" type="file" accept="image/*" hidden></label></div>
 
 </section>
 <section id="pn"><div class="bar"><button data-m="o">Asli</button><button data-m="s">SVG</button><button data-m="c" class="on">Bandingkan</button><span style="flex:1"></span><button id="zm" aria-label="Perkecil">−</button><output id="zl">Pas</output><button id="zp" aria-label="Perbesar">+</button><button id="z1">Pas</button></div>
@@ -36,7 +36,7 @@ input[type=range]{width:100%;accent-color:var(--ac)}input[type=color]{width:40px
 <div class="rw" style="grid-template-columns:70px 1fr;margin-top:6px"><span>Before / After</span><input id="ds" type="range" min="0" max="100" value="50"></div>
 <p class="mu" id="sx" style="margin:8px 0 0">Geser garis ↔ untuk Before/After. Cubit atau roda mouse untuk zoom (sampai 1000×), geser gambar untuk pan. SVG dirender ulang sebagai vektor sesuai area yang terlihat.</p><div class="tabs"><button data-t="t" class="on">Trace</button><button data-t="w">Warna</button><button data-t="l">Latar</button><button data-t="e">Ekspor</button></div>
 <div class="tab on" id="t"><div class="bar" style="margin:0"><button data-p="logo" class="on">Logo</button><button data-p="sketch">Sketsa</button><button data-p="photo">Foto</button><button data-p="pixel">Pixel art</button></div>
-<label class="rw">Jumlah warna<input data-k="n" type="range" min="2" max="32" value="8"><output></output></label>
+<label class="rw">Jumlah warna<input data-k="n" type="range" min="2" max="64" value="8"><output></output></label>
 <label class="rw">Bersihkan bintik<input data-k="sp" type="range" min="0" max="200" value="20"><output></output></label>
 <label class="rw">Kehalusan<input data-k="sm" type="range" min="0" max="10" value="2"><output></output></label>
 <label class="rw">Gabung warna<input data-k="mg" type="range" min="0" max="60" value="18"><output></output></label>
@@ -59,7 +59,7 @@ input[type=range]{width:100%;accent-color:var(--ac)}input[type=color]{width:40px
 <script>
 (()=>{
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],f1=v=>Math.round(v*10)/10,hx=c=>'#'+c.map(v=>(v=Math.round(v))<16?'0'+v.toString(16):v.toString(16)).join('');
-const P={logo:{n:8,sp:20,sm:2,mg:18,c:55},sketch:{n:2,sp:8,sm:2,mg:0,c:55,bw:1},photo:{n:24,sp:6,sm:3,mg:8,c:75},pixel:{n:16,sp:0,sm:0,mg:0,c:55,px:1}};
+const P={logo:{n:8,sp:20,sm:2,mg:18,c:55},sketch:{n:2,sp:8,sm:2,mg:0,c:55,bw:1},photo:{n:32,sp:6,sm:3,mg:6,c:75,mc:1},pixel:{n:16,sp:0,sm:0,mg:0,c:55,px:1}};
 const S={o:{...P.logo,bg:0,res:800},img:null,sc:1,w:0,h:0,layers:[],ed:{col:{},hid:{}},bd:{on:0,c:'#ffffff',pad:8,rad:12,sq:1}},V={z:1,cx:0,cy:0,P:.5,m:'c'};let H=[],hp=-1,tm;
 function dp(P,e){const n=P.length;let j=0,m=0;for(let i=1;i<n;i++){const d=(P[i][0]-P[0][0])**2+(P[i][1]-P[0][1])**2;if(d>m){m=d;j=i}}
 const k=new Uint8Array(n);k[0]=k[j]=1;const st=[[0,j],[j,n]];
@@ -77,11 +77,14 @@ for(let y=0,p=0;y<h;y++)for(let x=0;x<w;x++,p++){if(!m[p])continue;const v=y*W1+
 if(!y||!m[p-w])ad(v,v+1);if(x===w-1||!m[p+1])ad(v+1,v+1+W1);if(y===h-1||!m[p+w])ad(v+1+W1,v+W1);if(!x||!m[p-1])ad(v+W1,v)}
 let d='';for(let s=0;s<V;s++)while(a1[s]>=0||a2[s]>=0){const pts=[];let c=s;
 do{const n=a1[c]>=0?a1[c]:a2[c];if(a1[c]>=0)a1[c]=-1;else a2[c]=-1;pts.push([c%W1,(c/W1)|0]);c=n}while(c!==s&&c>=0);d+=path(pts,o)}return d}
-function trace(id,o){const w=id.width,h=id.height,D=id.data,N=w*h,L=new Int16Array(N).fill(-1),sx=[],st=Math.max(1,Math.floor(N/12000));
+function trace(id,o){const w=id.width,h=id.height,D=id.data,N=w*h,L=new Int16Array(N).fill(-1),sx=[],st=Math.max(1,Math.floor(N/(o.mc?30000:12000)));
 for(let p=0;p<N;p+=st){const q=p*4;if(D[q+3]>127)sx.push([D[q],D[q+1],D[q+2]])}if(!sx.length)return{layers:[]};
-const d2=(a,b)=>(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2;let C=[sx[0]];const md=sx.map(s=>d2(s,C[0]));
-while(C.length<o.n){let bi=0;for(let i=1;i<md.length;i++)if(md[i]>md[bi])bi=i;if(md[bi]<1)break;const c=sx[bi];C.push(c);for(let i=0;i<md.length;i++){const d=d2(sx[i],c);if(d<md[i])md[i]=d}}
-for(let it=0;it<6;it++){const A=C.map(()=>[0,0,0,0]);for(const s of sx){let b=0,bd=1e9;for(let k=0;k<C.length;k++){const d=d2(s,C[k]);if(d<bd){bd=d;b=k}}const a=A[b];a[0]+=s[0];a[1]+=s[1];a[2]+=s[2];a[3]++}
+const d2=(a,b)=>(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2;let C;
+if(o.mc){let bx=[sx];while(bx.length<o.n){let bi=-1,br=0;bx.forEach((b,i)=>{if(b.length<2)return;let r=0;for(let c=0;c<3;c++){let lo=255,hi=0;for(const q of b){if(q[c]<lo)lo=q[c];if(q[c]>hi)hi=q[c]}r=Math.max(r,hi-lo)}r*=Math.sqrt(b.length);if(r>br){br=r;bi=i}});if(bi<0)break;const b=bx[bi];let ch=0,bs=-1;for(let c=0;c<3;c++){let lo=255,hi=0;for(const q of b){if(q[c]<lo)lo=q[c];if(q[c]>hi)hi=q[c]}if(hi-lo>bs){bs=hi-lo;ch=c}}b.sort((p,q)=>p[ch]-q[ch]);const m=b.length>>1;bx.splice(bi,1,b.slice(0,m),b.slice(m))}
+C=bx.map(b=>{const a=[0,0,0];for(const q of b){a[0]+=q[0];a[1]+=q[1];a[2]+=q[2]}return a.map(v=>v/b.length)})}else{
+C=[sx[0]];const md=sx.map(s=>d2(s,C[0]));
+while(C.length<o.n){let bi=0;for(let i=1;i<md.length;i++)if(md[i]>md[bi])bi=i;if(md[bi]<1)break;const c=sx[bi];C.push(c);for(let i=0;i<md.length;i++){const d=d2(sx[i],c);if(d<md[i])md[i]=d}}}
+for(let it=0;it<(o.mc?10:6);it++){const A=C.map(()=>[0,0,0,0]);for(const s of sx){let b=0,bd=1e9;for(let k=0;k<C.length;k++){const d=d2(s,C[k]);if(d<bd){bd=d;b=k}}const a=A[b];a[0]+=s[0];a[1]+=s[1];a[2]+=s[2];a[3]++}
 C=C.map((c,k)=>A[k][3]?[A[k][0]/A[k][3],A[k][1]/A[k][3],A[k][2]/A[k][3]]:c)}
 const mp=C.map((_,i)=>i),th=o.mg*o.mg*3;for(let i=0;i<C.length;i++)for(let j=i+1;j<C.length;j++)if(mp[i]===i&&mp[j]===j&&d2(C[i],C[j])<th)mp[j]=i;
 const ks=C.map((_,i)=>i).filter(i=>mp[i]===i);
@@ -135,15 +138,16 @@ $('#pl').oninput=e=>{if(e.target.dataset.i!=null){S.ed.col[e.target.dataset.i]=e
 $('#pl').onchange=e=>{if(e.target.dataset.i!=null){snap();pal()}};
 $('#pl').onclick=e=>{const i=e.target.dataset.h;if(i!=null){S.ed.hid[i]=!S.ed.hid[i];snap();pal();draw()}};
 $$('[data-b]').forEach(el=>{el.oninput=()=>{S.bd[el.dataset.b]=el.type==='checkbox'?+el.checked:el.type==='range'?+el.value:el.value;if(el.nextElementSibling)el.nextElementSibling.textContent=el.value;fit()};el.onchange=snap});
-function run(){if(!S.img)return;$('#sx').textContent='Memproses…';setTimeout(()=>{const I=S.img,sc=Math.min(1,S.o.res/Math.max(I.naturalWidth,I.naturalHeight)),w=Math.max(1,Math.round(I.naturalWidth*sc)),h=Math.max(1,Math.round(I.naturalHeight*sc)),c=document.createElement('canvas');c.width=w;c.height=h;
+function run(){if(!S.img)return;$('#sx').textContent='Memproses…';const ld=$('#ld');ld.style.backgroundImage=`url(${S.img.src})`;ld.style.display='grid';setTimeout(()=>{try{const I=S.img,sc=Math.min(1,S.o.res/Math.max(I.naturalWidth,I.naturalHeight)),w=Math.max(1,Math.round(I.naturalWidth*sc)),h=Math.max(1,Math.round(I.naturalHeight*sc)),c=document.createElement('canvas');c.width=w;c.height=h;
 const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(I,0,0,w,h);S.layers=trace(g.getImageData(0,0,w,h),S.o).layers;S.w=w;S.h=h;S.sc=sc;S.ed={col:{},hid:{}};H=[];hp=-1;snap();pal();fit();
-$('#sx').textContent=`${S.layers.length} warna · SVG ${Math.round(svgFull().length/1024)} KB. Geser garis ↔ untuk Before/After, cubit untuk zoom.`},30)}
+$('#sx').textContent=`${S.layers.length} warna · SVG ${Math.round(svgFull().length/1024)} KB. Geser garis ↔ untuk Before/After, cubit untuk zoom.`}catch(e){$('#sx').textContent='Gagal memproses: '+e.message}$('#ld').style.display='none'},30)}
 const again=()=>{clearTimeout(tm);tm=setTimeout(run,300)};
 $$('[data-k]').forEach(el=>{el.oninput=el.onchange=()=>{const k=el.dataset.k;S.o[k]=el.type==='checkbox'?+el.checked:+el.value;if(el.nextElementSibling&&el.nextElementSibling.tagName==='OUTPUT')el.nextElementSibling.textContent=el.value;again()}});
 $$('[data-k]').forEach(el=>{if(el.nextElementSibling&&el.nextElementSibling.tagName==='OUTPUT')el.nextElementSibling.textContent=el.value});
 $$('[data-p]').forEach(b=>b.onclick=()=>{$$('[data-p]').forEach(x=>x.classList.toggle('on',x===b));S.o={...P[b.dataset.p],bg:S.o.bg,res:S.o.res};
 for(const k of['n','sp','sm','mg']){const el=$(`[data-k=${k}]`);el.value=S.o[k];el.nextElementSibling.textContent=S.o[k]}again()});
-async function load(file){if(!file||!file.type.startsWith('image/'))return;const im=new Image();im.src=URL.createObjectURL(file);try{await im.decode()}catch(e){$('#sx').textContent='Gambar tidak bisa dibaca.';return}S.img=im;$('#dz').style.display='none';run()}
+async function load(file){if(!file||!file.type.startsWith('image/'))return;const im=new Image();im.src=URL.createObjectURL(file);try{await im.decode()}catch(e){$('#sx').textContent='Gambar tidak bisa dibaca.';return}try{const t=document.createElement('canvas');t.width=t.height=64;const x=t.getContext('2d');x.drawImage(im,0,0,64,64);const d=x.getImageData(0,0,64,64).data,u=new Set();for(let i=0;i<d.length;i+=4)u.add((d[i]>>4)<<8|(d[i+1]>>4)<<4|d[i+2]>>4);if(u.size>200)$('[data-p=photo]').click()}catch(e){}
+S.img=im;$('#dz').style.display='none';run()}
 $('#fi').onchange=e=>load(e.target.files[0]);st.ondragover=e=>e.preventDefault();st.ondrop=e=>{e.preventDefault();load(e.dataTransfer.files[0])};
 onpaste=e=>{for(const it of e.clipboardData.items)if(it.type.startsWith('image/'))load(it.getAsFile())};onresize=draw;if(window.ResizeObserver)new ResizeObserver(()=>draw()).observe(st);
 const dl=(n,b)=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4e3)};
