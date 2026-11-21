@@ -31,4 +31,14 @@ async function cooling(name, id, ms) {
   if (e && now - e.t < ms) return true;
   mem.set(k, { t: now, exp: now + ms }); return false;
 }
-module.exports = { limited, cooling };
+// Hitung percobaan secara atomik (INCR) dan kembalikan angka terbarunya. Dipakai untuk batas salah kode / salah sandi,
+// supaya permintaan paralel tidak bisa melewati batas. ttlSec dipasang hanya saat kunci baru dibuat.
+// Bila Redis error, dilempar: pemanggil harus menolak (gagal tertutup), bukan melonggarkan batas.
+async function hit(name, id, ttlSec) {
+  const k = 'mt:try:' + name + ':' + id;
+  const [n] = await R.run([['INCR', k], ['EXPIRE', k, ttlSec, 'NX']]);
+  return Number(n);
+}
+async function peek(name, id) { const [n] = await R.run([['GET', 'mt:try:' + name + ':' + id]]); return Number(n) || 0; }
+async function clear(name, id) { await R.run([['DEL', 'mt:try:' + name + ':' + id]]); }
+module.exports = { limited, cooling, hit, peek, clear };

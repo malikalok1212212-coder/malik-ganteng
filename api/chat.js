@@ -1,3 +1,4 @@
+const { guard } = require('./_http');
 const crypto = require('crypto');
 const { getUser, isOwner, roleOf, badgeOf, loginRequired } = require('./_auth');
 const store = require('./_store');
@@ -36,6 +37,7 @@ async function dropImgs(msgs) {
 }
 
 module.exports = async (req, res) => {
+  if (!guard(req, res)) return;
   res.setHeader('Cache-Control', 'no-store');
   const fail = (c, e) => res.status(c).json({ ok: false, error: e });
   const me = getUser(req);
@@ -90,13 +92,25 @@ module.exports = async (req, res) => {
     if (typeof b === 'string') { try { b = JSON.parse(b); } catch { b = {}; } }
     b = b || {};
 
-    if (!owner && b.op !== 'delete' && b.op !== 'react') { // akun yang di-mute tidak bisa mengirim, mengedit, atau mengetik
+    if (!owner && b.op !== 'delete' && b.op !== 'react' && b.op !== 'report') { // akun yang di-mute tidak bisa mengirim, mengedit, atau mengetik
       const mu = await R.run([['HGET', MK, me.sub]]).then((r) => Number(r[0]) || 0).catch(() => 0);
       if (mu > Date.now()) return fail(403, 'Kamu di-mute developer, sisa ' + Math.max(1, Math.ceil((mu - Date.now()) / 60000)) + ' menit.');
     }
     if (b.op === 'typing') {
       await R.run([['ZADD', TK, Date.now(), uidOf(me.sub) + '|' + clip(me.name || String(me.email).split('@')[0], 40).split(' ')[0]], ['EXPIRE', TK, 30]]).catch(() => {});
       return res.status(200).json({ ok: true });
+    }
+    if (b.op === 'report') { // laporkan pesan: masuk antrean developer (tidak menghapus apa pun)
+      const m = st.msgs.find((x) => x.id === b.id);
+      if (!m) return fail(404, 'Pesan sudah tidak ada.');
+      if (m.sub === me.sub) return fail(400, 'Itu pesanmu sendiri.');
+      if (m.role === 'developer') return fail(400, 'Pesan developer tidak bisa dilaporkan.');
+      if (await require('./_rate').limited('chatrep', me.sub, 5, 600)) return fail(429, 'Terlalu banyak laporan. Coba lagi nanti.');
+      const REASONS = ['Spam', 'Kasar / pelecehan', 'Konten tidak pantas', 'Penipuan', 'Lainnya'];
+      const rep = { id: m.id + ':' + uidOf(me.sub), msg: m.id, ts: Date.now(), against: m.sub, name: clip(m.name, 40), text: clip(m.text || (m.img ? '[Foto]' : '[Sticker]'), 200), by: clip(me.email, 80), reason: REASONS.includes(b.reason) ? b.reason : 'Lainnya' };
+      const [fresh] = await R.run([['HSETNX', 'mt:chat:reports', rep.id, JSON.stringify(rep)]]); // satu laporan per pelapor per pesan
+      if (fresh === 1) await R.run([['EXPIRE', 'mt:chat:reports', 60 * 60 * 24 * 30]]).catch(() => {});
+      return res.status(200).json({ ok: true, message: 'Laporan terkirim. Terima kasih.' });
     }
     if (b.op === 'edit') { // pesan teks milik sendiri (developer: siapa pun)
       const m = st.msgs.find((x) => x.id === b.id);
@@ -199,7 +213,7 @@ module.exports = async (req, res) => {
     await dropImgs(dropped);
     return out(nv);
   } catch (e) {
-    console.error('[chat]', e && e.name, e && e.message);
+    require('./_err').report('chat', e);
     return fail(500, 'Chat bermasalah, coba lagi.');
   }
 };

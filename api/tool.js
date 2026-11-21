@@ -1,3 +1,4 @@
+const { guard, clientIp } = require('./_http');
 const cfg = require('./_config');
 const { getUser, isOwner, loginRequired, roleOf } = require('./_auth');
 const credits = require('./_credits');
@@ -8,6 +9,7 @@ let blob = null;
 try { blob = require('@vercel/blob'); } catch (e) { /* opsional */ }
 
 const rate = require('./_rate');
+const { report } = require('./_err');
 
 // Respons fungsi Vercel dibatasi 4,5 MB. Base64 membesarkan data ±33%, jadi gambar mentah maksimal ±3,2 MB (≈4,3 MB setelah base64).
 const MAX_IMG_RAW = 3200000;
@@ -557,7 +559,7 @@ function htmlProblem(status, text) {
   const t = String(text || '').slice(0, 3000);
   if (!/^\s*<(!doctype|html|head|body|\?xml)/i.test(t)) return null;
   if (/just a moment|challenges\.cloudflare\.com|cf[-_]chl|attention required|enable javascript and cookies/i.test(t))
-    return { msg: 'Provider memblokir akses dari server (verifikasi Cloudflare). Coba lagi nanti atau pakai tool lain.' };
+    return { msg: 'Provider memblokir akses dari server (verifikasi Cloudflare). Coba lagi nanti atau pakai tool lain.', cf: true };
   if (status === 429) return { msg: 'Provider membatasi permintaan (HTTP 429). Coba lagi beberapa saat lagi.' };
   if (status >= 500) return { msg: 'Server provider sedang down atau sibuk (HTTP ' + status + '). Coba lagi beberapa saat lagi.', transient: true };
   return { msg: 'Provider membalas halaman yang tidak dikenali (HTTP ' + status + '). Coba lagi nanti.' };
@@ -723,6 +725,7 @@ async function reactChannel(f, variant) {
 }
 
 module.exports = async (req, res) => {
+  if (!guard(req, res)) return;
   res.setHeader('Cache-Control', 'no-store');
   const fail = (code, error) => res.status(code).json({ ok: false, error });
 
@@ -739,7 +742,7 @@ module.exports = async (req, res) => {
     return fail(401, 'Kode akses salah atau belum diisi.');
   if (loginRequired() && !getUser(req))
     return fail(401, 'Masuk dulu untuk memakai tool ini.');
-  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'x';
+  const ip = clientIp(req);
   if (await rate.limited('tool', ip, 20, 60)) return fail(429, 'Terlalu banyak permintaan. Coba lagi sebentar lagi.');
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = {}; } }
@@ -933,7 +936,7 @@ module.exports = async (req, res) => {
         text = buf.toString('utf8'); // bukan gambar: lanjut sebagai teks/JSON
       } else text = await r.text();
       const hp = htmlProblem(r.status, text);
-      if (hp) { const ray = r.headers.get('cf-ray'); return { ok: false, code: 502, error: hp.msg + (ray && /Cloudflare/.test(hp.msg) ? ' (Ray ID: ' + ray + ')' : ''), retry: true, transient: !!hp.transient }; }
+      if (hp) { const ray = r.headers.get('cf-ray'); return { ok: false, code: 502, error: hp.msg + (ray && /Cloudflare/.test(hp.msg) ? ' (Ray ID: ' + ray + ')' : ''), retry: true, transient: !!hp.transient, cf: !!hp.cf }; }
       let data; try { data = JSON.parse(text); } catch { data = { message: text.slice(0, 500) }; }
       if (data && (data.status === false || data.success === false)) // provider membalas HTTP 200 tetapi status:false
         return { ok: false, code: 502, error: errText(data, 'Provider menolak permintaan.'), retry: true };
@@ -1065,12 +1068,13 @@ module.exports = async (req, res) => {
     // Kegagalan sementara (HTTP 5xx / koneksi putus) diulang otomatis, tetapi hanya untuk tool yang aman diulang (t.retries).
     const run = async (t, minLeft, cap) => {
       let o = null;
-      for (let n = 0; n <= (t.retries || 0); n++) {
+      for (let n = 0; n <= Math.max(t.retries || 0, 3); n++) {
         const left = BUDGET - (Date.now() - T0);
         if (left < (n === 0 ? minLeft : 6000)) break;
         o = await attempt(t, Math.max(3000, Math.min(t.timeout || 25000, left, cap || 1e9)));
-        if (o.ok || !o.transient || n === (t.retries || 0)) break;
-        await new Promise((r) => setTimeout(r, 1200));
+        // Blokir Cloudflare bersifat acak per permintaan dan permintaannya belum diproses provider, jadi aman diulang otomatis (maks. 3x) untuk semua tool
+        if (o.ok || !((o.transient && n < (t.retries || 0)) || (o.cf && n < 3))) break;
+        await new Promise((r) => setTimeout(r, o.cf ? 600 : 1200));
       }
       return o;
     };
@@ -1094,8 +1098,10 @@ module.exports = async (req, res) => {
     return res.status(200).json({ ok: true, link: out.link, data: out.data, tracks: out.tracks, credits: cr });
   } catch (e) {
     sMsg = 'Gagal menghubungi provider';
+    report('tool.' + tid, e);
     return fail(504, 'Gagal menghubungi provider.');
   } finally {
+    if (!done && sKind === 'e' && !(me && isOwner(me.email))) report('tool.' + tid, sMsg || 'provider error'); // kegagalan provider langsung terpantau
     if (!(me && isOwner(me.email))) await stats.record(tid, done ? 'o' : sKind, me && me.sub, sMsg); // statistik global; tes developer tidak dihitung
     if (reserved && !done) { // provider gagal / timeout / hasil ditolak: limit yang sudah dipesan dikembalikan
       try { await store.mutateUser(me.sub, (r) => { if (!r) return null; credits.refund(r, reserved, Date.now(), fromBonus); return r; }); }

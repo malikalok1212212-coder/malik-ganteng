@@ -145,4 +145,62 @@ async function mutateUser(sub, fn, tries = 12) {
   throw new Error('bentrok saat menyimpan, coba lagi');
 }
 
-module.exports = { load, save, ready, mutateUser, getUsers, getUser, isBanned, getTools, getTool };
+// ---- akun username/sandi: satu entri per field, setiap perubahan atomik (tanpa memuat / menulis ulang seluruh data) ----
+// map: 'users' | 'pending'. Indeks email -> username disimpan di hash 'email' (dibangun otomatis sekali dari data lama).
+async function ensureEmailIdx() {
+  if (inited.emailidx) return;
+  await ensureInit('acc');
+  const [flag] = await R.run([['EXISTS', key('acc', 'emailidx')]]);
+  if (flag !== 1) {
+    const [flat] = await R.run([['HGETALL', key('acc', 'users')]]);
+    const cmds = [];
+    for (let j = 0; j < (flat || []).length; j += 2) { try { const u = JSON.parse(flat[j + 1]); if (u && u.email) cmds.push(['HSETNX', key('acc', 'email'), String(u.email), flat[j]]); } catch (e) { /* lewati */ } }
+    cmds.push(['SET', key('acc', 'emailidx'), '1']);
+    for (let i = 0; i < cmds.length; i += 200) await R.run(cmds.slice(i, i + 200));
+  }
+  inited.emailidx = true;
+}
+async function accGet(map, f) {
+  await ensureInit('acc');
+  const [raw] = await R.run([['HGET', key('acc', map), String(f)]]);
+  try { return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+}
+// username dari email (null bila belum ada). Pengguna yang indeksnya hilang tetap ketemu lewat pemindaian sekali.
+async function accByEmail(email) {
+  await ensureEmailIdx();
+  const [name] = await R.run([['HGET', key('acc', 'email'), String(email)]]);
+  if (!name) return null;
+  const u = await accGet('users', name);
+  return u && u.email === email ? u : null;
+}
+// Buat entri hanya bila belum ada. true = berhasil dibuat.
+async function accCreate(map, f, rec) {
+  await ensureInit('acc');
+  const [ok] = await R.run([['HSETNX', key('acc', map), String(f), JSON.stringify(rec)]]);
+  return ok === 1;
+}
+async function accDel(map, f) { await ensureInit('acc'); await R.run([['HDEL', key('acc', map), String(f)]]); }
+async function accIndexEmail(email, username) { await ensureEmailIdx(); await R.run([['HSET', key('acc', 'email'), String(email), String(username)]]); }
+async function accUnindexEmail(email) { await R.run([['HDEL', key('acc', 'email'), String(email)]]); }
+// fn(rec|null) -> rec baru; null = jangan tulis. Compare-and-set, diulang bila bentrok. Mengembalikan rec tersimpan (atau null).
+async function accMutate(map, f, fn, tries = 12) {
+  if (!ready()) throw new Error('Upstash Redis belum terhubung.');
+  const hk = key('acc', map);
+  await ensureInit('acc');
+  for (let i = 0; i < tries; i++) {
+    const [raw] = await R.run([['HGET', hk, String(f)]]);
+    const rec = fn(raw ? JSON.parse(raw) : null);
+    if (rec == null) return null;
+    const [ok] = await R.run([['EVAL', CAS, 1, hk, String(f), raw || '', JSON.stringify(rec)]]);
+    if (ok === 1) return rec;
+    await new Promise((r) => setTimeout(r, Math.random() * 30 * (i + 1)));
+  }
+  throw new Error('bentrok saat menyimpan, coba lagi');
+}
+// Hapus seluruh jejak akun (username + email + permintaan pendaftaran yang tertunda).
+async function accDeleteAll(username, email) {
+  await ensureInit('acc');
+  await R.run([['HDEL', key('acc', 'users'), String(username)], ['HDEL', key('acc', 'email'), String(email || '')], ['HDEL', key('acc', 'pending'), String(email || '')]]);
+}
+
+module.exports = { load, save, ready, mutateUser, getUsers, getUser, isBanned, getTools, getTool, accGet, accByEmail, accCreate, accDel, accIndexEmail, accUnindexEmail, accMutate, accDeleteAll };

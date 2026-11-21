@@ -1,3 +1,4 @@
+const { guard, clientIp } = require('./_http');
 // Putar (M4A, /api/spotify/stream) / unduh (MP3, /api/spotify/download) audio Spotify dari GenCipta. Endpoint GenCipta butuh API key di header, jadi audio
 // diambil server lalu di-stream ke browser (tanpa ditampung di memori). Mendukung Range supaya bisa digeser (seek).
 const { Readable } = require('stream');
@@ -7,6 +8,7 @@ const store = require('./_store');
 const rate = require('./_rate');
 
 module.exports = async (req, res) => {
+  if (!guard(req, res)) return;
   res.setHeader('Cache-Control', 'no-store');
   const fail = (code, error) => res.status(code).json({ ok: false, error });
   if (req.method !== 'GET') return fail(405, 'Metode tidak diizinkan.');
@@ -14,7 +16,7 @@ module.exports = async (req, res) => {
   const who = getUser(req);
   if (loginRequired() && !who) return fail(401, 'Masuk dulu untuk memutar audio.');
   if (who && !isOwner(who.email) && await store.isBanned(who.sub)) return fail(403, 'Akun kamu diblokir oleh developer.');
-  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'x';
+  const ip = clientIp(req);
   if (await rate.limited('audio', ip, 40, 60)) return fail(429, 'Terlalu banyak permintaan. Coba lagi sebentar lagi.');
 
   const id = String(req.query.id || '');

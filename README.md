@@ -1,6 +1,6 @@
 # Malik Tools
 
-Website tools (TikTok Downloader, link WhatsApp) siap deploy di Vercel. Provider: **GenCipta** (api.gencipta.com). Semua tool Nexa sudah dihapus.
+Website tools (TikTok Downloader, link WhatsApp) siap deploy di Vercel. Provider: **GenCipta** (api.gencipta.com). Beberapa tool (Reaksi Channel WhatsApp, jalur cadangan AM Premium) memakai provider **NexaDev** (`NEXADEV_API_KEY`, lihat `.env.example`).
 
 ## Deploy
 1. Upload isi folder ini ke GitHub, lalu Import di Vercel (Framework: Other, tanpa build command).
@@ -146,3 +146,34 @@ Tool api-cloud kini memakai User-Agent `MalikTools/1.0 (API client)` (bukan peny
 **Quoted Card IG Viral** (`GET /canvas/quotecard?text=&bold=&json=0&template=`, `bold` 0 atau 1, `template` 1 sampai 5, kosong = default) membalas gambar `image/jpeg` langsung. Backend selalu mengirim `json=0`, hasilnya dibaca sebagai biner di `api/tool.js`. Kunci memakai `CLOUDAPI_API_KEY` di environment Vercel (jangan ditaruh di kode). Path bisa diubah lewat `CLOUDAPI_PATH_QUOTECARD`.
 
 **Reaksi Channel V2 dan V3** (api-cloud, plan Pro): V2 `GET /tools/rch?link=&emoji=` (maks. 6 emoji, dipisah koma), V3 `GET /tools/reactch-v4?url=&reaction=` (1 emoji). Keduanya lewat `reactChannelCloud()` di `api/tool.js`, memakai `CLOUDAPI_API_KEY`, dan limit harian yang sama dengan Reaksi Channel dan semua versi (termasuk Reaksi Channel versi 1) memakai 3 limit per kirim (id tool `rch2` dan `rch3` di `api/_credits.js`). Field `quota` (berisi apikey) dari balasan provider dibuang dan tidak dikirim ke browser.
+
+## SEO dan CSS
+- `public/style.css` berisi semua CSS (dulu 32 blok `<style>` di `index.html`), urutan asli dipertahankan karena urutan menentukan prioritas. Tiap bagian diberi penanda `/* ===== nama ===== */`. Ubah tampilan di file ini; naikkan angka `?v=` di `index.html` dan `SHELL` di `public/sw.js` agar cache pengguna ikut baru.
+- Setiap tool punya halaman pencarian sendiri di `/tools/<id>` (judul, deskripsi, data terstruktur). Setelah menambah atau mengubah tool, jalankan `python3 scripts/build-seo.py` untuk membuat ulang halaman tool, `sitemap.xml`, dan `robots.txt`.
+- Setelah deploy, daftarkan `https://www.maliktools.biz.id/sitemap.xml` di Google Search Console.
+
+## Halaman informasi
+`/tentang`, `/privasi`, `/syarat`, `/bantuan` dibuat oleh `scripts/build-seo.py` (isi teksnya ada di skrip itu). Tautannya ada di footer beranda, menu samping (Informasi), layar masuk, dan footer halaman tool. Untuk Login Google, isi alamat `/privasi` dan `/syarat` di OAuth consent screen. Baca ulang isinya dan sesuaikan bila ada data atau aturan yang berubah.
+
+## Tool Maker di browser
+Meme Maker, Pembuat Stiker WhatsApp, Watermark Foto, Avatar Bulat, dan Story Teks jalan penuh di canvas browser (tidak ada API, tidak ada limit, foto tidak diunggah). Semuanya ada di array `tools` pada `public/index.html`, kategori `canvas` (Maker). Setelah menambah tool, jalankan `python3 scripts/build-seo.py`.
+
+
+## Keamanan (v322+)
+- **Akun**: satu entri per akun di Redis (`mt:acc:users`, `mt:acc:pending`, indeks email `mt:acc:email`). Pembuatan akun memakai `HSETNX`, perubahan memakai compare-and-set per entri, dan username yang sedang menunggu verifikasi dipesan atomik. Dua pendaftar bersamaan tidak bisa saling menimpa.
+- **Batas percobaan** kode verifikasi (5), kode reset (5), dan kata sandi (8 per 10 menit per akun) dihitung dengan Redis `INCR` atomik (`api/_rate.js` → `hit()`), jadi permintaan paralel tidak bisa melewatinya. Bila Redis error, permintaan ditolak (gagal tertutup).
+- **Anti-CSRF**: semua endpoint non-GET memanggil `guard()` (`api/_http.js`): header `Origin` harus sama dengan host situs. Tanpa Origin, `Sec-Fetch-Site: cross-site` ditolak. Origin tambahan (mis. domain admin lain) diisi di env `ALLOWED_ORIGINS` (dipisah koma).
+- **IP klien** diambil dari `x-vercel-forwarded-for` / `x-real-ip` (diisi platform), bukan `x-forwarded-for` mentah.
+- **XSS**: `esc()` di `public/index.html` kini juga meng-escape tanda kutip tunggal. CSP masih memakai `'unsafe-inline'` untuk script karena `index.html` memakai ratusan handler inline; menghapusnya butuh memindahkan semuanya ke file JS terpisah dengan event delegation (belum dikerjakan).
+
+## Akun sendiri
+Pengguna bisa **ganti email** (akun username/sandi, lewat kode ke email baru) dan **hapus akun** sendiri dari Profil. Hapus akun menghapus entri akun, data pengguna di Redis, dan foto profil; tercatat di log developer. Akun developer tidak bisa dihapus dari sini.
+
+## Laporan pesan dan pemantauan error
+- Pengguna bisa **Laporkan** pesan Global Chat (menu pesan). Laporan masuk antrean `mt:chat:reports` (30 hari). Developer membaca lewat `GET /api/admin?action=reports`, menutup lewat `POST action=dismissreport` (`id` atau `msg`).
+- Error server (kegagalan provider, error API) disimpan 200 terakhir di `mt:errs`: `GET /api/admin?action=errors`, bersihkan dengan `POST action=clearerrors`. Isi env `ERROR_WEBHOOK_URL` (Discord/Slack) untuk pemberitahuan langsung; pesan yang sama hanya dikirim sekali per 10 menit.
+
+## Tes, CI, dan build
+- `npm test` menjalankan tes (`node:test`, tanpa dependensi, Redis palsu di memori) untuk alur akun, batas percobaan paralel, dan pengecekan Origin. `npm run check` memeriksa sintaks `api/*.js` dan skrip inline, memastikan `guard()` terpasang, dan versi `style.css` di `sw.js` cocok. CI GitHub Actions (`.github/workflows/ci.yml`) menjalankan keduanya di tiap push.
+- **CSS**: sumber ada di `src/style.css`; setelah mengubahnya jalankan `python3 scripts/minify-css.py` (hasil ke `public/style.css`), lalu naikkan angka `?v=` di `index.html` dan `sw.js`.
+- Beranda punya daftar tool statis (`<main id="main">` berisi h1 dan tautan ke `/tools/*`) yang terbaca crawler dan diganti JS saat halaman dirender.

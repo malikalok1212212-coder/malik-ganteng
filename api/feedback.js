@@ -1,3 +1,4 @@
+const { guard, clientIp } = require('./_http');
 // Masukan (feedback) dikirim langsung ke server, disimpan di Redis (500 terakhir), dibaca developer di panel Developer > Masukan.
 const crypto = require('crypto');
 const { getUser, isOwner, loginRequired } = require('./_auth');
@@ -9,6 +10,7 @@ const CATS = ['Bug report', 'Saran fitur', 'Pertanyaan', 'Lainnya'];
 const clip = (v, n) => String(v == null ? '' : v).replace(/\r/g, '').trim().slice(0, n);
 
 module.exports = async (req, res) => {
+  if (!guard(req, res)) return;
   res.setHeader('Cache-Control', 'no-store');
   const fail = (c, e) => res.status(c).json({ ok: false, error: e });
   const me = getUser(req);
@@ -43,7 +45,7 @@ module.exports = async (req, res) => {
 
     // Pengguna: kirim masukan
     if (loginRequired() && !me) return fail(401, 'Masuk dulu untuk mengirim masukan.');
-    const ip = String(req.headers['x-forwarded-for'] || req.socket && req.socket.remoteAddress || '').split(',')[0].trim();
+    const ip = clientIp(req);
     const rid = me ? crypto.createHash('sha256').update(String(me.sub)).digest('hex').slice(0, 16) : crypto.createHash('sha256').update('ip-' + ip).digest('hex').slice(0, 16);
     const subject = clip(body.subject, 80), message = clip(body.message, 800);
     if (!subject || message.length < 3) return fail(400, 'Isi subjek dan pesan dulu.');

@@ -1,3 +1,4 @@
+const { guard, clientIp } = require('./_http');
 const { put } = require('@vercel/blob');
 const { getUser, loginRequired, isOwner } = require('./_auth');
 const store = require('./_store');
@@ -14,6 +15,7 @@ function sniff(b) {
 }
 
 module.exports = async (req, res) => {
+  if (!guard(req, res)) return;
   res.setHeader('Cache-Control', 'no-store');
   const fail = (code, error) => res.status(code).json({ ok: false, error });
 
@@ -24,7 +26,7 @@ module.exports = async (req, res) => {
     return fail(401, 'Masuk dulu untuk memakai tool ini.');
   const who = getUser(req);
   if (who && !isOwner(who.email) && await store.isBanned(who.sub)) return fail(403, 'Akun kamu diblokir oleh developer.');
-  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'x';
+  const ip = clientIp(req);
   if (await rate.limited('upload', ip, 20, 60)) return fail(429, 'Terlalu banyak permintaan. Coba lagi sebentar lagi.');
   if (!process.env.BLOB_READ_WRITE_TOKEN)
     return fail(500, 'Vercel Blob belum terhubung. Buat Blob store di tab Storage lalu connect ke project ini.');

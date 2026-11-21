@@ -1,3 +1,4 @@
+const { guard, clientIp } = require('./_http');
 // Unduh gambar / video / audio hasil tool sebagai file (bukan membuka link). Tombol "Unduh Gambar" dan "Unduh Video" memanggil ini
 // karena atribut download diabaikan browser untuk alamat milik domain lain. Media diambil server lalu dikirim dengan
 // Content-Disposition: attachment (di-stream, tidak ditampung di memori).
@@ -76,13 +77,14 @@ function badUrl(u) { // pesan galat bila alamat tidak boleh dipakai, '' bila ama
 }
 
 module.exports = async (req, res) => {
+  if (!guard(req, res)) return;
   res.setHeader('Cache-Control', 'no-store');
   const fail = (code, error) => res.status(code).json({ ok: false, error });
   if (req.method !== 'GET') return fail(405, 'Metode tidak diizinkan.');
   const who = getUser(req);
   if (loginRequired() && !who) return fail(401, 'Masuk dulu untuk mengunduh.');
   if (who && !isOwner(who.email) && await store.isBanned(who.sub)) return fail(403, 'Akun kamu diblokir oleh developer.');
-  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'x';
+  const ip = clientIp(req);
   if (await rate.limited('dl', ip, 30, 60)) return fail(429, 'Terlalu banyak permintaan. Coba lagi sebentar lagi.');
 
   let u;

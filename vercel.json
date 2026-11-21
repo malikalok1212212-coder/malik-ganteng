@@ -26,6 +26,9 @@
     },
     "api/feedback.js": {
       "maxDuration": 15
+    },
+    "api/presence.js": {
+      "maxDuration": 10
     }
   },
   "headers": [
@@ -71,6 +74,15 @@
           "value": "/"
         }
       ]
+    },
+    {
+      "source": "/style.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, stale-while-revalidate=604800"
+        }
+      ]
     }
   ],
   "crons": [
@@ -81,5 +93,6 @@
   ],
   "regions": [
     "sin1"
-  ]
+  ],
+  "cleanUrls": true
 }

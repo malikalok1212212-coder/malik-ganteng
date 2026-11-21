@@ -1,7 +1,9 @@
+const { guard, clientIp } = require('./_http');
 const cfg = require('./_config');
 const { getUser, isOwner, ROLES, ASSIGN_ROLES, BADGE_COLORS, badgeOf, roleOf, roleUntilOf } = require('./_auth');
 const R = require('./_redis');
 const store = require('./_store');
+const errlog = require('./_err');
 const rate = require('./_rate');
 const credits = require('./_credits');
 const stats = require('./_stats');
@@ -69,6 +71,7 @@ const annState = (a, now = Date.now()) => (!a ? '' : a.from && a.from > now ? 't
 const clip = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
 
 module.exports = async (req, res) => {
+  if (!guard(req, res)) return;
   res.setHeader('Cache-Control', 'no-store');
   const fail = (code, error) => res.status(code).json({ ok: false, error });
   const action = String((req.query && req.query.action) || '');
@@ -80,7 +83,7 @@ module.exports = async (req, res) => {
   try {
     // Publik: pengumuman aktif
     if (action === 'tools' && req.method === 'GET') {
-      const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'x';
+      const ip = clientIp(req);
       if (await rate.limited('tools', ip, 60, 60)) return fail(429, 'Terlalu banyak permintaan. Coba lagi sebentar lagi.');
       const st = await store.getTools(); // hanya pengumuman dan harga tool, tanpa memuat daftar pengguna
       let ann = st ? st.announce : null;
@@ -156,11 +159,30 @@ module.exports = async (req, res) => {
       try { return res.status(200).json({ ok: true, now: Date.now(), dayStart: stats.dayStart(), ...(await stats.summary(7)) }); }
       catch (e) { return fail(500, 'Statistik belum bisa dibaca. Pastikan Upstash Redis aktif.'); }
     }
+    if (action === 'reports' && req.method === 'GET') { // laporan pesan Global Chat dari pengguna
+      try {
+        const [flat] = await R.run([['HGETALL', 'mt:chat:reports']]);
+        const list = []; for (let j = 0; j < (flat || []).length; j += 2) { try { list.push(JSON.parse(flat[j + 1])); } catch (e) { /* lewati */ } }
+        return res.status(200).json({ ok: true, reports: list.sort((x, y) => y.ts - x.ts).slice(0, 200) });
+      } catch (e) { return fail(500, 'Laporan belum bisa dibaca.'); }
+    }
+    if (action === 'errors' && req.method === 'GET') { // error server terakhir (provider gagal, kesalahan API)
+      try { return res.status(200).json({ ok: true, errors: await errlog.list(100) }); }
+      catch (e) { return fail(500, 'Catatan error belum bisa dibaca.'); }
+    }
     if (action === 'log' && req.method === 'GET') { // catatan aktivitas, opsional per pengguna (?sub=)
       try { return res.status(200).json({ ok: true, log: await alog.list(String((req.query && req.query.sub) || ''), 300) }); }
       catch (e) { return fail(500, 'Catatan aktivitas belum bisa dibaca.'); }
     }
     if (req.method !== 'POST') return fail(405, 'Metode tidak diizinkan.');
+
+    if (action === 'dismissreport') { // tutup laporan (setelah pesannya dihapus / dianggap aman); id satu laporan atau msg = semua laporan pesan itu
+      const [flat] = await R.run([['HGETALL', 'mt:chat:reports']]);
+      const del = []; for (let j = 0; j < (flat || []).length; j += 2) { if (flat[j] === String(body.id || '') || (body.msg && flat[j].split(':')[0] === String(body.msg))) del.push(flat[j]); }
+      if (del.length) await R.run([['HDEL', 'mt:chat:reports', ...del]]);
+      return res.status(200).json({ ok: true, closed: del.length });
+    }
+    if (action === 'clearerrors') { await errlog.clear(); return res.status(200).json({ ok: true }); }
 
     const logIt = (act, u, sub, detail) => alog.add({ by: me.email, act, sub, email: u && u.email, name: u && (u.dname || u.name), detail });
 
@@ -284,7 +306,7 @@ module.exports = async (req, res) => {
 
     return fail(action ? 405 : 404, 'Aksi tidak dikenal.');
   } catch (e) {
-    console.error('[admin]', e && e.name, e && e.message);
+    errlog.report('admin', e);
     return fail(500, 'Penyimpanan bermasalah, coba lagi.');
   }
 };
