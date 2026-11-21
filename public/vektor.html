@@ -3,38 +3,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Vektor Studio – Gambar ke SVG</title>
 <style>
-:root{--bg:#f3f5f4;--pn:#fff;--ink:#101513;--mu:#66726c;--bd:#d6ddd9;--ac:#16a34a;--fl:#e8ece9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0f0d;--pn:#141a17;--ink:#e9f0ec;--mu:#8a9891;--bd:#26302b;--ac:#34d399;--fl:#1d2622;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0b0f0d;--pn:#141a17;--ink:#e9f0ec;--mu:#8a9891;--bd:#26302b;--ac:#34d399;--fl:#1d2622;color-scheme:dark}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
-header{display:flex;gap:6px;align-items:center;padding:8px 10px;background:var(--pn);border-bottom:1px solid var(--bd)}
-header b{margin-right:auto;font-size:16px}header a{color:var(--mu);text-decoration:none;font-size:20px;padding:0 6px}
-main{display:grid;gap:10px;padding:10px;max-width:1100px;margin:auto}
-@media(min-width:900px){main{grid-template-columns:1.5fr 1fr;align-items:start}}
+:root{--bg:#f1eeff;--pn:#fff;--ink:#14121f;--mu:#5d5a70;--bd:#d8d0fb;--ac:#6240e0;--fl:#e8e3ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0e13;--pn:#17171f;--ink:#faf9f5;--mu:#a9a6c4;--bd:#3a3950;--ac:#7c5cff;--fl:#20202b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e0e13;--pn:#17171f;--ink:#faf9f5;--mu:#a9a6c4;--bd:#3a3950;--ac:#7c5cff;--fl:#20202b;color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font:13px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
+header{display:flex;gap:6px;align-items:center;padding:8px 10px;background:var(--pn);border-bottom:1px solid var(--bd);flex-wrap:wrap}
+header b{margin-right:auto;font-size:15px}header a{color:var(--mu);text-decoration:none;font-size:20px;padding:0 6px}
+main{flex:1;min-height:0;display:flex;flex-direction:column}main>section:first-child{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px;overflow:auto}
+@media(min-width:900px){main{flex-direction:row}main>section:first-child{flex:1.5}#pn{width:min(420px,38%);max-height:none!important;border-left:1px solid var(--bd);border-top:0!important}}
 button,select,input[type=number]{font:inherit;color:var(--ink);background:var(--fl);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;min-height:36px}
 button.on,button.p{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}button:disabled{opacity:.4}
 .bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:8px 0}.bar output{min-width:52px;text-align:center;color:var(--mu)}
-#st{position:relative;height:56vh;min-height:280px;overflow:hidden;touch-action:none;border:1px solid var(--bd);border-radius:10px;background:repeating-conic-gradient(var(--fl) 0 25%,var(--pn) 0 50%) 0 0/16px 16px;cursor:grab}
+#st{position:relative;flex:1;min-height:160px;overflow:hidden;touch-action:none;border:1px solid var(--bd);border-radius:10px;background:repeating-conic-gradient(var(--fl) 0 25%,var(--pn) 0 50%) 0 0/16px 16px;cursor:grab}
 #st canvas,#aw,#aw svg{position:absolute;inset:0;width:100%;height:100%}#aw{pointer-events:none}
 #hd{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--ac);touch-action:none}
 #hd:after{content:"↔";position:absolute;top:50%;left:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-size:18px;border:3px solid var(--pn)}
-.lb{position:absolute;top:8px;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;color:#fff;pointer-events:none}.lb.a{left:8px;background:#1d4ed8}.lb.b{right:8px;background:#15803d}
+.lb{position:absolute;top:8px;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;color:#fff;pointer-events:none}.lb.a{left:8px;background:#45455c}.lb.b{right:8px;background:var(--ac)}
 #dz{position:absolute;inset:0;display:grid;place-content:center;gap:6px;text-align:center;background:var(--pn);cursor:pointer;color:var(--mu);padding:16px}#dz b{color:var(--ink);font-size:16px}
 input[type=range]{width:100%;accent-color:var(--ac)}input[type=color]{width:40px;height:34px;padding:2px;border:1px solid var(--bd);border-radius:8px;background:var(--fl)}
-#pn{background:var(--pn);border:1px solid var(--bd);border-radius:10px;padding:10px}.tabs{display:flex;gap:6px;margin-bottom:10px;overflow:auto}.tab{display:none;gap:10px}.tab.on{display:grid}
+#pn{background:var(--pn);border-top:1px solid var(--bd);max-height:50%;overflow:auto;padding:8px 10px 12px}#pn{display:flex;flex-direction:column;gap:8px}#pn .bar{margin:0}#sx{font-size:11px;margin:4px 0 0!important;max-height:2.9em;overflow:hidden}.tabs{display:flex;gap:6px;margin-bottom:10px;overflow:auto}.tab{display:none;gap:10px}.tab.on{display:grid}
 .rw{display:grid;grid-template-columns:96px 1fr 42px;gap:8px;align-items:center}.rw output{color:var(--mu);text-align:right}
 .pl{display:flex;gap:8px;align-items:center}.pl code{flex:1;color:var(--mu)}small,.mu{color:var(--mu)}
 </style></head><body>
-<header><a href="/#vektor" aria-label="Kembali ke Malik Tools">←</a><b>Vektor Studio</b><button id="ub" disabled>Urungkan</button><button id="rb" disabled>Ulangi</button></header>
+<header><a href="/#vektor" aria-label="Kembali ke Malik Tools">←</a><b>◆ Vektor Studio</b><button id="ub" disabled>Urungkan</button><button id="rb" disabled>Ulangi</button><button class="p" id="hx" onclick="document.querySelector('[data-t=e]').click()">Ekspor</button></header>
 <main><section>
 <div id="st"><canvas id="co"></canvas><div id="aw"><svg id="sv" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg></div><div id="hd"></div><span class="lb a" id="la">BEFORE · ASLI</span><span class="lb b" id="lb">AFTER · SVG</span>
 <label id="dz"><b>Pilih gambar</b><span>PNG, JPG, atau WebP. Bisa juga tempel (paste) atau seret ke sini. Tidak diunggah ke server.</span><input id="fi" type="file" accept="image/*" hidden></label></div>
-<div class="bar"><button data-m="o">Asli</button><button data-m="s">SVG</button><button data-m="c" class="on">Bandingkan</button><span style="flex:1"></span><button id="zm" aria-label="Perkecil">−</button><output id="zl">Pas</output><button id="zp" aria-label="Perbesar">+</button><button id="z1">Pas</button></div>
+
+</section>
+<section id="pn"><div class="bar"><button data-m="o">Asli</button><button data-m="s">SVG</button><button data-m="c" class="on">Bandingkan</button><span style="flex:1"></span><button id="zm" aria-label="Perkecil">−</button><output id="zl">Pas</output><button id="zp" aria-label="Perbesar">+</button><button id="z1">Pas</button></div>
 <div class="rw" style="grid-template-columns:70px 1fr"><span>Zoom</span><input id="zs" type="range" min="0" max="1000" value="0"></div>
 <div class="rw" style="grid-template-columns:70px 1fr;margin-top:6px"><span>Before / After</span><input id="ds" type="range" min="0" max="100" value="50"></div>
-<p class="mu" id="sx" style="margin:8px 0 0">Geser garis ↔ untuk Before/After. Cubit atau roda mouse untuk zoom (sampai 1000×), geser gambar untuk pan. SVG dirender ulang sebagai vektor sesuai area yang terlihat.</p>
-</section>
-<section id="pn"><div class="tabs"><button data-t="t" class="on">Trace</button><button data-t="w">Warna</button><button data-t="l">Latar</button><button data-t="e">Ekspor</button></div>
+<p class="mu" id="sx" style="margin:8px 0 0">Geser garis ↔ untuk Before/After. Cubit atau roda mouse untuk zoom (sampai 1000×), geser gambar untuk pan. SVG dirender ulang sebagai vektor sesuai area yang terlihat.</p><div class="tabs"><button data-t="t" class="on">Trace</button><button data-t="w">Warna</button><button data-t="l">Latar</button><button data-t="e">Ekspor</button></div>
 <div class="tab on" id="t"><div class="bar" style="margin:0"><button data-p="logo" class="on">Logo</button><button data-p="sketch">Sketsa</button><button data-p="photo">Foto</button><button data-p="pixel">Pixel art</button></div>
 <label class="rw">Jumlah warna<input data-k="n" type="range" min="2" max="32" value="8"><output></output></label>
 <label class="rw">Bersihkan bintik<input data-k="sp" type="range" min="0" max="200" value="20"><output></output></label>
@@ -145,7 +145,7 @@ $$('[data-p]').forEach(b=>b.onclick=()=>{$$('[data-p]').forEach(x=>x.classList.t
 for(const k of['n','sp','sm','mg']){const el=$(`[data-k=${k}]`);el.value=S.o[k];el.nextElementSibling.textContent=S.o[k]}again()});
 async function load(file){if(!file||!file.type.startsWith('image/'))return;const im=new Image();im.src=URL.createObjectURL(file);try{await im.decode()}catch(e){$('#sx').textContent='Gambar tidak bisa dibaca.';return}S.img=im;$('#dz').style.display='none';run()}
 $('#fi').onchange=e=>load(e.target.files[0]);st.ondragover=e=>e.preventDefault();st.ondrop=e=>{e.preventDefault();load(e.dataTransfer.files[0])};
-onpaste=e=>{for(const it of e.clipboardData.items)if(it.type.startsWith('image/'))load(it.getAsFile())};onresize=draw;
+onpaste=e=>{for(const it of e.clipboardData.items)if(it.type.startsWith('image/'))load(it.getAsFile())};onresize=draw;if(window.ResizeObserver)new ResizeObserver(()=>draw()).observe(st);
 const dl=(n,b)=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4e3)};
 $('#dsv').onclick=()=>S.w&&dl('vektor.svg',new Blob([svgFull()],{type:'image/svg+xml'}));
 $('#dpn').onclick=()=>{if(!S.w)return;const c=comp(),t=$('#rf').value,sz=+$('#rs').value,k=sz?sz/Math.max(c.VW,c.VH):1/S.sc,im=new Image(),cn=document.createElement('canvas');cn.width=Math.round(c.VW*k);cn.height=Math.round(c.VH*k);

@@ -60,13 +60,6 @@
 .sls{width:100%;border-radius:12px;display:block;max-height:340px;object-fit:cover;object-position:top}
 
 
-.bax{margin-bottom:14px}.bst{position:relative;width:100%;max-height:70vh;overflow:hidden;border-radius:14px;border:1px solid var(--bd);touch-action:none;background:var(--panel);cursor:grab;user-select:none;-webkit-user-select:none}
-.bl{position:absolute;inset:0}.bl img{width:100%;height:100%;object-fit:contain;transform-origin:0 0;display:block;pointer-events:none;border:0;border-radius:0}
-.bl.chk{background:repeating-conic-gradient(var(--dot) 0 25%,var(--field) 0 50%) 0 0/16px 16px}
-.bhd{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:#22c55e;cursor:ew-resize}
-.bhd:after{content:"↔";position:absolute;top:50%;left:50%;width:40px;height:40px;margin:-20px;border-radius:50%;background:#22c55e;color:#fff;display:grid;place-items:center;font-size:18px;border:3px solid var(--panel)}
-.blb{position:absolute;top:8px;padding:3px 8px;border-radius:5px;font:700 11px system-ui,sans-serif;color:#fff;pointer-events:none}.blb.a{left:8px;background:#1d4ed8}.blb.b{right:8px;background:#15803d}
-.bar2{display:flex;gap:6px;align-items:center;margin:8px 0}.bar2 output{min-width:48px;text-align:center}.bax input[type=range]{width:100%}
 </style></noscript>
 <style>:root{--bg:#eaf2ed;--panel:#fff;--field:#f4f9f6;--bd:#c3d3c8;--ink:#141413;--muted:#4a6355;--on:#141413;--ok:#1f6b3a;--bad:#c0262d;--sh:#a9bdb0;--dot:#cfdcd3;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--tc:#ffd33f}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#151515;--panel:#1e1e1d;--field:#080b09;--bd:#2b4636;--ink:#faf9f5;--muted:#9bb2a4;--on:#141413;--ok:#ffd33f;--bad:#ff8a95;--sh:#1f4a33;--dot:#0f1713;color-scheme:dark}}
@@ -3690,6 +3683,25 @@ html body main.chatp.chatp.chatp .cpanel.cpanel .cin .cib svg,html body main.cha
 :root:not([data-theme="light"]):not([data-theme="dark"]) .ix .ixpc small{color:#faf9f5}
 }
 </style>
+<style id="ba-v281">
+/* v281: slider Before/After (dulu CSS-nya terjebak di <noscript> jadi tidak aktif) */
+.bax{margin:0 0 14px}
+.bax .bst{position:relative;width:100%;max-height:70vh;overflow:hidden;border-radius:14px;border:2.5px solid var(--bd);touch-action:none;background:var(--panel);cursor:grab;user-select:none;-webkit-user-select:none}
+.bax .bl{position:absolute;inset:0}
+.bax .bl img{width:100%;height:100%;object-fit:contain;transform-origin:0 0;display:block;pointer-events:none;border:0;border-radius:0}
+.bax .bl.chk{background:repeating-conic-gradient(var(--dot) 0 25%,var(--field) 0 50%) 0 0/16px 16px}
+.bax .bhd{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:#ffd33f;box-shadow:0 0 0 1.5px #14121f;cursor:ew-resize;z-index:3}
+.bax .bhd:after{content:"↔";position:absolute;top:50%;left:50%;width:42px;height:42px;margin:-21px;border-radius:50%;background:#ffd33f;color:#14121f;display:grid;place-items:center;font:800 19px/1 system-ui,sans-serif;border:3px solid #14121f;box-shadow:2px 2px 0 #14121f}
+.bax .blb{position:absolute;top:8px;z-index:4;padding:4px 9px;border-radius:6px;border:2px solid #14121f;font:800 11px/1.2 "Space Grotesk",system-ui,sans-serif;letter-spacing:.03em;color:#fff;pointer-events:none}
+.bax .blb.a{left:8px;background:#1d4ed8}.bax .blb.b{right:8px;background:#15803d}
+.bax .bab{display:flex;gap:8px;align-items:center;justify-content:center;margin:12px 0 8px}
+.bax .bab button{min-width:46px;height:42px;padding:0 14px;border:2.5px solid var(--bd);border-radius:12px;background:var(--panel);color:var(--ink);font:800 16px/1 "Space Grotesk",system-ui,sans-serif;cursor:pointer;box-shadow:2px 2px 0 var(--bd)}
+.bax .bab button:active{transform:translate(2px,2px);box-shadow:none}
+.bax .bab output{min-width:64px;text-align:center;font:800 15px "Space Grotesk",system-ui,sans-serif;color:var(--ink)}
+.bax .bax-r{display:flex;align-items:center;gap:12px;margin:8px 2px 0}
+.bax .bax-r label{flex:0 0 112px;margin:0;white-space:nowrap;text-transform:none;letter-spacing:0;font:700 13.5px "Space Grotesk",system-ui,sans-serif;color:var(--ink)}
+.bax .bax-r input[type=range]{flex:1;min-width:0;width:auto;height:28px;margin:0;padding:0;accent-color:#ffd33f;background:none;border:0}
+</style>
 <div class="ix" id="ld" role="status" aria-label="Memuat Malik Tools"><div class="ixw"><div class="ixb" aria-hidden="true"><i class="ixdisc"></i><svg class="ixring" viewBox="0 0 208 208"><defs><path id="ixp" d="M104,104 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"/></defs><text><textPath href="#ixp" textLength="520" lengthAdjust="spacing">MALIK TOOLS • GRATIS • CEPAT • TANPA RIBET • </textPath></text></svg><span class="ixlogo"><img src="/yuu.jpg" alt="" width="104" height="104"></span><svg class="ixsp ixsp1" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 8 8 2.5-8 2.5L12 22.5l-2.6-8-8-2.5 8-2.5z"/></svg><svg class="ixsp ixsp2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 8 8 2.5-8 2.5L12 22.5l-2.6-8-8-2.5 8-2.5z"/></svg><svg class="ixsp ixsp3" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 8 8 2.5-8 2.5L12 22.5l-2.6-8-8-2.5 8-2.5z"/></svg><span class="ixstamp">SIAP!</span></div><div class="ixpc" aria-hidden="true"><span class="ixn">0</span><small>%</small></div><div class="ixbar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ixc" aria-hidden="true"><span class="ixs"><i></i>Sesi</span><span class="ixs"><i></i>Logo</span><span class="ixs"><i></i>Banner</span><span class="ixs"><i></i>Font</span><span class="ixs"><i></i>Menu</span></div><p class="ixm">Ngumpulin tools...</p><button type="button" class="ixsk" id="sk">Lewati</button></div><div class="ixrb" aria-hidden="true"><div class="ixrt"></div></div></div>
 <div class="shell">
 <header class="top"><button class="ib" id="mn" aria-label="Buka menu" aria-expanded="false" aria-controls="drw"></button><a class="brand" href="#" aria-label="Malik Tools, ke beranda"><span class="logo" id="logo"></span><span class="bt">Malik Tools</span></a><button class="ib" id="th" aria-label="Ganti tema"></button><span class="pill" title="Operasional">Operasional</span></header>
@@ -3989,13 +4001,13 @@ function imgTool(o){return{id:o.id,name:o.name,desc:o.desc,
    res.querySelectorAll('.cmp img').forEach(im=>{im.onclick=()=>{const lb=document.createElement('div');lb.className='lbx';lb.innerHTML='<img alt="">'+unduhBtn(im.src,o.dl||'foto.jpg','Unduh Foto');lb.firstChild.src=im.src;if(im.classList.contains('chk'))lb.firstChild.className='chk';lb.onclick=e=>{if(!(e.target.closest&&e.target.closest('.unb')))lb.remove()};document.body.appendChild(lb)}});const cp=$(r,'#cp');if(cp)cp.onclick=x=>copy(j.link,x.target);const dl=$(r,'#dl');if(dl&&http)dl.onclick=async ev=>{ev.preventDefault();const t=dl.innerHTML;dl.textContent='Mengunduh...';try{const q=await fetch(dlh,{credentials:'same-origin'});if(!q.ok)throw 0;const bl=await q.blob(),a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=o.dl;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}catch(e){window.open(j.link,'_blank','noopener')}dl.innerHTML=t}};
   u.addEventListener('change',()=>{const p=$(r,'#lpv'),im=p.firstChild,v=u.value.trim();if(!/^https?:\/\//i.test(v)){p.hidden=true;return}im.onload=()=>{p.hidden=false};im.onerror=()=>{p.hidden=true};im.src=v});go.onclick=run;u.onkeydown=ev=>{if(ev.key==='Enter')run()}}}}
 function baEl(a,b,chk,lb){const e=document.createElement('div');e.className='bax';
-e.innerHTML=`<div class="bst"><div class="bl"><img alt="Asli" draggable="false"></div><div class="bl al${chk?' chk':''}"><img alt="Hasil" draggable="false"></div><i class="bhd"></i><span class="blb a">BEFORE · ASLI</span><span class="blb b">AFTER · ${lb||'HASIL'}</span></div><div class="bar2"><button type="button" data-z="-">−</button><output>Pas</output><button type="button" data-z="+">+</button><button type="button" data-z="0">Pas</button></div><input type="range" min="0" max="100" value="50" aria-label="Before / After">`;
-const st=e.querySelector('.bst'),[i1,i2]=st.querySelectorAll('img'),al=e.querySelector('.al'),hd=e.querySelector('.bhd'),rg=e.querySelector('input'),zo=e.querySelector('output');let P=.5,z=1,tx=0,ty=0,dg=0;const pt=new Map();
+e.innerHTML=`<div class="bst"><div class="bl"><img alt="Asli" draggable="false"></div><div class="bl al${chk?' chk':''}"><img alt="Hasil" draggable="false"></div><i class="bhd"></i><span class="blb a">BEFORE · ASLI</span><span class="blb b">AFTER · ${lb||'HASIL'}</span></div><div class="bab"><button type="button" data-z="-" aria-label="Perkecil">−</button><output>Pas</output><button type="button" data-z="+" aria-label="Perbesar">+</button><button type="button" data-z="0">Pas</button></div><div class="bax-r"><label>Zoom</label><input class="zr" type="range" min="1" max="12" step="0.1" value="1" aria-label="Zoom"></div><div class="bax-r"><label>Before / After</label><input class="pr" type="range" min="0" max="100" value="50" aria-label="Before / After"></div>`;
+const st=e.querySelector('.bst'),[i1,i2]=st.querySelectorAll('img'),al=e.querySelector('.al'),hd=e.querySelector('.bhd'),rg=e.querySelector('.pr'),zr=e.querySelector('.zr'),zo=e.querySelector('output');let P=.5,z=1,tx=0,ty=0,dg=0;const pt=new Map();
 i1.src=a;i2.src=b;i1.onload=()=>{st.style.aspectRatio=i1.naturalWidth+'/'+i1.naturalHeight};
-const ap=()=>{const w=st.clientWidth,h=st.clientHeight;z=Math.min(12,Math.max(1,z));tx=Math.min(0,Math.max(w-w*z,tx));ty=Math.min(0,Math.max(h-h*z,ty));i1.style.transform=i2.style.transform=`translate(${tx}px,${ty}px) scale(${z})`;al.style.clipPath=`inset(0 0 0 ${P*100}%)`;hd.style.left=P*100+'%';rg.value=P*100;zo.textContent=z<1.05?'Pas':z.toFixed(1)+'×'};
+const ap=()=>{const w=st.clientWidth,h=st.clientHeight;z=Math.min(12,Math.max(1,z));tx=Math.min(0,Math.max(w-w*z,tx));ty=Math.min(0,Math.max(h-h*z,ty));i1.style.transform=i2.style.transform=`translate(${tx}px,${ty}px) scale(${z})`;al.style.clipPath=`inset(0 0 0 ${P*100}%)`;hd.style.left=P*100+'%';rg.value=P*100;zr.value=z;zo.textContent=z<1.05?'Pas':z.toFixed(1)+'×'};
 const zm=(x,y,n)=>{n=Math.min(12,Math.max(1,n));const k=n/z;tx=x-(x-tx)*k;ty=y-(y-ty)*k;z=n;ap()};
-new ResizeObserver(ap).observe(st);rg.oninput=()=>{P=rg.value/100;ap()};
-e.querySelector('.bar2').onclick=ev=>{const d=ev.target.dataset.z;if(!d)return;const w=st.clientWidth,h=st.clientHeight;if(d==='0'){z=1;tx=ty=0;ap()}else zm(w/2,h/2,d==='+'?z*1.5:z/1.5)};
+new ResizeObserver(ap).observe(st);rg.oninput=()=>{P=rg.value/100;ap()};zr.oninput=()=>zm(st.clientWidth/2,st.clientHeight/2,+zr.value);
+e.querySelector('.bab').onclick=ev=>{const d=ev.target.dataset.z;if(!d)return;const w=st.clientWidth,h=st.clientHeight;if(d==='0'){z=1;tx=ty=0;ap()}else zm(w/2,h/2,d==='+'?z*1.5:z/1.5)};
 st.onpointerdown=ev=>{st.setPointerCapture(ev.pointerId);pt.set(ev.pointerId,[ev.clientX,ev.clientY]);dg=ev.target===hd?1:0};
 st.onpointermove=ev=>{const o=pt.get(ev.pointerId);if(!o)return;const r=st.getBoundingClientRect();
 if(pt.size===2){const q=[...pt].find(x=>x[0]!==ev.pointerId)[1];zm((ev.clientX+q[0])/2-r.left,(ev.clientY+q[1])/2-r.top,z*Math.hypot(ev.clientX-q[0],ev.clientY-q[1])/(Math.hypot(o[0]-q[0],o[1]-q[1])||1))}
@@ -4212,7 +4224,7 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
  init:r=>{}},
 {id:'svg-xml',name:'SVG ke Alight XML',desc:'Ubah SVG animasi (SMIL) jadi preset XML Alight Motion dengan keyframe yang bisa diedit. Diproses di perangkatmu, tanpa API key.',
  html:()=>`<label for="sxt">Tempel kode SVG animasi</label><textarea id="sxt" rows="7" spellcheck="false" placeholder="&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 240 160&quot;&gt;...&lt;/svg&gt;"></textarea>
-<label class="drop" id="sxd" for="sxf">${svg(IC.up)}<span><b>Atau pilih file .svg</b><span id="sxi">Maksimal 2 MB, file tidak diunggah.</span></span></label><input id="sxf" type="file" accept=".svg,image/svg+xml">
+<label class="drop" id="sxd" for="sxf">${svg(IC.up)}<span><b>Atau pilih file .svg</b><span id="sxi">Maksimal 20 MB, file tidak diunggah.</span></span></label><input id="sxf" type="file" accept=".svg,image/svg+xml">
 <label for="sxr">Ukuran kanvas</label><select id="sxr"><option value="asli">Asli (sesuai SVG)</option><option value="1:1">1:1</option><option value="16:9">16:9</option><option value="9:16">9:16</option><option value="4:5">4:5</option><option value="4:3">4:3</option></select>
 <label for="sxp">FPS</label><select id="sxp"><option>24</option><option selected>30</option><option>60</option></select>
 <label for="sxu">Durasi (detik), kosongkan agar otomatis</label><input id="sxu" type="number" inputmode="decimal" min="0.5" max="120" step="0.1" placeholder="otomatis dari animasi">
@@ -4220,11 +4232,11 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
 <div class="row"><button class="primary" id="go">Ekspor ke XML</button></div><p class="msg" id="m" role="status"></p><div id="res"></div>`,
  init:r=>{const t=$(r,'#sxt'),f=$(r,'#sxf'),dz=$(r,'#sxd'),fi=$(r,'#sxi'),h0=fi.textContent,m=$(r,'#m'),res=$(r,'#res');let prev='',pv='';
   f.onchange=()=>{const x=f.files[0];dz.classList.toggle('on',!!x);if(!x){fi.textContent=h0;return}
-   if(x.size>2*1024*1024){m.className='msg bad';m.textContent='Ukuran file maksimal 2 MB.';f.value='';dz.classList.remove('on');fi.textContent=h0;return}
+   if(x.size>20*1024*1024){m.className='msg bad';m.textContent='Ukuran file maksimal 20 MB.';f.value='';dz.classList.remove('on');fi.textContent=h0;return}
    const rd=new FileReader();rd.onload=()=>{t.value=String(rd.result);fi.textContent=x.name+' · '+mb(x.size);if(!$(r,'#sxn').value)$(r,'#sxn').value=x.name.replace(/\.[^.]+$/,'').slice(0,60)};rd.readAsText(x)};
   $(r,'#go').onclick=()=>{const bad=x=>{m.className='msg bad';m.textContent=x},src=t.value.trim();
    if(!src)return bad('Tempel kode SVG atau pilih file dulu.');
-   if(src.length>2*1024*1024)return bad('Kode SVG maksimal 2 MB.');
+   if(src.length>20*1024*1024)return bad('Kode SVG maksimal 20 MB.');
    m.className='msg';m.textContent='Memproses...';
    try{const rs=svgToAm(src,{ratio:$(r,'#sxr').value,fps:parseInt($(r,'#sxp').value,10),dur:parseFloat($(r,'#sxu').value),name:($(r,'#sxn').value.trim()||'animasi-svg')+'.svg'});
     const nm=($(r,'#sxn').value.trim()||'animasi-svg').replace(/[^\w.-]+/g,'-').slice(0,60);
@@ -4543,8 +4555,8 @@ const META={
  'open-graph':{c:'#22d3ee',note:'GRATIS',tab:'OG',lead:'Judul, deskripsi, dan gambar pratinjau dari link situs'},
  'cek-situs':{c:'#4ade80',note:'GRATIS',tab:'Cek Situs',lead:'Status online, waktu respons, redirect, dan SSL'},
  'svg-xml':{c:'#a78bfa',note:'GRATIS',tab:'SVG',lead:'Ubah SVG animasi jadi preset XML Alight Motion'},
- 'vektor':{c:'#34d399',note:'GRATIS',tab:'Vektor',lead:'Ubah gambar jadi SVG, bandingkan Before/After dan zoom sampai 1000×'},
- 'svg-motion':{c:'#e8336b',note:'GRATIS',tab:'Motion',lead:'Buat animasi SVG dengan keyframe, ekspor langsung dari browser'},
+ 'vektor':{c:'#8f7bff',note:'GRATIS',tab:'Vektor',lead:'Ubah gambar jadi SVG, bandingkan Before/After dan zoom sampai 1000×'},
+ 'svg-motion':{c:'#8f7bff',note:'GRATIS',tab:'Motion',lead:'Buat animasi SVG dengan keyframe, ekspor langsung dari browser'},
  'konversi-gambar':{c:'#fb923c',note:'GRATIS',tab:'Konversi',lead:'Ubah format dan kecilkan ukuran gambar di perangkatmu'},
  'am-data':{c:'#ff8fc8',note:'GRATIS',tab:'AM Data',lead:'Metadata proyek, UID, dan PID dari link share Alight Motion'},
  'am-find':{c:'#ff8fc8',note:'GRATIS',tab:'AM Find',lead:'Cari link preset Alight Motion di komentar video TikTok'},
