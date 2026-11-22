@@ -1,6 +1,8 @@
 // Cek status provider (GenCipta, dan NexaDev bila kuncinya diisi) tanpa memakai kredit: hanya tes koneksi ke host, tanpa key.
 // Dianggap hidup bila host menjawab dengan status < 500; mati bila timeout, gagal koneksi, atau 5xx.
 const cfg = require('./_config');
+const R = require('./_redis');
+const AUTO_KEY = 'mt:autooff', FAIL_KEY = 'mt:autooff:fails';
 const TTL = 60 * 1000;
 let cache = null;
 
@@ -27,5 +29,14 @@ module.exports = async (req, res) => {
     .concat(acOn && !ac.ok ? acTools : []);
   const body = { ok: gc.ok, gencipta: gc.ok, nexadev: nxOn ? nx.ok : null, apicloud: acOn ? ac.ok : null, down, at: Date.now() };
   cache = { at: Date.now(), body };
+  // Opsional (env AUTO_OFF=1): tool yang providernya mati 3 kali cek berturut-turut ditutup otomatis, dibuka lagi saat pulih.
+  if (process.env.AUTO_OFF === '1' && R.configured()) {
+    try {
+      if (down.length) {
+        const [n] = await R.run([['INCR', FAIL_KEY], ['EXPIRE', FAIL_KEY, 900]]);
+        if (n >= 3) await R.run([['SET', AUTO_KEY, JSON.stringify(down), 'EX', 600]]);
+      } else await R.run([['DEL', FAIL_KEY], ['DEL', AUTO_KEY]]);
+    } catch (e) { /* abaikan */ }
+  }
   return res.status(200).json(body);
 };

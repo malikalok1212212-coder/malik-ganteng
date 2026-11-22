@@ -12,7 +12,7 @@ Endpoint mengikuti dokumentasi GenCipta: `GET https://gateway.gencipta.com/api/d
 
 ## Tambah tool
 - Server: tambah entri di `api/_config.js` → `tools` (beri `gc: true`, `base`, `path`, `param`, dan `shape` untuk membaca balasan; tambah fungsi pembaca di `api/tool.js` bila format balasannya baru).
-- Tampilan: tambah objek di array `tools` pada `public/index.html`.
+- Tampilan: tambah objek di array `TOOLS_FULL` pada `public/js/tools.js`, lalu jalankan `npm run sync` (menyalin id dan nama tool ke daftar ringkas `TOOL_IDX` di `public/js/core.js`; `npm run check` gagal bila lupa) dan `python3 scripts/build-seo.py`. Ikon dan kategori tetap diisi di `IC`, `META`, dan `CAT` pada `public/js/core.js`.
 
 ## Provider api-cloud
 Tool dengan `ac: true` di `api/_config.js` memakai api-cloud.my.id (saat ini **IQC Dark**, `GET /canvas/iqcdark?text=`, balasan JSON `{ status, mime, base64 }` dibaca bentuk `cloudimg` di `api/tool.js`). `CLOUDAPI_API_KEY` opsional (kosong = dipanggil tanpa key); bila docs meminta key, isi di Vercel; bila Docs api-cloud memakai nama parameter kunci selain `apikey`, isi `CLOUDAPI_KEY_PARAM`. Status situs mengecek api-cloud terpisah dari GenCipta.
@@ -26,8 +26,27 @@ Tool dengan `ac: true` di `api/_config.js` memakai api-cloud.my.id (saat ini **I
 ## Unggah foto
 File foto sampai 50 MB diterima. Karena batas body fungsi Vercel 4,5 MB, foto di atas 4 MB dikecilkan otomatis di browser (maks. 3000 px, JPG) sebelum diunggah.
 
+## Struktur front-end (modul lazy-load)
+`public/index.html` hanya berisi kerangka halaman (sekitar 20 KB). Kodenya dipecah menjadi skrip biasa di `public/js/` yang berbagi satu lingkup global, jadi tidak ada `import`/`export` dan tidak ada langkah build:
+
+| File | Isi | Dimuat |
+|---|---|---|
+| `core.js` | helper, ikon/kategori (`IC`, `META`, `CAT`), login, beli role, router, beranda, drawer, pengumuman, notifikasi chat, loader | selalu (`defer`) |
+| `ui.js` | tombol melayang, dropdown kustom, Coba lagi, banner gangguan, tombol Bagikan | selalu (`defer`) |
+| `tools.js` | pembangun tampilan semua tool dan array `TOOLS_FULL` | saat tool dibuka |
+| `pages.js` | Changelog, Beli Role, Feedback, Stats, Profil | saat salah satunya dibuka |
+| `chat.js` | halaman Global Chat | saat `#chat` dibuka |
+| `dev.js` | panel Developer | saat `#owner` dibuka |
+
+- `loadMod(nama)` di `core.js` memuat modul sekali saja dan dipakai `render()` dan `renderPage()`. Modul halaman mengisi `PAGES.<id>` (daftar id ke modul ada di `PAGE_MOD`). Bila unduhan gagal, halaman menampilkan tombol **Coba lagi**.
+- Beranda memakai daftar ringkas `TOOL_IDX` (id dan nama) agar `tools.js` tidak perlu diunduh dulu. Setelah halaman selesai dimuat, browser mengunduh `tools.js`, `pages.js`, dan `chat.js` diam-diam saat menganggur (dilewati bila Data Saver atau koneksi 2G), sehingga ketukan berikutnya terasa instan. `dev.js` tidak diunduh lebih awal.
+- Menambah modul baru: tambahkan berkas di `public/js/`, daftarkan di `MODS` (dan `PAGE_MOD` bila berupa halaman), lalu pastikan berkasnya mengisi `PAGES.<id>`.
+- Nama `const`/`let` tingkat atas harus unik di semua file karena lingkupnya dipakai bersama.
+
 ## Halaman tambahan
-Changelog, Feedback, Stats, dan Profil ada di `public/index.html`. `CONTACT_WA` (di `public/index.html`) sudah diisi 6285772295147; dipakai untuk tombol Feedback dan Chat Developer. Entri changelog ada di array `CHANGELOG`. Stats dan Profil disimpan di browser tiap perangkat (localStorage).
+**Riwayat hasil** (`#riwayat`, kode di `public/js/pages.js`, penangkap di `RH` pada `public/js/core.js`): foto dan video hasil tool dicatat otomatis di perangkat (IndexedDB `mt_riwayat`, maksimal 60 entri terbaru). Yang dicatat: tombol `data-unduh` bertipe foto/video dan hasil foto tool gambar (`.bax`/`.cmp`). Hasil berupa `data:`/`blob:` (maks. 8 MB) disimpan penuh sehingga tetap bisa diunduh setelah tutup tab; hasil berupa tautan luar hanya disimpan alamatnya (bisa kedaluwarsa, pratinjau diganti keterangan bila gagal dimuat). Beranda juga menampilkan bagian **Favorit** dan **Terakhir dipakai** (`mt_fav`, `mt_recent` di localStorage). Tombol bintang di daftar kategori tetap menyematkan tool.
+
+Changelog, Feedback, Stats, dan Profil ada di `public/js/pages.js`. `CONTACT_WA` (di `public/js/core.js`) sudah diisi 6285772295147; dipakai untuk tombol Feedback dan Chat Developer. Entri changelog ada di array `CHANGELOG`. Stats dan Profil disimpan di browser tiap perangkat (localStorage).
 
 ## Sistem Developer
 1. Isi `DEVELOPER_EMAILS` (email Google kamu, pisahkan koma bila lebih dari satu), pastikan Login Google dan Vercel Blob sudah aktif, lalu redeploy. `OWNER_EMAILS` lama tetap dibaca, jadi deploy yang sudah jalan tidak perlu diubah.
@@ -158,7 +177,7 @@ Tool `rch` memakai NexaDev (`api/tool.js` fungsi `reactChannel`). Isi `NEXADEV_A
 ## Tag semua dan notifikasi Global Chat
 - **@semua** (juga `@everyone` / `@all`): hanya Developer yang menandai semua orang (Owner tidak). Dari akun lain, tulisan itu hanya teks biasa. Saat mengetik `@` muncul saran `@semua`. Pesannya diberi tanda `all` di server, jadi tidak bisa dipalsukan dari browser.
 - **Notifikasi** (lonceng di header Global Chat, bawaan aktif): saat ada pesan yang menyebut `@nama` kamu atau `@semua`, muncul popup di dalam situs; bila izin notifikasi browser diberikan dan tab ada di latar belakang, muncul notifikasi browser (ketuk untuk membuka Global Chat). Pengecekan memakai polling 45 detik yang sudah ada, jadi tidak menambah beban saat situs ditutup.
-- Batasan: ini bukan push sungguhan. Notifikasi tidak masuk saat situs/tab benar-benar ditutup. Untuk itu perlu Web Push (kunci VAPID, paket `web-push`, simpan langganan di Redis), belum dipasang.
+- Saat situs/tab benar-benar ditutup, notifikasi dikirim lewat **Web Push** (lihat bagian di bawah). Tanpa kunci VAPID, hanya polling di atas yang jalan.
 
 ## AM Premium: jalur cadangan GenCipta dan NexaDev
 - Tool **AM Premium** (`am-send` dan `am-verif`) memakai dua provider yang saling menggantikan: **GenCipta** dan **NexaDev** (`GET /am/send/` dan `GET /am/verif/`, kunci dari `NEXADEV_API_KEY`).
@@ -186,7 +205,7 @@ Tool api-cloud kini memakai User-Agent `MalikTools/1.0 (API client)` (bukan peny
 `/tentang`, `/privasi`, `/syarat`, `/bantuan` dibuat oleh `scripts/build-seo.py` (isi teksnya ada di skrip itu). Tautannya ada di footer beranda, menu samping (Informasi), layar masuk, dan footer halaman tool. Untuk Login Google, isi alamat `/privasi` dan `/syarat` di OAuth consent screen. Baca ulang isinya dan sesuaikan bila ada data atau aturan yang berubah.
 
 ## Tool Maker di browser
-Meme Maker, Pembuat Stiker WhatsApp, Watermark Foto, Avatar Bulat, dan Story Teks jalan penuh di canvas browser (tidak ada API, tidak ada limit, foto tidak diunggah). Semuanya ada di array `tools` pada `public/index.html`, kategori `canvas` (Maker). Setelah menambah tool, jalankan `python3 scripts/build-seo.py`.
+Meme Maker, Pembuat Stiker WhatsApp, Watermark Foto, Avatar Bulat, dan Story Teks jalan penuh di canvas browser (tidak ada API, tidak ada limit, foto tidak diunggah). Semuanya ada di array `TOOLS_FULL` (`public/js/tools.js`) pada `public/index.html`, kategori `canvas` (Maker). Setelah menambah tool, jalankan `python3 scripts/build-seo.py`.
 
 
 ## Keamanan (v322+)
@@ -194,7 +213,7 @@ Meme Maker, Pembuat Stiker WhatsApp, Watermark Foto, Avatar Bulat, dan Story Tek
 - **Batas percobaan** kode verifikasi (5), kode reset (5), dan kata sandi (8 per 10 menit per akun) dihitung dengan Redis `INCR` atomik (`api/_rate.js` → `hit()`), jadi permintaan paralel tidak bisa melewatinya. Bila Redis error, permintaan ditolak (gagal tertutup).
 - **Anti-CSRF**: semua endpoint non-GET memanggil `guard()` (`api/_http.js`): header `Origin` harus sama dengan host situs. Tanpa Origin, `Sec-Fetch-Site: cross-site` ditolak. Origin tambahan (mis. domain admin lain) diisi di env `ALLOWED_ORIGINS` (dipisah koma).
 - **IP klien** diambil dari `x-vercel-forwarded-for` / `x-real-ip` (diisi platform), bukan `x-forwarded-for` mentah.
-- **XSS**: `esc()` di `public/index.html` kini juga meng-escape tanda kutip tunggal. CSP masih memakai `'unsafe-inline'` untuk script karena `index.html` memakai ratusan handler inline; menghapusnya butuh memindahkan semuanya ke file JS terpisah dengan event delegation (belum dikerjakan).
+- **XSS**: `esc()` di `public/js/core.js` kini juga meng-escape tanda kutip tunggal. CSP masih memakai `'unsafe-inline'` untuk script karena `index.html` memakai ratusan handler inline; menghapusnya butuh memindahkan semuanya ke file JS terpisah dengan event delegation (belum dikerjakan).
 
 ## Akun sendiri
 Pengguna bisa **ganti email** (akun username/sandi, lewat kode ke email baru) dan **hapus akun** sendiri dari Profil. Hapus akun menghapus entri akun, data pengguna di Redis, dan foto profil; tercatat di log developer. Akun developer tidak bisa dihapus dari sini.
@@ -205,5 +224,32 @@ Pengguna bisa **ganti email** (akun username/sandi, lewat kode ke email baru) da
 
 ## Tes, CI, dan build
 - `npm test` menjalankan tes (`node:test`, tanpa dependensi, Redis palsu di memori) untuk alur akun, batas percobaan paralel, dan pengecekan Origin. `npm run check` memeriksa sintaks `api/*.js` dan skrip inline, memastikan `guard()` terpasang, dan versi `style.css` di `sw.js` cocok. CI GitHub Actions (`.github/workflows/ci.yml`) menjalankan keduanya di tiap push.
-- **CSS**: sumber ada di `src/style.css`; setelah mengubahnya jalankan `python3 scripts/minify-css.py` (hasil ke `public/style.css`), lalu naikkan angka `?v=` di `index.html` dan `sw.js`.
+- **CSS**: sumber ada di `src/style.css`; setelah mengubahnya jalankan `python3 scripts/minify-css.py` (hasil ke `public/style.css`), lalu naikkan angka `?v=` di `index.html` dan `sw.js`. Hal yang sama untuk `/js/core.js?v=` dan `/js/ui.js?v=` setiap file di `public/js/` berubah (`npm run check` memastikan angkanya sama di kedua tempat; modul lazy otomatis memakai angka dari `core.js`).
 - Beranda punya daftar tool statis (`<main id="main">` berisi h1 dan tautan ke `/tools/*`) yang terbaca crawler dan diganti JS saat halaman dirender.
+
+
+## Auto-nonaktif provider (opsional)
+Isi env `AUTO_OFF=1` di Vercel. `api/status.js` (dipanggil klien tiap beberapa menit) menghitung cek gagal berturut-turut; setelah 3 kali, tool yang providernya mati dijeda otomatis (Redis `mt:autooff`, kedaluwarsa 10 menit) dan dibuka lagi saat pulih. Developer tetap bisa menguji. Tanpa env ini perilaku lama (hanya banner gangguan).
+
+## Share Target dan Riwayat pembelian
+`manifest.webmanifest` punya `share_target` (GET `/?url=&text=`); `index.html` mengarahkan link ke tool yang cocok dan mengisi kolom link. `GET /api/pay?action=history` memberi riwayat pembelian role pengguna (maks 10 terakhir) untuk halaman Beli Role.
+
+## Halaman Info, Web Push, dan mode offline (v362)
+Satu paket karena ketiganya menyentuh service worker (`public/sw.js`, cache `mt-v108`).
+
+**Halaman Info** (`#info`, menu samping, modul `pages.js`): versi, mode buka (aplikasi/browser), status koneksi, jumlah berkas cache offline + tombol **Segarkan cache offline**, dan pengaturan **notifikasi push** (aktifkan/matikan, kirim tes), plus tautan Tentang, Privasi, Syarat, Bantuan, Changelog.
+
+**Mode offline**
+- `sw.js` me-precache shell (`/`, `/offline.html`, CSS, `core.js`, `ui.js`, gambar) dan modul lazy `tools.js`, `pages.js`, `chat.js` (modul `dev.js` sengaja tidak). Modul lazy dicoba satu per satu, jadi satu kegagalan tidak menggagalkan install.
+- Pindah halaman: jaringan dulu (maks. 3 dtk), lalu cache. Beranda (termasuk `/?url=` dari Bagikan) jatuh ke shell `/`; halaman lain yang belum pernah dibuka jatuh ke `/offline.html`. Permintaan `/api/*` tidak pernah di-cache.
+- Banner **Kamu sedang offline** (`ui.js`) muncul saat koneksi putus. `npm run check` memastikan versi modul di `sw.js` sama dengan `core.js`.
+- Setiap `core.js`/`ui.js`/modul/CSS berubah: naikkan `?v=` di `index.html` **dan** `sw.js` (`CORE`/`LAZY`) lalu `V` (nama cache).
+
+**Web Push** (tanpa paket `web-push`: VAPID ES256 + enkripsi `aes128gcm` RFC 8291 ditulis dengan `crypto` Node di `api/_webpush.js`, diuji dengan vektor RFC)
+1. Jalankan `node scripts/vapid.js`, isi `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (`mailto:`) di Vercel, lalu redeploy. Mengganti kunci mematikan semua langganan lama (pengguna aktifkan ulang).
+2. Pengguna masuk, lalu aktifkan lewat lonceng Global Chat atau halaman Info. Perangkat mendaftar ke `POST /api/push` (`op: subscribe`); `GET /api/push` memberi kunci publik.
+3. Setelah pesan chat tersimpan, `api/chat.js` memanggil `notifyChat()` (`api/_push.js`): `@semua` (hanya yang bertanda `all` dari server, jadi tidak bisa dipalsukan) ke semua langganan, `@namaDepan` ke pemilik nama itu, pengirim dilewati. Langganan yang dibalas 404/410 dibuang otomatis.
+4. Redis: `mt:push:subs` (hash, id = sha256 endpoint) dan `mt:push:u:<uid>` (set, maks. **5 perangkat** per akun). Hapus akun ikut membuang langganannya.
+- Keamanan: endpoint hanya diterima dari layanan push resmi (FCM, Mozilla, Apple, Windows) lewat HTTPS tanpa port (anti-SSRF); `subscribe` butuh login dan dibatasi 20 per 10 menit; tes kirim dijeda 15 dtk.
+- Bila jendela situs sedang terlihat, push tidak ditampilkan (popup di dalam situs yang menangani, tanpa dobel). `pushsubscriptionchange` mendaftarkan ulang otomatis.
+- iPhone: push hanya jalan setelah Malik Tools dipasang ke Layar Utama (iOS 16.4+).

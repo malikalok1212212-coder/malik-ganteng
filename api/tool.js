@@ -774,6 +774,13 @@ module.exports = async (req, res) => {
   if (store.ready() && !(me && isOwner(me.email))) { // dinonaktifkan sementara oleh developer (developer sendiri tetap bisa mencoba)
     try { const o = await store.getTool('__off'); if (o && Array.isArray(o.list) && o.list.includes(tid)) return fail(503, 'Tool ini sedang dinonaktifkan sementara karena ada gangguan. Coba lagi nanti.'); }
     catch (e) { /* Redis bermasalah: biarkan lewat */ }
+    if (process.env.AUTO_OFF === '1') {
+      try {
+        const R = require('./_redis'); const [raw] = await R.run([['GET', 'mt:autooff']]);
+        const l = raw ? JSON.parse(raw) : [];
+        if (Array.isArray(l) && l.includes(tid)) return fail(503, 'Provider tool ini sedang gangguan, jadi dijeda otomatis. Coba lagi beberapa menit lagi.');
+      } catch (e) { /* biarkan lewat */ }
+    }
   }
   if (tool.local === 'sitecheck') {
     const in0 = String(body.input || '').trim();

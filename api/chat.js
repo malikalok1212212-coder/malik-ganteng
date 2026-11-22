@@ -9,7 +9,7 @@ try { blob = require('@vercel/blob'); } catch (e) { /* opsional */ }
 
 const rate = require('./_rate'); // jeda kirim per pengguna, terpusat di Redis
 const clip = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
-const STICKERS = 30; // jumlah sticker di index.html (STK), id valid 0..29
+const STICKERS = 30; // jumlah sticker di public/js/chat.js (STK), id valid 0..29
 const RX = ['👍', '❤️', '😂', '😮', '😢', '🙏', '🔥']; // reaksi yang diizinkan
 const VK = 'mt:chat:ver'; // naik tiap ada perubahan chat; klien membandingkannya agar polling murah
 const getVer = async () => { try { const [v] = await R.run([['GET', VK]]); return v || '0'; } catch (e) { return ''; } };
@@ -211,6 +211,7 @@ module.exports = async (req, res) => {
     await store.save(st, 'chat');
     const nv = await bump();
     await dropImgs(dropped);
+    try { await require('./_push').notifyChat(msg); } catch (e) { /* push opsional: kegagalan tidak boleh menggagalkan pesan */ }
     return out(nv);
   } catch (e) {
     require('./_err').report('chat', e);

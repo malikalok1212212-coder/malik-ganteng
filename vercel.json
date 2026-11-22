@@ -13,7 +13,7 @@
       "maxDuration": 45
     },
     "api/chat.js": {
-      "maxDuration": 20
+      "maxDuration": 30
     },
     "api/cleanup.js": {
       "maxDuration": 30
@@ -32,6 +32,9 @@
     },
     "api/pay.js": {
       "maxDuration": 40
+    },
+    "api/push.js": {
+      "maxDuration": 15
     }
   },
   "headers": [
@@ -75,6 +78,15 @@
         {
           "key": "Service-Worker-Allowed",
           "value": "/"
+        }
+      ]
+    },
+    {
+      "source": "/js/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, stale-while-revalidate=604800"
         }
       ]
     },

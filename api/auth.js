@@ -347,6 +347,7 @@ module.exports = async (req, res) => {
         try { const rec = await store.getUser(me.sub); pic = rec && typeof rec.dpic === 'string' ? rec.dpic : ''; } catch (e) { /* abaikan */ }
         if (isPw) { const u = await store.accGet('users', uname); await store.accDeleteAll(uname, u && u.email); }
         await R.run([['HDEL', 'mt:state:users', me.sub], ['DEL', 'mt:try:lf:' + uname]]);
+        try { await require('./_push').purgeUser(me.sub); } catch (e) { /* abaikan */ }
         if (/blob\.vercel-storage\.com\/avatar\//.test(pic)) { try { require('@vercel/blob').del(pic); } catch (e) { /* abaikan */ } }
         await alog.add({ by: 'self', act: 'delete', sub: me.sub, email: me.email, name: me.name, detail: 'hapus akun sendiri' });
         res.setHeader('Set-Cookie', cookie('', 0));

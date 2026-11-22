@@ -125,6 +125,13 @@ module.exports = async (req, res) => {
       return out(latest && (latest.status === 'pending' || latest.status === 'paid' || latest.status === 'done') ? latest : null);
     }
 
+    if (action === 'history' && req.method === 'GET') {
+      if (await rate.limited('payhist', me.sub, 30, 600)) return fail(429, 'Terlalu sering mengecek. Tunggu sebentar.');
+      const list = (await pay.ordersOf(me.sub)).filter((o) => ['done', 'paid', 'refused', 'expired'].includes(o.status))
+        .map((o) => ({ id: o.id, status: o.status, role: o.plan && o.plan.role, days: o.plan && o.plan.days, total: o.total || o.amount, ts: o.ts }));
+      return res.status(200).json({ ok: true, list });
+    }
+
     if (action === 'cancel' && req.method === 'POST') {
       const o = await pay.getOrder(clip(body().id, 64));
       if (!o || o.sub !== me.sub) return fail(404, 'Tagihan tidak ditemukan.');

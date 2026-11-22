@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Buat halaman SEO per tool, sitemap.xml, dan robots.txt dari array `tools` di public/index.html.
+"""Buat halaman SEO per tool, sitemap.xml, dan robots.txt dari array TOOLS_FULL di public/js/tools.js.
 
 Jalankan dari folder proyek setiap kali menambah atau mengubah tool:
     python3 scripts/build-seo.py
@@ -10,11 +10,11 @@ import re, json, html, colorsys, pathlib, collections
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PUB = ROOT / 'public'
 SITE = 'https://www.maliktools.biz.id'
-LASTMOD = '2026-11-21'
-LASTMOD_ID = '21 November 2026'
+LASTMOD = '2026-11-22'
+LASTMOD_ID = '22 November 2026'
 
-src = (PUB / 'index.html').read_text(encoding='utf8')
-start = src.index('const tools=[')
+src = (PUB / 'js' / 'tools.js').read_text(encoding='utf8')
+start = src.index('const TOOLS_FULL=[')
 un = lambda x: x.replace("\\'", "'").replace('\\\\', '\\')
 tools, seen = [], set()
 for m in re.finditer(r"\{id:'([a-z0-9-]+)',name:'((?:[^'\\]|\\.)*)',desc:'((?:[^'\\]|\\.)*)'", src[start:]):
