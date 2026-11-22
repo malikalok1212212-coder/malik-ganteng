@@ -17,6 +17,10 @@ Endpoint mengikuti dokumentasi GenCipta: `GET https://gateway.gencipta.com/api/d
 ## Provider api-cloud
 Tool dengan `ac: true` di `api/_config.js` memakai api-cloud.my.id (saat ini **IQC Dark**, `GET /canvas/iqcdark?text=`, balasan JSON `{ status, mime, base64 }` dibaca bentuk `cloudimg` di `api/tool.js`). `CLOUDAPI_API_KEY` opsional (kosong = dipanggil tanpa key); bila docs meminta key, isi di Vercel; bila Docs api-cloud memakai nama parameter kunci selain `apikey`, isi `CLOUDAPI_KEY_PARAM`. Status situs mengecek api-cloud terpisah dari GenCipta.
 
+**AM Prem V2** (`GET /premium/amprem5?action=&email=&link=`, plan Pro & Enterprise api-cloud) memakai antarmuka dua langkah yang sama dengan AM Generator (id `am-premium2`, langkah `am-send2` dan `am-verif2`). Langkah 1 mengirim `action` kirim + `email`; langkah 2 mengirim `action` verifikasi + `email` + `link` dan memakai 1 limit harian (`CREDIT_TOOLS['am-verif2']`, harga bisa diatur developer). Nilai `action` bawaan `1` (Kirim link) dan `2` (Verifikasi) sesuai docs, ubah lewat `CLOUDAPI_AMPREM5_ACTION_SEND` / `CLOUDAPI_AMPREM5_ACTION_VERIF` bila docs berubah. Balasan dibaca bentuk `acam` di `api/tool.js` (hanya pesan status, email, dan data paket ringkas; `quota` dan `creator` dibuang). Jalur ini terpisah dari jalur cadangan GenCipta <-> NexaDev AM Generator.
+
+**SW HD** (`GET /tools/swhd?url=&json=`, khusus plan Pro & Enterprise api-cloud; `url` = link gambar) menjernihkan dan memperbesar foto jadi HD. Server tidak mengirim `json` sehingga balasannya "File langsung" (gambar biner, bawaan docs); hasil di atas ±3,2 MB disimpan sementara di Blob (`bigToBlob`) seperti HD Gambar. Opsi JSON base64 (maks. 25 MB) juga terbaca bentuk `cloudimg`. Endpoint ini bisa memproses video juga, tetapi tool SW HD baru menerima gambar. Kunci tetap dari `CLOUDAPI_API_KEY` dan path bisa diganti lewat `CLOUDAPI_PATH_SWHD`.
+
 **Duar Viral** (`GET /maker/duarviral?url=`, `url` = link gambar; foto yang diunggah pengguna otomatis dijadikan link oleh `api/upload.js`) membalas JSON `{ status, creator, result: "data:image/jpeg;base64,...", backgroundRemoved, quota }`. `result` dibaca bentuk `cloudimg` di `api/tool.js` (kini menerima `{ mime, base64 }` maupun `result` data URI); field `quota` dibuang dan tidak dikirim ke browser. **AM Find** (`GET /tools/amfind?url=`, `url` = link video TikTok, termasuk vt.tiktok.com) memindai komentar dan balasan untuk mencari link preset Alight Motion; balasan `{ status, creator, result:{ videoId, video, author, scanned, presets[] }, quota }` dibaca `amFind()` di `api/tool.js`. `presets` kosong berarti tidak ada preset di komentar (bukan error). Contoh uji dari terminal (Duar Viral): `curl -s "https://api-cloud.my.id/maker/duarviral?url=https://contoh.com/foto.jpg"`.
 
 ## Unggah foto
@@ -30,6 +34,18 @@ Changelog, Feedback, Stats, dan Profil ada di `public/index.html`. `CONTACT_WA` 
 2. Masuk lewat Profil. Menu **Developer** muncul di menu samping.
 3. Yang bisa dilakukan developer: melihat semua pengguna yang pernah login (jumlah masuk, terakhir aktif), mengirim peringatan (tampil sebagai popup sampai pengguna menekan "Saya mengerti"), memblokir atau membuka blokir, menghapus pengguna dari daftar, dan mengatur role pengguna. (Fitur tambah tool kustom dari panel sudah dihapus; tool baru ditambah lewat kode.)
 4. Data developer disimpan di Upstash Redis (satu entri per pengguna/tool). Data lama di Vercel Blob diimpor otomatis sekali; `SESSION_SECRET` tetap dibutuhkan untuk impor itu dan untuk sesi, jadi jangan diganti. Pemblokiran hanya berlaku untuk pengguna yang login.
+
+## Broadcast ke Saluran dan grup WhatsApp
+Panel Developer, menu **Sistem**, tab **Broadcast**. Pesan (teks, gambar opsional) dikirim lewat bot Tamako MD ke Saluran dan/atau grup.
+
+1. Pasang `tamako-internal-api.js` terbaru di bot (`src/lib/`), lalu restart bot. Tidak ada env baru: memakai `BOT_WEBHOOK_URL` dan `BOT_SECRET` yang sama dengan pengumuman tool baru (`BOT_SECRET` harus sama dengan `BOT_INTERNAL_API_KEY` di bot).
+2. Buka tab Broadcast. Daftar grup dimuat dari bot. Centang **Saluran** dan/atau grup tujuan (bawaan: semua grup terpilih; ada pencarian, Pilih semua, dan Kosongkan). Grup yang masuk blacklist JPM (`jpmBlacklist` di bot) tampil redup dan selalu dilewati.
+3. Atur jeda antar grup (3 sampai 30 detik; bot memaksa minimal 3 detik, bawaan mengikuti jeda JPM) supaya nomor bot aman dari dianggap spam. Ketuk **Kirim broadcast**, konfirmasi, lalu pantau progres. Tombol **Hentikan** menghentikan sisa kiriman; pesan yang sudah terkirim tidak bisa ditarik.
+4. Pengiriman berjalan di bot (bukan di Vercel), jadi tidak kena batas waktu fungsi. Saluran dikirim lebih dulu, lalu grup satu per satu. Hanya satu broadcast yang boleh berjalan, dan tidak berjalan bersamaan dengan JPM/Auto JPM. Progres hilang bila bot restart.
+5. Gambar disimpan sementara di Vercel Blob folder `bc/` (maks. sekitar 2,5 MB), diambil bot, dan dihapus otomatis oleh cron `api/cleanup.js` setelah 2 jam. Bot hanya mau mengambil gambar dari host Blob.
+6. Setiap broadcast dan penghentiannya tercatat di tab Log. Batas: 5 broadcast per menit per akun developer.
+
+Endpoint bot (semua butuh header `x-internal-key`): `GET /api/broadcast/groups`, `POST /api/broadcast/send`, `GET /api/broadcast/status?id=`, `POST /api/broadcast/stop`. Endpoint lama `/api/channel/broadcast` (notifikasi pembelian) dan `/api/channel/new-tool` tidak berubah.
 
 ## Limit harian
 Saat ini semua tool gratis (`CREDIT_TOOLS` di `api/_credits.js` kosong); developer tetap bisa memberi harga per tool lewat panel Tools. Limit dikembalikan kalau provider gagal. Jatah per 24 jam: **Member 5**, **Premium 15**, **VIP 30**, **Developer tidak memakai limit sama sekali (tanpa batas, kotak limit disembunyikan)**. Reset 24 jam dihitung sejak limit pertama dipakai. AM Premium wajib login karena limit dicatat per akun (di Upstash Redis bersama data developer, jadi Redis harus aktif; pemotongan limit atomik). Jatah bisa diubah lewat env `CREDIT_MEMBER`, `CREDIT_PREMIUM`, `CREDIT_VIP`; tool lain yang berlimit diatur di `api/_credits.js` (`CREDIT_TOOLS`).
@@ -83,6 +99,16 @@ Cara masuk: **Google** atau **username + kata sandi**. Daftar akun baru memakai 
 - Pengguna username/password muncul di panel Developer, bisa diblokir, diberi peringatan, dan diberi role seperti pengguna Google.
 - Penyimpanan akun memakai file JSON tunggal. Untuk ribuan pengguna sebaiknya pindah ke database (Redis/Postgres).
 
+
+## Beli role otomatis (Meldapay QRIS)
+Halaman **Beli Role** punya tombol *Bayar dengan QRIS*. Server membuat tagihan di Meldapay, pengguna scan QRIS, dan role (Premium, VIP, Owner sesuai paket di panel Developer) aktif otomatis. Tanpa `MELDAPAY_APIKEY`, tombol tidak muncul dan halaman memakai alur lama (chat developer, role diaktifkan manual).
+
+1. Daftar di meldapay.com, buka menu **Profil**, salin **API Key** dan **Webhook Secret**.
+2. Isi di Vercel: `MELDAPAY_APIKEY`, `MELDAPAY_WEBHOOK_SECRET`. Lalu redeploy.
+3. Di Profil Meldapay, isi **Callback URL**: `https://DOMAINMU/api/pay?action=hook`. Callback opsional: tanpa itu role tetap aktif lewat pengecekan status otomatis saat pengguna masih di halaman, atau saat ia membuka Beli Role lagi. Meldapay hanya punya satu Callback URL per akun; bila akun yang sama dipakai bot toko, biarkan Callback URL milik bot (callback untuk tagihan yang bukan milik Malik Tools diabaikan dengan aman).
+4. Keamanan: isi callback tidak dipercaya. Setiap klaim "paid" dicek ulang ke API Meldapay dengan API key rahasia, dan nominalnya harus cocok dengan paket. Tanda tangan `X-Signature` (HMAC-SHA256) diverifikasi bila `MELDAPAY_WEBHOOK_SECRET` diisi.
+5. Harga memakai paket di panel Developer (Harga paket, minimal Rp1.000 untuk dijual online). Biaya Meldapay ditambahkan di atas harga dan tampil di kartu QRIS. Memperpanjang role yang sama menambah masa aktif; Premium tidak bisa dibeli saat VIP aktif (ditolak sebelum bayar).
+6. Tiap pembayaran tercatat di tab Log (oleh `meldapay`). Bila ada yang dibayar tetapi gagal diterapkan, log menulis **DIBAYAR TAPI GAGAL DITERAPKAN** beserta ID tagihan, dan pengguna diminta menghubungi developer. Data tagihan ada di Redis `mt:pay:orders`.
 
 ## Notifikasi tool baru ke bot WhatsApp
 Saat Developer menambah tool kustom, server mengirim pengumuman ke bot WhatsApp (POST `/api/channel/new-tool`, header `x-internal-key`). Isi di Vercel:

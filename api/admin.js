@@ -9,6 +9,7 @@ const credits = require('./_credits');
 const stats = require('./_stats');
 const alog = require('./_log');
 const redeem = require('./_redeem');
+const bc = require('./_bc');
 let blob = null;
 try { blob = require('@vercel/blob'); } catch (e) { /* opsional */ }
 
@@ -26,6 +27,13 @@ async function dropPoster(url) { // hanya file poster/ di host Blob, best effort
   } catch (e) { /* abaikan */ }
 }
 
+async function dropBc(url) { // gambar broadcast sementara di Blob folder bc/ (best effort)
+  try {
+    const u = new URL(url);
+    if (blob && process.env.BLOB_READ_WRITE_TOKEN && u.protocol === 'https:' && /\.public\.blob\.vercel-storage\.com$/.test(u.hostname) && /^\/bc\//.test(u.pathname)) await blob.del(url);
+  } catch (e) { /* abaikan */ }
+}
+
 // Harga tool yang diatur developer: { idTool: jumlahLimit }. 0 = gratis. Tool tanpa entri memakai harga bawaan.
 function pricesOf(m) {
   const out = {};
@@ -37,23 +45,8 @@ function pricesOf(m) {
   return out;
 }
 
-// Paket role yang dijual (diatur developer): { id, role: premium|vip|owner, days, price (Rp), credit (limit per hari) }. Owner: permanen, tanpa limit (days/credit hanya pengisi).
-const DEFAULT_PLANS = [{ id: 'premium-7', role: 'premium', days: 7, price: 2500, credit: 15 }, { id: 'vip-7', role: 'vip', days: 7, price: 5000, credit: 30 }];
-function cleanPlans(a) {
-  const out = [], seen = new Set();
-  for (const p of Array.isArray(a) ? a : []) {
-    if (!p || !['premium', 'vip', 'owner'].includes(p.role)) continue;
-    const isO = p.role === 'owner';
-    const days = isO ? 3650 : Math.floor(Number(p.days)), price = Math.floor(Number(p.price)), credit = isO ? 999 : Math.floor(Number(p.credit));
-    if (!(days >= 1 && days <= 3650 && price >= 0 && price <= 1e8 && credit >= 1 && credit <= 999)) continue;
-    let id = String(p.id || '').replace(/[^a-z0-9-]/gi, '').slice(0, 20) || ('p' + out.length);
-    while (seen.has(id)) id += 'x';
-    seen.add(id); out.push({ id, role: p.role, days, price, credit });
-    if (out.length >= 12) break;
-  }
-  return out;
-}
-const plansOf = (m) => { const e = m && m.__plans; return e && Array.isArray(e.list) ? cleanPlans(e.list) : DEFAULT_PLANS; };
+// Paket role yang dijual: lihat _plans.js (dipakai bersama pay.js).
+const { DEFAULT_PLANS, cleanPlans, plansOf } = require('./_plans');
 
 // Tool yang dinonaktifkan sementara oleh developer: daftar id tool server. Disimpan di data tool dengan kunci khusus __off.
 const offOf = (m) => { const e = m && m.__off; return e && Array.isArray(e.list) ? e.list.filter((id) => Object.prototype.hasOwnProperty.call(cfg.tools, id)) : []; };
@@ -92,7 +85,7 @@ module.exports = async (req, res) => {
         if (me) { try { role = roleOf(me.email, await store.getUser(me.sub)); } catch (e) { /* anggap member */ } } else role = '';
         ann = annVisible(ann, role);
       } else ann = annVisible(ann, 'member');
-      return res.status(200).json({ ok: true, tools: [], prices: pricesOf(st && st.tools), plans: plansOf(st && st.tools), off: offOf(st && st.tools), announce: ann });
+      return res.status(200).json({ ok: true, tools: [], prices: pricesOf(st && st.tools), plans: plansOf(st && st.tools), off: offOf(st && st.tools), announce: ann, pay: !!process.env.MELDAPAY_APIKEY });
     }
 
     // Pengguna: tandai peringatan sudah dibaca
@@ -141,6 +134,31 @@ module.exports = async (req, res) => {
       }
     }
 
+    // Real-time ringan untuk panel developer: pengunjung online, kunjungan hari ini, tool yang sedang dibuka, dan statistik. Tanpa memuat daftar pengguna.
+    if (action === 'live' && req.method === 'GET') {
+      if (!R.configured()) return fail(500, 'Upstash Redis belum diatur.');
+      try {
+        const now = Date.now(), WIN = 100000, day = new Date(now + 7 * 3600e3).toISOString().slice(0, 10);
+        const ZK = 'mt:pres:site', HK = 'mt:pres:tool', FK = 'mt:pres:feed', PK = 'mt:pres:peak';
+        const [online, ids, uv, opens, peak, feedRaw] = await R.run([
+          ['ZCOUNT', ZK, now - WIN, '+inf'], ['ZRANGEBYSCORE', ZK, now - WIN, '+inf', 'LIMIT', 0, 300],
+          ['PFCOUNT', 'mt:pres:uv:' + day], ['GET', 'mt:pres:op:' + day], ['ZSCORE', PK, day], ['LRANGE', FK, 0, 9]
+        ]);
+        const live = Array.isArray(ids) ? ids : [];
+        let tools = [];
+        if (live.length) {
+          const [hs] = await R.run([['HMGET', HK, ...live]]);
+          const cnt = {};
+          (hs || []).forEach((t) => { if (t && /^[a-z0-9-]{1,40}$/.test(t)) cnt[t] = (cnt[t] || 0) + 1; });
+          tools = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 6);
+        }
+        const feed = (feedRaw || []).map((x) => String(x).split('|')).map((x) => [x[0], Math.max(0, Math.round((now - Number(x[1])) / 1000))]).filter((x) => /^[a-z0-9-]{1,40}$/.test(x[0]) && x[1] < 900).slice(0, 8);
+        const sm = await stats.summary(7);
+        const on = Number(online) || 0;
+        return res.status(200).json({ ok: true, now, dayStart: stats.dayStart(now), online: on, uv: Math.max(Number(uv) || 0, on), opens: Number(opens) || 0, peak: Math.max(Number(peak) || 0, on), tools, feed, days: sm.days, last: sm.last });
+      } catch (e) { return fail(500, 'Data real-time belum bisa dibaca.'); }
+    }
+
     const st = await store.load();
     if (!st) return fail(500, 'Upstash Redis belum diatur, data developer belum bisa disimpan.');
 
@@ -173,6 +191,19 @@ module.exports = async (req, res) => {
     if (action === 'log' && req.method === 'GET') { // catatan aktivitas, opsional per pengguna (?sub=)
       try { return res.status(200).json({ ok: true, log: await alog.list(String((req.query && req.query.sub) || ''), 300) }); }
       catch (e) { return fail(500, 'Catatan aktivitas belum bisa dibaca.'); }
+    }
+    // Broadcast ke bot WhatsApp (saluran + grup): daftar grup dan progres. Hanya developer (sudah dicek di atas).
+    if (action === 'bcgroups' && req.method === 'GET') {
+      const r = await bc.groups();
+      if (!r.ok) return fail(r.code === 409 ? 409 : 502, r.error);
+      return res.status(200).json({ ok: true, channel: r.data.channel || null, groups: Array.isArray(r.data.groups) ? r.data.groups : [] });
+    }
+    if (action === 'bcstatus' && req.method === 'GET') {
+      const id = String((req.query && req.query.id) || '').replace(/[^a-z0-9]/gi, '').slice(0, 24);
+      if (!id) return fail(400, 'ID broadcast kosong.');
+      const r = await bc.status(id);
+      if (!r.ok) return fail(r.code === 409 ? 409 : 502, r.error);
+      return res.status(200).json({ ok: true, job: r.data.job });
     }
     if (req.method !== 'POST') return fail(405, 'Metode tidak diizinkan.');
 
@@ -273,6 +304,44 @@ module.exports = async (req, res) => {
       await store.save(st);
       await logIt('price', null, undefined, id + ' = ' + n + ' limit');
       return res.status(200).json({ ok: true });
+    }
+
+    if (action === 'bcsend') { // kirim broadcast ke saluran dan/atau grup lewat bot; berjalan di bot, panel memantau progresnya
+      if (await rate.limited('bcsend', me.sub || me.email, 5, 60)) return fail(429, 'Terlalu cepat. Tunggu sebentar sebelum kirim lagi.');
+      const text = clip(body.text, 2000);
+      const mode = ['all', 'pick', 'none'].includes(body.mode) ? body.mode : 'none';
+      const wantCh = body.channel === true;
+      const ids = (a) => (Array.isArray(a) ? a : []).map(String).filter((x) => /^[0-9-]{5,40}@g\.us$/.test(x)).slice(0, 600);
+      const pick = ids(body.pick), exclude = ids(body.exclude);
+      if (!text && !(typeof body.img === 'string' && body.img)) return fail(400, 'Isi pesan atau pilih gambar dulu.');
+      if (!wantCh && mode === 'none') return fail(400, 'Pilih target: saluran dan/atau grup.');
+      if (mode === 'pick' && !pick.length) return fail(400, 'Pilih minimal satu grup, atau ganti ke "Semua grup".');
+      const dsec = Math.floor(Number(body.delay));
+      const delayMs = Number.isFinite(dsec) && dsec > 0 ? Math.min(60, Math.max(3, dsec)) * 1000 : 0;
+      let image = '';
+      if (typeof body.img === 'string' && body.img) { // gambar disimpan sementara di Vercel Blob (folder bc/), bot mengambilnya dari sana
+        if (!blob || !process.env.BLOB_READ_WRITE_TOKEN) return fail(500, 'Gambar butuh Vercel Blob (Storage) yang sudah terhubung.');
+        const m = /^data:image\/(?:jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(body.img);
+        if (!m) return fail(415, 'Format gambar tidak didukung. Gunakan JPG, PNG, atau WebP.');
+        const buf = Buffer.from(m[1], 'base64');
+        if (buf.length > 2.5 * 1024 * 1024) return fail(413, 'Gambar terlalu besar (maksimal sekitar 2,5 MB).');
+        const type = sniff(buf);
+        if (!type) return fail(415, 'Format gambar tidak didukung. Gunakan JPG, PNG, atau WebP.');
+        image = (await blob.put('bc/bc.' + type.ext, buf, { access: 'public', addRandomSuffix: true, contentType: type.mime })).url;
+      }
+      const key = 'bc:' + me.sub + ':' + Date.now() + ':' + Math.random().toString(36).slice(2, 8);
+      const r = await bc.send({ text, image, channel: wantCh, mode, pick, exclude, delayMs }, key);
+      if (!r.ok) { if (image) await dropBc(image); return fail(r.code === 409 ? 409 : 502, r.error); }
+      const d = r.data || {};
+      await logIt('broadcast', null, undefined, (text || '[gambar]').slice(0, 60) + ' · ' + [wantCh ? 'saluran' : '', mode === 'all' ? 'semua grup (' + (d.total || 0) + ')' : mode === 'pick' ? pick.length + ' grup dipilih' : ''].filter(Boolean).join(' + ') + (exclude.length ? ' · ' + exclude.length + ' dikecualikan' : ''));
+      return res.status(200).json({ ok: true, id: d.id || '', total: d.total || 0, channel: !!d.channel, delayMs: d.delayMs || 0, duplicate: !!d.duplicate });
+    }
+    if (action === 'bcstop') {
+      const id = String(body.id || '').replace(/[^a-z0-9]/gi, '').slice(0, 24);
+      const r = await bc.stop(id);
+      if (!r.ok) return fail(502, r.error);
+      await logIt('broadcast-stop', null, undefined, 'Broadcast dihentikan (' + id + ')');
+      return res.status(200).json({ ok: true, job: r.data.job });
     }
 
     if (action === 'announce') {

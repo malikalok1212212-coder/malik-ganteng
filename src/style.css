@@ -819,6 +819,15 @@ main:has(.cpanel){padding-left:6px;padding-right:6px}
 .rcard .rp{display:block;font:800 22px/1.1 Montserrat,"Space Grotesk",system-ui,sans-serif;color:var(--ink)}
 .rcard .rd{display:inline-block;font:700 11px "Space Mono",monospace;font-style:normal;padding:2px 9px;border-radius:999px;color:var(--rc);border:1px solid color-mix(in srgb,var(--rc) 50%,transparent)}
 .rcard span{display:block;font-size:13px;line-height:1.4;color:var(--muted);font-weight:600}
+.rpp{margin:14px 0 4px;padding:14px;border-radius:18px;border:1.5px solid var(--bd);background:var(--field)}
+.rpp[hidden]{display:none}
+.rpq{display:flex;align-items:center;gap:14px}
+.rpq img{width:168px;height:168px;max-width:46vw;max-height:46vw;border-radius:12px;background:#fff;padding:6px;object-fit:contain;flex:none;border:1.5px solid var(--bd)}
+.rpi{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rpi b{font:800 22px/1.1 Montserrat,"Space Grotesk",system-ui,sans-serif;color:var(--ink)}
+.rpi span{font:700 12px "Space Mono",monospace;letter-spacing:.08em;color:var(--muted)}
+.rpi small{font-size:12px;color:var(--muted);font-weight:600}
+.rpp .row{margin-top:12px}
 .rcard[aria-pressed="true"]{outline:2.5px solid var(--rc);outline-offset:1px;background:color-mix(in srgb,var(--rc) 22%,transparent)}
 @media(max-width:380px){.rcards{grid-template-columns:1fr}}
 .btn[aria-disabled="true"]{opacity:.55}
@@ -4039,3 +4048,87 @@ html body .iv .ivsk{color:var(--iv-ink);font-size:13px;opacity:.85}
 
 /* ===== v336: di beranda, tarik-segarkan bawaan Chrome dimatikan supaya hanya satu muteran (milik Malik Tools) yang tampil ===== */
 html.ptrh,html.ptrh body{overscroll-behavior-y:contain}
+
+/* Panel developer real-time (awalan dv, supaya tidak bentrok dengan kartu LIVE beranda) */
+.dvb{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.dvb b{font-size:13px;letter-spacing:.08em}
+.dvb span{font-size:12px;color:var(--muted);flex:1;min-width:120px}
+.dvb button{padding:6px 12px;font-size:13px}
+.dvd{width:10px;height:10px;border-radius:50%;background:#5be59c;flex:none}
+.dvd.off{background:#9a9aa8;box-shadow:none}
+.dvs{margin-bottom:12px}
+.dvc{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.dvr{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:2px dashed var(--bd);font-size:14px}
+.dvr span{color:var(--muted);font-size:12px;white-space:nowrap}
+@media (prefers-reduced-motion:no-preference){
+.dvd:not(.off){animation:dvp 1.6s ease-out infinite}
+@keyframes dvp{0%{box-shadow:0 0 0 0 rgba(91,229,156,.7)}80%,100%{box-shadow:0 0 0 9px rgba(91,229,156,0)}}
+.dvf{animation:dvf .9s ease-out}
+@keyframes dvf{0%{transform:scale(1.2);filter:brightness(1.6)}100%{transform:scale(1);filter:none}}
+}
+
+/* Kartu LIVE beranda v344: animasi hanya sekali (tidak diulang tiap pembaruan), grafik tren, status keramaian, meter */
+.live .lva i{animation:none}
+.live .lvr i:before{animation:none}
+@media (prefers-reduced-motion:no-preference){
+.live .lvin.in0 .lva i{animation:livein .4s cubic-bezier(.2,.9,.3,1.4) both;animation-delay:calc(var(--k)*60ms)}
+.live .lvin.in0 .lvr i:before{animation:livebar .9s cubic-bezier(.2,.8,.2,1) both}
+.live .lvin.in0 .lvg{animation:lvfade .8s ease both}
+.live .lvq{animation:lvq 1.8s ease-out infinite}
+@keyframes lvfade{from{opacity:0}to{opacity:1}}
+@keyframes lvq{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--lvgreen) 70%,transparent)}80%,100%{box-shadow:0 0 0 8px transparent}}
+}
+.live .lvg{position:absolute;right:0;bottom:4px;width:38%;height:48px;pointer-events:none;overflow:visible}
+.live .lvg svg{display:block;width:100%;height:100%;overflow:visible}
+.live .lvg .l{fill:none;stroke:var(--lvgreen);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.live .lvg .a{fill:color-mix(in srgb,var(--lvgreen) 20%,transparent);stroke:none}
+.live .lvq{position:absolute;right:-4px;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;background:var(--lvgreen);border:2px solid var(--lvbg)}
+.live .lvdl{display:inline-block;margin-left:7px;padding:1px 8px;border-radius:99px;font:700 11px "Space Mono",monospace;font-style:normal;vertical-align:1px}
+.live .lvdl.up{background:color-mix(in srgb,var(--lvgreen) 22%,transparent);color:var(--lvgreen)}
+.live .lvdl.dn{background:rgba(255,122,122,.18);color:#ff7a7a}
+.live .lvh b.lvm{padding:4px 10px;border-radius:99px;border:1.5px solid currentColor;letter-spacing:.14em;font-size:10px}
+.live .lvm[data-s="tenang"]{color:var(--lvmut)}
+.live .lvm[data-s="normal"]{color:var(--lvgreen)}
+.live .lvm[data-s="ramai"]{color:#ffb454}
+.live .lvm[data-s="rekor"]{color:#ff6b9a}
+.live .lvmt{display:grid;grid-template-columns:1fr auto;gap:6px 10px;margin:0 0 16px;font:600 10.5px "Space Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--lvmut)}
+.live .lvmt em{font-style:normal;color:var(--lvgold)}
+.live .lvmt i{grid-column:1/-1;display:block;height:8px;border-radius:99px;background:color-mix(in srgb,var(--lvink) 8%,transparent);overflow:hidden}
+.live .lvmt i:before{content:"";display:block;height:100%;width:var(--w);border-radius:99px;background:linear-gradient(90deg,var(--lvg),var(--lvgreen));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+:root[data-theme="light"] .live .lvg .l{stroke:#14121f}
+:root[data-theme="light"] .live .lvg .a{fill:rgba(91,229,156,.45)}
+:root[data-theme="light"] .live .lvq{background:#14121f;border-color:#fff}
+:root[data-theme="light"] .live .lvdl.up{background:#5be59c;color:#14121f;border:2px solid var(--bd)}
+:root[data-theme="light"] .live .lvdl.dn{background:#ff8c8c;color:#14121f;border:2px solid var(--bd)}
+:root[data-theme="light"] .live .lvh b.lvm{color:#14121f;border:2px solid var(--bd);box-shadow:2px 2px 0 var(--bd)}
+:root[data-theme="light"] .live .lvm[data-s="tenang"]{background:#fff}
+:root[data-theme="light"] .live .lvm[data-s="normal"]{background:#5be59c}
+:root[data-theme="light"] .live .lvm[data-s="ramai"]{background:#ffd23f}
+:root[data-theme="light"] .live .lvm[data-s="rekor"]{background:#ff8cc6}
+:root[data-theme="light"] .live .lvmt{color:var(--lvmut)}
+:root[data-theme="light"] .live .lvmt em{color:#14121f}
+:root[data-theme="light"] .live .lvmt i{height:12px;background:#fff;border:2px solid var(--bd)}
+:root[data-theme="light"] .live .lvmt i:before{background:#5be59c;border-radius:0}
+
+/* v345: tombol mengambang (Global Chat + ke atas) bergaya neo-brutalist, cincin progres scroll */
+body .fabs{gap:12px}
+body .fabs button{width:54px;height:54px;border-radius:18px;background:var(--fab);color:#14121f;border:2.5px solid #14121f;box-shadow:4px 4px 0 #14121f;opacity:1;transition:transform .12s,box-shadow .12s,opacity .2s}
+body .fabs button:not(.up){width:54px;height:54px;border-radius:18px;opacity:1}
+body .fabs button:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #14121f}
+body .fabs button svg{width:25px;height:25px;stroke-width:2.5}
+body .fabs .up{position:relative;width:46px;height:46px;border-radius:50%;background:#fff;color:#14121f;box-shadow:3px 3px 0 #14121f;opacity:0;transform:translateY(10px) scale(.8)}
+body .fabs .up.on{opacity:1;transform:none}
+body .fabs .up:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #14121f}
+body .fabs .up::before{content:"";position:absolute;inset:2px;border-radius:50%;background:conic-gradient(#5be59c calc(var(--p,0)*1%),rgba(20,18,31,.14) 0);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4.5px),#000 calc(100% - 4px));mask:radial-gradient(farthest-side,transparent calc(100% - 4.5px),#000 calc(100% - 4px))}
+body .fabs .up svg{position:relative;width:20px;height:20px;stroke-width:3}
+#fchat.nw::after{top:-7px;right:-7px;width:17px;height:17px;background:#ff5d73;border:2.5px solid #14121f}
+.foot2{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+@media (prefers-reduced-motion:no-preference){
+body .fabs #fchat{animation:fabin .5s cubic-bezier(.2,.9,.3,1.3) both .3s}
+@keyframes fabin{from{opacity:0;transform:scale(.5) rotate(-12deg)}to{opacity:1;transform:none}}
+}
+:root[data-theme="dark"] body .fabs button,:root[data-theme="dark"] .fabs button{border:2px solid #f8dd96;box-shadow:0 8px 22px rgba(0,0,0,.55),0 0 0 4px rgba(255,210,63,.14)}
+:root[data-theme="dark"] .fabs button:not(.up){background:linear-gradient(145deg,#ffe08a,#f2b92e)}
+:root[data-theme="dark"] .fabs .up{background:#1e1e1d;color:#f8dd96;box-shadow:0 8px 22px rgba(0,0,0,.5)}
+:root[data-theme="dark"] .fabs .up::before{background:conic-gradient(#f8dd96 calc(var(--p,0)*1%),rgba(248,221,150,.16) 0)}
+:root[data-theme="dark"] #fchat.nw::after{border-color:#151515}

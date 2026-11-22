@@ -161,6 +161,18 @@ module.exports = {
         { key: 'url', label: 'Gambar', req: true, kind: 'url', max: 2000 }
       ] }
     ,
+    // api-cloud (plan Pro & Enterprise): GET /tools/swhd?url=&json= -> jernihkan dan upscale gambar atau video jadi HD. url = link langsung file JPG/PNG/WebP atau video MP4/MOV/WebM (hasil video biner >3,2 MB juga disimpan sementara di Blob). json dikosongkan = "File langsung" (bawaan docs, gambar biner);
+    // dipakai agar hasil besar bisa disimpan sementara di Blob (bigToBlob) dan tidak kena batas ±3,2 MB data URI. Opsi "JSON base64" (maks. 25 MB) juga terbaca bentuk cloudimg. Kunci hanya dari env CLOUDAPI_API_KEY (server).
+    'swhd': { ac: true, base: AC_BASE, type: 'multi', path: process.env.CLOUDAPI_PATH_SWHD || '/tools/swhd', method: 'GET', keyParam: AC_KEY_PARAM, shape: 'cloudimg', bigToBlob: true, timeout: 55000,
+      fields: [
+        { key: 'url', label: 'Foto atau video', req: true, kind: 'url', max: 2000 }
+      ] }
+    ,
+    // api-cloud (plan Pro & Enterprise) AM Prem V2 = Amprem V5: GET /premium/amprem5?action=&email=&link=. Dua langkah, sama seperti AM Generator:
+    // langkah 1 (kirim link verifikasi ke email) lalu langkah 2 (verifikasi link dari email, memakai 1 limit harian). action 1 = Kirim link, action 2 = Verifikasi (sesuai docs api-cloud). Nilai bisa diubah lewat env bila docs berubah.
+    'am-send2': { ac: true, base: AC_BASE, type: 'email', path: process.env.CLOUDAPI_PATH_AMPREM5 || '/premium/amprem5', method: 'GET', param: 'email', keyParam: AC_KEY_PARAM, qs: { action: process.env.CLOUDAPI_AMPREM5_ACTION_SEND || '1' }, shape: 'acam', timeout: 40000 },
+    'am-verif2': { ac: true, base: AC_BASE, type: 'email-link', path: process.env.CLOUDAPI_PATH_AMPREM5 || '/premium/amprem5', method: 'GET', param: 'email', linkParam: 'link', keyParam: AC_KEY_PARAM, qs: { action: process.env.CLOUDAPI_AMPREM5_ACTION_VERIF || '2' }, shape: 'acam', timeout: 55000 }
+    ,
     // api-cloud: GET /canvas/quotecard?text=&bold=&json=&template=&apikey= (text wajib; bold 0|1; template 1-5, kosong = default). json=0 -> gambar langsung (image/jpeg), dibaca sebagai biner di api/tool.js.
     'quote-card': { ac: true, base: AC_BASE, type: 'multi', path: process.env.CLOUDAPI_PATH_QUOTECARD || '/canvas/quotecard', method: 'GET', keyParam: AC_KEY_PARAM, shape: 'cloudimg', bigToBlob: true, timeout: 45000, qs: { json: '0' },
       fields: [

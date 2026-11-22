@@ -70,4 +70,6 @@ notify.ping = async function () {
   catch (e) { return { ok: false, reason: why(e) }; }
   finally { clearTimeout(t); }
 };
+notify.baseUrl = baseUrl;
+notify.why = why;
 module.exports = notify;

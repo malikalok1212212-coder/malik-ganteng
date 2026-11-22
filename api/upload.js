@@ -11,6 +11,9 @@ function sniff(b) {
   if (b.length > 12 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return { ext: 'jpg', mime: 'image/jpeg' };
   if (b.length > 12 && b.slice(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return { ext: 'png', mime: 'image/png' };
   if (b.length > 12 && b.slice(0, 4).toString() === 'RIFF' && b.slice(8, 12).toString() === 'WEBP') return { ext: 'webp', mime: 'image/webp' };
+  // Video (dipakai SW HD): MP4/MOV punya 'ftyp' di byte 4-8, WebM/MKV diawali tanda EBML.
+  if (b.length > 12 && b.toString('ascii', 4, 8) === 'ftyp') return b.toString('ascii', 8, 10) === 'qt' ? { ext: 'mov', mime: 'video/quicktime', video: true } : { ext: 'mp4', mime: 'video/mp4', video: true };
+  if (b.length > 12 && b[0] === 0x1a && b[1] === 0x45 && b[2] === 0xdf && b[3] === 0xa3) return { ext: 'webm', mime: 'video/webm', video: true };
   return null;
 }
 
@@ -41,10 +44,10 @@ module.exports = async (req, res) => {
     }
     const buf = Buffer.concat(chunks);
     const type = sniff(buf);
-    if (!type) return fail(415, 'Format gambar tidak didukung. Gunakan JPG, PNG, atau WebP.');
-    const blob = await put('uploads/foto.' + type.ext, buf, { access: 'public', addRandomSuffix: true, contentType: type.mime });
+    if (!type) return fail(415, 'Format file tidak didukung. Gunakan JPG, PNG, WebP, atau video MP4, MOV, WebM.');
+    const blob = await put('uploads/' + (type.video ? 'video.' : 'foto.') + type.ext, buf, { access: 'public', addRandomSuffix: true, contentType: type.mime });
     return res.status(200).json({ ok: true, url: blob.url });
   } catch (e) {
-    return fail(500, 'Gagal menyimpan foto sementara.');
+    return fail(500, 'Gagal menyimpan file sementara.');
   }
 };

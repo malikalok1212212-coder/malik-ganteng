@@ -378,6 +378,23 @@ function nxAmVerif(raw, email) {
   if (r.status) data.status_premium = String(r.status).slice(0, 40);
   return { link: null, data };
 }
+// ---- AM Prem V2 (api-cloud GET /premium/amprem5): balasan { status, creator, message | result, quota }. Hanya teks status dan data ringkas yang diteruskan; quota, creator, token, dan id internal dibuang ----
+function acAm(raw, email, verify) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const sv = (v, n) => (typeof v === 'string' || typeof v === 'number') ? String(v).replace(/\s+/g, ' ').trim().slice(0, n) : '';
+  const r = raw.result !== undefined && raw.result !== null ? raw.result : raw.data;
+  const o = r && typeof r === 'object' && !Array.isArray(r) ? r : {};
+  const msg = sv(raw.message, 200) || sv(r, 200) || sv(o.message, 200);
+  const data = { status: msg || (verify ? 'Verifikasi berhasil.' : 'Email verifikasi terkirim.') };
+  const em = sv(o.email, 120) || (email ? String(email).slice(0, 120) : '');
+  if (em) data.email = em;
+  if (verify) {
+    const nama = sv(o.displayName || o.name, 80), paket = sv(o.planName || o.plan, 80), jenis = sv(o.subscriptionType, 80);
+    const st = sv(o.membershipStatus || o.status, 40), tgl = sv(o.validUntil || o.expiredAt || o.expires || o.expired, 40);
+    if (nama) data.nama = nama; if (paket) data.paket = paket; if (jenis) data.jenis = jenis; if (st) data.status_premium = st; if (tgl) data.berlaku_hingga = tgl;
+  }
+  return { link: null, data };
+}
 // Urutan jalur AM: yang terakhir berhasil dipakai lebih dulu, jadi bila GenCipta error otomatis pindah ke NexaDev dan sebaliknya.
 // AM_PROVIDER=gencipta atau nexadev mengunci jalur pertama (bawaan: auto). Disimpan di Redis (mt:prov:am) agar sama di semua instance.
 let amMem = { v: '', at: 0 };
@@ -922,9 +939,9 @@ module.exports = async (req, res) => {
         if (mime) {
           if (buf.length > MAX_IMG_RAW) {
             // Hasil besar (mis. upscale): simpan sementara di Blob uploads/ (dibersihkan cron) dan kirim linknya
-            if (t.bigToBlob && blob && process.env.BLOB_READ_WRITE_TOKEN && mime.startsWith('image/') && buf.length <= 40 * 1024 * 1024) {
+            if (t.bigToBlob && blob && process.env.BLOB_READ_WRITE_TOKEN && /^(image|video)\//.test(mime) && buf.length <= 40 * 1024 * 1024) {
               try {
-                const ext = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif' }[mime] || 'png';
+                const ext = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'video/mp4': 'mp4', 'video/webm': 'webm', 'video/quicktime': 'mov' }[mime] || (mime.startsWith('video/') ? 'mp4' : 'png');
                 const put = await blob.put('uploads/hasil.' + ext, buf, { access: 'public', addRandomSuffix: true, contentType: mime });
                 return { ok: true, link: put.url, data: {} };
               } catch (e) { return { ok: false, code: 502, error: 'Hasil terlalu besar dan gagal disimpan sementara. Coba gambar yang lebih kecil.' }; }
@@ -968,6 +985,11 @@ module.exports = async (req, res) => {
       }
       if (t.shape === 'gcamsend' || t.shape === 'gcamverif') {
         const x = t.shape === 'gcamsend' ? gcAmSend(data) : gcAmVerif(data);
+        if (!x) return { ok: false, code: 502, error: 'Balasan provider tidak dikenali. Coba lagi.', retry: true };
+        return { ok: true, link: null, data: x.data };
+      }
+      if (t.shape === 'acam') {
+        const x = acAm(data, input, t.type === 'email-link');
         if (!x) return { ok: false, code: 502, error: 'Balasan provider tidak dikenali. Coba lagi.', retry: true };
         return { ok: true, link: null, data: x.data };
       }
