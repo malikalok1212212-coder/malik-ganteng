@@ -45,6 +45,26 @@ module.exports = async (req, res) => {
   // ---- semua aksi lain: wajib login ----
   const me = getUser(req);
   if (!me) return fail(401, 'Masuk dulu supaya pembayaran tercatat di akunmu.');
+  // ---- diagnosa gateway (khusus developer): buka /api/pay?action=diag di browser saat login sebagai developer ----
+  // Mencoba membuat satu tagihan percobaan lalu langsung membatalkannya, dan menampilkan alasan asli bila gagal. API key tidak pernah ditampilkan.
+  if (action === 'diag') {
+    if (!isOwner(me.email)) return fail(403, 'Khusus developer.');
+    const r0 = { configured: pay.configured(), redis: store.ready(), host: '' };
+    try { r0.host = new URL((process.env.MELDAPAY_BASE_URL || 'https://meldapay.com').trim()).host; } catch (e) { r0.host = 'MELDAPAY_BASE_URL tidak valid'; }
+    if (!r0.configured) return res.status(200).json({ ok: false, ...r0, hasil: 'MELDAPAY_APIKEY belum diisi di Vercel (atau belum redeploy).' });
+    let amount = Math.floor(Number(req.query && req.query.amount)) || 0;
+    if (!amount && store.ready()) { try { const pl = plansOf({ __plans: await store.getTool('__plans') }).filter((x) => x.price >= 1000)[0]; amount = pl ? pl.price : 0; } catch (e) { /* pakai bawaan */ } }
+    amount = amount || 2500;
+    const r = await pay.createInvoice(amount), j = r.j || {};
+    const seen = { http: r.code, success: j.success, error: clip(r.error || j.error || j.message, 200), invoice_id: pay.ID_RE.test(String(j.invoice_id || '')) ? 'valid' : (j.invoice_id ? 'format tidak dikenal' : 'tidak ada'), amount: j.amount, fee: j.fee, total: j.total, ada_qris: !!(j.qris_image || j.payment_link) };
+    let hasil = 'Tagihan percobaan berhasil dibuat.';
+    if (!r.ok || j.success === false) hasil = 'Meldapay menolak atau tidak menjawab: ' + (seen.error || 'HTTP ' + r.code) + '. Cek API key, saldo atau status akun Meldapay, dan nominal minimum.';
+    else if (seen.invoice_id !== 'valid') hasil = 'Meldapay menjawab tetapi tanpa invoice_id yang valid.';
+    else if (Math.floor(Number(j.amount)) !== amount) hasil = 'Nominal dari Meldapay (' + j.amount + ') tidak sama dengan harga paket (' + amount + '). Kode akan membatalkan tagihan.';
+    if (seen.invoice_id === 'valid') { const c = await pay.cancelInvoice(String(j.invoice_id)).catch(() => null); seen.dibatalkan = !!(c && c.ok); }
+    return res.status(200).json({ ok: hasil === 'Tagihan percobaan berhasil dibuat.', ...r0, nominal_uji: amount, jawaban: seen, hasil });
+  }
+
   if (isOwner(me.email)) return fail(400, 'Akun developer tidak perlu membeli role.');
   if (!pay.configured()) return fail(503, 'Pembayaran otomatis belum diaktifkan. Hubungi developer.');
   if (!store.ready()) return fail(500, 'Pembayaran butuh Upstash Redis.');

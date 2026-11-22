@@ -106,3 +106,13 @@ test('batalkan tagihan; kedaluwarsa tercatat', async () => {
   const b = await act('create', { body: { plan: 'vip-7' }, cookie: ck }); mel.inv.get(b.body.order.id).status = 'expired';
   assert.equal((await stat(b.body.order.id)).body.order.status, 'expired');
 });
+
+test('diag: khusus developer, membuat dan membatalkan tagihan percobaan', async () => {
+  assert.equal((await act('diag', { method: 'GET', cookie: ck })).status, 403);
+  process.env.DEVELOPER_EMAILS = 'dev@contoh.id';
+  const d = await act('diag', { method: 'GET', cookie: cookieFor('u:dev', 'dev@contoh.id') });
+  delete process.env.DEVELOPER_EMAILS;
+  assert.equal(d.status, 200, JSON.stringify(d.body));
+  assert.equal(d.body.ok, true); assert.equal(d.body.jawaban.dibatalkan, true);
+  assert.ok(!JSON.stringify(d.body).includes('kunci-tes'));
+});

@@ -1,4 +1,4 @@
-const V='mt-v100',SHELL=['/','/style.css?v=337','/logo.jpg','/yuu.jpg','/intro.jpg?v=331','/icon-192.png','/favicon.ico','/favicon-32.png','/hero.jpg','/bg.jpg'];
+const V='mt-v103',SHELL=['/','/style.css?v=337','/logo.jpg','/yuu.jpg','/intro.jpg?v=331','/icon-192.png','/favicon.ico','/favicon-32.png','/hero.jpg','/bg.jpg'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 const put=(r,res)=>{if(res&&res.ok){const cp=res.clone();caches.open(V).then(c=>c.put(r,cp))}return res};

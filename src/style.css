@@ -4132,3 +4132,23 @@ body .fabs #fchat{animation:fabin .5s cubic-bezier(.2,.9,.3,1.3) both .3s}
 :root[data-theme="dark"] .fabs .up{background:#1e1e1d;color:#f8dd96;box-shadow:0 8px 22px rgba(0,0,0,.5)}
 :root[data-theme="dark"] .fabs .up::before{background:conic-gradient(#f8dd96 calc(var(--p,0)*1%),rgba(248,221,150,.16) 0)}
 :root[data-theme="dark"] #fchat.nw::after{border-color:#151515}
+
+/* loading per kategori */
+.out>.ldh,.out>.ldbar{grid-column:1/-1;width:100%;box-sizing:border-box}
+.ldh{display:flex;align-items:center;gap:12px;margin:4px 2px 10px}
+.ldi{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--tc) 16%,var(--field));border:1px solid color-mix(in srgb,var(--tc) 50%,var(--bd))}
+.ldi svg{width:19px;height:19px;fill:none;stroke:var(--tc);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ldt{min-width:0}.ldt b{display:block;font:800 15px/1.2 "Space Grotesk",system-ui,sans-serif;color:var(--ink)}.ldt small{display:block;margin-top:2px;font:500 12px/1.3 "Space Grotesk",system-ui,sans-serif;color:var(--muted)}
+.ldbar{height:4px;border-radius:99px;margin:0 2px 12px;background:color-mix(in srgb,var(--ink) 10%,transparent);overflow:hidden}
+.ldbar i{display:block;height:100%;width:38%;border-radius:99px;background:var(--tc);animation:ldmv 1.3s ease-in-out infinite}
+@keyframes ldmv{0%{transform:translateX(-110%)}100%{transform:translateX(270%)}}
+.cmp .sk.sk-img,.cmp .sk.sk-vid{display:grid;place-items:center}
+.cmp .sk.sk-vid{aspect-ratio:16/9}
+.sk-img svg,.sk-vid svg{width:34px;height:34px;fill:none;stroke:var(--tc);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
+.sk-vid svg{fill:color-mix(in srgb,var(--tc) 30%,transparent)}
+.cmp .sk.sk-aud{aspect-ratio:auto;height:84px;display:flex;align-items:center;justify-content:space-between;gap:3px;padding:0 14px;animation:none;background:var(--field)}
+.sk-aud b{flex:1;max-width:6px;height:70%;border-radius:99px;background:var(--tc);opacity:.7;transform-origin:center;animation:ldwv 1s ease-in-out infinite;animation-delay:calc(var(--i)*-.07s)}
+@keyframes ldwv{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+.cmp .sk.sk-txt{aspect-ratio:auto;display:grid;gap:10px;padding:16px;animation:none;background:var(--field)}
+.sk-txt b{display:block;height:12px;width:var(--w);border-radius:99px;background:linear-gradient(100deg,color-mix(in srgb,var(--ink) 9%,transparent) 30%,color-mix(in srgb,var(--tc) 22%,transparent) 50%,color-mix(in srgb,var(--ink) 9%,transparent) 70%) 0 0/200% 100%;animation:mtsk 1.2s linear infinite}
+@media (prefers-reduced-motion:reduce){.ldbar i{animation:none;width:100%;opacity:.4}.sk-aud b,.sk-txt b{animation:none}}
