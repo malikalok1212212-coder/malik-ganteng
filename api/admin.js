@@ -10,6 +10,7 @@ const stats = require('./_stats');
 const alog = require('./_log');
 const redeem = require('./_redeem');
 const bc = require('./_bc');
+const rmsg = require('./_redeem_msg');
 let blob = null;
 try { blob = require('@vercel/blob'); } catch (e) { /* opsional */ }
 
@@ -32,6 +33,42 @@ async function dropBc(url) { // gambar broadcast sementara di Blob folder bc/ (b
     const u = new URL(url);
     if (blob && process.env.BLOB_READ_WRITE_TOKEN && u.protocol === 'https:' && /\.public\.blob\.vercel-storage\.com$/.test(u.hostname) && /^\/bc\//.test(u.pathname)) await blob.del(url);
   } catch (e) { /* abaikan */ }
+}
+
+// Simpan gambar broadcast (data URI dari browser) sementara di Vercel Blob folder bc/. Mengembalikan { url } atau { code, error }.
+async function putBcImage(dataUri) {
+  if (!blob || !process.env.BLOB_READ_WRITE_TOKEN) return { code: 500, error: 'Gambar butuh Vercel Blob (Storage) yang sudah terhubung.' };
+  const m = /^data:image\/(?:jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(String(dataUri || ''));
+  if (!m) return { code: 415, error: 'Format gambar tidak didukung. Gunakan JPG, PNG, atau WebP.' };
+  const buf = Buffer.from(m[1], 'base64');
+  if (buf.length > 2.5 * 1024 * 1024) return { code: 413, error: 'Gambar terlalu besar (maksimal sekitar 2,5 MB).' };
+  const type = sniff(buf);
+  if (!type) return { code: 415, error: 'Format gambar tidak didukung. Gunakan JPG, PNG, atau WebP.' };
+  return { url: (await blob.put('bc/bc.' + type.ext, buf, { access: 'public', addRandomSuffix: true, contentType: type.mime })).url };
+}
+
+// Umumkan satu kode redeem ke Saluran / semua grup lewat bot (teks + gambar poster opsional).
+// Tidak melempar: hasilnya { ok, id, total, channel } atau { ok:false, error }. Kegagalan di sini tidak boleh membatalkan kode.
+async function announceCode(me, spec, code, an, img) {
+  const pretty = redeem.pretty(code);
+  const ch = !!(an && an.channel === true), gr = !!(an && an.groups === true);
+  if (!ch && !gr) return { ok: false, error: 'Pilih Saluran dan/atau Semua grup.' };
+  let image = '';
+  if (img) {
+    const up = await putBcImage(img);
+    if (up.error) return { ok: false, error: up.error };
+    image = up.url;
+  }
+  const style = rmsg.STYLE_IDS.includes(an.style) ? an.style : 'hype';
+  const text = rmsg.build(spec, pretty, style, clip(an.text, 2000));
+  const dsec = Math.floor(Number(an.delay));
+  const delayMs = Number.isFinite(dsec) && dsec > 0 ? Math.min(60, Math.max(3, dsec)) * 1000 : 0;
+  const key = 'code:' + code + ':' + Date.now() + ':' + Math.random().toString(36).slice(2, 6);
+  const r = await bc.send({ text, image, channel: ch, mode: gr ? 'all' : 'none', pick: [], exclude: [], delayMs }, key);
+  if (!r.ok) { if (image) await dropBc(image); return { ok: false, error: r.error }; }
+  const d = r.data || {};
+  await alog.add({ by: me.email, act: 'broadcast', detail: 'Kode ' + pretty + ' diumumkan' + (image ? ' + poster' : '') + ' · ' + [ch ? 'saluran' : '', gr ? 'semua grup (' + (d.total || 0) + ')' : ''].filter(Boolean).join(' + ') });
+  return { ok: true, id: d.id || '', total: d.total || 0, channel: !!d.channel };
 }
 
 // Harga tool yang diatur developer: { idTool: jumlahLimit }. 0 = gratis. Tool tanpa entri memakai harga bawaan.
@@ -98,7 +135,7 @@ module.exports = async (req, res) => {
     // Selanjutnya khusus developer
     if (!me || !isOwner(me.email)) return fail(403, 'Khusus developer.');
     // Kode redeem (Premium / VIP): buat, lihat, hapus. Tidak perlu memuat seluruh daftar pengguna.
-    if (['codes', 'codeinfo', 'codegen', 'codedel'].includes(action)) {
+    if (['codes', 'codeinfo', 'codegen', 'codedel', 'codepreview', 'codeannounce'].includes(action)) {
       if (!store.ready()) return fail(500, 'Upstash Redis belum diatur, kode redeem belum bisa disimpan.');
       if (action === 'codes' && req.method === 'GET') return res.status(200).json({ ok: true, now: Date.now(), codes: await redeem.list() });
       if (action === 'codeinfo' && req.method === 'GET') {
@@ -107,6 +144,20 @@ module.exports = async (req, res) => {
         return res.status(200).json({ ok: true, users: subs.map((sub) => ({ sub, name: us[sub] && (us[sub].dname || us[sub].name), email: us[sub] && us[sub].email })) });
       }
       if (req.method !== 'POST') return fail(405, 'Metode tidak diizinkan.');
+      if (action === 'codepreview') { // pratinjau teks pengumuman tanpa membuat kode
+        const style = rmsg.STYLE_IDS.includes(body.style) ? body.style : 'hype';
+        const spec = { role: body.role === 'vip' ? 'vip' : 'premium', days: Math.max(0, Math.floor(Number(body.days)) || 0), credit: Math.max(0, Math.floor(Number(body.credit)) || 0), max: Math.max(1, Math.floor(Number(body.max)) || 1), exp: Math.floor(Number(body.exp)) || 0, note: clip(body.note, 60) };
+        const shown = body.custom ? redeem.pretty(redeem.canon(body.custom)) : 'MT-ABCD-EFGH-JKLM';
+        return res.status(200).json({ ok: true, text: rmsg.build(spec, shown, style, clip(body.text, 2000)) });
+      }
+      if (action === 'codeannounce') { // umumkan kode yang sudah dibuat, dengan gambar poster (dibuat di browser setelah kode jadi)
+        const code = redeem.canon(body.code), c = code ? await redeem.get(code) : null;
+        if (!c) return fail(404, 'Kode tidak ditemukan.');
+        if (await rate.limited('bcsend', me.sub || me.email, 5, 60)) return fail(429, 'Terlalu cepat. Tunggu sebentar sebelum kirim lagi.');
+        const an = body.announce && typeof body.announce === 'object' ? body.announce : {};
+        const announce = await announceCode(me, c, code, an, typeof an.img === 'string' ? an.img : '');
+        return res.status(200).json({ ok: true, announce });
+      }
       if (action === 'codegen') {
         const role = body.role, days = Math.floor(Number(body.days)), credit = Math.floor(Number(body.credit) || 0), max = Math.floor(Number(body.max) || 1), n = Math.floor(Number(body.count) || 1);
         if (!['premium', 'vip'].includes(role)) return fail(400, 'Role kode harus Premium atau VIP.');
@@ -119,10 +170,17 @@ module.exports = async (req, res) => {
         const custom = body.custom ? redeem.canon(body.custom) : '';
         if (custom && (n !== 1 || custom.length < 4 || custom.length > 24)) return fail(400, 'Kode kustom hanya untuk 1 kode, 4 sampai 24 huruf atau angka.');
         const spec = { role, days, credit, max, exp, note: clip(body.note, 60), by: me.email };
+        // Umumkan otomatis ke Saluran / grup WhatsApp (opsional). Divalidasi sebelum kode dibuat; kegagalan kirim tidak membatalkan kode.
+        const an = body.announce && typeof body.announce === 'object' ? body.announce : null;
+        const anCh = !!(an && an.channel === true), anGr = !!(an && an.groups === true);
+        const want = !!(an && (anCh || anGr));
+        if (want && n !== 1) return fail(400, 'Umumkan otomatis hanya untuk 1 kode. Ubah jumlah kode jadi 1.');
+        if (want && await rate.limited('bcsend', me.sub || me.email, 5, 60)) return fail(429, 'Terlalu cepat. Tunggu sebentar sebelum membuat kode yang diumumkan lagi.');
         const out = await redeem.create(spec, n, custom);
         if (out.error) return fail(out.made && out.made.length ? 500 : 400, out.error);
         await alog.add({ by: me.email, act: 'code-gen', detail: out.made.length + ' kode ' + role.toUpperCase() + ' ' + (days ? days + ' hari' : 'permanen') + ', ' + max + 'x pakai' + (spec.note ? ' (' + spec.note + ')' : '') });
-        return res.status(200).json({ ok: true, codes: out.made.map(redeem.pretty) });
+        const announce = want ? await announceCode(me, spec, out.made[0], an, '') : null;
+        return res.status(200).json({ ok: true, codes: out.made.map(redeem.pretty), announce });
       }
       if (action === 'codedel') {
         const code = redeem.canon(body.code);

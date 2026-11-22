@@ -66,6 +66,9 @@ Aturan: satu pengguna hanya bisa memakai satu kode **satu kali**; kode berhenti 
 
 Data di Upstash Redis: `mt:redeem:codes` (hash kode), `mt:redeem:used` (hash jumlah pakai, diubah atomik lewat skrip Lua), `mt:redeem:by:KODE` (set pengguna yang sudah memakai). Maksimal 3000 kode tersimpan. Tidak ada env baru dan tidak ada fungsi Vercel baru (aksi `redeem` ada di `api/auth.js`, manajemen kode di `api/admin.js`).
 
+### Umumkan kode redeem otomatis (WhatsApp)
+Di panel Developer tab **Kode redeem** ada bagian **Umumkan otomatis (WhatsApp)**: centang **Saluran** dan/atau **Semua grup**, pilih gaya teks (Ramai, Rapi, Singkat) atau tulis teks sendiri dengan penanda `{kode} {role} {durasi} {limit} {kuota} {kedaluwarsa} {catatan} {link}`, lalu **Buat kode**. Bot mengirim pengumuman lewat endpoint broadcast yang sudah ada (tanpa env baru; `SITE_URL` opsional untuk link di teks). Opsi **Sertakan gambar poster otomatis** (aktif secara bawaan) membuat poster 1080x1350 di browser dari kode yang baru jadi (kode, role, masa aktif, limit, kuota, kedaluwarsa), lalu mengirimnya bersama teks lewat aksi `codeannounce`; gambar disimpan sementara di Vercel Blob `bc/` (butuh Blob terhubung, sama seperti Broadcast). Hanya untuk 1 kode. Bila pengiriman gagal, kode tetap dibuat dan panel menampilkan alasannya. Teks ada di `api/_redeem_msg.js`; tombol **Lihat pratinjau** memakai aksi `codepreview`.
+
 ## Pengumuman dan Favorit
 Developer bisa memasang pengumuman (maks. 300 karakter) di panel Developer tab Pengumuman. Tampil di beranda dan bisa ditutup per sesi. Pengguna bisa menandai tool favorit dengan ☆, tersimpan di perangkat masing-masing, dan tool favorit naik ke atas daftar.
 

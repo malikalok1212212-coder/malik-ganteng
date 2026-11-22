@@ -63,7 +63,7 @@
 
 
 </style></noscript>
-<link rel="stylesheet" href="/style.css?v=337">
+<link rel="stylesheet" href="/style.css?v=353">
 
 
 
@@ -1681,8 +1681,33 @@ function ownerInit(r){if(!r.querySelector('#og'))return; // bukan developer: hal
  const dt=x=>x?new Date(x).toLocaleDateString('id-ID',{day:'numeric',month:'short'}):'-';
  const KST={aktif:['AKTIF','g'],habis:['HABIS','r'],kedaluwarsa:['KEDALUWARSA','r']};
  const kdesc=c=>(c.days?c.days+' hari':'permanen')+' · '+(c.credit?c.credit+' limit/hari':'limit bawaan role')+' · dipakai '+(c.used||0)+'/'+c.max+(c.exp?' · berlaku sampai '+tt(c.exp):'')+(c.note?' · '+c.note:'');
- function kform(){const v=Object.assign({role:'premium',days:7,credit:0,max:1,count:1,exp:'',note:'',custom:''},KV||{});
-  return '<p class="hint" style="margin:0 0 12px">Buat kode redeem untuk memberi Premium atau VIP tanpa aktivasi manual. Satu pengguna hanya bisa memakai satu kode satu kali. Role yang sama: masa aktif diperpanjang. Premium ke VIP: dihitung dari sekarang. Pengguna VIP tidak bisa memakai kode Premium.</p><div class="ur"><div class="rrow"><label for="kr">Role</label><select id="kr"><option value="premium"'+(v.role==='premium'?' selected':'')+'>Premium</option><option value="vip"'+(v.role==='vip'?' selected':'')+'>VIP</option></select></div><div class="two"><div><label for="kd">Masa aktif (hari, 0 = permanen)</label><input id="kd" type="number" inputmode="numeric" min="0" max="3650" value="'+v.days+'"></div><div><label for="kc">Limit per hari (0 = bawaan role)</label><input id="kc" type="number" inputmode="numeric" min="0" max="999" value="'+v.credit+'"></div></div><div class="two"><div><label for="km">Batas pemakaian per kode</label><input id="km" type="number" inputmode="numeric" min="1" max="10000" value="'+v.max+'"></div><div><label for="kn">Jumlah kode dibuat</label><input id="kn" type="number" inputmode="numeric" min="1" max="50" value="'+v.count+'"></div></div><div class="two"><div><label for="ke">Kode kedaluwarsa (opsional)</label><input id="ke" type="datetime-local" value="'+esc(v.exp)+'"></div><div><label for="kt">Catatan (opsional)</label><input id="kt" maxlength="60" value="'+esc(v.note)+'" placeholder="Mis. giveaway TikTok"></div></div><label for="kx">Kode kustom (opsional, hanya untuk 1 kode)</label><input id="kx" maxlength="30" autocomplete="off" value="'+esc(v.custom)+'" placeholder="Mis. MALIKBARU"><div class="row"><button type="button" class="primary" data-a="kgen">Buat kode</button></div></div>'}
+ async function kposter(p){
+  const SG='"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif',SM='"Space Mono",ui-monospace,Menlo,Consolas,monospace';
+  try{if(document.fonts)await Promise.all(['800 60px "Space Grotesk"','700 40px "Space Mono"'].map(f=>document.fonts.load(f)))}catch(e){}
+  const W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  const INK='#141413',Y='#ffd23f',G='#5be59c',P='#ff8cc6',WH='#ffffff';
+  const rr=(X,Y0,w,h,r)=>{x.beginPath();x.moveTo(X+r,Y0);x.arcTo(X+w,Y0,X+w,Y0+h,r);x.arcTo(X+w,Y0+h,X,Y0+h,r);x.arcTo(X,Y0+h,X,Y0,r);x.arcTo(X,Y0,X+w,Y0,r);x.closePath()};
+  const box=(X,Y0,w,h,fill,r,off)=>{x.fillStyle=INK;rr(X+off,Y0+off,w,h,r);x.fill();x.fillStyle=fill;rr(X,Y0,w,h,r);x.fill();x.lineWidth=7;x.strokeStyle=INK;x.stroke()};
+  const tx=(t,X,Y0,font,col,al)=>{x.font=font;x.fillStyle=col;x.textAlign=al||'left';x.textBaseline='alphabetic';x.fillText(t,X,Y0)};
+  x.fillStyle=Y;x.fillRect(0,0,W,H);
+  x.fillStyle='rgba(20,20,19,.13)';for(let i=0;i<W;i+=36)for(let j=0;j<H;j+=36){x.beginPath();x.arc(i+18,j+18,2.4,0,7);x.fill()}
+  box(60,60,400,88,WH,44,8);x.fillStyle=G;x.beginPath();x.arc(112,104,15,0,7);x.fill();x.lineWidth=5;x.strokeStyle=INK;x.stroke();tx('MALIK TOOLS',146,118,'800 40px '+SG,INK);
+  x.save();x.translate(860,100);x.rotate(.1);box(0,0,170,76,P,16,6);tx('GRATIS',85,52,'800 34px '+SG,INK,'center');x.restore();
+  tx('KODE',60,350,'800 200px '+SG,INK);tx('REDEEM',60,540,'800 200px '+SG,INK);
+  const role=String(p.role||'').toUpperCase();box(60,595,960,104,P,20,8);tx('HADIAH GRATIS  ·  '+role,540,664,'800 46px '+SG,INK,'center');
+  box(60,745,960,260,WH,26,10);tx('KODE',100,805,'700 28px '+SM,'#5d5a70');
+  let fs=96;x.font='800 '+fs+'px '+SM;while(x.measureText(p.code).width>860&&fs>40){fs-=2;x.font='800 '+fs+'px '+SM}
+  tx(p.code,540,910,'800 '+fs+'px '+SM,INK,'center');
+  x.setLineDash([14,12]);x.lineWidth=4;x.strokeStyle=INK;x.beginPath();x.moveTo(100,945);x.lineTo(980,945);x.stroke();x.setLineDash([]);
+  tx('Tempel kode ini di menu Profil',540,985,'600 26px '+SG,'#5d5a70','center');
+  const chips=[[p.days>0?p.days+' hari':'Permanen','MASA AKTIF',G],[p.credit>0?p.credit+'/hari':'Bawaan','LIMIT',WH],[p.max<=1?'1 orang':p.max+' orang','KUOTA',P]];
+  chips.forEach((c,i)=>{const X=60+i*330;box(X,1040,300,136,c[2],20,8);let f=52;x.font='800 '+f+'px '+SG;while(x.measureText(c[0]).width>260&&f>26){f-=2;x.font='800 '+f+'px '+SG}tx(c[0],X+150,1105,'800 '+f+'px '+SG,INK,'center');tx(c[1],X+150,1150,'700 22px '+SM,INK,'center')});
+  if(p.exp>0){let d;try{d=new Date(p.exp).toLocaleString('id-ID',{timeZone:'Asia/Jakarta',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',hour12:false}).replace('.',':')+' WIB'}catch(e){d=''}if(d)tx('Berlaku sampai '+d,540,1224,'700 30px '+SG,INK,'center')}
+  x.fillStyle=INK;x.fillRect(0,1240,W,110);tx('Tukar sekarang di',60,1298,'600 28px '+SG,'#d6d3ee');tx('maliktools.biz.id',60,1330,'800 36px '+SG,Y);
+  tx('SIAPA CEPAT',1020,1298,'800 30px '+SG,G,'right');tx('DIA DAPAT',1020,1332,'800 30px '+SG,G,'right');
+  return cv.toDataURL('image/jpeg',.9)}
+ function kform(){const v=Object.assign({role:'premium',days:7,credit:0,max:1,count:1,exp:'',note:'',custom:'',ach:false,agr:false,ast:'hype',adl:5,atx:'',apo:true},KV||{});
+  return '<p class="hint" style="margin:0 0 12px">Buat kode redeem untuk memberi Premium atau VIP tanpa aktivasi manual. Satu pengguna hanya bisa memakai satu kode satu kali. Role yang sama: masa aktif diperpanjang. Premium ke VIP: dihitung dari sekarang. Pengguna VIP tidak bisa memakai kode Premium.</p><div class="ur"><div class="rrow"><label for="kr">Role</label><select id="kr"><option value="premium"'+(v.role==='premium'?' selected':'')+'>Premium</option><option value="vip"'+(v.role==='vip'?' selected':'')+'>VIP</option></select></div><div class="two"><div><label for="kd">Masa aktif (hari, 0 = permanen)</label><input id="kd" type="number" inputmode="numeric" min="0" max="3650" value="'+v.days+'"></div><div><label for="kc">Limit per hari (0 = bawaan role)</label><input id="kc" type="number" inputmode="numeric" min="0" max="999" value="'+v.credit+'"></div></div><div class="two"><div><label for="km">Batas pemakaian per kode</label><input id="km" type="number" inputmode="numeric" min="1" max="10000" value="'+v.max+'"></div><div><label for="kn">Jumlah kode dibuat</label><input id="kn" type="number" inputmode="numeric" min="1" max="50" value="'+v.count+'"></div></div><div class="two"><div><label for="ke">Kode kedaluwarsa (opsional)</label><input id="ke" type="datetime-local" value="'+esc(v.exp)+'"></div><div><label for="kt">Catatan (opsional)</label><input id="kt" maxlength="60" value="'+esc(v.note)+'" placeholder="Mis. giveaway TikTok"></div></div><label for="kx">Kode kustom (opsional, hanya untuk 1 kode)</label><input id="kx" maxlength="30" autocomplete="off" value="'+esc(v.custom)+'" placeholder="Mis. MALIKBARU"><div class="ur" style="margin-top:12px"><b>Umumkan otomatis (WhatsApp)</b><p class="hint" style="margin:6px 0">Setelah kode dibuat, bot langsung mengirim pengumuman ke Saluran dan/atau grup. Hanya untuk 1 kode. Pesan yang sudah terkirim tidak bisa ditarik, jadi atur batas pemakaian dulu.</p><div><label class="ck"><input type="checkbox" id="kach"'+(v.ach?' checked':'')+'>Saluran</label><label class="ck"><input type="checkbox" id="kagr"'+(v.agr?' checked':'')+'>Semua grup (blacklist JPM dilewati)</label></div><div class="two" style="margin-top:8px"><div><label for="kast">Gaya teks</label><select id="kast">'+[['hype','Ramai (giveaway)'],['rapi','Rapi (resmi)'],['singkat','Singkat']].map(x=>'<option value="'+x[0]+'"'+(v.ast===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+'</select></div><div><label for="kadl">Jeda antar grup</label><select id="kadl">'+[3,5,8,10,15,30].map(n=>'<option value="'+n+'"'+(+v.adl===n?' selected':'')+'>'+n+' detik</option>').join('')+'</select></div></div><label for="kat">Teks sendiri (opsional)</label><textarea id="kat" maxlength="2000" placeholder="Kosongkan untuk memakai gaya di atas. Penanda: {kode} {role} {durasi} {limit} {kuota} {kedaluwarsa} {catatan} {link}">'+esc(v.atx)+'</textarea><div><label class="ck"><input type="checkbox" id="kapo"'+(v.apo?' checked':'')+'>Sertakan gambar poster otomatis</label></div><p class="hint" style="margin:0 0 8px">Poster berisi kode, role, masa aktif, limit, dan kuota, dibuat otomatis lalu dikirim bersama teks.</p><div class="row"><button type="button" data-a="kprev">Lihat pratinjau</button></div><textarea id="kapv" class="kcodes" readonly hidden style="min-height:220px"></textarea><img id="kapi" alt="Pratinjau poster" hidden style="width:100%;border-radius:12px;margin-top:8px;display:block"></div><div class="row"><button type="button" class="primary" data-a="kgen">Buat kode</button></div></div>'}
  function klist(){if(!CD)return'<p class="note">Memuat kode...</p>';
   if(!CD.length)return'<p class="note">Belum ada kode. Buat kode di atas.</p>';
   return'<p class="hint" style="margin:14px 0 6px">'+CD.length+' kode tersimpan</p>'+CD.map(c=>{const st=KST[c.status]||KST.aktif;return'<div class="ur" data-c="'+esc(c.code)+'"><div class="uh"><div class="g"><b><span class="kcode">'+esc(c.pretty||c.code)+'</span><span class="tg2 '+roleB(c.role)[1]+'">'+roleB(c.role)[0]+'</span><span class="tg2 '+st[1]+'">'+st[0]+'</span></b><small>'+esc(kdesc(c))+'</small></div></div><div class="acts"><button type="button" data-a="kcopy">Salin</button><button type="button" data-a="kwho">Pemakai</button><button type="button" data-a="kdel">Hapus</button></div><div class="hl" hidden></div></div>'}).join('')}
@@ -1838,7 +1863,11 @@ let LV=null,LT=null,LP=false,LS=0,LN=0;
   if(a==='exj'){say('Menyiapkan cadangan...');const lj=await adm('log');dl('malik-tools-cadangan-'+stamp()+'.json',JSON.stringify({exportedAt:new Date().toISOString(),users:S.users,plans:PLANS,prices:PRICES,toolsOff:OFF,announce:S.announce||null,log:lj.ok?lj.log:[]},null,1),'application/json');say('Cadangan lengkap diunduh.'+(lj.ok?'':' Log tidak ikut (gagal dimuat).'),lj.ok?'good':'bad');return}
   if(a==='kgen'){const g=q=>$(r,q).value.trim(),n=x=>Math.floor(Number(x));
    const body={role:g('#kr'),days:n(g('#kd')),credit:n(g('#kc')||0),max:n(g('#km')||1),count:n(g('#kn')||1),exp:tm('#ke'),note:g('#kt'),custom:g('#kx')};
-   KV={role:body.role,days:body.days,credit:body.credit,max:body.max,count:body.count,exp:g('#ke'),note:body.note,custom:body.custom};
+   const ach=$(r,'#kach').checked,agr=$(r,'#kagr').checked,ast=$(r,'#kast').value,adl=n($(r,'#kadl').value)||5,atx=$(r,'#kat').value.trim(),ann=ach||agr;
+   KV={role:body.role,days:body.days,credit:body.credit,max:body.max,count:body.count,exp:g('#ke'),note:body.note,custom:body.custom,ach,agr,ast,adl,atx};
+   if(ann&&body.count!==1){say('Umumkan otomatis hanya untuk 1 kode. Ubah jumlah kode jadi 1.','bad');return}
+   const apo=$(r,'#kapo').checked;KV.apo=apo;const anOpt={channel:ach,groups:agr,style:ast,delay:adl,text:atx};
+   if(ann&&!apo)body.announce=anOpt;
    if(!(body.days>=0&&body.days<=3650)){say('Masa aktif harus 0 (permanen) sampai 3650 hari.','bad');return}
    if(!(body.credit>=0&&body.credit<=999)){say('Limit per hari harus 0 sampai 999.','bad');return}
    if(!(body.max>=1&&body.max<=10000)){say('Batas pemakaian harus 1 sampai 10000.','bad');return}
@@ -1846,11 +1875,24 @@ let LV=null,LT=null,LP=false,LS=0,LN=0;
    if(body.custom&&body.count!==1){say('Kode kustom hanya untuk 1 kode. Ubah jumlah kode jadi 1.','bad');return}
    if(body.custom){const k=body.custom.toUpperCase().replace(/[^A-Z0-9]/g,'');if(k.length<4||k.length>24){say('Kode kustom 4 sampai 24 huruf atau angka.','bad');return}}
    if(body.exp&&body.exp<=Date.now()){say('Waktu kedaluwarsa harus di masa depan.','bad');return}
-   b.disabled=true;say('Membuat kode...');const j=await adm('codegen',body);b.disabled=false;
+   if(ann&&!await mconfirm('Buat dan umumkan kode?','Kode akan langsung dikirim ke '+[ach?'Saluran':'',agr?'semua grup':''].filter(Boolean).join(' + ')+'. Pesan yang sudah terkirim tidak bisa ditarik.','Buat & kirim',false))return;
+   b.disabled=true;say(ann?'Membuat kode dan mengirim pengumuman...':'Membuat kode...');const j=await adm('codegen',body);b.disabled=false;
    if(!j.ok){say(j.error||'Gagal membuat kode.','bad');return}
-   say(j.codes.length+' kode dibuat. Salin sekarang, lalu kirim ke pembeli.','good');
+   if(ann&&apo){ // dua langkah: kode sudah jadi, buat poster dari kode aslinya, lalu kirim bersama teks
+    say('Kode dibuat. Membuat poster dan mengirim...');b.disabled=true;let img='';
+    try{img=await kposter({code:j.codes[0],role:body.role,days:body.days,credit:body.credit,max:body.max,exp:body.exp})}catch(e){img=''}
+    const k=await adm('codeannounce',{code:j.codes[0],announce:Object.assign({},anOpt,{img:img||undefined})});b.disabled=false;
+    j.announce=k.ok?k.announce:{ok:false,error:k.error||'Gagal mengirim pengumuman.'};
+    if(j.announce.ok&&!img)say('Poster gagal dibuat, pengumuman terkirim tanpa gambar.','bad')}
+   if(j.announce&&j.announce.ok){if(j.announce.id){try{sessionStorage.setItem(BCK,j.announce.id)}catch(e){}}say('Kode dibuat dan pengumuman dikirim'+(j.announce.total?' ke '+j.announce.total+' grup':'')+(j.announce.channel?' + Saluran':'')+'. Progres ada di tab Broadcast.','good')}
+   else if(j.announce)say('Kode sudah dibuat, tapi pengumuman gagal dikirim: '+(j.announce.error||'bot tidak menjawab')+'. Salin kode di bawah lalu kirim manual.','bad');
+   else say(j.codes.length+' kode dibuat. Salin sekarang, lalu kirim ke pembeli.','good');
    $(r,'#knew').innerHTML='<div class="ur"><label for="kall">Kode baru</label><textarea id="kall" class="kcodes" readonly>'+esc(j.codes.join('\n'))+'</textarea><div class="row"><button type="button" class="primary" data-a="kcopyall">Salin semua</button></div></div>';
    await kreload();return}
+  if(a==='kprev'){const g=q=>$(r,q).value.trim(),n=x=>Math.floor(Number(x))||0;b.disabled=true;
+   const j=await adm('codepreview',{role:g('#kr'),days:n(g('#kd')),credit:n(g('#kc')),max:n(g('#km'))||1,exp:tm('#ke'),note:g('#kt'),custom:g('#kx'),style:$(r,'#kast').value,text:$(r,'#kat').value.trim()});b.disabled=false;
+   if(!j.ok){say(j.error||'Gagal membuat pratinjau.','bad');return}const pv=$(r,'#kapv');pv.hidden=false;pv.value=j.text;say('');
+   const pi=$(r,'#kapi');if(pi){if($(r,'#kapo').checked){try{const cx=g('#kx').toUpperCase().replace(/[^A-Z0-9]/g,'');pi.src=await kposter({code:cx?(/^MT[A-Z0-9]{12}$/.test(cx)?'MT-'+cx.slice(2,6)+'-'+cx.slice(6,10)+'-'+cx.slice(10):cx):'MT-ABCD-EFGH-JKLM',role:g('#kr'),days:n(g('#kd')),credit:n(g('#kc')),max:n(g('#km'))||1,exp:tm('#ke')});pi.hidden=false}catch(e){pi.hidden=true}}else pi.hidden=true}return}
   if(a==='kcopyall'){copy($(r,'#kall').value,b);return}
   if(a==='kcopy'&&row){const c=(CD||[]).find(x=>x.code===row.dataset.c);copy(c?c.pretty||c.code:row.dataset.c,b);return}
   if(a==='kwho'&&row){const hl=row.querySelector('.hl');if(!hl.hidden){hl.hidden=true;return}hl.hidden=false;hl.innerHTML='<small>Memuat...</small>';const j=await adm('codeinfo&code='+encodeURIComponent(row.dataset.c));hl.innerHTML=j.ok?(j.users.length?j.users.map(u=>'<small style="display:block">'+esc(u.name||u.email||u.sub)+(u.email&&u.name?' · '+esc(u.email):'')+'</small>').join(''):'<small>Belum ada yang memakai kode ini.</small>'):'<small>'+esc(j.error||'Gagal memuat.')+'</small>';return}
