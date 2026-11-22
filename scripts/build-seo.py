@@ -127,7 +127,7 @@ def cards(body, label):
     return head + '\n'.join(out) + '\n' + ''.join(c.replace('<p>', '').replace('</p>', '') for c in ctas)
 
 WA = 'https://wa.me/6285772295147'
-CH = 'https://whatsapp.com/channel/0029VbEWYLNDOQIYSO1k7D2x'
+CH = 'https://whatsapp.com/channel/0029VbEOTvX6GcGLFkDqfv22'
 N = len(tools)
 LABELS = {'tentang': 'Tentang', 'privasi': 'Privasi', 'syarat': 'Syarat', 'bantuan': 'Bantuan'}
 info_pages = [

@@ -59,7 +59,7 @@ async function announceCode(me, spec, code, an, img) {
     if (up.error) return { ok: false, error: up.error };
     image = up.url;
   }
-  const style = rmsg.STYLE_IDS.includes(an.style) ? an.style : 'hype';
+  const style = rmsg.STYLE_IDS.includes(an.style) ? an.style : 'rapi';
   const text = rmsg.build(spec, pretty, style, clip(an.text, 2000));
   const dsec = Math.floor(Number(an.delay));
   const delayMs = Number.isFinite(dsec) && dsec > 0 ? Math.min(60, Math.max(3, dsec)) * 1000 : 0;
@@ -145,7 +145,7 @@ module.exports = async (req, res) => {
       }
       if (req.method !== 'POST') return fail(405, 'Metode tidak diizinkan.');
       if (action === 'codepreview') { // pratinjau teks pengumuman tanpa membuat kode
-        const style = rmsg.STYLE_IDS.includes(body.style) ? body.style : 'hype';
+        const style = rmsg.STYLE_IDS.includes(body.style) ? body.style : 'rapi';
         const spec = { role: body.role === 'vip' ? 'vip' : 'premium', days: Math.max(0, Math.floor(Number(body.days)) || 0), credit: Math.max(0, Math.floor(Number(body.credit)) || 0), max: Math.max(1, Math.floor(Number(body.max)) || 1), exp: Math.floor(Number(body.exp)) || 0, note: clip(body.note, 60) };
         const shown = body.custom ? redeem.pretty(redeem.canon(body.custom)) : 'MT-ABCD-EFGH-JKLM';
         return res.status(200).json({ ok: true, text: rmsg.build(spec, shown, style, clip(body.text, 2000)) });

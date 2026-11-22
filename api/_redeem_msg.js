@@ -18,73 +18,76 @@ function facts(spec, pretty) {
     role,
     durasi: spec.days > 0 ? spec.days + ' hari' : 'Permanen',
     limit: spec.credit > 0 ? spec.credit + ' limit/hari' : 'Limit bawaan ' + role,
-    kuota: spec.max <= 1 ? 'Hanya 1 orang' : spec.max + ' orang pertama',
+    kuota: spec.max <= 1 ? '1 akun' : spec.max + ' akun',
     kedaluwarsa: spec.exp > 0 ? fmtDate(spec.exp) : '',
     catatan: spec.note || '',
     link: SITE + '/#profil'
   };
 }
 
+// Catatan: teks sengaja dibuat netral. Hindari kata promosi (gratis, hadiah, giveaway, siapa cepat dia dapat) dan
+// tautan di dalam pesan Saluran, karena filter otomatis WhatsApp pernah salah menilainya sebagai "Adult sexual solicitation".
+// Nama gaya (hype, rapi, singkat) dipertahankan supaya pengaturan lama tetap jalan; isinya sudah diseragamkan.
 const STYLES = {
-  // Ramai dan menarik perhatian, cocok untuk giveaway / grup besar
+  // Ringkas dengan sedikit emoji
   hype(f) {
     return [
-      '🎁 *KODE REDEEM BARU!* 🎁',
+      '*Kode Redeem Malik Tools*',
       '',
-      'Ada kode ' + f.role + ' gratis dari *Malik Tools* ✨',
+      'Kode baru untuk mengaktifkan ' + f.role + ' di akun kamu.',
       '',
-      '🔑 Kode:',
+      'Kode:',
       '```' + f.kode + '```',
       '',
-      '👑 Hadiah: *' + f.role + '*',
-      '⏳ Masa aktif: *' + f.durasi + '*',
-      '⚡ Jatah: *' + f.limit + '*',
-      '👥 Kuota: *' + f.kuota + '* (siapa cepat dia dapat)',
-      f.kedaluwarsa ? '🕒 Berlaku sampai: *' + f.kedaluwarsa + '*' : null,
-      f.catatan ? '📝 ' + f.catatan : null,
+      '• Akses: ' + f.role,
+      '• Masa aktif: ' + f.durasi,
+      '• Limit: ' + f.limit,
+      '• Batas pemakaian: ' + f.kuota,
+      f.kedaluwarsa ? '• Berlaku sampai: ' + f.kedaluwarsa : null,
+      f.catatan ? '• Catatan: ' + f.catatan : null,
       '',
-      '📲 *Cara tukar:*',
-      '1. Buka ' + SITE,
-      '2. Masuk ke akunmu, lalu buka *Profil*',
-      '3. Tempel kode di kotak *Punya kode redeem?*',
-      '4. Ketuk *Tukar*',
+      '*Cara memakai*',
+      '1. Buka aplikasi Malik Tools',
+      '2. Masuk ke akunmu, lalu buka menu Profil',
+      '3. Isi kode di kotak "Punya kode redeem?"',
+      '4. Ketuk Tukar',
       '',
-      '_Satu akun hanya bisa memakai satu kali. Buruan sebelum kehabisan!_ 🚀'
+      '_Satu akun hanya dapat memakai satu kali._'
     ];
   },
-  // Rapi dan sopan, cocok untuk Saluran resmi
+  // Rapi dan sopan, cocok untuk Saluran resmi (gaya bawaan)
   rapi(f) {
     return [
-      '*🎟️ Kode Redeem Malik Tools*',
+      '*Kode Redeem Malik Tools*',
       '',
-      'Halo semuanya! Developer membagikan kode untuk mengaktifkan ' + f.role + ' di akun kamu.',
+      'Developer membagikan kode untuk mengaktifkan ' + f.role + ' di akun kamu.',
       '',
       '*Kode*',
       '```' + f.kode + '```',
       '',
       '*Detail*',
-      '• Role: ' + f.role,
+      '• Akses: ' + f.role,
       '• Masa aktif: ' + f.durasi,
       '• Limit: ' + f.limit,
-      '• Kuota: ' + f.kuota,
+      '• Batas pemakaian: ' + f.kuota,
       f.kedaluwarsa ? '• Berlaku sampai: ' + f.kedaluwarsa : null,
       f.catatan ? '• Catatan: ' + f.catatan : null,
       '',
-      '*Cara menukar*',
-      'Masuk ke ' + SITE + ', buka Profil, lalu isi kode di kotak "Punya kode redeem?".',
+      '*Cara memakai*',
+      'Buka aplikasi Malik Tools, masuk ke menu Profil, lalu isi kode di kotak "Punya kode redeem?".',
       '',
-      '_Satu akun satu kali pakai. Terima kasih sudah memakai Malik Tools._ 🙏'
+      '_Satu akun hanya dapat memakai satu kali. Terima kasih sudah memakai Malik Tools._'
     ];
   },
   // Pendek, cocok untuk grup yang tidak mau pesan panjang
   singkat(f) {
     return [
-      '🎁 *Kode ' + f.role + ' gratis!*',
+      '*Kode ' + f.role + ' Malik Tools*',
       '```' + f.kode + '```',
-      '⏳ ' + f.durasi + ' · ⚡ ' + f.limit + ' · 👥 ' + f.kuota,
-      f.kedaluwarsa ? '🕒 Sampai ' + f.kedaluwarsa : null,
+      f.durasi + ' · ' + f.limit + ' · batas ' + f.kuota,
+      f.kedaluwarsa ? 'Sampai ' + f.kedaluwarsa : null,
       '',
-      'Tukar di ' + SITE + ' (Profil → kode redeem).'
+      'Cara memakai: menu Profil, isi kotak "Punya kode redeem?".'
     ];
   }
 };
@@ -96,7 +99,7 @@ function build(spec, pretty, style, custom) {
   const f = facts(spec, pretty);
   const c = String(custom || '').trim();
   if (c) return c.replace(/\{(kode|role|durasi|limit|kuota|kedaluwarsa|catatan|link)\}/g, (m, k) => f[k]).slice(0, 2000);
-  const fn = STYLES[style] || STYLES.hype;
+  const fn = STYLES[style] || STYLES.rapi;
   return fn(f).filter((l) => l !== null).join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
