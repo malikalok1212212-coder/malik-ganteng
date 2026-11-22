@@ -116,3 +116,12 @@ test('diag: khusus developer, membuat dan membatalkan tagihan percobaan', async 
   assert.equal(d.body.ok, true); assert.equal(d.body.jawaban.dibatalkan, true);
   assert.ok(!JSON.stringify(d.body).includes('kunci-tes'));
 });
+
+test('buat tagihan: timeout Meldapay diulang sekali lalu berhasil', async () => {
+  const real = global.fetch; let n = 0;
+  global.fetch = async (url, init) => { if (String(url).startsWith('https://meldapay.com/api/invoice?') && ++n === 1) { const e = new Error('abort'); e.name = 'AbortError'; throw e; } return real(url, init); };
+  try {
+    const c = await act('create', { body: { plan: 'premium-7' }, cookie: ck });
+    assert.equal(c.status, 200, JSON.stringify(c.body)); assert.equal(n, 2);
+  } finally { global.fetch = real; }
+});

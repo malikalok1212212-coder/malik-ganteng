@@ -58,7 +58,8 @@ module.exports = async (req, res) => {
     const r = await pay.createInvoice(amount), j = r.j || {};
     const seen = { http: r.code, success: j.success, error: clip(r.error || j.error || j.message, 200), invoice_id: pay.ID_RE.test(String(j.invoice_id || '')) ? 'valid' : (j.invoice_id ? 'format tidak dikenal' : 'tidak ada'), amount: j.amount, fee: j.fee, total: j.total, ada_qris: !!(j.qris_image || j.payment_link) };
     let hasil = 'Tagihan percobaan berhasil dibuat.';
-    if (!r.ok || j.success === false) hasil = 'Meldapay menolak atau tidak menjawab: ' + (seen.error || 'HTTP ' + r.code) + '. Cek API key, saldo atau status akun Meldapay, dan nominal minimum.';
+    if (!r.ok && !r.j && r.code === 502) hasil = 'Meldapay tidak menjawab (sudah dicoba 2 kali, masing-masing 15 detik): ' + (seen.error || 'timeout') + '. Ini masalah koneksi atau server Meldapay, bukan nominal. Coba buka meldapay.com di browser, cek status akun di dashboard mereka, dan ulangi beberapa menit lagi. Bila alamat API-nya berbeda dari meldapay.com, isi MELDAPAY_BASE_URL di Vercel.';
+    else if (!r.ok || j.success === false) hasil = 'Meldapay menolak: ' + (seen.error || 'HTTP ' + r.code) + '. Cek API key, status akun Meldapay, dan nominal minimum.';
     else if (seen.invoice_id !== 'valid') hasil = 'Meldapay menjawab tetapi tanpa invoice_id yang valid.';
     else if (Math.floor(Number(j.amount)) !== amount) hasil = 'Nominal dari Meldapay (' + j.amount + ') tidak sama dengan harga paket (' + amount + '). Kode akan membatalkan tagihan.';
     if (seen.invoice_id === 'valid') { const c = await pay.cancelInvoice(String(j.invoice_id)).catch(() => null); seen.dibatalkan = !!(c && c.ok); }

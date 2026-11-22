@@ -31,7 +31,7 @@
       "maxDuration": 10
     },
     "api/pay.js": {
-      "maxDuration": 20
+      "maxDuration": 40
     }
   },
   "headers": [

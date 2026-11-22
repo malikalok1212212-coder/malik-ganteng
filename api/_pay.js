@@ -34,7 +34,13 @@ async function mp(method, path, params, ms = 12000) {
     return { ok: false, code: 502, error: e && e.name === 'AbortError' ? 'Meldapay tidak menjawab (timeout).' : 'Meldapay tidak terjangkau.' };
   } finally { clearTimeout(t); }
 }
-const createInvoice = (amount) => mp('GET', '/api/invoice', { amount: String(amount) });
+// Meldapay kadang lambat: beri waktu 15 detik, dan ulangi sekali bila tidak menjawab (timeout atau koneksi putus). Balasan error dari Meldapay sendiri tidak diulang.
+const createInvoice = async (amount) => {
+  const go = () => mp('GET', '/api/invoice', { amount: String(amount) }, 15000);
+  let r = await go();
+  if (!r.ok && !r.j && r.code === 502) r = await go();
+  return r;
+};
 const invoiceStatus = (id, ms) => mp('GET', '/api/invoice/status', { invoice_id: id }, ms);
 const cancelInvoice = (id) => mp('POST', '/api/invoice/cancel', { invoice_id: id }, 8000);
 
