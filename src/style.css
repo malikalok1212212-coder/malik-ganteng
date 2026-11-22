@@ -3985,3 +3985,57 @@ html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-m
 html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.tgc,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.tgc{background:var(--rc,#fdeed4)!important}
 html body .vck{width:18px;height:18px;margin-left:3px;vertical-align:-4px}
 html body .chd .vck{margin:0 0 0 -1px}
+
+/* ===== fix-v334: kartu pasang ke layar utama, lembar panduan, daftar Stats, toast pengumuman ===== */
+html body #drw .pwab{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 10px;padding:10px 12px;text-align:left;font:inherit;cursor:pointer;background:var(--panel)!important;color:var(--ink)!important;border:3px solid var(--ac-ink,#141413)!important;border-radius:16px!important;box-shadow:3px 3px 0 var(--ac-ink,#141413)!important}
+html body #drw .pwab[hidden],html body .pwab[hidden]{display:none!important}
+html body .pwab img{flex:none;width:44px;height:44px;border-radius:12px;object-fit:cover;border:2.5px solid var(--ac-ink,#141413)}
+html body .pwab>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+html body .pwab b{display:block;font-size:15px;font-weight:700;line-height:1.25}
+html body .pwab small{display:block;font-size:12px;line-height:1.3;color:var(--muted)}
+html body .pwab>svg{flex:none;width:20px;height:20px}
+:root[data-theme="dark"] #drw .pwab{border-color:#000!important;box-shadow:3px 3px 0 #000!important}
+
+html body .pws{position:fixed;inset:0;z-index:2000;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.5);opacity:0;transition:opacity .22s}
+html body .pws.in{opacity:1}html body .pws.out{opacity:0}
+html body .pwsc{width:100%;max-width:520px;max-height:90vh;overflow:auto;padding:10px 20px calc(20px + env(safe-area-inset-bottom,0px));background:var(--panel);color:var(--ink);border:3px solid var(--ac-ink,#141413);border-bottom:0;border-radius:22px 22px 0 0;transform:translateY(100%);transition:transform .25s}
+html body .pws.in .pwsc{transform:none}html body .pws.out .pwsc{transform:translateY(100%)}
+html body .pwsg{display:block;width:40px;height:4px;margin:0 auto 14px;border-radius:99px;background:var(--bd)}
+html body .pwsh{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+html body .pwsh img{flex:none;width:64px;height:64px;border-radius:16px;object-fit:cover;border:3px solid var(--ac-ink,#141413)}
+html body .pwsh b{display:block;font-size:18px}
+html body .pwsh small{display:block;margin-top:2px;font-size:13px;color:var(--muted)}
+html body .pwsl{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:10px}
+html body .pwsl li{display:flex;align-items:center;gap:12px;font-size:15px;line-height:1.4}
+html body .pwsn{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:12px;border:2.5px solid var(--ac-ink,#141413);background:var(--ac-y,#ffd23f);color:var(--ac-ink,#141413)}
+html body .pwsn svg{width:20px;height:20px}
+html body .pwsx{display:block;width:100%;min-height:46px;font:700 15px inherit;font-family:inherit;cursor:pointer;background:var(--ac-y,#ffd23f)!important;color:var(--ac-ink,#141413)!important;border:3px solid var(--ac-ink,#141413)!important;border-radius:14px!important;box-shadow:3px 3px 0 var(--ac-ink,#141413)}
+
+/* Stats: kolom grid dikunci selebar layar supaya kartu tidak melebar keluar */
+html body .rk{grid-template-columns:minmax(0,1fr)}
+html body .rk li{min-width:0}
+html body .rk li:not(.empty){box-sizing:border-box;max-width:100%}
+
+/* Toast pengumuman: animasi masuk tidak boleh menahan efek hilang */
+.ann.out{animation:none!important}
+
+/* ===== v335: intro baru. Potret bulat (tanpa latar putih), stiker dipindah jadi chip di bawah tagline, teks dan bar lebih jelas ===== */
+html body .iv{--iv-dim:color-mix(in srgb,var(--iv-ink) 82%,transparent)}
+html body .iv .ivpt{--pw:min(54vw,214px);margin:0 0 30px}
+html body .iv .ivglow{inset:-22%;background:radial-gradient(circle,rgba(91,229,156,.30),transparent 66%)}
+html body .iv .ivst,html body .iv .ivstar{display:none!important}
+html body .iv .ivlogo{rotate:0deg;border-radius:50%;background:#0b0d0c;border:0;box-shadow:0 0 0 4px var(--iv-bg),0 0 0 8px #ffd23f,0 0 0 12px var(--iv-bg),0 0 0 15px var(--iv-ink)}
+html body .iv .ivlogo img{object-position:50% 42%;transform:scale(1.08)}
+html body .iv .ivw{font-size:clamp(34px,11vw,52px)}
+html body .iv .ivtag{margin:14px 0 0;font:700 13.5px/1.45 "Space Mono",ui-monospace,monospace;letter-spacing:.02em;color:var(--iv-ink)}
+html body .iv .ivchips{display:flex;justify-content:center;gap:10px;margin-top:14px}
+html body .iv .ivchips span{padding:7px 13px;border:2.5px solid var(--iv-ink);border-radius:999px;font:700 11.5px/1 "Space Mono",ui-monospace,monospace;letter-spacing:.03em;color:#14121f;white-space:nowrap}
+html body .iv .ivchips .c1{background:#ff8cc6}html body .iv .ivchips .c2{background:#5ce1e6}
+html body .iv .ivinfo{margin-top:26px;padding:0 6px}
+html body .iv .ivbar{height:14px;border-radius:999px;border-width:2.5px;box-shadow:none}
+html body .iv .ivm{margin-top:12px;font-size:13px;color:var(--iv-dim)}
+html body .iv .ivsk{color:var(--iv-ink);font-size:13px;opacity:.85}
+@media (max-height:620px){html body .iv .ivpt{--pw:min(34vw,140px);margin-bottom:20px}html body .iv .ivchips{margin-top:10px}html body .iv .ivinfo{margin-top:16px}}
+
+/* ===== v336: di beranda, tarik-segarkan bawaan Chrome dimatikan supaya hanya satu muteran (milik Malik Tools) yang tampil ===== */
+html.ptrh,html.ptrh body{overscroll-behavior-y:contain}
