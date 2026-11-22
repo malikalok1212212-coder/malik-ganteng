@@ -42,10 +42,10 @@ PAGE = """<!DOCTYPE html>
 <title>@TITLE@</title>
 <meta name="description" content="@DESC@">
 <meta name="robots" content="index,follow">
-<meta name="theme-color" content="#0a0a0b">
+<meta name="theme-color" content="#15162d">
 <link rel="canonical" href="@URL@">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico?v=331" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=331">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Malik Tools">
 <meta property="og:locale" content="id_ID">
@@ -55,41 +55,24 @@ PAGE = """<!DOCTYPE html>
 <meta property="og:image" content="@SITE@/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">@LD@</script>
-<style>
-:root{--bg:#0a0a0b;--panel:#141416;--bd:#26262b;--ink:#f4f4f5;--muted:#a1a1aa;--ac:@ACCENT@;color-scheme:dark}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-header,main,footer{max-width:680px;margin:0 auto;padding:0 20px}
-header{padding-top:20px;padding-bottom:8px}
-header a{color:var(--ink);font-weight:700;text-decoration:none}
-h1{font-size:clamp(1.8rem,6vw,2.6rem);line-height:1.15;margin:32px 0 12px}
-.lead{color:var(--muted);font-size:1.05rem;max-width:60ch;margin:0 0 24px}
-.cta{display:inline-block;background:var(--ac);color:#0a0a0b;font-weight:700;text-decoration:none;padding:14px 22px;border-radius:12px}
-.cta:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:3px}
-.note{color:var(--muted);font-size:.9rem;margin:14px 0 0}
-h2{font-size:1.1rem;margin:48px 0 12px}
-ul.tl{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
-ul.tl a{display:block;color:var(--ink);text-decoration:none;background:var(--panel);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;font-size:.95rem}
-ul.tl a:hover{border-color:var(--ac)}
-footer{padding-top:40px;padding-bottom:40px;color:var(--muted);font-size:.85rem}
-.fl{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 14px}.fl a{color:var(--ink)}
-.prose h1{margin-top:24px}.prose h2{margin:36px 0 8px}
-.prose p,.prose li{color:#d4d4d8;max-width:68ch}.prose .lead{color:var(--muted)}
-.prose ul{list-style:disc;padding-left:22px}.prose li{margin:6px 0}
-.prose a:not(.cta){color:var(--ac)}.upd{color:var(--muted);font-size:.9rem;margin:0 0 14px}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Montserrat:ital,wght@1,800&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="/page.css?v=331">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
 </head>
 <body>
-<header><a href="/">Malik Tools</a></header>
-<main>
+<header class="bar"><div class="wrap"><a class="brand" href="/"><img src="/logo.jpg?v=331" alt="" width="34" height="34"><span>Malik Tools</span></a><button type="button" class="ib" id="th" aria-label="Ganti tema"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></svg></button><a class="go" href="/">Buka</a></div></header>
+<main class="wrap">
+<span class="tag">Tool gratis</span>
 <h1>@NAME@</h1>
 <p class="lead">@DESC@</p>
 <a class="cta" href="/#@ID@">Buka @NAME@</a>
 <p class="note">Gratis dipakai langsung di browser. Masuk dengan akun untuk memakai tool.</p>
-<h2>Tools lainnya</h2>
-<ul class="tl">@LIST@</ul>
+<section class="cd"><h2>Tools lainnya</h2><ul class="tl">@LIST@</ul></section>
 </main>
-<footer><nav class="fl" aria-label="Informasi"><a href="/tentang">Tentang</a><a href="/privasi">Privasi</a><a href="/syarat">Syarat</a><a href="/bantuan">Bantuan</a></nav><p style="margin:0">Malik Tools, kumpulan tools gratis di browser.</p></footer>
+<div class="wrap"><footer><nav class="fl" aria-label="Informasi"><a href="/tentang">Tentang</a><a href="/privasi">Privasi</a><a href="/syarat">Syarat</a><a href="/bantuan">Bantuan</a></nav><p>Malik Tools, kumpulan tools gratis di browser.</p></footer></div>
+<script>document.getElementById('th').onclick=function(){var r=document.documentElement,n=r.dataset.theme==='light'?'dark':'light';r.dataset.theme=n;try{localStorage.setItem('theme',n)}catch(e){}}</script>
 </body>
 </html>
 """
@@ -128,10 +111,25 @@ for tid, name, desc in tools:
     (out / f'{tid}.html').write_text(page, encoding='utf8')
 
 # ---- Halaman informasi (kepercayaan): /tentang /privasi /syarat /bantuan ----
-INFO = re.sub(r'<main>.*?</main>', '<main class="prose">@BODY@</main>', PAGE, flags=re.S)
+INFO = re.sub(r'<main class="wrap">.*?</main>', '<main class="wrap prose">@BODY@</main>', PAGE, flags=re.S)
+assert '@BODY@' in INFO
+
+
+def cards(body, label):
+    body = body.replace('<h1>', f'<span class="tag">{label}</span>\n<h1>', 1)
+    head, *secs = re.split(r'(?=<h2>)', body)
+    ctas, out = [], []
+    for sec in secs:
+        for m in re.findall(r'<p><a class="cta".*?</a></p>', sec, flags=re.S):
+            ctas.append(m)
+            sec = sec.replace(m, '')
+        out.append('<section class="cd">' + sec.strip() + '</section>')
+    return head + '\n'.join(out) + '\n' + ''.join(c.replace('<p>', '').replace('</p>', '') for c in ctas)
+
 WA = 'https://wa.me/6285772295147'
 CH = 'https://whatsapp.com/channel/0029VbEWYLNDOQIYSO1k7D2x'
 N = len(tools)
+LABELS = {'tentang': 'Tentang', 'privasi': 'Privasi', 'syarat': 'Syarat', 'bantuan': 'Bantuan'}
 info_pages = [
 ('tentang', 'Tentang Malik Tools', 'Malik Tools adalah kumpulan tools gratis yang dipakai langsung dari browser di HP, tanpa pasang aplikasi.', f'''
 <h1>Tentang Malik Tools</h1>
@@ -227,7 +225,8 @@ for slug, title, d, body in info_pages:
     (PUB / f'{slug}.html').write_text(
         INFO.replace('@TITLE@', html.escape(f'{title} | Malik Tools')).replace('@DESC@', html.escape(d, quote=True))
         .replace('@URL@', url).replace('@SITE@', SITE).replace('@LD@', ld).replace('@ACCENT@', accent)
-        .replace('@BODY@', body), encoding='utf8')
+        .replace('@BODY@', cards(body, LABELS.get(slug, 'Info')))
+        .replace(f'<a href="/{slug}">', f'<a href="/{slug}" aria-current="page">'), encoding='utf8')
 
 urls = [(SITE + '/', '1.0')] + [(f'{SITE}/tools/{t[0]}', '0.8') for t in tools] + [(f'{SITE}/{p[0]}', '0.5') for p in info_pages]
 (PUB / 'sitemap.xml').write_text(

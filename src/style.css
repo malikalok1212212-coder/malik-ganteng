@@ -3797,25 +3797,38 @@ html body main.chatp.chatp.chatp .cpanel.cpanel .cin .cib svg,html body main.cha
 #drw .dl[href*="wa.me"] .ic{background:var(--ac-c)!important}
 #drw .dl[href="/tentang"] .ic,#drw .dl[href="/privasi"] .ic,#drw .dl[href="/syarat"] .ic,#drw .dl[href="/bantuan"] .ic{background:var(--ac-i)!important}
 
-/* ===== intro-v326: tirai belah =====
-   Satu momen: kata "Malik / Tools" dua baris, layar membelah tepat di antara baris itu lalu terbuka.
-   Tanpa lingkaran berputar, stiker, atau pita berjalan. Warna latar mengikuti tema. */
+/* ===== intro-v331: potret stiker =====
+   Foto karakter besar bergaya stiker (bingkai tebal, bayangan keras, label miring), judul dengan sorotan kuning,
+   bar empat warna. Tirai belah saat selesai tetap sama. Warna latar mengikuti tema. */
 .seo-fallback{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
-.iv{--iv-bg:#14121f;--iv-ink:#faf9f5;--iv-dim:rgba(250,249,245,.62);--iv-track:rgba(250,249,245,.14);--wm:clamp(60px,21vw,104px);
- position:fixed;inset:0;z-index:100;background:var(--iv-bg);color:var(--iv-ink)}
-:root[data-theme="light"] .iv{--iv-bg:#f3f0ff;--iv-ink:#14121f;--iv-dim:rgba(20,18,31,.62);--iv-track:rgba(20,18,31,.12)}
+.iv{--iv-bg:#14121f;--iv-ink:#faf9f5;--iv-dim:rgba(250,249,245,.66);--iv-track:rgba(250,249,245,.14);--iv-dot:rgba(250,249,245,.08);--pw:min(64vw,270px);
+ position:fixed;inset:0;z-index:100;background:var(--iv-bg);color:var(--iv-ink);overflow:hidden}
+:root[data-theme="light"] .iv{--iv-bg:#f3f0ff;--iv-ink:#14121f;--iv-dim:rgba(20,18,31,.66);--iv-track:rgba(20,18,31,.12);--iv-dot:rgba(20,18,31,.08)}
 .noload .iv,.ldgate .iv{display:none}
-.iv .ivs{position:absolute;left:0;right:0;top:0;height:100%;padding:0 max(24px,env(safe-area-inset-left))}
-.iv .ivlogo{position:absolute;left:max(24px,env(safe-area-inset-left));bottom:calc(50% + var(--wm)*1.11 + 22px);width:64px;height:64px;border-radius:18px;overflow:hidden;background:#fff;border:3px solid var(--iv-ink);box-shadow:5px 5px 0 #ffd23f}
+.iv .ivs{position:absolute;left:0;right:0;top:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 max(24px,env(safe-area-inset-left))}
+.iv .ivs::before{content:"";position:absolute;inset:0;background:radial-gradient(var(--iv-dot) 1.4px,transparent 1.6px) 0 0/20px 20px;pointer-events:none}
+.iv .ivc{position:relative;display:flex;flex-direction:column;align-items:center;width:100%;max-width:400px}
+.iv .ivpt{position:relative;width:var(--pw);aspect-ratio:1;margin:0 0 36px}
+.iv .ivglow{position:absolute;inset:-26%;border-radius:50%;background:radial-gradient(circle,rgba(91,229,156,.40),transparent 66%)}
+.iv .ivlogo{position:absolute;inset:0;rotate:-4deg;border-radius:30px;overflow:hidden;background:#fff;border:4px solid var(--iv-ink);box-shadow:9px 9px 0 #ffd23f}
 .iv .ivlogo img{display:block;width:100%;height:100%;object-fit:cover}
-.iv .ivw{position:absolute;left:max(24px,env(safe-area-inset-left));right:16px;top:50%;margin:0;transform:translateY(-50%);font:italic 800 var(--wm)/.95 Montserrat,"Space Grotesk",system-ui,sans-serif;letter-spacing:-.035em;color:var(--iv-ink)}
-.iv .ivl{display:block;overflow:hidden;padding:.06em .12em .1em 0;white-space:nowrap}
+.iv .ivst{position:absolute;padding:7px 12px;border:3px solid var(--iv-ink);border-radius:999px;font:700 11.5px/1 "Space Mono",ui-monospace,monospace;letter-spacing:.03em;color:#14121f;box-shadow:3px 3px 0 var(--iv-ink);white-space:nowrap}
+.iv .s1{right:-13%;top:9%;rotate:7deg;background:#ff8cc6}
+.iv .s2{left:-11%;bottom:9%;rotate:-7deg;background:#5ce1e6}
+.iv .ivstar{position:absolute;fill:#ffd23f;stroke:var(--iv-ink);stroke-width:1.6;stroke-linejoin:round}
+.iv .ivstar.a{left:-9%;top:-7%;width:46px;height:46px;rotate:-12deg}
+.iv .ivstar.b{right:-6%;bottom:-8%;width:30px;height:30px;rotate:14deg;fill:#5be59c}
+.iv .ivw{margin:0;display:flex;align-items:center;justify-content:center;gap:.24em;white-space:nowrap;font:italic 800 clamp(32px,10.5vw,52px)/1 Montserrat,"Space Grotesk",system-ui,sans-serif;letter-spacing:-.035em;color:var(--iv-ink)}
+.iv .ivl{display:inline-block;overflow:hidden;padding:.06em .08em .1em 0}
 .iv .ivl span{display:inline-block}
-.iv .ivinfo{position:absolute;left:max(24px,env(safe-area-inset-left));right:max(24px,env(safe-area-inset-right));top:calc(50% + var(--wm)*1.11 + 26px)}
-.iv .ivbar{position:relative;height:14px;border-radius:8px;background:var(--iv-track);overflow:hidden;border:3px solid var(--iv-ink);box-sizing:content-box;margin:0 -3px}
+.iv .ivl:last-child{background:#ffd23f;border:3px solid var(--iv-ink);border-radius:12px;padding:.02em .14em .08em .08em;box-shadow:4px 4px 0 var(--iv-ink);rotate:-2deg}
+.iv .ivl:last-child span{color:#14121f}
+.iv .ivtag{margin:16px 0 0;text-align:center;font:700 12px/1.4 "Space Mono",ui-monospace,monospace;letter-spacing:.04em;color:var(--iv-dim)}
+.iv .ivinfo{width:100%;margin-top:28px}
+.iv .ivbar{position:relative;height:22px;border-radius:12px;background:var(--iv-track);overflow:hidden;border:3px solid var(--iv-ink);box-shadow:4px 4px 0 var(--iv-ink);box-sizing:border-box}
 .iv .ivbar i{position:absolute;inset:0;background:linear-gradient(90deg,#ffd23f 0 25%,#ff8cc6 25% 50%,#5ce1e6 50% 75%,#5be59c 75%);clip-path:inset(0 calc((1 - var(--p,0))*100%) 0 0)}
-.iv .ivm{margin:12px 0 0;min-height:20px;font:700 13px/1.4 "Space Mono",ui-monospace,monospace;color:var(--iv-dim)}
-.iv .ivsk{position:absolute;left:max(24px,env(safe-area-inset-left));bottom:calc(22px + env(safe-area-inset-bottom));padding:8px 0;min-height:0;background:none;border:0;box-shadow:none!important;border-radius:0;color:var(--iv-dim);font:700 13px "Space Mono",ui-monospace,monospace;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.iv .ivm{margin:14px 0 0;min-height:20px;text-align:center;font:700 13px/1.4 "Space Mono",ui-monospace,monospace;color:var(--iv-dim)}
+.iv .ivsk{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom));margin:0 auto;width:max-content;padding:8px 6px;min-height:0;background:none;border:0;box-shadow:none!important;border-radius:0;color:var(--iv-dim);font:700 13px "Space Mono",ui-monospace,monospace;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .iv .ivsk:focus-visible{outline:3px solid #8a97ff;outline-offset:3px;border-radius:4px}
 .ldwait .iv .ivsk{visibility:hidden}
 .iv .ivh{position:absolute;left:0;right:0;height:50%;overflow:hidden;background:var(--iv-bg);will-change:transform}
@@ -3823,7 +3836,7 @@ html body main.chatp.chatp.chatp .cpanel.cpanel .cin .cib svg,html body main.cha
 .iv .ivh.b{bottom:0}
 .iv .ivh .ivs{height:200%}
 .iv .ivh.b .ivs{top:auto;bottom:0}
-.iv .ivh:after{content:"";position:absolute;left:0;right:0;height:2px;background:var(--iv-ink)}
+.iv .ivh:after{content:"";position:absolute;left:0;right:0;height:3px;background:var(--iv-ink)}
 .iv .ivh.t:after{bottom:0}
 .iv .ivh.b:after{top:0}
 .iv .ivh *{animation:none!important}
@@ -3832,12 +3845,18 @@ html body main.chatp.chatp.chatp .cpanel.cpanel .cin .cib svg,html body main.cha
 @keyframes ivrise{from{transform:translateY(105%)}to{transform:none}}
 @keyframes ivfade{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
 @keyframes ivup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes ivpop{from{opacity:0;scale:.55;translate:0 28px}}
 @keyframes ivtop{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:none}}
 @keyframes ivin{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes ivdock{from{opacity:0;transform:translateY(100%)}to{opacity:1;transform:none}}
-.iv .ivl span{animation:ivrise .62s cubic-bezier(.2,.9,.3,1) both;animation-delay:calc(var(--i)*38ms + .08s)}
-.iv .ivlogo{animation:ivfade .5s cubic-bezier(.2,.9,.3,1) .05s both}
-.iv .ivinfo,.iv .ivsk{animation:ivup .5s ease .55s both}
+.iv .ivglow{animation:ivfade .9s ease both}
+.iv .ivlogo{animation:ivpop .7s cubic-bezier(.2,1.25,.3,1) .05s both}
+.iv .ivst{animation:ivpop .5s cubic-bezier(.2,1.5,.3,1) both}
+.iv .s1{animation-delay:.5s}.iv .s2{animation-delay:.65s}
+.iv .ivstar.a{animation:ivpop .5s cubic-bezier(.2,1.5,.3,1) .35s both}
+.iv .ivstar.b{animation:ivpop .5s cubic-bezier(.2,1.5,.3,1) .8s both}
+.iv .ivl span{animation:ivrise .62s cubic-bezier(.2,.9,.3,1) both;animation-delay:calc(var(--i)*38ms + .3s)}
+.iv .ivtag,.iv .ivinfo,.iv .ivsk{animation:ivup .5s ease .75s both}
 .iv .ivh{transition:transform .72s cubic-bezier(.76,0,.24,1)}
 .iv.out .ivh.t{transform:translateY(-101%)}
 .iv.out .ivh.b{transform:translateY(101%)}
@@ -3854,43 +3873,115 @@ html body main.chatp.chatp.chatp .cpanel.cpanel .cin .cib svg,html body main.cha
 .iv{transition:opacity .25s ease}
 .iv.out{opacity:0}
 }
-@media (max-height:560px){.iv{--wm:clamp(44px,15vw,72px)}.iv .ivlogo{width:48px;height:48px;border-radius:14px}}
+@media (max-height:620px){.iv{--pw:min(38vw,150px)}.iv .ivpt{margin-bottom:24px}.iv .ivinfo{margin-top:16px}.iv .ivtag{margin-top:10px}}
 
-/* ===== v327: pasang ke layar utama (foto karakter) ===== */
-.pwab{display:flex;align-items:center;gap:12px;margin:4px 14px 10px;width:calc(100% - 28px);padding:10px 12px 10px 10px;border-radius:18px;border:var(--nb,2px) solid var(--bd);box-shadow:3px 3px 0 var(--sh);background:linear-gradient(135deg,color-mix(in srgb,#5be59c 14%,var(--field)),var(--field));color:var(--ink);font-family:"Space Grotesk",system-ui,sans-serif;text-align:left;cursor:pointer}
-.pwab[hidden]{display:none}
-.pwab img{width:44px;height:44px;border-radius:13px;object-fit:cover;flex:none;box-shadow:0 0 0 2px #5be59c,0 6px 14px rgba(0,0,0,.28)}
-.pwab span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.pwab b{font-size:13.5px;line-height:1.2}
-.pwab small{font-size:11.5px;color:var(--muted);line-height:1.2}
-.pwab svg{width:18px;height:18px;flex:none;color:#5be59c}
-.pwab:active{transform:scale(.98)}
-.pwh{position:relative;display:flex;align-items:center;gap:12px;margin:14px 0 0;padding:14px 38px 14px 14px;border-radius:20px;overflow:hidden;color:#fff;background:linear-gradient(135deg,#0d1a13 0%,#112a1d 55%,#0a0d0c 100%);border:var(--nb,2px) solid var(--bd);box-shadow:5px 5px 0 var(--sh);animation:pwin .5s cubic-bezier(.2,.9,.3,1) backwards}
-.pwh.out{opacity:0;transform:translateY(-6px) scale(.98);transition:opacity .24s,transform .24s}
-.pwhg{position:absolute;right:-30px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(91,229,156,.35),transparent 68%);pointer-events:none}
-.pwhi{position:relative;width:64px;height:64px;border-radius:18px;object-fit:cover;flex:none;box-shadow:0 0 0 2px #5be59c,0 0 22px rgba(91,229,156,.45)}
-.pwht{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
-.pwht b{font:700 15px/1.2 "Space Grotesk",system-ui,sans-serif}
-.pwht small{font-size:11.5px;line-height:1.35;color:#b7cfc2}
-.pwhb{position:relative;flex:none;border:0;border-radius:999px;padding:10px 16px;background:#5be59c;color:#06130c;font:700 13px/1 "Space Grotesk",system-ui,sans-serif;cursor:pointer}
-.pwhb:active{transform:scale(.95)}
-.pwhc{position:absolute;right:6px;top:4px;width:30px;height:30px;padding:0;border:0!important;background:none!important;box-shadow:none!important;color:#9fb8aa;font-size:20px;line-height:1;cursor:pointer}
-@keyframes pwin{from{opacity:0;transform:translateY(10px)}}
-@media (max-width:360px){.pwh{flex-wrap:wrap}.pwhb{margin-left:76px}}
-.pws{position:fixed;inset:0;z-index:300;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0);transition:background .22s}
-.pws.in{background:rgba(0,0,0,.6)}
-.pws.out{background:rgba(0,0,0,0)}
-.pwsc{position:relative;width:100%;max-width:480px;padding:12px 18px calc(18px + env(safe-area-inset-bottom,0px));border-radius:26px 26px 0 0;background:var(--panel);color:var(--ink);border:1px solid var(--bd);border-bottom:0;transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.9,.3,1);overflow:hidden}
-.pws.in .pwsc{transform:none}
-.pws.out .pwsc{transform:translateY(100%)}
-.pwsg{display:block;width:40px;height:4px;border-radius:4px;background:var(--bd);margin:0 auto 14px}
-.pwsh{display:flex;align-items:center;gap:14px;margin-bottom:16px}
-.pwsh img{width:64px;height:64px;border-radius:18px;object-fit:cover;box-shadow:0 0 0 2px #5be59c,0 8px 20px rgba(0,0,0,.3)}
-.pwsh b{display:block;font:700 17px/1.2 "Space Grotesk",system-ui,sans-serif}
-.pwsh small{color:var(--muted);font-size:12.5px}
-.pwsl{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:10px}
-.pwsl li{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:14px;background:var(--field);border:1px solid var(--bd);font-size:13.5px;line-height:1.35}
-.pwsn{flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,#5be59c 20%,transparent);color:#2fbf78}
-.pwsn svg{width:19px;height:19px}
-.pwsx{width:100%;border:0;border-radius:14px;padding:13px;background:#5be59c;color:#06130c;font:700 14px/1 "Space Grotesk",system-ui,sans-serif;cursor:pointer}
-@media (prefers-reduced-motion:reduce){.pwh,.pwsc,.pws{animation:none;transition:none}}
+/* ===== fix-v332: drawer dan Statistik dirapikan, satu bahasa desain dengan kartu lain =====
+   Drawer: semua baris utama (info + kategori) satu bentuk kartu; isi kategori datar dengan rel warna.
+   Statistik: tiap peringkat jadi kartu, lencana warna bergantian, bar tebal. Blok ini sengaja paling akhir. */
+:root,:root[data-theme="light"]{--ln:var(--ac-ink);--ln-sh:var(--ac-ink)}
+:root[data-theme="dark"]{--ln:#4b4d82;--ln-sh:#05050d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ln:#4b4d82;--ln-sh:#05050d}}
+
+/* --- drawer --- */
+html body #drw{padding:14px 12px calc(28px + env(safe-area-inset-bottom,0px))!important;border-right:3px solid var(--ln)!important;box-shadow:none!important;scrollbar-width:none}
+html body #drw::-webkit-scrollbar{display:none}
+html body #drw .dp{border:2.5px solid var(--ln)!important;border-radius:18px!important;box-shadow:3px 3px 0 var(--ln-sh)!important;margin-bottom:14px!important}
+html body #drw>.dl,html body #drw .cg>.cat{display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;min-height:54px;margin:0 0 10px!important;padding:8px 12px!important;text-align:left;background:var(--panel)!important;color:var(--ink)!important;border:2.5px solid var(--ln)!important;border-radius:16px!important;box-shadow:3px 3px 0 var(--ln-sh)!important}
+html body #drw>.dl[aria-current],html body #drw>.dl.on,html body #drw>#dhome{background:var(--ac-g)!important;color:var(--ac-ink)!important}
+html body #drw>.dl:active,html body #drw .cg>.cat:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ln-sh)!important}
+html body #drw>.dl .ic,html body #drw .cat .ci{width:36px;height:36px;flex:none;display:grid;place-items:center;border:2.5px solid var(--ac-ink)!important;border-radius:11px!important;color:var(--ac-ink)!important}
+html body #drw .cat .ci{background:var(--tc,var(--ac-y))!important}
+html body #drw>.dl .ic svg.i,html body #drw .cat .ci svg.i{width:18px;height:18px}
+html body #drw>.dl .ic *,html body #drw .cat .ci *{stroke:var(--ac-ink)!important}
+html body #drw .cat .ct{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:left}
+html body #drw .cat .ct b{font-size:15px;font-weight:700;line-height:1.2}
+html body #drw .cat .ct small{display:block;font:500 12px "Space Grotesk",system-ui,sans-serif!important;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body #drw .cat em{flex:none;font:700 11px "Space Mono",ui-monospace,monospace;font-style:normal;padding:2px 8px;border:2px solid var(--ln);border-radius:999px;background:var(--field);color:var(--ink)}
+html body #drw .cat>svg.i:last-child{flex:none;width:18px;height:18px;transition:transform .2s}
+html body #drw .cat[aria-expanded="true"]>svg.i:last-child{transform:rotate(180deg)}
+html body #drw .cg.on>.cat{background:color-mix(in srgb,var(--tc) 24%,var(--panel))!important;margin-bottom:6px!important}
+
+html body #drw .dh{margin:20px 4px 10px!important;font:700 11px "Space Mono",ui-monospace,monospace;letter-spacing:.12em;color:var(--muted)!important}
+html body #drw .dh>span:first-child:after{height:2px;background:color-mix(in srgb,var(--ink) 16%,transparent)}
+html body #drw #dall{font:700 11px "Space Mono",ui-monospace,monospace;color:var(--ink)!important;text-decoration:underline;text-decoration-color:var(--tc);text-decoration-thickness:2px;text-underline-offset:4px}
+html body #drw .sr{border:2.5px solid var(--ln)!important;border-radius:16px!important;box-shadow:3px 3px 0 var(--ln-sh);margin-bottom:12px}
+
+/* isi kategori: datar, rel warna di kiri */
+html body #drw .sub2>div{margin:0 0 12px 22px!important;padding:2px 0 2px 12px!important;border-left:3px solid var(--tc)!important;display:grid;gap:2px}
+html body #drw .cg .dl{display:flex;align-items:center;gap:11px;min-height:52px;margin:0!important;padding:6px 8px!important;background:transparent!important;border:0!important;border-radius:12px!important;box-shadow:none!important}
+html body #drw .cg .dl .ic{width:34px;height:34px;flex:none;background:var(--field)!important;border:2px solid var(--ln)!important;border-radius:10px!important;color:var(--ink)!important}
+html body #drw .cg .dl .ic *{stroke:currentColor!important}
+html body #drw .cg .dl .tx{flex:1;min-width:0;display:flex;flex-direction:column}
+html body #drw .cg .dl .tx b{font-size:14px;font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body #drw .cg .dl .tx small{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body #drw .cg .dl:active,html body #drw .cg .dl[aria-current=page]{background:color-mix(in srgb,var(--tc) 22%,transparent)!important}
+html body #drw .cg .dl[aria-current=page] .ic{background:var(--tc)!important;color:var(--ac-ink)!important;border-color:var(--ac-ink)!important}
+@media (hover:hover){html body #drw .cg .dl:hover{background:color-mix(in srgb,var(--tc) 14%,transparent)!important}}
+
+/* --- statistik --- */
+html body .rk{display:grid;gap:12px;margin:0;padding:0}
+html body .rk li:not(.empty){display:flex;align-items:center;gap:12px;padding:12px 14px!important;background:var(--panel);border:3px solid var(--ln)!important;border-radius:18px!important;box-shadow:3px 3px 0 var(--ln-sh)}
+html body .rk .n{width:38px;height:38px;flex:none;display:grid;place-items:center;font:800 15px "Space Mono",ui-monospace,monospace;color:var(--ac-ink)!important;border:2.5px solid var(--ac-ink)!important;border-radius:12px!important}
+html body .rk li:nth-child(5n+1) .n,html body .rk li:nth-child(5n+1) .mt i{background:var(--ac-y)!important}
+html body .rk li:nth-child(5n+2) .n,html body .rk li:nth-child(5n+2) .mt i{background:var(--ac-p)!important}
+html body .rk li:nth-child(5n+3) .n,html body .rk li:nth-child(5n+3) .mt i{background:var(--ac-g)!important}
+html body .rk li:nth-child(5n+4) .n,html body .rk li:nth-child(5n+4) .mt i{background:var(--ac-i)!important}
+html body .rk li:nth-child(5n+5) .n,html body .rk li:nth-child(5n+5) .mt i{background:var(--ac-c)!important}
+html body .rk .g{flex:1;min-width:0}
+html body .rk .rt{align-items:baseline;gap:10px}
+html body .rk .rt>span{min-width:0;font-size:16px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html body .rk .rt>b{flex:none;font:800 18px "Space Mono",ui-monospace,monospace}
+html body .rk .er{margin-top:2px;font:700 12px "Space Mono",ui-monospace,monospace;color:var(--bad)}
+html body .rk .er.z{font-weight:500;color:var(--muted)}
+html body .rk .mt{height:14px;margin-top:8px;border:2.5px solid var(--ln)!important;border-radius:999px;background:var(--field);overflow:hidden}
+html body .rk .mt i{height:100%;border-right:2.5px solid var(--ac-ink);box-sizing:border-box}
+
+/* ===== fix-v332b: warna halaman tool, Spotify, badge dan centang chat =====
+   Prinsip: tidak ada teks atau latar setengah transparan untuk hal penting. Aksen kuning/hijau terang dipakai
+   sebagai LATAR (teks gelap di atasnya), bukan sebagai warna teks di atas putih. Terang dan gelap sama-sama jelas. */
+:root,:root[data-theme="light"]{--tx-y:#8a5a00;--star:#e08a00;--good:#16793f;--badx:#c0262d}
+:root[data-theme="dark"]{--tx-y:#ffd23f;--star:#ffd23f;--good:#5be59c;--badx:#ff8a95}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--tx-y:#ffd23f;--star:#ffd23f;--good:#5be59c;--badx:#ff8a95}}
+
+/* teks aksen yang tadinya kuning di atas putih */
+html body .warnx,html body #downer{color:var(--tx-y)!important}
+html body .fv.on,html body .nxf.on,html body .trf.on{color:var(--star)!important}
+html body .rcm strong,html body .nxi{color:color-mix(in srgb,var(--tc) var(--mx,100%),var(--ink))!important}
+html body #c .amps{background:var(--panel)!important;color:var(--ink)!important;border:2.5px solid var(--ln)!important;box-shadow:2px 2px 0 var(--ln-sh)}
+html body #c .amps:active{background:color-mix(in srgb,var(--tc) 30%,var(--panel))!important}
+html body main .hint a,html body main p a[href^="#"]{color:var(--ink)!important;font-weight:700;text-decoration:underline;text-decoration-color:var(--ac-i);text-decoration-thickness:2px;text-underline-offset:3px}
+
+/* chip dan lencana: latar solid, teks gelap */
+html body .rcs.g{background:var(--ac-y)!important;color:var(--ac-ink)!important;border:2px solid var(--ac-ink)}
+html body .rcs.b{background:#ff8a95!important;color:var(--ac-ink)!important;border:2px solid var(--ac-ink)}
+html body .cfm.ok .ic{background:var(--ac-y)!important;color:var(--ac-ink)!important}
+html body .nwb{background:var(--ac-p)!important;color:var(--ac-ink)!important;border:2px solid var(--ac-ink)}
+html body .msg.good,html body .ok{color:var(--good)}
+html body .msg.bad,html body .err{color:var(--badx)}
+
+/* Spotify Play: kartu pencarian mengikuti tema; hanya pemutar yang tetap gelap ala Spotify */
+html body main[data-tool="spotify-play"] .panel .thero h2{color:var(--ink)}
+html body main[data-tool="spotify-play"] .panel .thero .sub{color:var(--muted)}
+html body main[data-tool="spotify-play"] #c label[for="k"]{color:var(--muted)}
+html body main[data-tool="spotify-play"] #c input{background-color:var(--field);color:var(--ink);border:3px solid var(--ln);border-radius:999px}
+html body main[data-tool="spotify-play"] #c input::placeholder{color:var(--muted)}
+html body main[data-tool="spotify-play"] #c input:focus{background-color:var(--field);border-color:var(--ac-g)}
+html body main[data-tool="spotify-play"] #c input:-webkit-autofill{-webkit-text-fill-color:var(--ink)}
+html body main[data-tool="spotify-play"] #c .msg{color:var(--muted)}
+html body main[data-tool="spotify-play"] #c .msg.good{color:var(--good)}
+html body main[data-tool="spotify-play"] #c .msg.bad{color:var(--badx)}
+html body main[data-tool="spotify-play"] #c .out.spw{border:3px solid var(--ln);box-shadow:3px 3px 0 var(--ln-sh);border-radius:20px}
+html body main[data-tool="spotify-play"] .panel .bar{background:var(--ac-i);color:var(--ac-ink);border-bottom:3px solid var(--ac-ink)}
+html body main[data-tool="spotify-play"] .panel{background:var(--panel);border:3px solid var(--ln);border-radius:26px;box-shadow:6px 6px 0 var(--ln-sh)}
+
+/* Global Chat: badge role solid, teks gelap, ukuran terbaca; centang verified biru */
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-dev,html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-own,html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-pre,html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-vip,html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-mem,html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.tgc{display:inline-flex!important;align-items:center;padding:2px 8px!important;border:2px solid #14121f!important;border-radius:999px!important;font:800 10.5px/1.3 Inter,system-ui,sans-serif!important;letter-spacing:.05em!important;text-transform:uppercase;color:#14121f!important;box-shadow:none!important;background-image:none!important;opacity:1!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.rl-dev,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.rl-own,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.rl-pre,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.rl-vip,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.rl-mem,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.tgc{display:inline-flex!important;align-items:center;padding:1px 6px!important;border:1.5px solid #14121f!important;border-radius:999px!important;font:800 9px/1.3 Inter,system-ui,sans-serif!important;letter-spacing:.05em!important;text-transform:uppercase;color:#14121f!important;box-shadow:none!important;background-image:none!important;opacity:1!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-dev,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.rl-dev{background:#5be59c!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-own,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.rl-own{background:#ff8cc6!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-pre,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.rl-pre{background:#5ce1e6!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-vip,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.rl-vip{background:#ff9f5a!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.rl-mem,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.rl-mem{background:#fdeed4!important}
+html body main.chatp.chatp.chatp .cpanel.cpanel .cmsg .chd .tg2.tg2.tg2.tg2.tgc,html body main.chatp.chatp.chatp .cpanel.cpanel .cq b .tg2.tg2.tg2.tg2.tgc{background:var(--rc,#fdeed4)!important}
+html body .vck{width:18px;height:18px;margin-left:3px;vertical-align:-4px}
+html body .chd .vck{margin:0 0 0 -1px}
