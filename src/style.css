@@ -2437,7 +2437,7 @@ main{padding-left:var(--pad);padding-right:var(--pad)}
 .lhc .lht h2{margin:12px 0 0;font-size:20px;line-height:1.2;color:#a9c2b4}
 .lhc .lht h2 b{margin-top:2px;padding-bottom:.08em;font-size:36px;line-height:1.12;background:linear-gradient(90deg,#fff,#8fe9bd);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .lhtip{margin:16px 0 0;padding:0;border-top:0;font:500 12px/1.45 Inter,system-ui,sans-serif;color:#b9cfc2;max-width:100%}
-.lhtip span{margin-right:8px;font:700 9.5px/1 "Space Mono",monospace;letter-spacing:.1em;color:var(--ac2,#b45309)}
+.lhtip .lhtag{margin-right:8px;font:700 9.5px/1 "Space Mono",monospace;letter-spacing:.1em;color:var(--ac2,#b45309)}
 /* v187: glow dihapus dari menu samping */
 .drw{background:var(--bg);border-right:1px solid var(--bd);box-shadow:20px 0 40px -24px rgba(0,0,0,.7)}
 #drw .dp{background:var(--panel);border:1px solid var(--bd);box-shadow:none}
@@ -3399,7 +3399,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:1}
 .lhc .lht h2{color:#fdeed4!important}
 .lhc .lht h2 b{background:linear-gradient(90deg,#fff,#ffc83d)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important}
 .lhc .lht small{background:#ffc83d!important;color:#141413!important;border:2px solid #141413;border-radius:999px;font-weight:800}
-.lhtip span{color:#ff8fb8!important}
+.lhtip .lhtag{color:#ff8fb8!important}
 .lhs{background:var(--field)!important;border:var(--nb) solid var(--bd)!important;border-radius:14px!important;box-shadow:3px 3px 0 var(--sh)!important}
 .lhs input{border:0!important;box-shadow:none!important;background:transparent!important}
 .lhq{background:var(--c,var(--k-av,#ffc83d))!important;color:#141413!important;border:var(--nb) solid var(--bd)!important;border-radius:16px!important;box-shadow:3px 3px 0 var(--sh)!important}
@@ -4357,7 +4357,7 @@ html body .lhc .lht,html body .lhc .lhtip{max-width:60%}
 html body .lhc .lht h2{color:#f4ecd8!important}
 html body .lhc .lht h2 b{background:none!important;-webkit-text-fill-color:#fff8e6!important;color:#fff8e6!important}
 html body .lhc .lhtip{color:#e3d9c0}
-html body .lhc .lhtip span{display:inline-block;margin-right:6px;padding:3px 6px;border-radius:6px;background:#ff8fb8;color:#16130d!important;letter-spacing:.06em}
+html body .lhc .lhtip .lhtag{display:inline-block;margin-right:6px;padding:3px 6px;border-radius:6px;background:#ff8fb8;color:#16130d!important;letter-spacing:.06em}
 
 /* v381 palet aksen baru (krem-arang): kuning mustard #ffc83d, indigo #8f9aff, hijau mint #4fd69a, pink #ff8fb8, cyan #5cd0d8, oranye #ff9a4d.
    Ubah warna aksen cukup lewat token di bawah ini (nilai hex yang sama juga dipakai di page.css, js/*.js, dan style inline). */
@@ -4376,7 +4376,7 @@ html body .lhc .lhtip span{display:inline-block;margin-right:6px;padding:3px 6px
 :root:root:root .lhc .lht h2{margin:16px 0 0;font:600 19px/1.2 "Plus Jakarta Sans",Inter,system-ui,sans-serif;letter-spacing:-.01em;color:#e8dfc7!important}
 :root:root:root .lhc .lht h2 b{display:block;margin-top:2px;font:800 clamp(38px,12.5vw,56px)/1 "Plus Jakarta Sans",Inter,system-ui,sans-serif;letter-spacing:-.05em;overflow-wrap:anywhere;text-shadow:3px 3px 0 rgba(0,0,0,.55)}
 :root:root:root .lhc .lhtip{margin-top:18px;max-width:64%;font-size:12.5px;line-height:1.5}
-:root:root:root .lhc .lhtip span{transform:rotate(-3deg);border:2px solid #16130d;border-radius:6px;font:800 10px/1 "Space Grotesk",system-ui,sans-serif;box-shadow:2px 2px 0 #16130d}
+:root:root:root .lhc .lhtip .lhtag{transform:rotate(-3deg);border:2px solid #16130d;border-radius:6px;font:800 10px/1 "Space Grotesk",system-ui,sans-serif;box-shadow:2px 2px 0 #16130d}
 
 /* --- Aksi cepat: tombol yang terasa ditekan --- */
 :root:root:root .lhq{min-height:108px;gap:8px;background-image:linear-gradient(180deg,rgba(255,255,255,.30),rgba(255,255,255,0) 48%)!important;transition:transform .12s ease,box-shadow .12s ease}
@@ -4458,7 +4458,7 @@ html body .lhc .lhtip span{display:inline-block;margin-right:6px;padding:3px 6px
   border-radius:14px;border:2px solid rgba(255,248,230,.28);background:rgba(21,19,14,.58);
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
   font:500 12px/1.4 "Space Grotesk",Inter,system-ui,sans-serif;color:#efe6cf}
-:root:root:root .lhc .lhtip span{flex:none;margin:0;padding:5px 7px;transform:none;border:0;border-radius:8px;box-shadow:none;background:#ff8fb8;color:#16130d!important;font:800 9.5px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.08em}
+:root:root:root .lhc .lhtip .lhtag{flex:none;margin:0;padding:5px 7px;transform:none;border:0;border-radius:8px;box-shadow:none;background:#ff8fb8;color:#16130d!important;font:800 9.5px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.08em}
 
 /* ===== v388 banner: tips jadi strip selebar kartu di bawah, wajah foto tidak tertutup, teks sapaan tetap terbaca ===== */
 :root:root:root .lhc{min-height:262px;padding:18px 16px 14px;
@@ -4471,4 +4471,124 @@ html body .lhc .lhtip span{display:inline-block;margin-right:6px;padding:3px 6px
 :root:root:root .lhc .lhtip{align-self:stretch;max-width:100%;margin-top:18px;padding:7px 12px 7px 7px;
   background:rgba(21,19,14,.66);font-size:12px;line-height:1.35}
 :root:root:root .lhc .lhtip{display:flex}
-:root:root:root .lhc .lhtip>span{align-self:center}
+:root:root:root .lhc .lhtip>.lhtag{align-self:center}
+
+
+/* ===== v390 fix: teks tips selalu membungkus dan tidak keluar dari kartu di layar kecil ===== */
+:root:root:root .lhc .lhtip{
+  display:flex;align-items:center;gap:10px;width:100%;max-width:100%;min-width:0;
+  white-space:normal;overflow:visible;box-sizing:border-box;
+}
+:root:root:root .lhc .lhtip .lhtag{flex:0 0 auto}
+:root:root:root .lhc .lhtip .lhtxt{
+  display:block;flex:1 1 0;min-width:0;max-width:100%;
+  white-space:normal;overflow-wrap:anywhere;word-break:normal;
+  line-height:1.4;text-align:left;
+}
+@media(max-width:380px){
+  :root:root:root .lhc .lhtip{gap:8px;padding-right:9px;font-size:11.5px}
+  :root:root:root .lhc .lhtip .lhtag{padding:5px 6px}
+}
+
+
+/* ===== v389 motion polish: interaksi lebih lentur, tetap ringan dan ramah sentuhan ===== */
+:root{--mt-ease:cubic-bezier(.22,1,.36,1)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  :root:root:root .lhc{transition:transform .42s var(--mt-ease),box-shadow .42s var(--mt-ease)}
+  :root:root:root .lhc:hover{transform:translateY(-2px);box-shadow:0 18px 34px -22px rgba(0,0,0,.55)}
+  :root:root:root .lhq{transition:transform .28s var(--mt-ease),box-shadow .28s var(--mt-ease),filter .28s ease}
+  :root:root:root .lhq:hover{transform:translateY(-5px) rotate(0deg) scale(1.025)!important;box-shadow:5px 7px 0 var(--sh)!important;filter:saturate(1.08)}
+  :root:root:root .lhq:hover span{transform:rotate(-8deg) scale(1.06)}
+  :root:root:root .lhq span{transition:transform .32s var(--mt-ease)}
+  :root:root:root .lhi button{transition:transform .28s var(--mt-ease),filter .2s ease,box-shadow .28s var(--mt-ease)}
+  :root:root:root .lhi button:hover{transform:translateY(-3px);filter:brightness(1.04);box-shadow:0 4px 0 var(--sh)}
+  :root:root:root #hot .hc{transition:transform .3s var(--mt-ease),box-shadow .3s var(--mt-ease),border-color .25s ease}
+  :root:root:root #hot .hc:hover{transform:translateY(-5px) scale(1.018);box-shadow:0 10px 22px -14px rgba(0,0,0,.5)!important}
+  :root:root:root #hot .hc .tri{transition:transform .35s var(--mt-ease)}
+  :root:root:root #hot .hc:hover .tri{transform:rotate(-8deg) scale(1.09)}
+  :root:root:root .nxg{transition:transform .32s var(--mt-ease),border-color .28s ease,box-shadow .32s var(--mt-ease)}
+  :root:root:root .nxg:hover{transform:translateY(-2px);box-shadow:6px 7px 0 var(--sh)!important}
+  :root:root:root .nxh{transition:background-color .28s ease,color .2s ease}
+  :root:root:root .nxi{transition:transform .38s var(--mt-ease),box-shadow .28s ease}
+  :root:root:root .nxg.open .nxi{transform:rotate(-8deg) scale(1.045)}
+  :root:root:root .nxc{transition:transform .32s var(--mt-ease)}
+  :root:root:root .nxg.open .nxc{transform:rotate(180deg)}
+  :root:root:root .nxb{transition:grid-template-rows .38s var(--mt-ease),opacity .32s ease}
+  :root:root:root .nxin .tr{transition:transform .26s var(--mt-ease),box-shadow .26s var(--mt-ease),background-color .22s ease,border-color .22s ease}
+  :root:root:root .nxin .tr:hover{transform:translateX(4px);box-shadow:0 5px 14px -12px rgba(0,0,0,.55);border-color:color-mix(in srgb,var(--tc) 55%,var(--bd))}
+  :root:root:root .nxin .tr .tri{transition:transform .32s var(--mt-ease)}
+  :root:root:root .nxin .tr:hover .tri{transform:rotate(-7deg) scale(1.08)}
+  :root:root:root .lhs{transition:transform .3s var(--mt-ease),border-color .25s ease,box-shadow .3s var(--mt-ease)}
+  :root:root:root .lhs:focus-within{transform:translateY(-2px);box-shadow:0 8px 20px -15px var(--ink)}
+  :root:root:root .lhabc span{transition:transform .25s var(--mt-ease),background-color .2s ease}
+  :root:root:root .lhabc span:hover{transform:translateY(-3px) rotate(-2deg)}
+}
+:root:root:root main.fade>*{animation:mtPageIn .42s var(--mt-ease) both}
+@keyframes mtPageIn{from{opacity:0;transform:translateY(12px) scale(.992)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media (prefers-reduced-motion:reduce){
+  :root:root:root main.fade>*{animation:none}
+  :root:root:root .lhc,:root:root:root .lhq,:root:root:root .lhi button,:root:root:root #hot .hc,:root:root:root .nxg,:root:root:root .nxh,:root:root:root .nxi,:root:root:root .nxc,:root:root:root .nxb,:root:root:root .nxin .tr,:root:root:root .lhs,:root:root:root .lhabc span{transition:none!important;transform:none!important}
+}
+
+
+/* ===== Malik Tools · Neo-Brutalism palette refresh ===== */
+:root{
+  --bg:#f5f0df;
+  --panel:#fffdf6;
+  --field:#fff9ec;
+  --bd:#171714;
+  --ink:#171714;
+  --muted:#625d50;
+  --on:#171714;
+  --ok:#171714;
+  --bad:#b83232;
+  --sh:#171714;
+  --dot:#ddd4bf;
+  --tc:#ffd23f;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#171714;
+  --panel:#24231f;
+  --field:#1d1c19;
+  --bd:#f5f0df;
+  --ink:#fffbed;
+  --muted:#c4bda9;
+  --on:#171714;
+  --ok:#ffd23f;
+  --bad:#ff7777;
+  --sh:#050505;
+  --dot:#302e27;
+  --tc:#ffd23f;
+  color-scheme:dark;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#171714;--panel:#24231f;--field:#1d1c19;
+    --bd:#f5f0df;--ink:#fffbed;--muted:#c4bda9;
+    --on:#171714;--ok:#ffd23f;--bad:#ff7777;
+    --sh:#050505;--dot:#302e27;--tc:#ffd23f;
+    color-scheme:dark;
+  }
+}
+/* Keep the interface to ink, warm paper and one confident yellow accent. */
+body{background-color:var(--bg)}
+.logo,.pill,.bar,.stat,.tile,.card .nm{border-color:var(--bd)}
+.pill,.bar,.stat,.hero2,.hero2:after{background-color:var(--tc)!important;color:#171714!important}
+.hero2{border:3px solid var(--bd)!important;box-shadow:6px 6px 0 var(--sh)!important}
+.hero2:after{border-color:var(--bd)!important}
+.hero2 .cta{background:#171714!important;color:#fffbed!important;border-color:#171714!important;box-shadow:3px 3px 0 var(--tc)!important}
+.card,.panel,.nxg,.nxin .nxr,.hc,.tr{background:var(--panel)!important;color:var(--ink)!important;border-color:var(--bd)!important}
+.card,.nxg,.hc,.tr{box-shadow:4px 4px 0 var(--sh)!important}
+.tile,.nxi,.hc .tri,.tr .tri{background:var(--tc)!important;color:#171714!important;border-color:var(--bd)!important;box-shadow:2px 2px 0 var(--sh)!important}
+.nxi svg,.hc .tri svg,.tr .tri svg{stroke:#171714!important}
+.nxg:before{background:var(--tc)!important}
+.lhq{background:var(--panel)!important;color:var(--ink)!important;border:3px solid var(--bd)!important;box-shadow:4px 4px 0 var(--sh)!important}
+.lhq b{color:var(--ink)!important}
+.lhq span{background:var(--tc)!important;color:#171714!important;border:2px solid var(--bd)!important;box-shadow:2px 2px 0 var(--sh)!important}
+.lhq span svg,.lhq span svg.i{stroke:#171714!important}
+.lhc .lht small,.lhc .lhtip .lhtag{background:var(--tc)!important;color:#171714!important}
+.lhc .lht h2 b{background:linear-gradient(transparent 80%,rgba(255,210,63,.95) 80% 92%,transparent 92%)!important}
+.ib,.logo{border-color:var(--bd)!important}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline-color:var(--tc)!important}
+::selection{background:var(--tc)!important;color:#171714!important}

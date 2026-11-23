@@ -43,7 +43,7 @@
   function startMotion(){
     var M=window.Motion;
     if(!M||typeof M.animate!=='function'||typeof M.inView!=='function')return;
-    var animate=M.animate,inView=M.inView,SEL='.tr,.card',n=0,reset=0;
+    var animate=M.animate,inView=M.inView,SEL='.lhc,.lhs,.lhq,.lhi,.lhab,#hot .hc,.nxg,.tr,.card',n=0,reset=0;
     var canHover=window.matchMedia&&matchMedia('(hover:hover)').matches;
 
     function reveal(el){
@@ -53,7 +53,7 @@
         // urutan masuk: elemen yang muncul di frame yang sama dikasih jeda bertahap (maks. 8)
         var i=Math.min(n++,8);
         if(!reset)reset=requestAnimationFrame(function(){n=0;reset=0});
-        var a=animate(el,{opacity:[0,1],y:[14,0]},{duration:.45,delay:i*.04,ease:'easeOut'});
+        var a=animate(el,{opacity:[0,1],y:[18,0],scale:[.985,1]},{duration:.58,delay:i*.055,ease:'easeOut'});
         var clear=function(){el.style.opacity='';el.style.transform=''};
         if(a&&a.then)a.then(clear,clear);
         setTimeout(function(){if(stop)stop()},0); // cukup sekali per elemen
@@ -61,11 +61,11 @@
       if(canHover){
         el.addEventListener('pointerenter',function(e){
           if(e.pointerType==='touch')return;
-          animate(el,{y:-3},{type:'spring',stiffness:420,damping:28});
+          animate(el,{y:-4,scale:1.012},{type:'spring',stiffness:360,damping:26});
         });
         el.addEventListener('pointerleave',function(e){
           if(e.pointerType==='touch')return;
-          var a=animate(el,{y:0},{type:'spring',stiffness:420,damping:30}),
+          var a=animate(el,{y:0,scale:1},{type:'spring',stiffness:360,damping:28}),
               clear=function(){el.style.transform=''};
           if(a&&a.then)a.then(clear,clear);
         });
