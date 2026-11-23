@@ -1,0 +1,6 @@
+{
+  "name": "Malik Tools",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "postCreateCommand": "npm install --no-audit --no-fund && npm run check && npm test",
+  "customizations": { "vscode": { "extensions": ["dbaeumer.vscode-eslint"] } }
+}
