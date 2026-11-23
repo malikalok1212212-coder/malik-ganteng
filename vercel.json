@@ -109,5 +109,11 @@
   "regions": [
     "sin1"
   ],
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/status",
+      "destination": "/api/presence?s=1"
+    }
+  ]
 }

@@ -6,6 +6,8 @@ const ZK = 'mt:pres:site', HK = 'mt:pres:tool', FK = 'mt:pres:feed', PK = 'mt:pr
 let cache = { at: 0, tools: [] };
 
 module.exports = async (req, res) => {
+  // /api/status dialihkan ke sini lewat vercel.json (batas 12 fungsi paket Hobby); logikanya ada di _status.js
+  if (req.query && req.query.s === '1') return require('./_status')(req, res);
   if (!guard(req, res)) return;
   res.setHeader('Cache-Control', 'no-store');
   if (!R.configured()) return res.status(200).json({ ok: false });

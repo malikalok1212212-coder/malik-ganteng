@@ -6,7 +6,7 @@ for (const f of fs.readdirSync(path.join(root, 'api')).filter((x) => x.endsWith(
   try { cp.execFileSync(process.execPath, ['--check', path.join(root, 'api', f)], { stdio: 'pipe' }); } catch (e) { fail('sintaks api/' + f); }
   const src = fs.readFileSync(path.join(root, 'api', f), 'utf8');
   if (f !== '_http.js' && /x-forwarded-for/i.test(src)) fail('api/' + f + ' memakai x-forwarded-for langsung (pakai clientIp dari _http.js)');
-  if (/module\.exports = async \(req, res\)/.test(src) && f !== 'cleanup.js' && f !== 'status.js' && !/guard\(req, res\)/.test(src)) fail('api/' + f + ' belum memanggil guard() (cek Origin)');
+  if (/module\.exports = async \(req, res\)/.test(src) && f !== 'cleanup.js' && f !== '_status.js' && !/guard\(req, res\)/.test(src)) fail('api/' + f + ' belum memanggil guard() (cek Origin)');
 }
 const html = fs.readFileSync(path.join(root, 'public', 'index.html'), 'utf8');
 [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].forEach((m, i) => {
