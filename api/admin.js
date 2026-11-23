@@ -367,6 +367,10 @@ module.exports = async (req, res) => {
     if (action === 'bcsend') { // kirim broadcast ke saluran dan/atau grup lewat bot; berjalan di bot, panel memantau progresnya
       if (await rate.limited('bcsend', me.sub || me.email, 5, 60)) return fail(429, 'Terlalu cepat. Tunggu sebentar sebelum kirim lagi.');
       const text = clip(body.text, 2000);
+      if (body.channel === true && body.force !== true) { // cegah teks yang pernah dianggap melanggar pedoman Saluran
+        const risk = require('./_bcsafe').check(text);
+        if (risk.length) return fail(422, 'Teks berisiko ditolak filter Saluran WhatsApp: ' + risk.join('; ') + '.');
+      }
       const mode = ['all', 'pick', 'none'].includes(body.mode) ? body.mode : 'none';
       const wantCh = body.channel === true;
       const ids = (a) => (Array.isArray(a) ? a : []).map(String).filter((x) => /^[0-9-]{5,40}@g\.us$/.test(x)).slice(0, 600);

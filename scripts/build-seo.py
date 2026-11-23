@@ -135,7 +135,7 @@ info_pages = [
 <h1>Tentang Malik Tools</h1>
 <p class="lead">Malik Tools adalah kumpulan tools gratis yang dipakai langsung dari browser di HP, tanpa memasang aplikasi.</p>
 <h2>Isinya</h2>
-<p>Saat ini ada {N} tool. Sebagian besar untuk mengunduh video dan audio (TikTok, Instagram, YouTube, MediaFire, SoundCloud, Dailymotion, Videy), membuat gambar dan video pendek (Brat, fake chat, quote card), dan mengolah gambar (hapus background, perbesar resolusi, konversi format). Ada juga QR Code, cek situs, screenshot website, suara dari teks, dan tool Alight Motion.</p>
+<p>Saat ini ada {N} tool. Sebagian besar untuk mengunduh video dan audio (TikTok, Instagram, YouTube, MediaFire, SoundCloud, Dailymotion), membuat gambar dan video pendek (Brat, fake chat, quote card), dan mengolah gambar (hapus background, perbesar resolusi, konversi format). Ada juga QR Code, cek situs, screenshot website, suara dari teks, dan tool Alight Motion.</p>
 <h2>Cara kerjanya</h2>
 <p>Kamu memasukkan tautan, teks, atau foto. Permintaan itu diproses lewat penyedia API pihak ketiga, lalu hasilnya dikirim ke browser kamu. Karena bergantung pada penyedia, sebuah tool kadang bisa gangguan. Saat itu terjadi, halaman tool menampilkan pesan gangguan sampai diaktifkan lagi.</p>
 <h2>Kenapa perlu masuk akun</h2>

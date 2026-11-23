@@ -256,19 +256,6 @@ function gcTiktok(raw) {
   return link ? { link, data } : null;
 }
 
-// ---- Videy Downloader (GenCipta /api/downloader/videy): data{ source_url, url, url2, type } ----
-function gcVidey(raw) {
-  if (!raw || typeof raw !== 'object') return null;
-  const d = raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data) ? raw.data : raw;
-  const u1 = isHttp(d.url) ? d.url : null, u2 = isHttp(d.url2) ? d.url2 : null;
-  const link = u1 || u2;
-  if (!link) return null;
-  const data = { video: link };
-  if (u2 && u2 !== link) data.video_cadangan = u2;
-  if (isHttp(d.source_url)) data.sumber = d.source_url;
-  return { link, data };
-}
-
 // ---- Dailymotion Downloader (GenCipta /api/downloader/dailymotion): data{ title, thumbnail, duration, qualities[{quality,url,type}] } ----
 function gcDailymotion(raw) {
   if (!raw || typeof raw !== 'object') return null;
@@ -1038,11 +1025,6 @@ module.exports = async (req, res) => {
       if (t.shape === 'gctiktok') {
         const x = gcTiktok(data);
         if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan video. Pastikan link TikTok publik, lalu coba lagi.', retry: true };
-        return { ok: true, link: x.link, data: x.data };
-      }
-      if (t.shape === 'gcvidey') {
-        const x = gcVidey(data);
-        if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan video. Pastikan link Videy benar dan video masih ada, lalu coba lagi.', retry: true };
         return { ok: true, link: x.link, data: x.data };
       }
       if (t.shape === 'gcdailymotion') {
