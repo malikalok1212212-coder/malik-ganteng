@@ -260,128 +260,128 @@ Object.assign(IC,{
  'bypass-cf':'<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><rect x="9.5" y="11" width="5" height="4" rx="1"/><path d="M10.5 11V9.5a1.5 1.5 0 0 1 3 0V11"/>'});
 IC.riwayat='<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>';
 const META={
- 'cek-prime':{c:'#5ce1e6',tab:'Prime',note:'GRATIS',lead:'Cek kalkulasi dan status point prime'},
- 'am-preset':{c:'#ff9f5a',tab:'Preset',note:'GRATIS',lead:'Ambil link preset AM dari komentar atau bio TikTok'},
- 'am-premium':{c:'#ff8cc6',note:'1 LIMIT',tab:'AM',lead:'Kirim email aktivasi, lalu verifikasi dengan link dari email'},
- 'am-premium2':{c:'#ff8cc6',note:'1 LIMIT',tab:'AM V2',lead:'Jalur V2: kirim email aktivasi, lalu verifikasi dengan link dari email'},
- 'am-verif':{c:'#ff8cc6',tab:'Verif',lead:'Tempel link dari email untuk aktivasi AM Premium'},
- 'am-send':{c:'#5ce1e6',tab:'Kirim',lead:'Kirim verifikasi/aktivasi akun AM Premium ke email'},
- 'magic-link':{c:'#ffd23f',note:'VIA API',tab:'Magic',lead:'Link login Alight Motion untuk sebuah akun'},
- 'cek-status':{c:'#5ce1e6',note:'VIA API',tab:'Status',lead:'Cek status premium dan masa berlakunya'},
- 'hapus-background':{c:'#5be59c',note:'GRATIS',tab:'BG',lead:'Foto jadi transparan, unggah file atau link'},
- 'bypass-link':{c:'#ff8cc6',note:'GRATIS',tab:'Bypass',lead:'Lewati Linkvertise, Safelink, dan link pendek lain'},
- 'react-channel':{c:'#ffd23f',note:'GRATIS',tab:'React',lead:'Kirim reaction emoji ke pesan channel WhatsApp'},
- 'aio-dl':{c:'#8a97ff',note:'GRATIS',tab:'AIO',lead:'Unduh video, audio, atau reels dari banyak platform'},
- 'am-premium':{c:'#ff8cc6',note:'1 LIMIT',tab:'AM',lead:'Kirim email verifikasi, lalu aktifkan Pro dengan link dari email'},
- 'am-premium2':{c:'#ff8cc6',note:'1 LIMIT',tab:'AM V2',lead:'Jalur V2: kirim email verifikasi, lalu aktifkan Pro dengan link dari email'},
- 'am-verif':{c:'#ff8cc6',tab:'Verif',lead:'Tempel link dari email untuk aktivasi AM Generator'},
- 'am-send':{c:'#5ce1e6',tab:'Kirim',lead:'Kirim email verifikasi Alight Motion'},
- 'ig-dl':{c:'#8a97ff',note:'GRATIS',tab:'Instagram',lead:'Foto, video, Reels, dan Carousel Instagram'},
- 'mediafire-dl':{c:'#8a97ff',note:'GRATIS',tab:'Mediafire',lead:'Link unduh langsung Mediafire beserta info file'},
- 'videy-dl':{c:'#8a97ff',note:'GRATIS',tab:'Videy',lead:'Video MP4 asli dari link share Videy.co'},
- 'dailymotion-dl':{c:'#8a97ff',note:'GRATIS',tab:'Dailymotion',lead:'Video Dailymotion pilihan kualitas sampai 1080p'},
- 'soundcloud-dl':{c:'#ff9f5a',note:'GRATIS',tab:'SoundCloud',lead:'Putar lagu SoundCloud lewat pemutar resmi'},
- 'youtube-dl':{c:'#8a97ff',note:'GRATIS',tab:'YouTube',lead:'Video dan audio YouTube, pilih kualitas'},
- 'tiktok-dl':{c:'#8a97ff',note:'GRATIS',tab:'TikTok',lead:'Video TikTok tanpa watermark, HD dan audio'},
- 'capcut-dl':{c:'#8a97ff',note:'GRATIS',tab:'CapCut',lead:'Video dan template CapCut tanpa watermark'},
- 'fb-dl':{c:'#8a97ff',note:'GRATIS',tab:'Facebook',lead:'Video Facebook publik kualitas SD/HD'},
- 'ig-dl':{c:'#8a97ff',note:'GRATIS',tab:'Instagram',lead:'Foto, video, Reels, dan Carousel Instagram'},
- 'mediafire-dl':{c:'#8a97ff',note:'GRATIS',tab:'Mediafire',lead:'Link unduh langsung Mediafire beserta info file'},
- 'videy-dl':{c:'#8a97ff',note:'GRATIS',tab:'Videy',lead:'Video MP4 asli dari link share Videy.co'},
- 'dailymotion-dl':{c:'#8a97ff',note:'GRATIS',tab:'Dailymotion',lead:'Video Dailymotion pilihan kualitas sampai 1080p'},
- 'soundcloud-dl':{c:'#ff9f5a',note:'GRATIS',tab:'SoundCloud',lead:'Putar lagu SoundCloud lewat pemutar resmi'},
- 'spotify-play':{c:'#5be59c',note:'GRATIS',tab:'Spotify',lead:'Cari lagu Spotify, putar dan unduh MP3'},
- 'igqc':{c:'#ff8cc6',note:'GRATIS',tab:'IGQC',lead:'Mockup menu pesan Instagram dengan pesan, gambar, dan bar reaksi'},
- 'carbon':{c:'#ff9f5a',note:'GRATIS',tab:'Carbon',lead:'Ubah kode jadi gambar bergaya Carbon'},
- 'jarvis-meme':{c:'#ff9f5a',note:'GRATIS',tab:'Jarvis',lead:'Meme Jarvis dengan teks sendiri yang otomatis menyesuaikan ukuran'},
+ 'cek-prime':{c:'#5cd0d8',tab:'Prime',note:'GRATIS',lead:'Cek kalkulasi dan status point prime'},
+ 'am-preset':{c:'#ff9a4d',tab:'Preset',note:'GRATIS',lead:'Ambil link preset AM dari komentar atau bio TikTok'},
+ 'am-premium':{c:'#ff8fb8',note:'1 LIMIT',tab:'AM',lead:'Kirim email aktivasi, lalu verifikasi dengan link dari email'},
+ 'am-premium2':{c:'#ff8fb8',note:'1 LIMIT',tab:'AM V2',lead:'Jalur V2: kirim email aktivasi, lalu verifikasi dengan link dari email'},
+ 'am-verif':{c:'#ff8fb8',tab:'Verif',lead:'Tempel link dari email untuk aktivasi AM Premium'},
+ 'am-send':{c:'#5cd0d8',tab:'Kirim',lead:'Kirim verifikasi/aktivasi akun AM Premium ke email'},
+ 'magic-link':{c:'#ffc83d',note:'VIA API',tab:'Magic',lead:'Link login Alight Motion untuk sebuah akun'},
+ 'cek-status':{c:'#5cd0d8',note:'VIA API',tab:'Status',lead:'Cek status premium dan masa berlakunya'},
+ 'hapus-background':{c:'#4fd69a',note:'GRATIS',tab:'BG',lead:'Foto jadi transparan, unggah file atau link'},
+ 'bypass-link':{c:'#ff8fb8',note:'GRATIS',tab:'Bypass',lead:'Lewati Linkvertise, Safelink, dan link pendek lain'},
+ 'react-channel':{c:'#ffc83d',note:'GRATIS',tab:'React',lead:'Kirim reaction emoji ke pesan channel WhatsApp'},
+ 'aio-dl':{c:'#8f9aff',note:'GRATIS',tab:'AIO',lead:'Unduh video, audio, atau reels dari banyak platform'},
+ 'am-premium':{c:'#ff8fb8',note:'1 LIMIT',tab:'AM',lead:'Kirim email verifikasi, lalu aktifkan Pro dengan link dari email'},
+ 'am-premium2':{c:'#ff8fb8',note:'1 LIMIT',tab:'AM V2',lead:'Jalur V2: kirim email verifikasi, lalu aktifkan Pro dengan link dari email'},
+ 'am-verif':{c:'#ff8fb8',tab:'Verif',lead:'Tempel link dari email untuk aktivasi AM Generator'},
+ 'am-send':{c:'#5cd0d8',tab:'Kirim',lead:'Kirim email verifikasi Alight Motion'},
+ 'ig-dl':{c:'#8f9aff',note:'GRATIS',tab:'Instagram',lead:'Foto, video, Reels, dan Carousel Instagram'},
+ 'mediafire-dl':{c:'#8f9aff',note:'GRATIS',tab:'Mediafire',lead:'Link unduh langsung Mediafire beserta info file'},
+ 'videy-dl':{c:'#8f9aff',note:'GRATIS',tab:'Videy',lead:'Video MP4 asli dari link share Videy.co'},
+ 'dailymotion-dl':{c:'#8f9aff',note:'GRATIS',tab:'Dailymotion',lead:'Video Dailymotion pilihan kualitas sampai 1080p'},
+ 'soundcloud-dl':{c:'#ff9a4d',note:'GRATIS',tab:'SoundCloud',lead:'Putar lagu SoundCloud lewat pemutar resmi'},
+ 'youtube-dl':{c:'#8f9aff',note:'GRATIS',tab:'YouTube',lead:'Video dan audio YouTube, pilih kualitas'},
+ 'tiktok-dl':{c:'#8f9aff',note:'GRATIS',tab:'TikTok',lead:'Video TikTok tanpa watermark, HD dan audio'},
+ 'capcut-dl':{c:'#8f9aff',note:'GRATIS',tab:'CapCut',lead:'Video dan template CapCut tanpa watermark'},
+ 'fb-dl':{c:'#8f9aff',note:'GRATIS',tab:'Facebook',lead:'Video Facebook publik kualitas SD/HD'},
+ 'ig-dl':{c:'#8f9aff',note:'GRATIS',tab:'Instagram',lead:'Foto, video, Reels, dan Carousel Instagram'},
+ 'mediafire-dl':{c:'#8f9aff',note:'GRATIS',tab:'Mediafire',lead:'Link unduh langsung Mediafire beserta info file'},
+ 'videy-dl':{c:'#8f9aff',note:'GRATIS',tab:'Videy',lead:'Video MP4 asli dari link share Videy.co'},
+ 'dailymotion-dl':{c:'#8f9aff',note:'GRATIS',tab:'Dailymotion',lead:'Video Dailymotion pilihan kualitas sampai 1080p'},
+ 'soundcloud-dl':{c:'#ff9a4d',note:'GRATIS',tab:'SoundCloud',lead:'Putar lagu SoundCloud lewat pemutar resmi'},
+ 'spotify-play':{c:'#4fd69a',note:'GRATIS',tab:'Spotify',lead:'Cari lagu Spotify, putar dan unduh MP3'},
+ 'igqc':{c:'#ff8fb8',note:'GRATIS',tab:'IGQC',lead:'Mockup menu pesan Instagram dengan pesan, gambar, dan bar reaksi'},
+ 'carbon':{c:'#ff9a4d',note:'GRATIS',tab:'Carbon',lead:'Ubah kode jadi gambar bergaya Carbon'},
+ 'jarvis-meme':{c:'#ff9a4d',note:'GRATIS',tab:'Jarvis',lead:'Meme Jarvis dengan teks sendiri yang otomatis menyesuaikan ukuran'},
  'fake-channel':{c:'#25d366',note:'GRATIS',tab:'Saluran',lead:'Mockup Info Saluran WhatsApp iOS dengan foto, nama, dan pengikut'},
- 'bratvid':{c:'#5be59c',note:'GRATIS',tab:'BratVid',lead:'Video teks gaya Brat dengan warna latar dan teks pilihan'},
- 'brat-v1':{c:'#5be59c',note:'GRATIS',tab:'Brat',lead:'Gambar teks gaya Brat dengan warna latar dan teks pilihan'},
- 'iqc-dark':{c:'#ff9f5a',note:'GRATIS',tab:'IQC',lead:'Kartu kutipan chat tema gelap dengan gambar dan waktu'},
- 'duar-viral':{c:'#ff9f5a',note:'GRATIS',tab:'Duar',lead:'Tempel fotomu ke latar ledakan api ala meme viral'},
- 'quote-card':{c:'#ff9f5a',note:'GRATIS',tab:'Quote',lead:'Kartu kutipan ala status WA/IG dengan teks sendiri'},
+ 'bratvid':{c:'#4fd69a',note:'GRATIS',tab:'BratVid',lead:'Video teks gaya Brat dengan warna latar dan teks pilihan'},
+ 'brat-v1':{c:'#4fd69a',note:'GRATIS',tab:'Brat',lead:'Gambar teks gaya Brat dengan warna latar dan teks pilihan'},
+ 'iqc-dark':{c:'#ff9a4d',note:'GRATIS',tab:'IQC',lead:'Kartu kutipan chat tema gelap dengan gambar dan waktu'},
+ 'duar-viral':{c:'#ff9a4d',note:'GRATIS',tab:'Duar',lead:'Tempel fotomu ke latar ledakan api ala meme viral'},
+ 'quote-card':{c:'#ff9a4d',note:'GRATIS',tab:'Quote',lead:'Kartu kutipan ala status WA/IG dengan teks sendiri'},
  'fake-call':{c:'#25d366',note:'GRATIS',tab:'Call',lead:'Mockup layar panggilan WhatsApp iOS dengan foto, nama, dan durasi'},
- 'tiktok-stalker':{c:'#8a97ff',note:'GRATIS',tab:'Stalker',lead:'Lihat detail profil akun TikTok dari username'},
+ 'tiktok-stalker':{c:'#8f9aff',note:'GRATIS',tab:'Stalker',lead:'Lihat detail profil akun TikTok dari username'},
  'netflix-token':{c:'#ff5d6c',note:'GRATIS',tab:'Netflix',lead:'Buat token Netflix untuk negara pilihanmu'},
- 'wink':{c:'#ff8cc6',note:'GRATIS',tab:'Wink',lead:'Animasikan foto wajah jadi kedipan mata dengan AI'},
- 'hd-gambar':{c:'#8a97ff',note:'GRATIS',tab:'HD',lead:'Perjelas dan perbesar resolusi foto dengan AI'},
- 'open-graph':{c:'#5ce1e6',note:'GRATIS',tab:'OG',lead:'Judul, deskripsi, dan gambar pratinjau dari link situs'},
- 'cek-situs':{c:'#5be59c',note:'GRATIS',tab:'Cek Situs',lead:'Status online, waktu respons, redirect, dan SSL'},
- 'konversi-gambar':{c:'#ff9f5a',note:'GRATIS',tab:'Konversi',lead:'Ubah format dan kecilkan ukuran gambar di perangkatmu'},
- 'am-data':{c:'#ff8cc6',note:'GRATIS',tab:'AM Data',lead:'Metadata proyek, UID, dan PID dari link share Alight Motion'},
- 'am-find':{c:'#ff8cc6',note:'GRATIS',tab:'AM Find',lead:'Cari link preset Alight Motion di komentar video TikTok'},
- 'getcontact-start':{c:'#5ce1e6',note:'GRATIS',tab:'GetContact',lead:'Mulai verifikasi GetContact lewat WhatsApp'},
- 'tts-google':{c:'#5be59c',note:'GRATIS',tab:'TTS',lead:'Ubah teks jadi suara natural dengan Gemini, hasil MP3'},
- 'ssweb':{c:'#5ce1e6',note:'GRATIS',tab:'SS Web',lead:'Screenshot situs web dengan tampilan PC, Tablet, atau Android'},
- 'qr-code':{c:'#5be59c',note:'GRATIS',tab:'QR',lead:'Ubah link atau teks jadi QR Code PNG'},
- 'rch':{c:'#ffd23f',note:'3 LIMIT',tab:'Reaksi',lead:'Kirim reaksi emoji ke postingan channel WhatsApp'},
- 'rch2':{c:'#ffd23f',note:'3 LIMIT',tab:'Reaksi V2',lead:'Kirim reaksi emoji ke postingan channel WhatsApp'},
- 'rch3':{c:'#ffd23f',note:'3 LIMIT',tab:'Reaksi V3',lead:'Kirim reaksi emoji ke postingan channel WhatsApp'},
- 'upscale':{c:'#8a97ff',note:'GRATIS',tab:'HD',lead:'Perbesar dan perjelas gambar 2x dengan AI'},
- 'swhd':{c:'#8a97ff',note:'GRATIS',tab:'HD',lead:'Jernihkan foto atau video jadi HD dengan AI'},
- 'image-to-prompt':{c:'#5ce1e6',note:'GRATIS',tab:'Prompt',lead:'Ubah gambar jadi prompt AI yang detail'},
- 'bypass-cf':{c:'#ffd23f',note:'GRATIS',tab:'Turnstile',lead:'Token Cloudflare Turnstile untuk sebuah situs'},
+ 'wink':{c:'#ff8fb8',note:'GRATIS',tab:'Wink',lead:'Animasikan foto wajah jadi kedipan mata dengan AI'},
+ 'hd-gambar':{c:'#8f9aff',note:'GRATIS',tab:'HD',lead:'Perjelas dan perbesar resolusi foto dengan AI'},
+ 'open-graph':{c:'#5cd0d8',note:'GRATIS',tab:'OG',lead:'Judul, deskripsi, dan gambar pratinjau dari link situs'},
+ 'cek-situs':{c:'#4fd69a',note:'GRATIS',tab:'Cek Situs',lead:'Status online, waktu respons, redirect, dan SSL'},
+ 'konversi-gambar':{c:'#ff9a4d',note:'GRATIS',tab:'Konversi',lead:'Ubah format dan kecilkan ukuran gambar di perangkatmu'},
+ 'am-data':{c:'#ff8fb8',note:'GRATIS',tab:'AM Data',lead:'Metadata proyek, UID, dan PID dari link share Alight Motion'},
+ 'am-find':{c:'#ff8fb8',note:'GRATIS',tab:'AM Find',lead:'Cari link preset Alight Motion di komentar video TikTok'},
+ 'getcontact-start':{c:'#5cd0d8',note:'GRATIS',tab:'GetContact',lead:'Mulai verifikasi GetContact lewat WhatsApp'},
+ 'tts-google':{c:'#4fd69a',note:'GRATIS',tab:'TTS',lead:'Ubah teks jadi suara natural dengan Gemini, hasil MP3'},
+ 'ssweb':{c:'#5cd0d8',note:'GRATIS',tab:'SS Web',lead:'Screenshot situs web dengan tampilan PC, Tablet, atau Android'},
+ 'qr-code':{c:'#4fd69a',note:'GRATIS',tab:'QR',lead:'Ubah link atau teks jadi QR Code PNG'},
+ 'rch':{c:'#ffc83d',note:'3 LIMIT',tab:'Reaksi',lead:'Kirim reaksi emoji ke postingan channel WhatsApp'},
+ 'rch2':{c:'#ffc83d',note:'3 LIMIT',tab:'Reaksi V2',lead:'Kirim reaksi emoji ke postingan channel WhatsApp'},
+ 'rch3':{c:'#ffc83d',note:'3 LIMIT',tab:'Reaksi V3',lead:'Kirim reaksi emoji ke postingan channel WhatsApp'},
+ 'upscale':{c:'#8f9aff',note:'GRATIS',tab:'HD',lead:'Perbesar dan perjelas gambar 2x dengan AI'},
+ 'swhd':{c:'#8f9aff',note:'GRATIS',tab:'HD',lead:'Jernihkan foto atau video jadi HD dengan AI'},
+ 'image-to-prompt':{c:'#5cd0d8',note:'GRATIS',tab:'Prompt',lead:'Ubah gambar jadi prompt AI yang detail'},
+ 'bypass-cf':{c:'#ffc83d',note:'GRATIS',tab:'Turnstile',lead:'Token Cloudflare Turnstile untuk sebuah situs'},
  'link-wa':{c:'#25d366',note:'DI BROWSER',tab:'WA',lead:'Link chat WhatsApp dengan pesan yang sudah terisi'}};
 IC.owner='<path d="M4 19h16M4 8l4 4 4-7 4 7 4-4-2 11H6z"/>';IC.chat=IC.feedback||IC.go;IC.role=IC.owner;IC.custom=IC.go;
-META['kompres-gambar']={c:'#ff9f5a',note:'GRATIS',tab:'Kompres',lead:'Kecilkan foto sampai di bawah batas KB yang kamu mau'};
-META['kalkulator-cicilan']={c:'#5be59c',note:'GRATIS',tab:'Cicilan',lead:'Hitung cicilan KPR, kendaraan, atau pinjaman'};
-META['generator-password']={c:'#8a97ff',note:'GRATIS',tab:'Password',lead:'Buat password acak yang kuat di perangkatmu'};
-META['pengubah-satuan']={c:'#5ce1e6',note:'GRATIS',tab:'Satuan',lead:'Ubah satuan panjang, berat, suhu, dan lainnya'};
-META['hitung-kata']={c:'#ffd23f',note:'GRATIS',tab:'Kata',lead:'Hitung kata, karakter, dan waktu baca teks'};
+META['kompres-gambar']={c:'#ff9a4d',note:'GRATIS',tab:'Kompres',lead:'Kecilkan foto sampai di bawah batas KB yang kamu mau'};
+META['kalkulator-cicilan']={c:'#4fd69a',note:'GRATIS',tab:'Cicilan',lead:'Hitung cicilan KPR, kendaraan, atau pinjaman'};
+META['generator-password']={c:'#8f9aff',note:'GRATIS',tab:'Password',lead:'Buat password acak yang kuat di perangkatmu'};
+META['pengubah-satuan']={c:'#5cd0d8',note:'GRATIS',tab:'Satuan',lead:'Ubah satuan panjang, berat, suhu, dan lainnya'};
+META['hitung-kata']={c:'#ffc83d',note:'GRATIS',tab:'Kata',lead:'Hitung kata, karakter, dan waktu baca teks'};
 Object.assign(IC,{'kompres-gambar':'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 12l3 3 5-6"/>','kalkulator-cicilan':'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/>','generator-password':'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>','pengubah-satuan':'<path d="M4 8h14l-4-4M20 16H6l4 4"/>','hitung-kata':'<path d="M4 6h16M4 12h10M4 18h14"/>'});
-META['kalkulator-zakat']={c:'#5be59c',note:'GRATIS',tab:'Zakat',lead:'Hitung zakat penghasilan, maal, dan emas'};
-META['tanda-tangan']={c:'#8a97ff',note:'GRATIS',tab:'TTD',lead:'Gambar tanda tangan, unduh PNG transparan'};
-META['kalkulator-umur']={c:'#ff9f5a',note:'GRATIS',tab:'Umur',lead:'Hitung umur tepat dan ulang tahun berikutnya'};
-META['kalkulator-diskon']={c:'#ffd23f',note:'GRATIS',tab:'Diskon',lead:'Harga akhir setelah diskon dan PPN 11%'};
+META['kalkulator-zakat']={c:'#4fd69a',note:'GRATIS',tab:'Zakat',lead:'Hitung zakat penghasilan, maal, dan emas'};
+META['tanda-tangan']={c:'#8f9aff',note:'GRATIS',tab:'TTD',lead:'Gambar tanda tangan, unduh PNG transparan'};
+META['kalkulator-umur']={c:'#ff9a4d',note:'GRATIS',tab:'Umur',lead:'Hitung umur tepat dan ulang tahun berikutnya'};
+META['kalkulator-diskon']={c:'#ffc83d',note:'GRATIS',tab:'Diskon',lead:'Harga akhir setelah diskon dan PPN 11%'};
 Object.assign(IC,{'kalkulator-zakat':'<path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/>','tanda-tangan':'<path d="M3 17c3-6 5-9 7-9s0 8 3 8 3-5 5-5 2 3 3 3"/><path d="M3 21h18"/>','kalkulator-umur':'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>','kalkulator-diskon':'<path d="M5 19L19 5"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/>'});
-META['kalkulator-bmi']={c:'#5be59c',note:'GRATIS',tab:'BMI',lead:'Hitung BMI dan rentang berat badan normal'};
-META['split-bill']={c:'#ff9f5a',note:'GRATIS',tab:'Patungan',lead:'Bagi tagihan ke beberapa orang, termasuk pajak'};
-META['nomor-acak']={c:'#8a97ff',note:'GRATIS',tab:'Acak',lead:'Acak angka atau undi pemenang dari daftar nama'};
-META['daftar-tugas']={c:'#5ce1e6',note:'GRATIS',tab:'Tugas',lead:'Catat tugas dan daftar belanja di browser'};
+META['kalkulator-bmi']={c:'#4fd69a',note:'GRATIS',tab:'BMI',lead:'Hitung BMI dan rentang berat badan normal'};
+META['split-bill']={c:'#ff9a4d',note:'GRATIS',tab:'Patungan',lead:'Bagi tagihan ke beberapa orang, termasuk pajak'};
+META['nomor-acak']={c:'#8f9aff',note:'GRATIS',tab:'Acak',lead:'Acak angka atau undi pemenang dari daftar nama'};
+META['daftar-tugas']={c:'#5cd0d8',note:'GRATIS',tab:'Tugas',lead:'Catat tugas dan daftar belanja di browser'};
 Object.assign(IC,{'kalkulator-bmi':'<path d="M12 4v16M5 20h14"/><path d="M6 9l6-3 6 3"/><path d="M4 14h4M16 14h4"/>','split-bill':'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/>','nomor-acak':'<rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/><circle cx="12" cy="12" r="1"/>','daftar-tugas':'<path d="M5 7l2 2 3-4M5 16l2 2 3-4M13 8h6M13 17h6"/>'});
-META['kode-warna']={c:'#ff8cc6',note:'GRATIS',tab:'Warna',lead:'Kode HEX, RGB, HSL, dan palet warna serasi'};
-META['hitung-hari']={c:'#5ce1e6',note:'GRATIS',tab:'Hari',lead:'Selisih hari antar tanggal dan tambah hari'};
-META['pembersih-teks']={c:'#5be59c',note:'GRATIS',tab:'Teks',lead:'Hapus baris kosong, duplikat, dan emoji sekali klik'};
-META['kalkulator-kalori']={c:'#ff9f5a',note:'GRATIS',tab:'Kalori',lead:'Perkiraan kebutuhan kalori harian (BMR dan TDEE)'};
+META['kode-warna']={c:'#ff8fb8',note:'GRATIS',tab:'Warna',lead:'Kode HEX, RGB, HSL, dan palet warna serasi'};
+META['hitung-hari']={c:'#5cd0d8',note:'GRATIS',tab:'Hari',lead:'Selisih hari antar tanggal dan tambah hari'};
+META['pembersih-teks']={c:'#4fd69a',note:'GRATIS',tab:'Teks',lead:'Hapus baris kosong, duplikat, dan emoji sekali klik'};
+META['kalkulator-kalori']={c:'#ff9a4d',note:'GRATIS',tab:'Kalori',lead:'Perkiraan kebutuhan kalori harian (BMR dan TDEE)'};
 Object.assign(IC,{'kode-warna':'<path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2s-1-1.5-1-2.5 1-1.5 2-1.5h2a3 3 0 0 0 3-3c0-5-3.5-9-8-9z"/><circle cx="8" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="11" r="1"/>','hitung-hari':'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M8 14h3M13 14h3M8 17h3"/>','pembersih-teks':'<path d="M5 6h14M5 12h9M5 18h6"/><path d="M16 15l4 4M20 15l-4 4"/>','kalkulator-kalori':'<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 .3 1.5 1 2 2 2-1-3-.5-5 1-8z"/>'});
-META['json-formatter']={c:'#ffd23f',note:'GRATIS',tab:'JSON',lead:'Rapikan, padatkan, dan cek JSON valid'};
-META['encode-decode']={c:'#5ce1e6',note:'GRATIS',tab:'Encode',lead:'Base64 dan URL encode atau decode teks'};
-META['generator-hash']={c:'#8a97ff',note:'GRATIS',tab:'Hash',lead:'Hash SHA-256 dan lainnya dari teks atau file'};
-META['konversi-timestamp']={c:'#5ce1e6',note:'GRATIS',tab:'Timestamp',lead:'Unix timestamp ke tanggal dan sebaliknya'};
-META['angka-terbilang']={c:'#5be59c',note:'GRATIS',tab:'Terbilang',lead:'Ubah angka jadi tulisan untuk kwitansi'};
+META['json-formatter']={c:'#ffc83d',note:'GRATIS',tab:'JSON',lead:'Rapikan, padatkan, dan cek JSON valid'};
+META['encode-decode']={c:'#5cd0d8',note:'GRATIS',tab:'Encode',lead:'Base64 dan URL encode atau decode teks'};
+META['generator-hash']={c:'#8f9aff',note:'GRATIS',tab:'Hash',lead:'Hash SHA-256 dan lainnya dari teks atau file'};
+META['konversi-timestamp']={c:'#5cd0d8',note:'GRATIS',tab:'Timestamp',lead:'Unix timestamp ke tanggal dan sebaliknya'};
+META['angka-terbilang']={c:'#4fd69a',note:'GRATIS',tab:'Terbilang',lead:'Ubah angka jadi tulisan untuk kwitansi'};
 Object.assign(IC,{'json-formatter':'<path d="M8 4c-2 0-3 1-3 3v2c0 1-1 3-2 3 1 0 2 2 2 3v2c0 2 1 3 3 3M16 4c2 0 3 1 3 3v2c0 1 1 3 2 3-1 0-2 2-2 3v2c0 2-1 3-3 3"/>','encode-decode':'<path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/>','generator-hash':'<path d="M5 9h14M5 15h14M10 4L8 20M16 4l-2 16"/>','konversi-timestamp':'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>','angka-terbilang':'<path d="M4 6h16M4 12h10M4 18h7"/><path d="M16 17l2 2 4-5"/>'});
 Object.assign(IC,{'meme-maker':'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M8 16h8"/>','sticker-wa':'<path d="M5 4h9l5 5v9a2 2 0 0 1-2 2H5z"/><path d="M14 4v5h5"/><circle cx="10" cy="14" r="2.500"/>','watermark-foto':'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 16l4-8 4 8M9.500 13h5"/>','avatar-bulat':'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.500 18c1.200-2.500 3-3.500 5.500-3.500s4.300 1 5.500 3.500"/>','story-teks':'<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M10 9h4M10 12h4M10 15h2"/>'});
-META['meme-maker']={c:'#ff9f5a',note:'GRATIS',tab:'Meme',lead:'Teks atas dan bawah di foto, gaya meme klasik'};
-META['sticker-wa']={c:'#ff9f5a',note:'GRATIS',tab:'Stiker',lead:'Foto jadi stiker 512 px transparan'};
-META['watermark-foto']={c:'#ff9f5a',note:'GRATIS',tab:'Watermark',lead:'Tempel teks watermark di foto'};
-META['avatar-bulat']={c:'#ff9f5a',note:'GRATIS',tab:'Avatar',lead:'Foto profil bulat dengan bingkai'};
-META['kalkulator-persen']={c:'#ffd23f',note:'GRATIS',tab:'Persen',lead:'Hitung persen, kenaikan, dan penurunan'};
-META['konversi-huruf']={c:'#8a97ff',note:'GRATIS',tab:'Huruf',lead:'Besar, kecil, camelCase, snake_case, slug, dan aLaY'};
-META['timer-pomodoro']={c:'#ff9f5a',note:'GRATIS',tab:'Timer',lead:'Fokus 25 menit, istirahat 5 menit'};
-META['gradient-maker']={c:'#ff9f5a',note:'GRATIS',tab:'Gradasi',lead:'Wallpaper gradasi dua warna, unduh PNG'};
-META['putar-foto']={c:'#ff9f5a',note:'GRATIS',tab:'Putar',lead:'Putar dan balik foto, unduh hasilnya'};
-META['angka-romawi']={c:'#ffd23f',note:'GRATIS',tab:'Romawi',lead:'Angka biasa ke Romawi dan sebaliknya'};
-META['kalkulator-tabungan']={c:'#5be59c',note:'GRATIS',tab:'Tabungan',lead:'Hitung bunga majemuk dan hasil menabung'};
-META['generator-uuid']={c:'#8a97ff',note:'GRATIS',tab:'UUID',lead:'Buat UUID v4 acak, satu atau banyak'};
-META['stopwatch']={c:'#ff9f5a',note:'GRATIS',tab:'Stopwatch',lead:'Stopwatch dengan putaran dan salin waktu'};
-META['bandingkan-teks']={c:'#5ce1e6',note:'GRATIS',tab:'Banding',lead:'Lihat beda dua teks baris demi baris'};
-META['cek-kontras']={c:'#ff8cc6',note:'GRATIS',tab:'Kontras',lead:'Cek rasio kontras WCAG teks dan latar'};
-META['filter-foto']={c:'#ff9f5a',note:'GRATIS',tab:'Filter',lead:'Kecerahan, kontras, saturasi, hitam putih, sepia'};
-META['kolase-foto']={c:'#ff9f5a',note:'GRATIS',tab:'Kolase',lead:'Gabungkan 2 sampai 4 foto jadi satu'};
+META['meme-maker']={c:'#ff9a4d',note:'GRATIS',tab:'Meme',lead:'Teks atas dan bawah di foto, gaya meme klasik'};
+META['sticker-wa']={c:'#ff9a4d',note:'GRATIS',tab:'Stiker',lead:'Foto jadi stiker 512 px transparan'};
+META['watermark-foto']={c:'#ff9a4d',note:'GRATIS',tab:'Watermark',lead:'Tempel teks watermark di foto'};
+META['avatar-bulat']={c:'#ff9a4d',note:'GRATIS',tab:'Avatar',lead:'Foto profil bulat dengan bingkai'};
+META['kalkulator-persen']={c:'#ffc83d',note:'GRATIS',tab:'Persen',lead:'Hitung persen, kenaikan, dan penurunan'};
+META['konversi-huruf']={c:'#8f9aff',note:'GRATIS',tab:'Huruf',lead:'Besar, kecil, camelCase, snake_case, slug, dan aLaY'};
+META['timer-pomodoro']={c:'#ff9a4d',note:'GRATIS',tab:'Timer',lead:'Fokus 25 menit, istirahat 5 menit'};
+META['gradient-maker']={c:'#ff9a4d',note:'GRATIS',tab:'Gradasi',lead:'Wallpaper gradasi dua warna, unduh PNG'};
+META['putar-foto']={c:'#ff9a4d',note:'GRATIS',tab:'Putar',lead:'Putar dan balik foto, unduh hasilnya'};
+META['angka-romawi']={c:'#ffc83d',note:'GRATIS',tab:'Romawi',lead:'Angka biasa ke Romawi dan sebaliknya'};
+META['kalkulator-tabungan']={c:'#4fd69a',note:'GRATIS',tab:'Tabungan',lead:'Hitung bunga majemuk dan hasil menabung'};
+META['generator-uuid']={c:'#8f9aff',note:'GRATIS',tab:'UUID',lead:'Buat UUID v4 acak, satu atau banyak'};
+META['stopwatch']={c:'#ff9a4d',note:'GRATIS',tab:'Stopwatch',lead:'Stopwatch dengan putaran dan salin waktu'};
+META['bandingkan-teks']={c:'#5cd0d8',note:'GRATIS',tab:'Banding',lead:'Lihat beda dua teks baris demi baris'};
+META['cek-kontras']={c:'#ff8fb8',note:'GRATIS',tab:'Kontras',lead:'Cek rasio kontras WCAG teks dan latar'};
+META['filter-foto']={c:'#ff9a4d',note:'GRATIS',tab:'Filter',lead:'Kecerahan, kontras, saturasi, hitam putih, sepia'};
+META['kolase-foto']={c:'#ff9a4d',note:'GRATIS',tab:'Kolase',lead:'Gabungkan 2 sampai 4 foto jadi satu'};
 Object.assign(IC,{'angka-romawi':'<path d="M6 5v14M12 5l-3 14M12 5l3 14M18 5v14"/>','kalkulator-tabungan':'<path d="M4 18h16"/><path d="M6 15l4-4 3 3 5-6"/><path d="M15 8h3v3"/>','generator-uuid':'<rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10v4M12 10v4M16 10v4"/>','stopwatch':'<circle cx="12" cy="13" r="7"/><path d="M12 13V9M9.5 3h5M18 6l1.5-1.5"/>','bandingkan-teks':'<path d="M5 6h6v12H5zM13 6h6v12h-6z"/><path d="M7 10h2M15 10h2M15 14h2"/>','cek-kontras':'<circle cx="12" cy="12" r="8"/><path d="M12 4v16"/><path d="M12 4a8 8 0 010 16z" fill="currentColor"/>','filter-foto':'<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 15l5-4 4 3 3-2 4 3"/><circle cx="9" cy="9" r="1"/>','kolase-foto':'<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="16" height="7" rx="1"/>'});
 Object.assign(IC,{'kalkulator-persen':'<path d="M6 18L18 6"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/>','konversi-huruf':'<path d="M4 18l4-12 4 12M5.5 14h5"/><path d="M15 9h5M17.5 9v9"/>','timer-pomodoro':'<circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M9.5 3h5"/>','gradient-maker':'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 16l6-6 4 4 6-6"/>','putar-foto':'<rect x="5" y="7" width="14" height="10" rx="2"/><path d="M4 4v4h4M20 20v-4h-4"/>'});
-META['story-teks']={c:'#ff9f5a',note:'GRATIS',tab:'Story',lead:'Teks di latar gradasi untuk story dan status'};
+META['story-teks']={c:'#ff9a4d',note:'GRATIS',tab:'Story',lead:'Teks di latar gradasi untuk story dan status'};
 const CAT={'rch':'tools','rch2':'tools','rch3':'tools','am-premium':'am','am-premium2':'am','cek-prime':'tools','hapus-background':'tools','hd-gambar':'tools','swhd':'tools','wink':'tools','netflix-token':'tools','tiktok-stalker':'tools','am-preset':'tools','igqc':'canvas','carbon':'canvas','jarvis-meme':'canvas','fake-channel':'canvas','bratvid':'canvas','brat-v1':'canvas','iqc-dark':'canvas','duar-viral':'canvas','quote-card':'canvas','fake-call':'canvas','meme-maker':'canvas','sticker-wa':'canvas','watermark-foto':'canvas','avatar-bulat':'canvas','story-teks':'canvas','aio-dl':'dl','tiktok-dl':'dl','videy-dl':'dl','dailymotion-dl':'dl','soundcloud-dl':'dl','youtube-dl':'dl','mediafire-dl':'dl','ig-dl':'dl','capcut-dl':'dl','fb-dl':'dl','ig-dl':'dl','mediafire-dl':'dl','spotify-play':'spotify','bypass-link':'tools','image-to-prompt':'tools','bypass-cf':'tools','upscale':'tools','qr-code':'tools','ssweb':'tools','cek-situs':'tools','konversi-gambar':'util','kompres-gambar':'util','kalkulator-cicilan':'util','generator-password':'util','pengubah-satuan':'util','hitung-kata':'util','kalkulator-zakat':'util','tanda-tangan':'util','kalkulator-umur':'util','kalkulator-diskon':'util','kalkulator-bmi':'util','split-bill':'util','nomor-acak':'util','daftar-tugas':'util','kode-warna':'util','hitung-hari':'util','pembersih-teks':'util','kalkulator-kalori':'util','json-formatter':'util','encode-decode':'util','generator-hash':'util','konversi-timestamp':'util','angka-terbilang':'util','open-graph':'tools','tts-google':'tools','getcontact-start':'gc','am-data':'tools','am-find':'tools','link-wa':'util','react-channel':'tools','kalkulator-persen':'util','konversi-huruf':'util','timer-pomodoro':'tools','gradient-maker':'canvas','putar-foto':'canvas','angka-romawi':'util','kalkulator-tabungan':'util','generator-uuid':'util','stopwatch':'tools','bandingkan-teks':'tools','cek-kontras':'tools','filter-foto':'canvas','kolase-foto':'canvas'};
-Object.values(META).forEach(m=>m.c='#5be59c');
-const FL=[['all','Semua'],['tools','Tools'],['dl','Downloader'],['canvas','Maker'],['util','Utilitas'],['fav','Favorit']],FC={all:'#5be59c',tools:'#ff9f5a',dl:'#8a97ff',canvas:'#ff9f5a',util:'#5be59c',fav:'#ff9f5a'},FI={all:'<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>',fav:'<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>'};
+Object.values(META).forEach(m=>m.c='#4fd69a');
+const FL=[['all','Semua'],['tools','Tools'],['dl','Downloader'],['canvas','Maker'],['util','Utilitas'],['fav','Favorit']],FC={all:'#4fd69a',tools:'#ff9a4d',dl:'#8f9aff',canvas:'#ff9a4d',util:'#4fd69a',fav:'#ff9a4d'},FI={all:'<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>',fav:'<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>'};
 const CATS=[
- {k:'dl',n:'Downloader',d:'Unduh video, audio, dan reels',c:'#8a97ff',i:'<path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/>'},
- {k:'spotify',n:'Spotify',d:'Cari lagu, streaming, dan unduh MP3',c:'#5be59c',i:'<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>'},
- {k:'canvas',n:'Maker',d:'Buat gambar, sticker, dan konten',c:'#ff9f5a',i:'<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 21h10M12 18v3"/><path d="M7 14l3-4 3 3 2-2 3 3"/>'},
- {k:'am',n:'AM Generator',d:'Aktifkan Alight Motion Pro via email',c:'#ff8cc6',i:'<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>'},
- {k:'tools',n:'Tools',d:'Utilitas, konversi, dan link',c:'#ff9f5a',i:'<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>'},
- {k:'util',n:'Utilitas',d:'Kalkulator dan alat bantu harian',c:'#5be59c',i:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/>'},
- {k:'gc',n:'GetContact',d:'Cari profil dan tag nomor',c:'#5ce1e6',i:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/>'}
+ {k:'dl',n:'Downloader',d:'Unduh video, audio, dan reels',c:'#8f9aff',i:'<path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/>'},
+ {k:'spotify',n:'Spotify',d:'Cari lagu, streaming, dan unduh MP3',c:'#4fd69a',i:'<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>'},
+ {k:'canvas',n:'Maker',d:'Buat gambar, sticker, dan konten',c:'#ff9a4d',i:'<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 21h10M12 18v3"/><path d="M7 14l3-4 3 3 2-2 3 3"/>'},
+ {k:'am',n:'AM Generator',d:'Aktifkan Alight Motion Pro via email',c:'#ff8fb8',i:'<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>'},
+ {k:'tools',n:'Tools',d:'Utilitas, konversi, dan link',c:'#ff9a4d',i:'<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>'},
+ {k:'util',n:'Utilitas',d:'Kalkulator dan alat bantu harian',c:'#4fd69a',i:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/>'},
+ {k:'gc',n:'GetContact',d:'Cari profil dan tag nomor',c:'#5cd0d8',i:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/>'}
 ];
 const catOf=t=>CATS.some(c=>c.k===CAT[t.id])?CAT[t.id]:'tools';
 let hq='';let flt='all';const nxo=new Set(['tools','util']),NXN=Object.assign({fav:'Favorit'},Object.fromEntries(CATS.map(c=>[c.k,c.n])));let nxFirst=true;
@@ -392,7 +392,7 @@ function buildDock(){dock.innerHTML=tools.map(t=>`<a href="#${t.id}" data-id="${
 buildDock();
 new MutationObserver(()=>{const a=dock.querySelector('[aria-current=page]');if(a)dock.scrollTo({left:a.offsetLeft-(dock.clientWidth-a.offsetWidth)/2,behavior:'smooth'})}).observe(dock,{attributes:true,subtree:true,attributeFilter:['aria-current']});
 const light=()=>root.dataset.theme==='light';
-const themeIcon=()=>{$(document,'#th').innerHTML=svg(light()?IC.moon:IC.sun)};
+const themeIcon=()=>{$(document,'#th').innerHTML=svg(light()?IC.moon:IC.sun);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=light()?'#f7f0df':'#15130e'};
 try{const s=localStorage.getItem('theme');if(s)root.dataset.theme=s}catch(e){}
 if(!root.dataset.theme)root.dataset.theme='dark';
 $(document,'#th').onclick=()=>{const n=light()?'dark':'light';root.dataset.theme=n;try{localStorage.setItem('theme',n)}catch(e){}themeIcon()};
@@ -405,7 +405,7 @@ async function api(...a){const j=await api0(...a);rec(a[0],!!(j&&j.ok));return j
 const shell=(bar,body)=>`<section class="panel"><div class="bar"><span>${bar}</span></div><div class="in">${body}</div></section>`;
 const hero=(ic,h,sub)=>`<div class="thero"><span class="tile">${svg(IC[ic])}</span><div><h2>${h}</h2><p class="sub">${sub}</p></div></div>`;
 const AUTH={user:null,clientId:'',requireLogin:false,ready:false};
-async function authLoad(){try{const r=await fetch('/api/auth?action=me',{credentials:'same-origin'}),j=await r.json();AUTH.user=j.user||null;AUTH.clientId=j.clientId||'';AUTH.requireLogin=!!j.requireLogin}catch(e){}AUTH.ready=true}
+async function authLoad(){const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),6000);try{const r=await fetch('/api/auth?action=me',{credentials:'same-origin',signal:ac.signal}),j=await r.json();AUTH.user=j.user||null;AUTH.clientId=j.clientId||'';AUTH.requireLogin=!!j.requireLogin}catch(e){}clearTimeout(tm);AUTH.ready=true}
 let RDM_NOTE='';
 const kpretty=c=>/^MT[A-Z0-9]{12}$/.test(c)?'MT-'+c.slice(2,6)+'-'+c.slice(6,10)+'-'+c.slice(10):c;
 const redeemBox=()=>{const u=AUTH.user;if(u&&(u.isOwner||u.role==='owner'))return'';
@@ -460,12 +460,12 @@ function idleLoad(){const c=navigator.connection||{};if(c.saveData||/^(slow-2g|2
  const go=()=>{['tools','pages','chat'].forEach((n,i)=>setTimeout(()=>loadMod(n).catch(()=>{}),i*400))};
  (window.requestIdleCallback||setTimeout)(go,{timeout:6000})}
 addEventListener('load',idleLoad);
-async function renderPage(id){const rt=++RT;if(!PAGES[id]){dock.hidden=true;main.innerHTML='<p class="msg" role="status">Memuat…</p>';try{await loadMod(PAGE_MOD[id])}catch(e){if(rt===RT)main.innerHTML=modFail();return}if(rt!==RT)return}const p=PAGES[id];dock.hidden=true;main.style.setProperty('--tc',PGC[id]||'#5be59c');$(document,'#logo').innerHTML=svg(IC.back);main.classList.toggle('chatp',id==='chat');main.innerHTML=p.html();p.init&&p.init(main);document.title=p.title+' – Malik Tools';scrollTo(0,0)}
+async function renderPage(id){const rt=++RT;if(!PAGES[id]){dock.hidden=true;main.innerHTML='<p class="msg" role="status">Memuat…</p>';try{await loadMod(PAGE_MOD[id])}catch(e){if(rt===RT)main.innerHTML=modFail();return}if(rt!==RT)return}const p=PAGES[id];dock.hidden=true;main.style.setProperty('--tc',PGC[id]||'#4fd69a');$(document,'#logo').innerHTML=svg(IC.back);main.classList.toggle('chatp',id==='chat');main.innerHTML=p.html();p.init&&p.init(main);document.title=p.title+' – Malik Tools';scrollTo(0,0)}
 const DCATS=CATS.map(c=>[c.k,c.n]);
 const drw=$(document,'#drw'),scrim=$(document,'#scrim'),mn=$(document,'#mn');
 let dq='',dopen=new Set(['tools']);
-const PGC={chat:'#ffd23f',role:'#ff9f5a',changelog:'#8a97ff',feedback:'#ff8cc6',stats:'#5ce1e6',info:'#b2f05a',riwayat:'#ffb84d',profil:'#5be59c'},DCOL=Object.fromEntries(CATS.map(c=>[c.k,c.c]));
-drw.innerHTML=`<div class="dp" id="dprof"></div><a class="dl" id="dhome" href="#"><span class="ic">${svg(IC.home)}</span>Beranda</a><div class="dh"><span>Halaman</span></div>${[['chat','Global Chat'],['role','Beli Role'],['changelog','Changelog'],['feedback','Feedback'],['stats','Stats'],['info','Info'],['riwayat','Riwayat'],['profil','Profil']].map(x=>`<a class="dl" href="#${x[0]}" data-pg="${x[0]}" style="--c:${PGC[x[0]]}"><span class="ic">${svg(IC[x[0]])}</span>${x[1]}</a>`).join('')}<a class="dl" id="downer" href="#owner" data-pg="owner" style="display:none;--c:#ffd23f"><span class="ic">${svg(IC.owner)}</span>Developer<span class="tg2" style="margin-left:auto">ADMIN</span></a><div class="dh"><span>Komunitas</span></div>${[['https://whatsapp.com/channel/0029VbEOTvX6GcGLFkDqfv22','Saluran','#25d366','<path d="M3 11v2a1 1 0 001 1h2l5 4V6L6 10H4a1 1 0 00-1 1z"/><path d="M15 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>'],[`https://wa.me/${CONTACT_WA}`,'Chat Developer','#5ce1e6','<path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/>']].map(x=>`<a class="dl" href="${x[0]}" target="_blank" rel="noopener noreferrer" style="--c:${x[2]}"><span class="ic">${svg(x[3])}</span>${x[1]}<span class="ext" aria-hidden="true">↗</span></a>`).join('')}<div class="dh"><span>Informasi</span></div>${[['/tentang','Tentang','<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'],['/privasi','Privasi','<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/>'],['/syarat','Syarat','<path d="M7 3h8l4 4v14H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>'],['/bantuan','Bantuan','<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 115 0c0 1.5-2.5 2-2.5 3.5M12 17h.01"/>']].map(x=>`<a class="dl" href="${x[0]}" style="--c:#8a97ff"><span class="ic">${svg(x[2])}</span>${x[1]}</a>`).join('')}<div class="dh"><span>Kategori</span><button type="button" id="dall"></button></div><div class="sr">${svg(IC.search)}<input id="dq" type="search" placeholder="Cari tool..." autocomplete="off" aria-label="Cari tool"></div><div id="dlist"></div><div class="dfoot"><b>Malik Tools</b><span>Gratis, cepat, tanpa ribet<br>Dibuat oleh Malik</span></div>`;
+const PGC={chat:'#ffc83d',role:'#ff9a4d',changelog:'#8f9aff',feedback:'#ff8fb8',stats:'#5cd0d8',info:'#b2f05a',riwayat:'#ffb84d',profil:'#4fd69a'},DCOL=Object.fromEntries(CATS.map(c=>[c.k,c.c]));
+drw.innerHTML=`<div class="dp" id="dprof"></div><a class="dl" id="dhome" href="#"><span class="ic">${svg(IC.home)}</span>Beranda</a><div class="dh"><span>Halaman</span></div>${[['chat','Global Chat'],['role','Beli Role'],['changelog','Changelog'],['feedback','Feedback'],['stats','Stats'],['info','Info'],['riwayat','Riwayat'],['profil','Profil']].map(x=>`<a class="dl" href="#${x[0]}" data-pg="${x[0]}" style="--c:${PGC[x[0]]}"><span class="ic">${svg(IC[x[0]])}</span>${x[1]}</a>`).join('')}<a class="dl" id="downer" href="#owner" data-pg="owner" style="display:none;--c:#ffc83d"><span class="ic">${svg(IC.owner)}</span>Developer<span class="tg2" style="margin-left:auto">ADMIN</span></a><div class="dh"><span>Komunitas</span></div>${[['https://whatsapp.com/channel/0029VbEOTvX6GcGLFkDqfv22','Saluran','#25d366','<path d="M3 11v2a1 1 0 001 1h2l5 4V6L6 10H4a1 1 0 00-1 1z"/><path d="M15 9a4 4 0 010 6M18 6.5a8 8 0 010 11"/>'],[`https://wa.me/${CONTACT_WA}`,'Chat Developer','#5cd0d8','<path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/>']].map(x=>`<a class="dl" href="${x[0]}" target="_blank" rel="noopener noreferrer" style="--c:${x[2]}"><span class="ic">${svg(x[3])}</span>${x[1]}<span class="ext" aria-hidden="true">↗</span></a>`).join('')}<div class="dh"><span>Informasi</span></div>${[['/tentang','Tentang','<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>'],['/privasi','Privasi','<path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/>'],['/syarat','Syarat','<path d="M7 3h8l4 4v14H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>'],['/bantuan','Bantuan','<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 115 0c0 1.5-2.5 2-2.5 3.5M12 17h.01"/>']].map(x=>`<a class="dl" href="${x[0]}" style="--c:#8f9aff"><span class="ic">${svg(x[2])}</span>${x[1]}</a>`).join('')}<div class="dh"><span>Kategori</span><button type="button" id="dall"></button></div><div class="sr">${svg(IC.search)}<input id="dq" type="search" placeholder="Cari tool..." autocomplete="off" aria-label="Cari tool"></div><div id="dlist"></div><div class="dfoot"><b>Malik Tools</b><span>Gratis, cepat, tanpa ribet<br>Dibuat oleh Malik</span></div>`;
 const DI=Object.fromEntries(CATS.map(c=>[c.k,c.i])),DD=Object.fromEntries(CATS.map(c=>[c.k,c.d]));
 const dLbl=()=>{$(drw,'#dall').textContent=dopen.size===DCATS.length?'Tutup semua':'Buka semua'};
 const hl=(t,q)=>{t=esc(t);if(!q||/[&<>"']/.test(q))return t;const i=t.toLowerCase().indexOf(q);return i<0?t:t.slice(0,i)+'<mark>'+t.slice(i,i+q.length)+'</mark>'+t.slice(i+q.length)};
@@ -499,7 +499,7 @@ function welcomeHtml(){const u=AUTH.user,h=new Date().getHours(),g=h<4?'Selamat 
  const ini=esc((n.trim()[0]||'T').toUpperCase()),emo=h<4?'🌙':h<11?'☀️':h<15?'🌤️':h<18?'🌇':'🌙';
  const stat=(v,l,c)=>`<div class="hst" style="--c:${c}"><b>${nf(v)}</b><small>${l}</small></div>`;
  const qa=(href,ic,l,c)=>`<a class="lhq" href="#${href}" style="--c:${c}"><span>${svg(IC[ic])}</span><b>${l}</b></a>`;
- return `<section class="lh" aria-label="Sambutan"><div class="lhc"><div class="lht"><div><small>${esc(d)}</small><h2>${g},<span class="lhe" aria-hidden="true"> ${emo}</span><b>${nm}</b></h2></div><span class="lha" aria-hidden="true">${emo}</span></div><p class="lhtip"><span>TIPS</span>${esc(tip)}</p></div><label class="lhs" id="lhs2" for="hq">${svg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>')}<input id="hq" type="search" autocomplete="off" enterkeyhint="search" placeholder="Cari tool..." aria-label="Cari tool"></label><div class="lhg">${qa('chat','chat','Global Chat',PGC.chat)}${qa('role','role','Beli Role',PGC.role)}${qa('stats','stats','Stats',PGC.stats)}${qa('profil','profil','Profil',PGC.profil)}</div><div class="lhi"><span style="--c:#5ce1e6"><b>${nf(all)}</b>dipakai</span><span style="--c:#5be59c"><b>${nf(ok)}</b>berhasil</span><span style="--c:#ffd23f"><b>${nf(fv)}</b>favorit</span><button type="button" id="hgo">Semua tool &darr;</button></div><section class="lhab" aria-label="Tentang Malik Tools"><h3>Apa itu Malik Tools?</h3><p>Kumpulan tool online dalam satu tempat: downloader, maker, Spotify, GetContact, dan utilitas lainnya. Langsung dipakai dari HP, tanpa instal aplikasi.</p><div class="lhabc"><span>Gratis</span><span>Cepat</span><span>Tanpa ribet</span></div></section></section>`}
+ return `<section class="lh" aria-label="Sambutan"><div class="lhc"><div class="lht"><div><small>${esc(d)}</small><h2>${g},<span class="lhe" aria-hidden="true"> ${emo}</span><b>${nm}</b></h2></div><span class="lha" aria-hidden="true">${emo}</span></div><p class="lhtip"><span>TIPS</span>${esc(tip)}</p></div><label class="lhs" id="lhs2" for="hq">${svg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>')}<input id="hq" type="search" autocomplete="off" enterkeyhint="search" placeholder="Cari tool..." aria-label="Cari tool"></label><div class="lhg">${qa('chat','chat','Global Chat',PGC.chat)}${qa('role','role','Beli Role',PGC.role)}${qa('stats','stats','Stats',PGC.stats)}${qa('profil','profil','Profil',PGC.profil)}</div><div class="lhi"><span style="--c:#5cd0d8"><b>${nf(all)}</b>dipakai</span><span style="--c:#4fd69a"><b>${nf(ok)}</b>berhasil</span><span style="--c:#ffc83d"><b>${nf(fv)}</b>favorit</span><button type="button" id="hgo">Semua tool &darr;</button></div><section class="lhab" aria-label="Tentang Malik Tools"><h3>Apa itu Malik Tools?</h3><p>Kumpulan tool online dalam satu tempat: downloader, maker, Spotify, GetContact, dan utilitas lainnya. Langsung dipakai dari HP, tanpa instal aplikasi.</p><div class="lhabc"><span>Gratis</span><span>Cepat</span><span>Tanpa ribet</span></div></section></section>`}
 function countUp(r){r.querySelectorAll('[data-n]').forEach(e=>{const n=+e.dataset.n;if(!n||matchMedia('(prefers-reduced-motion: reduce)').matches){e.textContent=nf(n);return}const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/700);e.textContent=nf(Math.round(n*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(f)})(t0)})}
 function stepify(r){r.querySelectorAll('label').forEach(l=>{const m=l.textContent.match(/^\s*(\d)\s*[·.]\s*(.+)$/);if(m&&!l.children.length){l.classList.add('hs');l.innerHTML=`<span class="sn">${m[1]}</span>`;l.append(m[2])}})}
 /* Share Target PWA: link yang dibagikan dari aplikasi lain dibuka di tool yang cocok dan kolom link terisi otomatis */
@@ -520,7 +520,7 @@ async function render(){const rt=++RT;
   hq='';main.innerHTML=`${welcomeHtml()}${annHtml()}<div id="hot"></div><div class="nxl" id="bn" role="list" aria-label="Kategori tool"></div><div class="live" id="live" hidden></div><p class="foot">Dibuat oleh Malik</p><nav class="foot2" aria-label="Informasi"><a href="/tentang">Tentang</a><a href="/privasi">Privasi</a><a href="/syarat">Syarat</a><a href="/bantuan">Bantuan</a></nav>`;liveDraw();
   const draw=()=>{const fv=ls.get('mt_fav')||[],chev=svg('<path d="M6 9l6 6 6-6"/>'),go=svg('<path d="M9 6l6 6-6 6"/>');
    const star=svg('<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>');
-   const row=x=>{const m=META[x.id],f=fv.includes(x.id),nt=(m.note||'GRATIS'),kr=/limit/i.test(nt);return `<a class="tr" role="listitem" href="#${x.id}" style="--tc:${m.c}"><span class="tri" aria-hidden="true">${svg(IC[x.id]||IC.go)}</span><span class="trb"><span class="trh"><b>${esc(x.name)}${isNew(x.id)?'<span class="nwb">BARU</span>':''}</b><span class="trn${kr?' k':''}">${esc(nt.toLowerCase())}</span></span><span class="trd">${esc(m.lead)}</span></span><span class="trf${f?' on':''}" data-fav="${x.id}" role="button" aria-label="Favorit" aria-pressed="${f}">${star}</span><span class="trg" aria-hidden="true">${go}</span></a>`};
+   const row=x=>{const m=META[x.id],f=fv.includes(x.id),nt=(m.note||'GRATIS'),kr=/limit/i.test(nt);return `<a class="tr" role="listitem" href="#${x.id}" style="--tc:${m.c}"><span class="tri" aria-hidden="true">${svg(IC[x.id]||IC.go)}</span><span class="trb"><span class="trh"><b>${esc(x.name)}${isNew(x.id)?'<span class="nwb">BARU</span>':''}</b><span class="trn${kr?' k':''}">${esc(nt.toLowerCase())}</span></span><span class="trd">${esc(m.lead)}</span></span><span class="trf${f?' on':''}" data-fav="${x.id}" role="button" aria-label="Favorit ${esc(x.name)}" aria-pressed="${f}">${star}</span><span class="trg" aria-hidden="true">${go}</span></a>`};
    const srt=l=>l.slice().sort((p,q)=>fv.includes(q.id)-fv.includes(p.id)),G=CATS.map(c=>[c.k,c.n.toUpperCase(),c.c,c.i,srt(tools.filter(x=>catOf(x)===c.k))]);
    $(main,'#bn').className='nxl'+(nxFirst?' in':'');
    {const qq=hq.trim().toLowerCase();{const hh=$(main,'#hot');if(hh)hh.innerHTML=qq?'':hotHtml()}if(qq){const ms=tools.filter(x=>(x.name+' '+META[x.id].lead+' '+META[x.id].tab).toLowerCase().includes(qq));$(main,'#bn').className='nxl in';$(main,'#bn').innerHTML=ms.length?`<section class="nxg open" role="listitem" style="--tc:#9aa;--i:0"><div class="nxb"><div class="nxin">${ms.map(row).join('')}</div></div></section>`:`<div class="es" role="status">${svg('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8.5 11h5"/>')}<b>Tool tidak ditemukan</b><span>Coba kata lain, misalnya "QR", "gambar", atau "suara".</span></div>`;return}}
@@ -587,7 +587,7 @@ function skx(id,n){const cat=LDCAT[typeof CAT!=='undefined'&&CAT[id]]||{t:'Mempr
  return `<div class="out ld-${kind}"><div class="ldh"><span class="ldi" aria-hidden="true">${ic}</span><div class="ldt"><b>${esc(cat.t)}</b><small data-s="${Date.now()}" data-st="${esc(st.join('|'))}" data-d="${st.map((_,i)=>dl[i]!==undefined?dl[i]:i*3).join(',')}">${esc(st[0])}</small></div></div><div class="ldbar" aria-hidden="true"><i></i></div><ol class="mtprc" aria-live="polite">${st.map((x,i)=>`<li style="--d:${dl[i]!==undefined?dl[i]:i*3}s;--n:${i<st.length-1?(dl[i+1]!==undefined?dl[i+1]:(i+1)*3):999}s"><i></i>${esc(x)}</li>`).join('')}</ol><div class="cmp">${ph.repeat(kind==='img'?(n||1):1)}</div></div>`}
 function siteCard(res,d){if(!d||typeof d!=='object'||!d.status)return false;
  const st=String(d.status),off=/^Offline/.test(st),ms=parseInt(d.waktu_respons,10)||0,code=+d.kode_http||0;
- const lv=off||code>=500?'bad':(code>=400||ms>=2500)?'warn':ms>=800?'mid':'ok',col={ok:'#5be59c',mid:'#ffd23f',warn:'#ffd23f',bad:'#ff6b6b'}[lv];
+ const lv=off||code>=500?'bad':(code>=400||ms>=2500)?'warn':ms>=800?'mid':'ok',col={ok:'#4fd69a',mid:'#ffc83d',warn:'#ffc83d',bad:'#ff6b6b'}[lv];
  const lab=off?'Offline':code>=500?'Server bermasalah':code>=400?'Online, halaman bermasalah':ms>=2500?'Online, tapi lambat':'Online';
  const sub=off?(d.alasan||'Tidak bisa terhubung.'):'HTTP '+code+' · '+(d.waktu_respons||'-');
  const days=parseInt(d.ssl_sisa_hari,10),sslOk=/^Valid/.test(d.ssl||''),sc=!d.ssl?'':!sslOk&&/^Tidak valid/.test(d.ssl)?'bad':Number.isFinite(days)?(days<=7?'bad':days<=30?'warn':'ok'):(sslOk?'ok':'');
@@ -633,12 +633,12 @@ function liveCount(el,to){const from=liveShown;liveShown=to;if(from===to||matchM
 function liveDraw(){const el=document.getElementById('live');if(!el)return;
  if(!LIVE||!LIVE.ok){el.hidden=true;return}
  const nm=id=>{const t=tools.find(x=>x.id===id);return t?t.name:''},now=Date.now();
- const COL=['#5be59c','#ffd23f','#ff8cc6','#5ce1e6','#ff9f5a','#8a97ff','#ff7a7a'],P='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/></svg>';
+ const COL=['#4fd69a','#ffc83d','#ff8fb8','#5cd0d8','#ff9a4d','#8f9aff','#ff7a7a'],P='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/></svg>';
  const n=LIVE.online,sh=Math.min(n,8),av=Array.from({length:sh},(_,k)=>`<i style="--k:${k};background:${COL[k%COL.length]}">${P}</i>`).join('')+(n>sh?`<em>+${n-sh}</em>`:'');
  const H=LIVEH.slice(-24),dlt=H.length>1?n-H[H.length-2]:0,pk=Math.max(1,LIVE.peak||n),pct=Math.min(100,Math.round(n/pk*100)),stt=n>1&&n>=pk?['rekor','Rekor hari ini']:pct>=70?['ramai','Ramai']:pct>=35?['normal','Normal']:['tenang','Tenang'],first=!liveInit;liveInit=true;
  let spark='';if(H.length>=3){const lo=Math.min(...H),hi=Math.max(...H,lo+2),X=i=>(i/(H.length-1)*200).toFixed(1),Y=v=>(44-(v-lo)/(hi-lo)*38).toFixed(1),pts=H.map((v,i)=>X(i)+' '+Y(v));spark=`<div class="lvg" aria-hidden="true"><svg viewBox="0 0 200 48" preserveAspectRatio="none"><path class="a" d="M${pts.join(' L')} L200 48 L0 48 Z"/><path class="l" d="M${pts.join(' L')}"/></svg><i class="lvq" style="top:${(Y(H[H.length-1])/48*100).toFixed(1)}%"></i></div>`}
  const fd=(LIVE.feed||[]).map(e=>({id:e[0],at:now-e[1]*1000,n:nm(e[0])})).filter(e=>e.n);
- const rows=fd.map(e=>{const k=e.id+'|'+Math.round(e.at/1000),isn=!liveSeen.has(k);liveSeen.add(k);const m=META[e.id]||{c:'#5be59c'};
+ const rows=fd.map(e=>{const k=e.id+'|'+Math.round(e.at/1000),isn=!liveSeen.has(k);liveSeen.add(k);const m=META[e.id]||{c:'#4fd69a'};
   return `<div class="lvi${isn&&liveSeen.size>fd.length?' new':''}" style="--tc:${m.c}"><span class="tri" aria-hidden="true">${svg(IC[e.id]||IC.go)}</span><div><b>${esc(e.n)}</b><small data-at="${e.at}">${liveAgo(Math.round((now-e.at)/1000))}</small></div></div>`}).join('');
  el.hidden=false;
  const W='M0 24 H34 L40 24 L46 8 L54 40 L61 16 L66 24 H108 L114 24 L120 12 L127 34 L132 24 H200';
@@ -660,7 +660,7 @@ let dpr=null;
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),
  isStd=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true,
  pwaCan=()=>!isStd()&&(!!dpr||isIOS);
-const PWA_IMG='/icon-192.png?v=331';
+const PWA_IMG='/icon-192.png?v=332';
 function pwaSheet(){if(document.getElementById('pws'))return;const d=document.createElement('div');d.id='pws';d.className='pws';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');d.setAttribute('aria-label','Cara pasang ke layar utama');
  const shr='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 00-1 1v8a1 1 0 001 1h14a1 1 0 001-1v-8a1 1 0 00-1-1h-1"/></svg>',pls='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',ok='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
  const steps=isIOS?[[shr,'Ketuk tombol <b>Bagikan</b> di bawah Safari'],[pls,'Pilih <b>Tambah ke Layar Utama</b>'],[ok,'Ketuk <b>Tambah</b>, selesai']]:[[shr,'Buka menu <b>⋮</b> di pojok kanan atas browser'],[pls,'Pilih <b>Pasang aplikasi</b> atau <b>Tambahkan ke layar utama</b>'],[ok,'Ketuk <b>Pasang</b>, selesai']];
@@ -693,7 +693,7 @@ const ROLEMAP={developer:['DEVELOPER','dv rl-dev'],owner:['OWNER','o rl-own'],pr
 const roleB=r=>ROLEMAP[r]||ROLEMAP.member;
 // Centang verified untuk Developer dan Owner; badge kustom dari developer (teks + warna dari daftar server)
 const vchk=r=>r==='developer'||r==='owner'?'<svg class="vck" viewBox="0 0 24 24" role="img" aria-label="Terverifikasi"><title>Terverifikasi</title><path fill="#1d9bf0" d="M12 1.8l2.6 1.9 3.2-.1 1 3.1 2.6 1.9-1 3.1 1 3.1-2.6 1.9-1 3.1-3.2-.1L12 22.2l-2.6-1.9-3.2.1-1-3.1-2.6-1.9 1-3.1-1-3.1 2.6-1.9 1-3.1 3.2.1z"/><path d="M8 12.3l2.7 2.7L16.2 9.4" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>':'';
-const BCOL=[['Kuning','#ffd23f'],['Hijau','#5be59c'],['Merah','#ff6b6b'],['Biru','#5ce1e6'],['Ungu','#8a97ff'],['Pink','#ff8cc6'],['Cyan','#5ce1e6'],['Oranye','#ff9f5a'],['Putih','#e8e8f0']];
+const BCOL=[['Kuning','#ffc83d'],['Hijau','#4fd69a'],['Merah','#ff6b6b'],['Biru','#5cd0d8'],['Ungu','#8f9aff'],['Pink','#ff8fb8'],['Cyan','#5cd0d8'],['Oranye','#ff9a4d'],['Putih','#e8e8f0']];
 const cbadge=b=>b&&b.t&&BCOL.some(x=>x[1]===b.c)?`<span class="tg2 tgc" style="--rc:${b.c}">${esc(b.t)}</span>`:'';
 const roleLeft=ts=>{if(!ts)return 'Permanen';const d=Math.max(0,Math.ceil((ts-Date.now())/864e5));return 'Sampai '+new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})+(d?' ('+d+' hari lagi)':'')};
 const roleDurs=[[1,'1 hari'],[7,'1 minggu (7 hari)'],[14,'2 minggu (14 hari)'],[30,'1 bulan (30 hari)'],[0,'Permanen']];
@@ -717,7 +717,7 @@ function applyPrices(){tools.forEach(t=>{if(t.id==='link-wa'||!META[t.id])return
 async function loadCustom(){const j=await adm('tools');if(!j.ok)return;ANN=j.announce||null;PRICES=j.prices||{};PLANS=j.plans||PLANS;PAYON=!!j.pay;OFF=j.off||[];applyPrices();if(location.hash==='#role')renderPage('role');
  CUST.forEach(id=>{const i=tools.findIndex(t=>t.id===id);if(i>-1)tools.splice(i,1);delete META[id];delete CAT[id]});CUST=[];
  if((j.tools||[]).length)await loadMod('tools');
- (j.tools||[]).forEach(c=>{if(tools.some(t=>t.id===c.id))return;tools.push(linkTool({id:c.id,name:c.name,desc:c.desc,label:c.label,ph:c.ph,btn:c.btn,text:c.type==='text'}));const w=c.name.split(/\s+/)[0];META[c.id]={c:'#5be59c',tab:w.length<=9?w:w.slice(0,8)+'…',note:c.credit>0?c.credit+' LIMIT':'GRATIS',lead:c.desc.slice(0,90)};CAT[c.id]=c.cat;IC[c.id]=IC[{akun:'am-send',img:'hd-gambar',link:'bypass-link'}[c.cat]]||IC.go;CUST.push(c.id)});
+ (j.tools||[]).forEach(c=>{if(tools.some(t=>t.id===c.id))return;tools.push(linkTool({id:c.id,name:c.name,desc:c.desc,label:c.label,ph:c.ph,btn:c.btn,text:c.type==='text'}));const w=c.name.split(/\s+/)[0];META[c.id]={c:'#4fd69a',tab:w.length<=9?w:w.slice(0,8)+'…',note:c.credit>0?c.credit+' LIMIT':'GRATIS',lead:c.desc.slice(0,90)};CAT[c.id]=c.cat;IC[c.id]=IC[{akun:'am-send',img:'hd-gambar',link:'bypass-link'}[c.cat]]||IC.go;CUST.push(c.id)});
  buildDock();try{dList()}catch(e){}
  const d=$(document,'#dcnt');if(d)d.textContent=tools.length+' tool · '+DCATS.length+' kategori'}
 function mconfirm(title,msg,yes,danger){return new Promise(res=>{const d=document.createElement('div');d.className='cfm'+(danger===false?' ok':'');d.setAttribute('role','alertdialog');d.setAttribute('aria-modal','true');
@@ -726,7 +726,7 @@ function mconfirm(title,msg,yes,danger){return new Promise(res=>{const d=documen
  d.onclick=e=>{if(e.target===d)done(false)};d.querySelector('.no').onclick=()=>done(false);d.querySelector('.yes').onclick=()=>done(true);
  document.addEventListener('keydown',kd);document.body.appendChild(d);d.querySelector('.no').focus()})}
 function showWarn(t,pv){const d=document.createElement('div');d.className='wmod';d.setAttribute('role','alertdialog');
- d.innerHTML=`<section class="panel"><div class="bar"><span>PERINGATAN DARI DEVELOPER</span>${pv?'<span class="pill">PRATINJAU TAMPILAN USER</span>':''}</div><div class="in"><p style="margin:0 0 16px;font-size:16px;line-height:1.5">${esc(t)}</p><div class="row"><button class="primary" style="--tc:#ffd23f">Saya mengerti</button></div></div></section>`;
+ d.innerHTML=`<section class="panel"><div class="bar"><span>PERINGATAN DARI DEVELOPER</span>${pv?'<span class="pill">PRATINJAU TAMPILAN USER</span>':''}</div><div class="in"><p style="margin:0 0 16px;font-size:16px;line-height:1.5">${esc(t)}</p><div class="row"><button class="primary" style="--tc:#ffc83d">Saya mengerti</button></div></div></section>`;
  const b=d.querySelector('button');b.onclick=async()=>{d.remove();if(!pv)await adm('ack',{})};document.body.appendChild(d);b.focus()}
 const slug=v=>v.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,30);
 authP.then(()=>{dList();if(location.hash.slice(1)==='owner')renderPage('owner');if(AUTH.user&&AUTH.user.warning)showWarn(AUTH.user.warning)});
@@ -792,11 +792,11 @@ addEventListener('hashchange',route);route();
  const IC={u:svg('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>'),m:svg('<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/>'),l:svg('<rect x="4" y="11" width="16" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>')};
  const fld=(id,lb,ac,ex,ic)=>`<label for="${id}">${lb}</label><div class="fw${ic?'':' nof'}">${ic||''}<input id="${id}" autocomplete="${ac}" required ${ex||''}></div>`;
  const forms={
-  login:()=>`<div class="gg" id="gbtn2"><span class="ggv"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.2 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.8 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Lanjutkan dengan Google</span><div class="ggr"></div></div><div class="or">atau pakai username</div><form id="gf">${fld('f1','Username atau email','username','maxlength="120" autocapitalize="none" spellcheck="false"',IC.u)}${pw('f2','current-password','Kata sandi')}<div class="fr"><button type="button" class="lk" data-go="forgot">Lupa kata sandi?</button></div><button class="primary" style="--tc:#5ce1e6">Masuk</button><p class="msg" id="gm" role="status"></p></form>`,
-  register:()=>`<div class="gg" id="gbtn2"><span class="ggv"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.2 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.8 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Lanjutkan dengan Google</span><div class="ggr"></div></div><div class="or">atau daftar manual</div><form id="gf">${fld('f1','Username','username','maxlength="20" autocapitalize="none" spellcheck="false" placeholder="huruf kecil, angka, _"',IC.u)}${fld('f3','Email','email','type="email" maxlength="120"',IC.m)}${pw('f2','new-password','Kata sandi (min. 8 karakter)')}<button class="primary" style="--tc:#5ce1e6">Kirim kode verifikasi</button><p class="msg" id="gm" role="status"></p></form>`,
-  verify:()=>`<form id="gf">${fld('f1','Kode verifikasi','one-time-code','inputmode="numeric" maxlength="6" pattern="[0-9]{6}" class="cd" placeholder="000000"')}<button class="primary" style="--tc:#5ce1e6">Verifikasi & masuk</button><p class="msg" id="gm" role="status"></p></form><p class="ft"><button type="button" class="lk" id="rs">Kirim ulang kode</button><br><button type="button" class="lk" data-go="register">Ganti email</button></p>`,
-  forgot:()=>`<form id="gf">${fld('f1','Email akun','email','type="email" maxlength="120"',IC.m)}<button class="primary" style="--tc:#5ce1e6">Kirim kode</button><p class="msg" id="gm" role="status"></p></form><p class="ft"><button type="button" class="lk" data-go="login">Kembali masuk</button></p>`,
-  reset:()=>`<form id="gf">${fld('f1','Kode dari email','one-time-code','inputmode="numeric" maxlength="6" pattern="[0-9]{6}" class="cd" placeholder="000000"')}${pw('f2','new-password','Kata sandi baru (min. 8 karakter)')}<button class="primary" style="--tc:#5ce1e6">Simpan & masuk</button><p class="msg" id="gm" role="status"></p></form><p class="ft"><button type="button" class="lk" data-go="login">Kembali masuk</button></p>`
+  login:()=>`<div class="gg" id="gbtn2"><span class="ggv"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.2 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.8 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Lanjutkan dengan Google</span><div class="ggr"></div></div><div class="or">atau pakai username</div><form id="gf">${fld('f1','Username atau email','username','maxlength="120" autocapitalize="none" spellcheck="false"',IC.u)}${pw('f2','current-password','Kata sandi')}<div class="fr"><button type="button" class="lk" data-go="forgot">Lupa kata sandi?</button></div><button class="primary" style="--tc:#5cd0d8">Masuk</button><p class="msg" id="gm" role="status"></p></form>`,
+  register:()=>`<div class="gg" id="gbtn2"><span class="ggv"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.2 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.8 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>Lanjutkan dengan Google</span><div class="ggr"></div></div><div class="or">atau daftar manual</div><form id="gf">${fld('f1','Username','username','maxlength="20" autocapitalize="none" spellcheck="false" placeholder="huruf kecil, angka, _"',IC.u)}${fld('f3','Email','email','type="email" maxlength="120"',IC.m)}${pw('f2','new-password','Kata sandi (min. 8 karakter)')}<button class="primary" style="--tc:#5cd0d8">Kirim kode verifikasi</button><p class="msg" id="gm" role="status"></p></form>`,
+  verify:()=>`<form id="gf">${fld('f1','Kode verifikasi','one-time-code','inputmode="numeric" maxlength="6" pattern="[0-9]{6}" class="cd" placeholder="000000"')}<button class="primary" style="--tc:#5cd0d8">Verifikasi & masuk</button><p class="msg" id="gm" role="status"></p></form><p class="ft"><button type="button" class="lk" id="rs">Kirim ulang kode</button><br><button type="button" class="lk" data-go="register">Ganti email</button></p>`,
+  forgot:()=>`<form id="gf">${fld('f1','Email akun','email','type="email" maxlength="120"',IC.m)}<button class="primary" style="--tc:#5cd0d8">Kirim kode</button><p class="msg" id="gm" role="status"></p></form><p class="ft"><button type="button" class="lk" data-go="login">Kembali masuk</button></p>`,
+  reset:()=>`<form id="gf">${fld('f1','Kode dari email','one-time-code','inputmode="numeric" maxlength="6" pattern="[0-9]{6}" class="cd" placeholder="000000"')}${pw('f2','new-password','Kata sandi baru (min. 8 karakter)')}<button class="primary" style="--tc:#5cd0d8">Simpan & masuk</button><p class="msg" id="gm" role="status"></p></form><p class="ft"><button type="button" class="lk" data-go="login">Kembali masuk</button></p>`
  };
  const submit={
   login:async v=>{await post('login',{id:v.f1,password:v.f2});done()},
@@ -823,7 +823,7 @@ addEventListener('hashchange',route);route();
  function open(){
   if(g)return;
   g=document.createElement('div');g.className='gate';g.setAttribute('role','dialog');g.setAttribute('aria-modal','true');g.setAttribute('aria-label','Masuk');
-  g.innerHTML='<div class="gb"><div class="gbr"><img src="/logo.jpg?v=331" alt="" width="56" height="56"><span>Malik Tools<small>Tools gratis, langsung dari HP</small></span></div><div class="gc"></div><p class="gl">Dengan masuk, kamu setuju dengan <a href="/syarat" target="_blank" rel="noopener">Syarat Penggunaan</a> dan <a href="/privasi" target="_blank" rel="noopener">Kebijakan Privasi</a>.</p><div class="chips" aria-hidden="true"><span style="--c:#5ce1e6">AM Premium</span><span style="--c:#5be59c">Hapus BG</span><span style="--c:#ffd23f">HD Gambar</span><span style="--c:#ff8cc6">Bypass Link</span><span style="--c:#8a97ff">Global Chat</span></div></div>';
+  g.innerHTML='<div class="gb"><div class="gbr"><img src="/logo.jpg?v=331" alt="" width="56" height="56"><span>Malik Tools<small>Tools gratis, langsung dari HP</small></span></div><div class="gc"></div><p class="gl">Dengan masuk, kamu setuju dengan <a href="/syarat" target="_blank" rel="noopener">Syarat Penggunaan</a> dan <a href="/privasi" target="_blank" rel="noopener">Kebijakan Privasi</a>.</p><div class="chips" aria-hidden="true"><span style="--c:#5cd0d8">AM Premium</span><span style="--c:#4fd69a">Hapus BG</span><span style="--c:#ffc83d">HD Gambar</span><span style="--c:#ff8fb8">Bypass Link</span><span style="--c:#8f9aff">Global Chat</span></div></div>';
   g.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-eye]');if(!t)return;
    if(t.dataset.go){go(t.dataset.go)}
    else{const i=g.querySelector('#'+t.dataset.eye);i.type=i.type==='password'?'text':'password'}});
@@ -841,7 +841,7 @@ function mtChannel(){
  document.body.appendChild(m);
  const prev=document.activeElement;
  const close=()=>{try{localStorage.setItem('mt_ch','1')}catch(e){}document.removeEventListener('keydown',key);m.classList.remove('on');setTimeout(()=>{m.remove();if(prev&&prev.focus)try{prev.focus()}catch(e){}},220)};
- const key=e=>{if(e.key==='Escape')close()};
+ const key=e=>{if(e.key==='Escape')close();else if(e.key==='Tab'){const f=[...m.querySelectorAll('a[href],button')];if(!f.length)return;const a=f[0],z=f[f.length-1],c=document.activeElement;if(e.shiftKey&&c===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&c===z){e.preventDefault();a.focus()}}};
  document.addEventListener('keydown',key);
  m.querySelector('#chn').onclick=close;
  m.querySelector('#chf').onclick=()=>setTimeout(close,300);

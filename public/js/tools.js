@@ -234,7 +234,7 @@ function stalkCard(res,raw){const d=raw&&typeof raw.data==='object'&&raw.data?ra
  res.innerHTML=`<div class="out skc"><div class="skh">${ph?`<img src="${esc(ph)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:`<span class="ska">${esc((d.name||un||'?').charAt(0).toUpperCase())}</span>`}<div class="skn"><b>${esc(d.name||un)}</b><small>@${esc(un)}</small><div class="skt">${d.verified?'<span class="ok">Terverifikasi</span>':''}${d.private?'<span>Privat</span>':''}</div></div></div><div class="skg">${st.map(x=>`<div><b>${n(x[1])}</b><span>${x[0]}</span></div>`).join('')}</div>${d.bio?`<p class="skb">${esc(d.bio)}</p>`:''}<div class="row">${un?`<a class="btn primary" href="https://www.tiktok.com/@${esc(un)}" target="_blank" rel="noopener noreferrer">Buka profil</a>`:''}<button type="button" id="skc">Salin username</button>${ph?unduhBtn(ph,'foto-profil-'+(un||'tiktok')+'.jpg','Unduh Foto'):''}</div></div>`;
  const b=res.querySelector('#skc');if(b)b.onclick=x=>copy('@'+un,x.target);return true}
 function slopCard(res,raw){const d=raw&&typeof raw.result==='object'&&raw.result?raw.result:raw;if(!d||typeof d!=='object'||typeof d.score!=='number')return false;
- const sc=Math.max(0,Math.min(100,Math.round(d.score))),col=sc<=30?'#5be59c':sc<=60?'#ffd23f':'#ff6b6b',lbl=sc<=30?'Kemungkinan buatan manusia':sc<=60?'Campuran / tidak pasti':'Kemungkinan buatan AI',
+ const sc=Math.max(0,Math.min(100,Math.round(d.score))),col=sc<=30?'#4fd69a':sc<=60?'#ffc83d':'#ff6b6b',lbl=sc<=30?'Kemungkinan buatan manusia':sc<=60?'Campuran / tidak pasti':'Kemungkinan buatan AI',
  cf={high:'Tinggi',medium:'Sedang',low:'Rendah'}[String(d.confidence).toLowerCase()]||esc(d.confidence||'-'),sv={high:'TINGGI',medium:'SEDANG',low:'RENDAH'},
  a=d.analysis&&typeof d.analysis==='object'?d.analysis:{},https=u=>typeof u==='string'&&/^https:\/\//.test(u),
  sig=(arr,ai)=>Array.isArray(arr)&&arr.length?`<ul class="sll">${arr.slice(0,8).map(x=>`<li>${ai&&x.severity?`<span class="sv">${sv[String(x.severity).toLowerCase()]||esc(x.severity)}</span>`:''}${esc(x.signal||'')}${x.evidence?`<small>${esc(x.evidence)}</small>`:''}</li>`).join('')}</ul>`:'<p>Tidak ada.</p>',
@@ -413,7 +413,7 @@ const mkLoad=(r,sel,m,cb)=>{$(r,sel).onchange=e=>{const f=e.target.files[0];if(!
 const mkDl=(cv,name,type,m,msg)=>cv.toBlob(b=>{if(!b)return mkBad(m,'Gagal membuat file.');const n=b.type===type?name:name.replace(/\.\w+$/,'.png'),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);m.className='msg';m.textContent=msg},type,.92);
 const mkDrop=(id,t)=>`<label class="drop" for="${id}">${svg(IC.up)}<span><b>${t}</b><span>JPG, PNG, atau WebP.</span></span></label><input id="${id}" type="file" accept="image/*">`;
 const mkWrap=(x,t,mw)=>{const o=[];t.split('\n').forEach(p=>{let c='';p.split(/\s+/).forEach(q=>{const n=c?c+' '+q:q;if(c&&x.measureText(n).width>mw){o.push(c);c=q}else c=n});o.push(c)});return o};
-const MKGR=[['Hijau malam','#0f766e','#5be59c'],['Senja','#ff9f5a','#db2777'],['Samudra','#1d4ed8','#06b6d4'],['Ungu neon','#7c3aed','#ec4899'],['Fajar','#ffd23f','#ef4444'],['Gelap','#0a0a0b','#3f3f46']];
+const MKGR=[['Hijau malam','#0f766e','#4fd69a'],['Senja','#ff9a4d','#db2777'],['Samudra','#1d4ed8','#06b6d4'],['Ungu neon','#7c3aed','#ec4899'],['Fajar','#ffc83d','#ef4444'],['Gelap','#0a0a0b','#3f3f46']];
 const TOOLS_FULL=[
 amTool({id:'am-premium',name:'AM Generator',desc:'Aktifkan Alight Motion Pro lewat email verifikasi. Setiap aktivasi memakai 1 limit harian.',S:'am-send',V:'am-verif'}),
 amTool({id:'am-premium2',name:'AM Prem V2',desc:'Aktifkan Alight Motion Pro lewat jalur V2 (Amprem V5): kirim email verifikasi, lalu verifikasi link dari email. Setiap aktivasi memakai 1 limit harian.',S:'am-send2',V:'am-verif2'}),
@@ -788,15 +788,15 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
   ul.onchange=e=>{const i=e.target.dataset&&e.target.dataset.i;if(i===undefined||!items[i])return;items[i].d=e.target.checked;save();draw()};
   ul.onclick=e=>{const i=e.target.dataset&&e.target.dataset.x;if(i===undefined)return;items.splice(+i,1);save();draw()};draw()}},
 {id:'kode-warna',name:'Kode Warna dan Palet',desc:'Pilih warna lalu dapatkan kode HEX, RGB, dan HSL, plus palet warna serasi yang bisa disalin satu per satu. Diproses di browser.',
- html:()=>`<label for="cw">Pilih warna</label><input id="cw" type="color" value="#8a97ff" style="width:100%;height:56px;padding:4px">
-<label for="ch">Atau tulis kode HEX</label><input id="ch" autocomplete="off" maxlength="7" value="#8a97ff" placeholder="#8a97ff">
+ html:()=>`<label for="cw">Pilih warna</label><input id="cw" type="color" value="#8f9aff" style="width:100%;height:56px;padding:4px">
+<label for="ch">Atau tulis kode HEX</label><input id="ch" autocomplete="off" maxlength="7" value="#8f9aff" placeholder="#8f9aff">
 <div class="out"><table class="ktb"><tr><th>HEX</th><td id="vh"></td></tr><tr><th>RGB</th><td id="vr"></td></tr><tr><th>HSL</th><td id="vl"></td></tr></table></div>
 <div id="pal"></div>`,
  init:r=>{const cw=$(r,'#cw'),ch=$(r,'#ch'),pal=$(r,'#pal');
   const h2r=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),r2h=(a,b,c)=>'#'+[a,b,c].map(x=>Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join('');
   const r2l=(R,G,B)=>{R/=255;G/=255;B/=255;const mx=Math.max(R,G,B),mn=Math.min(R,G,B),l=(mx+mn)/2;let h=0,s=0;if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===R?(G-B)/d+(G<B?6:0):mx===G?(B-R)/d+2:(R-G)/d+4;h*=60}return[h,s*100,l*100]};
   const l2h=(h,s,l)=>{h=((h%360)+360)%360;s/=100;l/=100;const f=n=>{const k=(n+h/30)%12,a=s*Math.min(l,1-l);return l-a*Math.max(-1,Math.min(k-3,9-k,1))};return r2h(f(0)*255,f(8)*255,f(4)*255)};
-  const ink=hx=>{const[R,G,B]=h2r(hx);return(.299*R+.587*G+.114*B)>150?'#111111':'#ffffff'};
+  const ink=hx=>{const[R,G,B]=h2r(hx).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});const L=.2126*R+.7152*G+.0722*B;return(L+.05)/.05>=1.05/(L+.05)?'#111111':'#ffffff'};
   const sw=(hx,t)=>`<button type="button" data-c="${hx}" style="background:${hx};color:${ink(hx)};min-width:92px;padding:14px 8px;border-radius:10px;border:1px solid var(--bd);flex:1 1 92px">${hx.toUpperCase()}</button>`;
   const row=(t,a)=>`<p class="hint" style="margin:16px 0 6px">${t}</p><div style="display:flex;flex-wrap:wrap;gap:8px">${a.map(x=>sw(x)).join('')}</div>`;
   const draw=hx=>{const[R,G,B]=h2r(hx),[H,S,L]=r2l(R,G,B);
@@ -983,7 +983,7 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
 {id:'avatar-bulat',name:'Avatar Bulat',desc:'Potong foto jadi foto profil bulat atau kotak membulat dengan bingkai warna. Geser dan zoom foto sampai pas, lalu unduh PNG 1024 px. Diproses di perangkatmu.',
  html:()=>`${mkDrop('af','Pilih foto profil')}
 <label for="as">Bentuk</label><select id="as"><option value="c">Bulat</option><option value="r">Kotak membulat</option></select>
-<label for="ar">Bingkai</label><select id="ar"><option value="">Tanpa bingkai</option><option value="#ffffff">Putih</option><option value="#111111">Hitam</option><option value="#5be59c">Hijau</option></select>
+<label for="ar">Bingkai</label><select id="ar"><option value="">Tanpa bingkai</option><option value="#ffffff">Putih</option><option value="#111111">Hitam</option><option value="#4fd69a">Hijau</option></select>
 <label for="az">Zoom</label><input id="az" type="range" min="100" max="300" value="100">
 <canvas id="cv" width="600" height="600" style="width:100%;max-width:320px;aspect-ratio:1;display:none;margin:12px auto 0;touch-action:none;cursor:grab;background:repeating-conic-gradient(#8884 0 25%,#0000 0 50%) 0 0/20px 20px;border-radius:12px"></canvas>
 <p class="hint" id="ah" hidden>Geser foto di dalam bingkai untuk mengatur posisinya.</p>
@@ -1057,8 +1057,8 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
   ts.onclick=()=>{if(iv){left=end-Date.now();stop();ts.textContent='Lanjut';return}m.textContent='';if(left<=0)left=mins()*60000;end=Date.now()+left;iv=setInterval(tick,250);ts.textContent='Jeda';tick()};
   $(r,'#tr').onclick=reset;$(r,'#tf').onchange=$(r,'#tb').onchange=()=>{if(!iv)reset()};reset()}},
 {id:'gradient-maker',name:'Gradient Maker',desc:'Buat wallpaper atau latar gradasi dua warna dengan sudut dan rasio pilihanmu, lalu unduh sebagai PNG. Cocok untuk latar story dan layar HP. Diproses di perangkatmu.',
- html:()=>`<label for="g1">Warna awal</label><input id="g1" type="color" value="#5be59c" style="width:100%;height:48px;padding:4px">
-<label for="g2">Warna akhir</label><input id="g2" type="color" value="#8a97ff" style="width:100%;height:48px;padding:4px">
+ html:()=>`<label for="g1">Warna awal</label><input id="g1" type="color" value="#4fd69a" style="width:100%;height:48px;padding:4px">
+<label for="g2">Warna akhir</label><input id="g2" type="color" value="#8f9aff" style="width:100%;height:48px;padding:4px">
 <label for="ga">Sudut: <span id="gav">135</span> derajat</label><input id="ga" type="range" min="0" max="360" value="135">
 <label for="gr">Ukuran</label><select id="gr"><option value="1080x1920">Wallpaper HP 9:16</option><option value="1080x1350">Postingan 4:5</option><option value="1080x1080">Persegi 1:1</option><option value="1920x1080">Layar lebar 16:9</option></select>
 <canvas id="cv" style="width:100%;max-width:300px;max-height:420px;border-radius:12px;display:block;margin:12px auto 0;object-fit:contain"></canvas>
@@ -1140,11 +1140,11 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
    while(i<n&&j<k){if(a[i]===b[j]){out.push([' ',a[i]]);i++;j++}else if(L[(i+1)*W+j]>=L[i*W+j+1]){out.push(['-',a[i]]);i++;del++}else{out.push(['+',b[j]]);j++;add++}}
    while(i<n){out.push(['-',a[i++]]);del++}while(j<k){out.push(['+',b[j++]]);add++}
    m.className='msg ok';m.textContent=add||del?add+' baris ditambah, '+del+' baris dihapus.':'Kedua teks sama persis.';
-   const bg={'+':'#5be59c33','-':'#ff6b6b33',' ':'transparent'};
+   const bg={'+':'#4fd69a33','-':'#ff6b6b33',' ':'transparent'};
    rs.innerHTML='<div class="out" style="padding:0;overflow:auto"><div style="font-family:ui-monospace,monospace;font-size:13px;min-width:max-content">'+out.map(x=>`<div style="background:${bg[x[0]]};padding:2px 10px;white-space:pre-wrap">${x[0]===' '?'&nbsp;':x[0]} ${esc(x[1])}</div>`).join('')+'</div></div>'}}},
 {id:'cek-kontras',name:'Cek Kontras Warna',desc:'Cek rasio kontras warna teks dan latar sesuai standar WCAG (AA dan AAA) supaya tulisan mudah dibaca, lengkap dengan pratinjau langsung. Diproses di browser.',
  html:()=>`<label for="k1">Warna teks</label><input id="k1" type="color" value="#111111" style="width:100%;height:48px;padding:4px">
-<label for="k2">Warna latar</label><input id="k2" type="color" value="#5be59c" style="width:100%;height:48px;padding:4px">
+<label for="k2">Warna latar</label><input id="k2" type="color" value="#4fd69a" style="width:100%;height:48px;padding:4px">
 <div id="kp" style="margin:12px 0;padding:18px;border-radius:12px;border:1px solid var(--bd)"><b style="font-size:22px">Contoh teks besar</b><p style="margin:6px 0 0">Contoh teks biasa untuk melihat keterbacaan.</p></div>
 <div class="out"><table class="ktb"><tr><th>Rasio</th><td id="kr"></td></tr><tr><th>Teks biasa AA</th><td id="a1"></td></tr><tr><th>Teks biasa AAA</th><td id="a2"></td></tr><tr><th>Teks besar AA</th><td id="a3"></td></tr><tr><th>Teks besar AAA</th><td id="a4"></td></tr></table></div>`,
  init:r=>{const lum=h=>{const c=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4));return .2126*c[0]+.7152*c[1]+.0722*c[2]};

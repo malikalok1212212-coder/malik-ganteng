@@ -18,7 +18,7 @@ if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWor
  function close(){if(!cur)return;const b=cur.btn;sheet.classList.remove('on');scrim.classList.remove('on');b.setAttribute('aria-expanded','false');document.documentElement.style.overflow='';cur=null;try{b.focus({preventScroll:true})}catch(e){}}
  function open(s,b){build();cur={s,btn:b};b.textContent='';
   const lb=s.id&&document.querySelector('label[for="'+s.id+'"]'),title=(lb&&lb.textContent.replace(/^\s*[•·]\s*/,'').trim())||'Pilih';
-  const tc=getComputedStyle(b).getPropertyValue('--tc')||'#5be59c';sheet.style.setProperty('--tc',tc.trim()||'#5be59c');
+  const tc=getComputedStyle(b).getPropertyValue('--tc')||'#4fd69a';sheet.style.setProperty('--tc',tc.trim()||'#4fd69a');
   sheet.innerHTML='<div class="dh2"><i></i><b></b></div><div class="dl2"></div>';sheet.querySelector('b').textContent=title;
   const L=sheet.querySelector('.dl2');
   [...s.options].forEach((o,i)=>{const x=document.createElement('button');x.type='button';x.className='do';x.setAttribute('role','option');x.setAttribute('aria-selected',i===s.selectedIndex);x.innerHTML='<span></span><em>'+CK+'</em>';x.firstChild.textContent=o.textContent;x.firstChild.style.flex='1';x.firstChild.style.minWidth='0';
@@ -128,3 +128,37 @@ setInterval(function(){tick++;if(typeof mtStatus==='function'&&tick%6===0)mtStat
 /* Banner offline: muncul saat koneksi putus, hilang sendiri saat tersambung lagi. */
 (function(){let b=null;const show=()=>{if(b)return;b=document.createElement('div');b.className='offb';b.setAttribute('role','status');b.textContent='Kamu sedang offline. Halaman yang pernah dibuka tetap bisa dipakai.';document.body.appendChild(b)},hide=()=>{if(b){b.remove();b=null}};
  addEventListener('offline',show);addEventListener('online',hide);if(!navigator.onLine)show()})();
+
+/* Bottom bar: navigasi utama (Beranda, Riwayat, Chat, Role, Profil). Disembunyikan di Global Chat, panel Developer, layar login, dan saat keyboard terbuka. */
+(function(){
+ const bar=document.getElementById('bnav');if(!bar)return;
+ const S=p=>'<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+p+'</svg>';
+ const IT=[
+  ['','Beranda','#ffc83d','<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>'],
+  ['riwayat','Riwayat','#5cd0d8','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'],
+  ['chat','Chat','#ff8fb8','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'],
+  ['role','Role','#ff9a4d','<path d="M4 19h16M4 8l4 4 4-7 4 7 4-4-2 11H6z"/>'],
+  ['profil','Profil','#4fd69a','<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>']
+ ];
+ bar.innerHTML=IT.map(x=>'<a href="#'+x[0]+'" data-k="'+x[0]+'" style="--c:'+x[2]+'">'+S(x[3])+'<span>'+x[1]+'</span></a>').join('');
+ const links=[...bar.querySelectorAll('a')],chatA=bar.querySelector('[data-k="chat"]'),mn=document.getElementById('mn');
+ let typing=false;
+ const isTyping=a=>!!a&&((a.tagName==='INPUT'&&!/^(checkbox|radio|range|button|submit|reset|file|color|image)$/i.test(a.type))||a.tagName==='TEXTAREA'||a.isContentEditable);
+ const sync=()=>{
+  const h=location.hash.slice(1),g=document.querySelector('.gate'),gate=!!g&&g.getClientRects().length>0,off=h==='chat'||h==='owner'||gate;
+  bar.hidden=off;bar.classList.toggle('kb',typing);document.body.classList.toggle('hasbn',!off&&!typing);
+  links.forEach(a=>a.dataset.k===h?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+ };
+ // ketuk item yang sedang aktif: gulir ke atas (Beranda bukan reload)
+ bar.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;const h=location.hash.slice(1);
+  if(a.dataset.k===h){e.preventDefault();scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}});
+ // titik merah Chat mengikuti titik di tombol menu (diatur core.js)
+ const dot=()=>chatA.classList.toggle('nw',!!mn&&mn.classList.contains('nw'));
+ if(mn){try{new MutationObserver(dot).observe(mn,{attributes:true,attributeFilter:['class']})}catch(e){}}dot();
+ // saat mengetik, bar disembunyikan supaya tidak menutupi isian di atas keyboard
+ addEventListener('focusin',e=>{if(isTyping(e.target)){typing=true;sync()}});
+ addEventListener('focusout',()=>setTimeout(()=>{const t=isTyping(document.activeElement);if(t!==typing){typing=t;sync()}},80));
+ addEventListener('hashchange',sync);
+ try{new MutationObserver(sync).observe(document.body,{childList:true})}catch(e){setInterval(sync,1500)}
+ setTimeout(sync,600);sync();
+})();

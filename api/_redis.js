@@ -7,7 +7,7 @@ const configured = () => !!(URL_ && TOKEN);
 async function run(cmds) {
   const r = await fetch(URL_ + '/pipeline', {
     method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' },
-    body: JSON.stringify(cmds), cache: 'no-store'
+    body: JSON.stringify(cmds), cache: 'no-store', signal: AbortSignal.timeout(8000)
   });
   if (!r.ok) throw new Error('redis http ' + r.status);
   const out = await r.json();
