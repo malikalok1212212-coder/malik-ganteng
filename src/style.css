@@ -5390,3 +5390,11 @@ html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root[
 }
 /* v419: logo kucing di header (PNG transparan, tanpa latar kuning) */
 html:not(#_):not(#__):not(#___):root:root:root:root .top .logo:has(>img){background:transparent!important;border:0!important;box-shadow:none!important;border-radius:10px!important}
+
+/* v424: badge role punya warna sendiri (sebelumnya semua .tg2 dipaksa abu-abu) */
+html:not(#_):not(#__):not(#___):root:root:root:root .tg2.rl-dev{background:#a78bfa!important;color:#141413!important;border-color:transparent!important;font-weight:700!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .tg2.rl-own{background:#ff8fb8!important;color:#141413!important;border-color:transparent!important;font-weight:700!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .tg2.rl-pre{background:#5cd0d8!important;color:#141413!important;border-color:transparent!important;font-weight:700!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .tg2.rl-vip{background:#ffb020!important;color:#141413!important;border-color:transparent!important;font-weight:700!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .tg2.rl-mem{background:var(--s3)!important;color:var(--muted)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .tg2.tgc{background:var(--rc,var(--s3))!important;color:#141413!important;border-color:transparent!important;font-weight:700!important}
