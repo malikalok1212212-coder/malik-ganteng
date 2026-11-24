@@ -256,6 +256,97 @@ function gcTiktok(raw) {
   return link ? { link, data } : null;
 }
 
+// ---- TikTok Downloader V2 (NexaDev GET /api/snaptik/): { status, title, thumbnail, download_links:[{type,url}] }. Jenis dikenali dari teks type: MP3/Audio, HD, MP4/Video, Foto ----
+function nxTiktok(raw) {
+  if (!raw || typeof raw !== 'object' || raw.status !== true) return null;
+  const list = Array.isArray(raw.download_links) ? raw.download_links : [];
+  const data = {}, imgs = [];
+  const title = String(raw.title || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+  if (title) data.judul = title;
+  if (isHttp(raw.thumbnail) && String(raw.thumbnail).length < 1500) data.thumbnail = raw.thumbnail;
+  const got = {};
+  for (const it of list) {
+    const u = it && it.url; if (!isHttp(u) || String(u).length > 2500) continue;
+    const ty = String(it.type || '').toLowerCase();
+    let k = '';
+    if (/mp3|audio|music/.test(ty)) k = 'audio';
+    else if (/image|foto|photo|slide/.test(ty) || IMG_EXT.test(u)) { imgs.push(u); continue; }
+    else if (/\bhd\b/.test(ty)) k = 'video_HD';
+    else if (/mp4|video/.test(ty)) k = 'video';
+    if (k && !got[k]) { got[k] = true; data[k] = u; }
+  }
+  [...new Set(imgs)].slice(0, 20).forEach((u, i) => { data['foto_' + (i + 1)] = u; });
+  const link = data.video_HD || data.video || data.audio || data.foto_1 || null;
+  return link ? { link, data } : null;
+}
+
+// ---- AM Preset (NexaDev GET /api/ampreset): { ok, author{username,nickname,avatar,bio}, video{url,cover,description,views,likes,comments}, presets[{type,url,download,commenter,detail,source,byAuthor,pinned}], scanned{comments,replies} }.
+// Hanya https yang diteruskan; playUrl, id internal, dan data lain dibuang ----
+function nxAmPreset(raw) {
+  if (!raw || typeof raw !== 'object' || raw.ok !== true) return null;
+  const sv = (v, n) => (typeof v === 'string' || typeof v === 'number') ? String(v).replace(/\s+/g, ' ').trim().slice(0, n) : '';
+  const hu = (v) => { const u = typeof v === 'string' ? v.trim() : ''; return /^https:\/\//i.test(u) && u.length <= 2500 ? u : ''; };
+  const num = (v) => { const n = Number(v); return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0; };
+  const preset = [];
+  for (const p of (Array.isArray(raw.presets) ? raw.presets : []).slice(0, 40)) {
+    if (!p || typeof p !== 'object') continue;
+    const url = hu(p.url), unduh = hu(p.download) || url;
+    if (!unduh) continue;
+    const t = sv(p.type, 12).toLowerCase() || 'xml';
+    preset.push({ jenis: t, url: url || unduh, unduh, pengirim: sv(p.commenter, 60), detail: sv(p.detail, 300), sumber: sv(p.source, 20).toLowerCase(), kreator: !!p.byAuthor, pin: !!p.pinned });
+  }
+  if (!preset.length) return null;
+  const a = raw.author && typeof raw.author === 'object' ? raw.author : {};
+  const v = raw.video && typeof raw.video === 'object' ? raw.video : {};
+  const sc = raw.scanned && typeof raw.scanned === 'object' ? raw.scanned : {};
+  const jenis = {}; for (const p of preset) jenis[p.jenis] = (jenis[p.jenis] || 0) + 1;
+  const data = {
+    penulis: { username: sv(a.username, 60), nama: sv(a.nickname, 80), avatar: hu(a.avatar), bio: sv(a.bio, 200) },
+    video: { judul: sv(v.description, 300), cover: hu(v.cover), tayang: num(v.views), suka: num(v.likes), komentar: num(v.comments), link: hu(v.url) },
+    total: preset.length, jenis, dipindai: { komentar: num(sc.comments), balasan: num(sc.replies) }, preset
+  };
+  return { link: preset[0].unduh, data };
+}
+
+// ---- Cari Komik (NexaDev GET /komik?q=): { success, source, query, total, results:[{title,link,slug,cover,type,latestChapter,rating}] }. Hanya https yang diteruskan; awalan "Komik " di judul dibuang ----
+function nxKomik(raw, q) {
+  if (!raw || typeof raw !== 'object' || raw.success === false) return null;
+  const sv = (v, n) => (typeof v === 'string' || typeof v === 'number') ? String(v).replace(/\s+/g, ' ').trim().slice(0, n) : '';
+  const hu = (v) => { const u = typeof v === 'string' ? v.trim() : ''; return /^https:\/\//i.test(u) && u.length <= 2500 ? u : ''; };
+  const hasil = [];
+  for (const r of (Array.isArray(raw.results) ? raw.results : []).slice(0, 40)) {
+    if (!r || typeof r !== 'object') continue;
+    const link = hu(r.link); if (!link) continue;
+    const judul = sv(r.title, 200).replace(/^Komik\s+/i, '') || sv(r.slug, 100);
+    if (!judul) continue;
+    const rt = parseFloat(r.rating);
+    hasil.push({ judul, link, cover: hu(r.cover), jenis: sv(r.type, 30), bab: sv(r.latestChapter, 60), rating: Number.isFinite(rt) && rt > 0 && rt <= 10 ? Math.round(rt * 100) / 100 : 0 });
+  }
+  if (!hasil.length) return null;
+  return { link: hasil[0].link, data: { sumber: sv(raw.source, 40) || 'Komikindo', kata: sv(raw.query, 100) || sv(q, 100), total: hasil.length, hasil } };
+}
+
+// ---- Search Anime (GenCipta GET /api/anime/search): { status, data:{ success, query, total, results:[{title,slug,link,poster,status,rating,genres[]}] }, creator }. Hanya https yang diteruskan; akhiran "Subtitle Indonesia" dibuang dari judul ----
+function gcAnime(raw, q) {
+  if (!raw || typeof raw !== 'object' || raw.status === false) return null;
+  const d = raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data) ? raw.data : raw;
+  if (d.success === false) return null;
+  const sv = (v, n) => (typeof v === 'string' || typeof v === 'number') ? String(v).replace(/\s+/g, ' ').trim().slice(0, n) : '';
+  const hu = (v) => { const u = typeof v === 'string' ? v.trim() : ''; return /^https:\/\//i.test(u) && u.length <= 2500 ? u : ''; };
+  const hasil = [];
+  for (const r of (Array.isArray(d.results) ? d.results : []).slice(0, 40)) {
+    if (!r || typeof r !== 'object') continue;
+    const link = hu(r.link); if (!link) continue;
+    const judul = sv(r.title, 200).replace(/\s+Subtitle\s+Indonesia$/i, '') || sv(r.slug, 100);
+    if (!judul) continue;
+    const rt = parseFloat(r.rating);
+    const genre = (Array.isArray(r.genres) ? r.genres : []).map((g) => sv(g, 30)).filter(Boolean).slice(0, 6);
+    hasil.push({ judul, link, poster: hu(r.poster), status: sv(r.status, 30), rating: Number.isFinite(rt) && rt > 0 && rt <= 10 ? Math.round(rt * 100) / 100 : 0, genre });
+  }
+  if (!hasil.length) return null;
+  return { link: hasil[0].link, data: { kata: sv(d.query, 100) || sv(q, 100), total: hasil.length, hasil } };
+}
+
 // ---- Dailymotion Downloader (GenCipta /api/downloader/dailymotion): data{ title, thumbnail, duration, qualities[{quality,url,type}] } ----
 function gcDailymotion(raw) {
   if (!raw || typeof raw !== 'object') return null;
@@ -820,6 +911,7 @@ module.exports = async (req, res) => {
   }
   const altCfg = Object.prototype.hasOwnProperty.call(cfg.alts || {}, tid) ? cfg.alts[tid] : null; // jalur cadangan dua arah (AM Premium)
   if (tool.ac) { /* key api-cloud opsional: bila CLOUDAPI_API_KEY kosong, dipanggil tanpa key seperti contoh di docs */ }
+  else if (tool.noKey) { /* provider tanpa kunci (mis. NexaDev SnapTik) */ }
   else if (!cfg.gcKey && !(altCfg && nxKey())) return fail(500, 'GENCIPTA_API_KEY belum diatur di Environment Variables Vercel.');
 
   let input = String(body.input !== undefined ? body.input : body.email || '').trim();
@@ -913,7 +1005,7 @@ module.exports = async (req, res) => {
         const u = new URL((t.base || cfg.base) + t.path);
         if (t.keyParam && !t.gc && !(t.ac && !acKey())) u.searchParams.set(t.keyParam, t.ac ? acKey() : t.nx ? nxKey() : cfg.key);
         if (multi) { for (const k of Object.keys(multi)) { const fd = (tool.fields || []).find(x => x.key === k); const names = fd && Array.isArray(fd.as) ? fd.as : [k]; for (const n of names) u.searchParams.set(n, multi[k]); } }
-        else { u.searchParams.set(t.param, input); if (t.linkParam) u.searchParams.set(t.linkParam, link2); }
+        else { u.searchParams.set(t.param, input); if (t.paramAlt && t.paramAlt !== t.param) u.searchParams.set(t.paramAlt, input); if (t.linkParam) u.searchParams.set(t.linkParam, link2); }
         if (t.qs) for (const k of Object.keys(t.qs)) u.searchParams.set(k, t.qs[k]);
         r = await fetch(u, { headers, signal: ctrl.signal });
       } else {
@@ -1025,6 +1117,27 @@ module.exports = async (req, res) => {
       if (t.shape === 'gctiktok') {
         const x = gcTiktok(data);
         if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan video. Pastikan link TikTok publik, lalu coba lagi.', retry: true };
+        return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'nxkomik') {
+        const x = nxKomik(data, input);
+        if (!x) return { ok: false, code: 404, error: 'Komik tidak ditemukan. Coba judul lain atau ejaan yang berbeda.' };
+        return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'gcanime') {
+        const x = gcAnime(data, input);
+        if (!x) return { ok: false, code: 404, error: 'Anime tidak ditemukan. Coba judul lain atau ejaan yang berbeda.' };
+        return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'nxampreset') {
+        if (data && data.ok === false) return { ok: false, code: 502, error: errText(data, 'Provider menolak permintaan.'), retry: true };
+        const x = nxAmPreset(data);
+        if (!x) return { ok: false, code: 404, error: 'Tidak ada link preset di komentar atau bio video ini. Pastikan link TikTok publik dan ada komentar yang memuat link preset.' };
+        return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'nxtiktok') {
+        const x = nxTiktok(data);
+        if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan link unduhan. Pastikan video TikTok publik, lalu coba lagi.', retry: true };
         return { ok: true, link: x.link, data: x.data };
       }
       if (t.shape === 'gcdailymotion') {

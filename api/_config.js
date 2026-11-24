@@ -21,6 +21,9 @@ module.exports = {
     // GET /api/spotify/search?q=&limit= -> { status, query, total, data:[{ id, title, artist, album, duration, cover_url, spotify_url, stream_url }] }
     // stream_url butuh API key di header, jadi tidak diberikan ke browser. Unduh/stream menyusul dari endpoint Spotify lain.
     'spotify-play': { gc: true, base: GC_BASE, type: 'text', path: process.env.GENCIPTA_PATH_SPOTIFY_SEARCH || '/api/spotify/search', method: 'GET', param: 'q', qs: { limit: '10' }, shape: 'gcspotify', timeout: 30000 },
+    // Search Anime (GenCipta, kategori Anime): GET /api/anime/search?q= -> { status, data:{ success, query, total, results:[{ title, slug, link, poster, status, rating, genres[] }] }, creator }
+    // Nama parameter bawaan q (juga dikirim sebagai query supaya aman); ubah lewat GENCIPTA_PARAM_ANIME bila docs memakai nama lain.
+    'anime-search': { gc: true, base: GC_BASE, type: 'text', path: process.env.GENCIPTA_PATH_ANIME_SEARCH || '/api/anime/search', method: 'GET', param: process.env.GENCIPTA_PARAM_ANIME || 'q', paramAlt: 'query', shape: 'gcanime', timeout: 30000, pattern: /^[\s\S]{2,80}$/, patternMsg: 'Judul anime 2 sampai 80 karakter.' },
     // Langkah 1: POST /api/am-generator/send-link  body JSON { email } -> { success, email, message }
     'am-send': { gc: true, base: GC_BASE, type: 'email', path: process.env.GENCIPTA_PATH_AM_SEND || '/api/am-generator/send-link', method: 'POST', body: { email: 'email' }, shape: 'gcamsend', timeout: 30000 },
     // Langkah 2: POST /api/am-generator/verify-link  body JSON { email, magicLink } -> { success, message, data:{ email, planName, membershipStatus, validUntil, ... } }
@@ -28,6 +31,12 @@ module.exports = {
     // GET /api/downloader/tiktok?url=  -> { status, title, duration, data:[{type:watermark|nowatermark|nowatermark_hd,url}], music_info:{url}, author:{nickname} }
     'tiktok-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_TIKTOK || '/api/downloader/tiktok', method: 'GET', param: 'url', shape: 'gctiktok', timeout: 40000, host: /(^|\.)tiktok\.com$/i, hostMsg: 'Link harus dari TikTok (tiktok.com, vt.tiktok.com, atau vm.tiktok.com).' }
     ,
+    // TikTok Downloader V2 (NexaDev, tanpa key): GET /api/snaptik/?url=  -> { status, title, thumbnail, download_links:[{type,url}] } (MP4, MP4 HD, MP3)
+    'tiktok-dl2': { nx: true, noKey: true, base: NX_BASE, type: 'url', path: process.env.NEXADEV_PATH_TIKTOK2 || '/api/snaptik/', method: 'GET', param: 'url', shape: 'nxtiktok', timeout: 35000, host: /(^|\.)tiktok\.com$/i, hostMsg: 'Link harus dari TikTok (tiktok.com, vt.tiktok.com, atau vm.tiktok.com).' },
+    // AM Preset (NexaDev, tanpa key): GET /api/ampreset?url=  -> { ok, author, video, total, types{xml,5mb}, presets:[{type,url,download,commenter,detail,source,byAuthor,pinned}], scanned } (memindai komentar, balasan, dan bio)
+    'am-preset': { nx: true, noKey: true, base: NX_BASE, type: 'url', path: process.env.NEXADEV_PATH_AMPRESET || '/api/ampreset', method: 'GET', param: 'url', shape: 'nxampreset', timeout: 45000, host: /(^|\.)tiktok\.com$/i, hostMsg: 'Link harus dari TikTok (tiktok.com, vt.tiktok.com, atau vm.tiktok.com).' },
+    // Cari Komik (NexaDev, tanpa key, kategori Anime): GET /komik?q=  -> { success, source, query, total, results:[{title,link,slug,cover,type,latestChapter,rating}] }
+    'komik-search': { nx: true, noKey: true, base: NX_BASE, type: 'text', path: process.env.NEXADEV_PATH_KOMIK || '/komik', method: 'GET', param: 'q', shape: 'nxkomik', timeout: 30000, pattern: /^[\s\S]{2,80}$/, patternMsg: 'Judul komik 2 sampai 80 karakter.' },
     // GET /api/downloader/instagram-v2?url=[&type=] (reels, video, foto, carousel, DP, stories, highlights). Balasan: { status, data:{ metadata, author, media:{ thumbnail, thumbnails[], videos[{url,type,resolution}] } } }, dibaca gcInstagram (cadangan: pembaca umum aio).
     'ig-dl': { gc: true, base: GC_BASE, type: 'url', path: process.env.GENCIPTA_PATH_INSTAGRAM || '/api/downloader/instagram-v2', method: 'GET', param: 'url', shape: 'gcinstagram', timeout: 45000, host: /(^|\.)instagram\.com$/i, hostMsg: 'Link harus dari Instagram (instagram.com).' },
     // GET /api/downloader/mediafire?url= -> { status, data:{ fileName, fileSize, fileExtension, directDownloadUrl, mediafireUrl, requiresLogin, isPasswordProtected } }

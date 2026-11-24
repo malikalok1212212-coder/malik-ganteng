@@ -255,3 +255,6 @@ Satu paket karena ketiganya menyentuh service worker (`public/sw.js`, cache `mt-
 - Keamanan: endpoint hanya diterima dari layanan push resmi (FCM, Mozilla, Apple, Windows) lewat HTTPS tanpa port (anti-SSRF); `subscribe` butuh login dan dibatasi 20 per 10 menit; tes kirim dijeda 15 dtk.
 - Bila jendela situs sedang terlihat, push tidak ditampilkan (popup di dalam situs yang menangani, tanpa dobel). `pushsubscriptionchange` mendaftarkan ulang otomatis.
 - iPhone: push hanya jalan setelah Malik Tools dipasang ke Layar Utama (iOS 16.4+).
+
+## Search Anime
+Tool `anime-search` (kategori Anime): `GET https://gateway.gencipta.com/api/anime/search?q=` (kunci GenCipta dari server). Balasan `{ status, data:{ success, query, total, results:[{ title, slug, link, poster, status, rating, genres[] }] }, creator }` dibaca `gcAnime()` di `api/tool.js` (hanya tautan https yang diteruskan, akhiran "Subtitle Indonesia" dibuang dari judul). Parameter dikirim sebagai `q` dan `query`; bila docs memakai nama lain, isi `GENCIPTA_PARAM_ANIME` di Vercel. Path bisa diganti lewat `GENCIPTA_PATH_ANIME_SEARCH`. Tampilan ada di `aniHtml/aniInit` pada `public/js/tools.js`.
