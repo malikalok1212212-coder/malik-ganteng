@@ -1,5 +1,5 @@
-// Pembayaran role lewat Meldapay (QRIS). Aksi: create, status, mine, cancel (pengguna login) dan hook (callback dari Meldapay).
-// Alur: create -> tagihan + QRIS -> pengguna bayar -> status (polling) atau hook -> role aktif otomatis. Detail ada di _pay.js.
+// Pembayaran koin lewat Meldapay (QRIS). Aksi: create, status, mine, cancel (pengguna login) dan hook (callback dari Meldapay).
+// Alur: create -> tagihan + QRIS -> pengguna bayar -> status (polling) atau hook -> koin masuk ke saldo otomatis. Detail ada di _pay.js.
 const { guard, clientIp } = require('./_http');
 const { getUser, isOwner, roleOf, roleUntilOf } = require('./_auth');
 const store = require('./_store');
@@ -66,7 +66,7 @@ module.exports = async (req, res) => {
     return res.status(200).json({ ok: hasil === 'Tagihan percobaan berhasil dibuat.', ...r0, nominal_uji: amount, jawaban: seen, hasil });
   }
 
-  if (isOwner(me.email)) return fail(400, 'Akun developer tidak perlu membeli role.');
+  if (isOwner(me.email)) return fail(400, 'Akun developer tidak perlu membeli koin.');
   if (!pay.configured()) return fail(503, 'Pembayaran otomatis belum diaktifkan. Hubungi developer.');
   if (!store.ready()) return fail(500, 'Pembayaran butuh Upstash Redis.');
   const ip = clientIp(req);
@@ -84,7 +84,7 @@ module.exports = async (req, res) => {
       const plan = plans.find((x) => x.id === planId);
       if (!plan) return fail(400, 'Paket tidak ditemukan. Muat ulang halaman lalu pilih lagi.');
       if (!(plan.price >= 1000)) return fail(400, 'Paket ini tidak bisa dibayar online (harga di bawah Rp1.000). Hubungi developer.');
-      // Tolak sebelum bayar bila role tidak bisa diterapkan (mis. sedang VIP lalu beli Premium), supaya uang tidak tertahan.
+      // Tolak sebelum bayar bila paket tidak bisa diterapkan (mis. akun role OWNER), supaya uang tidak tertahan.
       const rec = await store.getUser(me.sub);
       const why = pay.applyPlan(JSON.parse(JSON.stringify(rec || {})), plan);
       if (why) return fail(409, why);
@@ -105,7 +105,7 @@ module.exports = async (req, res) => {
       if (!r.ok || j.success === false || !pay.ID_RE.test(id)) { await report('pay.create', r.error || ('Meldapay membalas ' + r.code + ': ' + clip(j.error || j.message, 120)), plan.id); return fail(502, 'Gagal membuat tagihan. Coba lagi sebentar lagi.'); }
       const amount = Math.floor(Number(j.amount)), fee = Math.max(0, Math.floor(Number(j.fee) || 0)), total = Math.floor(Number(j.total)) || amount + fee;
       if (amount !== plan.price) { await pay.cancelInvoice(id).catch(() => {}); await report('pay.create', 'nominal tagihan tidak cocok ' + amount + ' vs ' + plan.price, id); return fail(502, 'Gagal membuat tagihan. Coba lagi sebentar lagi.'); }
-      const o = { id, sub: me.sub, email: me.email, name: clip(me.name, 60), plan: { id: plan.id, role: plan.role, days: plan.days, credit: plan.credit, price: plan.price }, amount, fee, total, qris: safeUrl(j.qris_image, true), link: safeUrl(j.payment_link), expiredAt: clip(j.expired_at, 40), status: 'pending', ts: Date.now() };
+      const o = { id, sub: me.sub, email: me.email, name: clip(me.name, 60), plan: { id: plan.id, coins: plan.coins, price: plan.price }, amount, fee, total, qris: safeUrl(j.qris_image, true), link: safeUrl(j.payment_link), expiredAt: clip(j.expired_at, 40), status: 'pending', ts: Date.now() };
       if (!(await pay.saveNew(o))) return fail(500, 'Gagal menyimpan tagihan. Coba lagi.');
       return out(o);
     }
@@ -128,7 +128,7 @@ module.exports = async (req, res) => {
     if (action === 'history' && req.method === 'GET') {
       if (await rate.limited('payhist', me.sub, 30, 600)) return fail(429, 'Terlalu sering mengecek. Tunggu sebentar.');
       const list = (await pay.ordersOf(me.sub)).filter((o) => ['done', 'paid', 'refused', 'expired'].includes(o.status))
-        .map((o) => ({ id: o.id, status: o.status, role: o.plan && o.plan.role, days: o.plan && o.plan.days, total: o.total || o.amount, ts: o.ts }));
+        .map((o) => ({ id: o.id, status: o.status, coins: o.plan && o.plan.coins, role: o.plan && o.plan.role, days: o.plan && o.plan.days, total: o.total || o.amount, ts: o.ts }));
       return res.status(200).json({ ok: true, list });
     }
 

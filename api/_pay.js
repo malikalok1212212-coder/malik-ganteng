@@ -1,20 +1,23 @@
-// Pembayaran role lewat Meldapay (QRIS). Tagihan dibuat di server, role diaktifkan otomatis setelah Meldapay melapor "paid".
+// Pembayaran koin lewat Meldapay (QRIS). Tagihan dibuat di server, koin ditambahkan otomatis ke saldo setelah Meldapay melapor "paid".
 // Redis:
-//   mt:pay:orders     (hash)  invoice_id -> JSON pesanan { id, sub, email, name, plan, amount, fee, total, qris, link, expiredAt, status, ts, ... }
+//   mt:pay:orders     (hash)  invoice_id -> JSON pesanan { id, sub, email, name, plan:{id,coins,price}, amount, fee, total, qris, link, expiredAt, status, ts, ... }
 //   mt:pay:ul:<sub>   (list)  invoice_id terbaru milik pengguna (maks. 10)
 // status pesanan: pending -> paid (sedang diterapkan) -> done | refused (dibayar tapi role ditolak, perlu ditangani developer)
 //                 pending -> expired | cancelled
+// Pesanan lama (sebelum sistem koin) punya plan { role, days, credit }: tetap diselesaikan sebagai role bila masih ada yang dibayar.
 // Kunci keamanan: webhook TIDAK dipercaya begitu saja. Setiap klaim "paid" dicek ulang ke API Meldapay memakai API key rahasia kita.
 const crypto = require('crypto');
 const R = require('./_redis');
 const redeem = require('./_redeem');
 const store = require('./_store');
 const { roleActive } = require('./_auth');
+const credits = require('./_credits');
 
 const OKEY = 'mt:pay:orders', ULIST = (s) => 'mt:pay:ul:' + s;
 const ID_RE = /^[A-Za-z0-9_-]{4,64}$/;
 const FINAL = new Set(['done', 'expired', 'cancelled', 'refused']);
 const LEASE_MS = 45000;
+const VIP_DAYS = Math.max(0, parseInt(process.env.PAY_VIP_DAYS, 10) || 0); // 0 = VIP permanen untuk pembeli koin
 
 const apiKey = () => process.env.MELDAPAY_APIKEY || '';
 const base = () => (process.env.MELDAPAY_BASE_URL || 'https://meldapay.com').trim().replace(/\/+$/, '');
@@ -104,15 +107,21 @@ async function ordersOf(sub) {
   return (arr || []).map((x) => { try { return x ? JSON.parse(x) : null; } catch (e) { return null; } }).filter(Boolean);
 }
 // Data yang boleh dilihat pengguna.
-const view = (o) => ({ id: o.id, status: o.status, plan: o.plan, amount: o.amount, fee: o.fee, total: o.total, qris: o.qris, link: o.link, ts: o.ts, note: o.status === 'refused' ? 'Pembayaran diterima tetapi role belum bisa diaktifkan otomatis. Hubungi developer dengan menyebut ID tagihan ini.' : undefined });
+const view = (o) => ({ id: o.id, status: o.status, plan: o.plan, amount: o.amount, fee: o.fee, total: o.total, qris: o.qris, link: o.link, expiredAt: o.expiredAt, ts: o.ts, note: o.status === 'refused' ? 'Pembayaran diterima tetapi koin belum bisa ditambahkan otomatis. Hubungi developer dengan menyebut ID tagihan ini.' : undefined });
 
 // ---- terapkan paket ke data pengguna (rec diubah langsung). Teks alasan bila ditolak, null bila berhasil ----
 function applyPlan(rec, plan, now = Date.now()) {
   const cur = roleActive(rec, now) ? rec.role : 'member';
-  if (cur === 'owner') return 'Role OWNER sudah punya limit tak terbatas, tidak perlu membeli role lagi.';
+  if (cur === 'owner') return 'Role OWNER sudah punya koin tak terbatas, tidak perlu membeli koin.';
+  // Paket koin: koin masuk ke saldo (tidak hangus) dan pembeli otomatis menjadi VIP (permanen; PAY_VIP_DAYS > 0 = masa aktif dalam hari, diperpanjang tiap beli).
+  // Premium tidak dijual: diberikan developer lewat kode redeem gratis. Premium dinaikkan jadi VIP; VIP yang sudah permanen tetap permanen.
+  if (plan.coins > 0) return redeem.apply(rec, { role: 'vip', days: VIP_DAYS, coins: plan.coins }, now, roleActive);
+  // Pesanan lama (sebelum sistem koin): terapkan sebagai role seperti dulu.
   if (plan.role === 'owner') { rec.role = 'owner'; delete rec.roleUntil; delete rec.crMax; delete rec.cr; delete rec.crBonus; return null; }
-  return redeem.apply(rec, { role: plan.role, days: plan.days, credit: plan.credit }, now, roleActive);
+  if (plan.role === 'premium' || plan.role === 'vip') return redeem.apply(rec, { role: plan.role, days: plan.days }, now, roleActive);
+  return 'Paket tidak dikenal.';
 }
+const planLabel = (p) => (p && p.coins > 0 ? p.coins + ' koin' : String(p && p.role || '?').toUpperCase() + (p && p.role === 'owner' ? ' permanen' : ' ' + (p && p.days) + ' hari'));
 
 // ---- selesaikan pesanan yang sudah dibayar (aman dipanggil berulang dan bersamaan: hanya satu pemenang) ----
 async function fulfill(id, alog) {
@@ -137,7 +146,7 @@ async function fulfill(id, alog) {
     });
   } catch (e) { throw e; } // tetap 'paid' + lease: percobaan berikutnya mengambil alih setelah LEASE_MS
   const final = await mutateOrder(id, (x) => ({ ...x, status: state === 'refused' ? 'refused' : 'done', doneAt: Date.now(), why: why || undefined }));
-  const d = o.plan.role.toUpperCase() + (o.plan.role === 'owner' ? ' permanen' : ' ' + o.plan.days + ' hari');
+  const d = planLabel(o.plan);
   if (alog) await alog.add({ by: 'meldapay', act: 'bayar', sub: o.sub, email: o.email, name: o.name, detail: state === 'refused' ? 'DIBAYAR TAPI GAGAL DITERAPKAN (' + why + ') ' + d + ', Rp' + o.total + ', invoice ' + o.id : d + ', Rp' + o.total + ' (paket ' + o.plan.id + '), invoice ' + o.id + (state === 'dup' ? ' (sudah diterapkan sebelumnya)' : '') });
   if (state !== 'refused') await R.run([['INCR', 'mt:chat:ver']]).catch(() => {}); // Global Chat memuat ulang badge/role baru
   return final;
@@ -165,4 +174,4 @@ async function sync(id, alog, opts = {}) {
   return o;
 }
 
-module.exports = { lastCheck, configured, createInvoice, invoiceStatus, cancelInvoice, verifySig, rawBody, getOrder, mutateOrder, saveNew, ordersOf, view, applyPlan, fulfill, sync, ID_RE, FINAL };
+module.exports = { planLabel, lastCheck, configured, createInvoice, invoiceStatus, cancelInvoice, verifySig, rawBody, getOrder, mutateOrder, saveNew, ordersOf, view, applyPlan, fulfill, sync, ID_RE, FINAL };

@@ -733,13 +733,13 @@ module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   const fail = (code, error) => res.status(code).json({ ok: false, error });
 
-  if (req.method === 'GET' && req.query && req.query.credits) { // sisa limit pengguna yang sedang masuk
+  if (req.method === 'GET' && req.query && req.query.credits) { // saldo koin pengguna yang sedang masuk
     const u = getUser(req);
-    if (!u) return fail(401, 'Masuk dulu untuk melihat limit.');
+    if (!u) return fail(401, 'Masuk dulu untuk melihat koin.');
     try {
       const rec = await store.getUser(u.sub);
       return res.status(200).json({ ok: true, credits: credits.info(rec, roleOf(u.email, rec)) });
-    } catch (e) { return fail(503, 'Data limit belum bisa dibaca.'); }
+    } catch (e) { return fail(503, 'Data koin belum bisa dibaca.'); }
   }
   if (req.method !== 'POST') return fail(405, 'Metode tidak diizinkan.');
   if (process.env.ACCESS_CODE && req.headers['x-access-code'] !== process.env.ACCESS_CODE)
@@ -779,7 +779,7 @@ module.exports = async (req, res) => {
   if (tool.local === 'nexarch') {
     if (await rate.limited('rch', ip, 4, 600)) return fail(429, 'Terlalu sering. Tunggu beberapa menit sebelum mengirim reaksi lagi.');
     const fl = body.fields && typeof body.fields === 'object' ? body.fields : {};
-    // Limit harian (jatah yang sama dengan AM Generator). Dipesan dulu, dikembalikan bila reaksi gagal.
+    // Koin (saldo yang sama dengan AM Generator). Dipotong dulu, dikembalikan bila reaksi gagal.
     let price = credits.cost(tid, null), reserved = 0, fromBonus = 0, cr = null;
     if (store.ready()) {
       try { const ov = await store.getTool(tid); const n = ov ? parseInt(ov.credit, 10) : NaN; if (Number.isFinite(n)) price = Math.max(0, Math.min(99, n)); }
@@ -802,8 +802,8 @@ module.exports = async (req, res) => {
           reserved = price; cr = credits.info(rec, roleOf(me.email, rec));
         } catch (e) {
           if (e && e.message === 'NOCREDIT')
-            return res.status(429).json({ ok: false, error: 'Limit harian habis. Limit kembali setelah 24 jam sejak pemakaian pertama.', credits: e.ci });
-          return fail(503, 'Data limit belum bisa dibaca. Coba lagi sebentar lagi.');
+            return res.status(429).json({ ok: false, error: 'Koin tidak cukup. Tool ini butuh ' + price + ' koin, saldomu ' + (e.ci && e.ci.left != null ? e.ci.left : 0) + '. Beli koin di menu Beli Koin.', need: price, credits: e.ci });
+          return fail(503, 'Data koin belum bisa dibaca. Coba lagi sebentar lagi.');
         }
       }
     }
@@ -874,7 +874,7 @@ module.exports = async (req, res) => {
     catch (e) { /* Redis bermasalah: pakai harga bawaan */ }
   }
   let reserved = 0, fromBonus = 0, done = false, cr = null, sKind = 'e', sMsg = '';
-  if (price) { // tool yang memakai limit: wajib login. Limit dipesan (dipotong) atomik dulu; bila provider gagal, dikembalikan di blok finally
+  if (price) { // tool yang memakai koin: wajib login. Koin dipotong atomik dulu; bila provider gagal, dikembalikan di blok finally
     if (!me) return fail(401, 'Masuk dulu untuk memakai tool ini.');
     if (isOwner(me.email)) cr = credits.info(null, 'developer');
     else if (store.ready()) {
@@ -891,8 +891,8 @@ module.exports = async (req, res) => {
         reserved = price; cr = credits.info(rec, roleOf(me.email, rec));
       } catch (e) {
         if (e && e.message === 'NOCREDIT')
-          return res.status(429).json({ ok: false, error: 'Limit harian habis. Limit kembali setelah 24 jam sejak pemakaian pertama.', credits: e.ci });
-        return fail(503, 'Data limit belum bisa dibaca. Coba lagi sebentar lagi.');
+          return res.status(429).json({ ok: false, error: 'Koin tidak cukup. Tool ini butuh ' + price + ' koin, saldomu ' + (e.ci && e.ci.left != null ? e.ci.left : 0) + '. Beli koin di menu Beli Koin.', need: price, credits: e.ci });
+        return fail(503, 'Data koin belum bisa dibaca. Coba lagi sebentar lagi.');
       }
     }
   }
@@ -1114,7 +1114,7 @@ module.exports = async (req, res) => {
   } finally {
     if (!done && sKind === 'e' && !(me && isOwner(me.email))) report('tool.' + tid, sMsg || 'provider error'); // kegagalan provider langsung terpantau
     if (!(me && isOwner(me.email))) await stats.record(tid, done ? 'o' : sKind, me && me.sub, sMsg); // statistik global; tes developer tidak dihitung
-    if (reserved && !done) { // provider gagal / timeout / hasil ditolak: limit yang sudah dipesan dikembalikan
+    if (reserved && !done) { // provider gagal / timeout / hasil ditolak: koin yang sudah dipotong dikembalikan
       try { await store.mutateUser(me.sub, (r) => { if (!r) return null; credits.refund(r, reserved, Date.now(), fromBonus); return r; }); }
       catch (e) { console.error('[refund]', e && e.message); }
     }

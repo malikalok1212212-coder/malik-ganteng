@@ -167,7 +167,7 @@ module.exports = {
       ] }
     ,
     // api-cloud (plan Pro & Enterprise) AM Prem V2 = Amprem V5: GET /premium/amprem5?action=&email=&link=. Dua langkah, sama seperti AM Generator:
-    // langkah 1 (kirim link verifikasi ke email) lalu langkah 2 (verifikasi link dari email, memakai 1 limit harian). action 1 = Kirim link, action 2 = Verifikasi (sesuai docs api-cloud). Nilai bisa diubah lewat env bila docs berubah.
+    // langkah 1 (kirim link verifikasi ke email) lalu langkah 2 (verifikasi link dari email, memakai 1 koin). action 1 = Kirim link, action 2 = Verifikasi (sesuai docs api-cloud). Nilai bisa diubah lewat env bila docs berubah.
     'am-send2': { ac: true, base: AC_BASE, type: 'email', path: process.env.CLOUDAPI_PATH_AMPREM5 || '/premium/amprem5', method: 'GET', param: 'email', keyParam: AC_KEY_PARAM, qs: { action: process.env.CLOUDAPI_AMPREM5_ACTION_SEND || '1' }, shape: 'acam', timeout: 40000 },
     'am-verif2': { ac: true, base: AC_BASE, type: 'email-link', path: process.env.CLOUDAPI_PATH_AMPREM5 || '/premium/amprem5', method: 'GET', param: 'email', linkParam: 'link', keyParam: AC_KEY_PARAM, qs: { action: process.env.CLOUDAPI_AMPREM5_ACTION_VERIF || '2' }, shape: 'acam', timeout: 55000 }
     ,
@@ -187,7 +187,7 @@ module.exports = {
     // NexaDev: GET /api/rch?key=&url=&reaction= (kunci dari env NEXADEV_API_KEY, ditangani di api/tool.js)
     'rch': { local: 'nexarch', type: 'multi' }
     ,
-    // api-cloud (plan Pro): V2 GET /tools/rch?link=&emoji= dan V3 GET /tools/reactch-v4?url=&reaction=. Jatah limit harian sama dengan Reaksi Channel (lihat _credits.js). Ditangani reactChannelCloud() di api/tool.js.
+    // api-cloud (plan Pro): V2 GET /tools/rch?link=&emoji= dan V3 GET /tools/reactch-v4?url=&reaction=. Koin sama dengan Reaksi Channel (lihat _credits.js). Ditangani reactChannelCloud() di api/tool.js.
     'rch2': { local: 'nexarch', variant: 'v2', type: 'multi' }
     ,
     'rch3': { local: 'nexarch', variant: 'v3', type: 'multi' }

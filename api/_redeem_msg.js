@@ -1,6 +1,6 @@
 // Teks pengumuman kode redeem untuk Saluran dan grup WhatsApp (format WhatsApp: *tebal*, _miring_, ```monospace```).
 // Dipakai admin.js saat developer mencentang "Umumkan otomatis". Teks kustom boleh memakai penanda:
-//   {kode} {role} {durasi} {limit} {kuota} {kedaluwarsa} {catatan} {link}
+//   {kode} {koin} {role} {durasi} {limit} {kuota} {kedaluwarsa} {catatan} {link}   ({limit} = sama dengan {koin}, dipertahankan untuk teks lama)
 const SITE = (process.env.SITE_URL || 'https://www.maliktools.biz.id').replace(/\/+$/, '');
 
 const TZ = 'Asia/Jakarta';
@@ -13,15 +13,18 @@ const fmtDate = (ms) => {
 // Bahan teks dari data kode: semuanya sudah berupa kalimat siap pakai
 function facts(spec, pretty) {
   const role = String(spec.role || '').toUpperCase();
+  const koin = spec.coins > 0 ? spec.coins + ' koin' : '';
   return {
     kode: pretty,
+    koin,
     role,
-    durasi: spec.days > 0 ? spec.days + ' hari' : 'Permanen',
-    limit: spec.credit > 0 ? spec.credit + ' limit/hari' : 'Limit bawaan ' + role,
+    durasi: role ? (spec.days > 0 ? spec.days + ' hari' : 'Permanen') : '',
+    limit: koin,
     kuota: spec.max <= 1 ? '1 akun' : spec.max + ' akun',
     kedaluwarsa: spec.exp > 0 ? fmtDate(spec.exp) : '',
     catatan: spec.note || '',
-    link: SITE + '/#profil'
+    link: SITE + '/#profil',
+    isi: [koin, role ? role + ' (' + (spec.days > 0 ? spec.days + ' hari' : 'permanen') + ')' : ''].filter(Boolean).join(' + ')
   };
 }
 
@@ -34,14 +37,13 @@ const STYLES = {
     return [
       '*Kode Redeem Malik Tools*',
       '',
-      'Kode baru untuk mengaktifkan ' + f.role + ' di akun kamu.',
+      'Kode baru untuk menambah ' + f.isi + ' di akun kamu.',
       '',
       'Kode:',
       '```' + f.kode + '```',
       '',
-      '• Akses: ' + f.role,
-      '• Masa aktif: ' + f.durasi,
-      '• Limit: ' + f.limit,
+      f.koin ? '• Isi kode: ' + f.koin : null,
+      f.role ? '• Role: ' + f.role + ' (' + f.durasi + ')' : null,
       '• Batas pemakaian: ' + f.kuota,
       f.kedaluwarsa ? '• Berlaku sampai: ' + f.kedaluwarsa : null,
       f.catatan ? '• Catatan: ' + f.catatan : null,
@@ -60,15 +62,14 @@ const STYLES = {
     return [
       '*Kode Redeem Malik Tools*',
       '',
-      'Developer membagikan kode untuk mengaktifkan ' + f.role + ' di akun kamu.',
+      'Developer membagikan kode untuk menambah ' + f.isi + ' di akun kamu.',
       '',
       '*Kode*',
       '```' + f.kode + '```',
       '',
       '*Detail*',
-      '• Akses: ' + f.role,
-      '• Masa aktif: ' + f.durasi,
-      '• Limit: ' + f.limit,
+      f.koin ? '• Isi kode: ' + f.koin : null,
+      f.role ? '• Role: ' + f.role + ' (' + f.durasi + ')' : null,
       '• Batas pemakaian: ' + f.kuota,
       f.kedaluwarsa ? '• Berlaku sampai: ' + f.kedaluwarsa : null,
       f.catatan ? '• Catatan: ' + f.catatan : null,
@@ -82,9 +83,9 @@ const STYLES = {
   // Pendek, cocok untuk grup yang tidak mau pesan panjang
   singkat(f) {
     return [
-      '*Kode ' + f.role + ' Malik Tools*',
+      '*Kode ' + (f.koin || f.role) + ' Malik Tools*',
       '```' + f.kode + '```',
-      f.durasi + ' · ' + f.limit + ' · batas ' + f.kuota,
+      f.isi + ' · batas ' + f.kuota,
       f.kedaluwarsa ? 'Sampai ' + f.kedaluwarsa : null,
       '',
       'Cara memakai: menu Profil, isi kotak "Punya kode redeem?".'
@@ -98,7 +99,7 @@ const STYLE_IDS = Object.keys(STYLES);
 function build(spec, pretty, style, custom) {
   const f = facts(spec, pretty);
   const c = String(custom || '').trim();
-  if (c) return c.replace(/\{(kode|role|durasi|limit|kuota|kedaluwarsa|catatan|link)\}/g, (m, k) => f[k]).slice(0, 2000);
+  if (c) return c.replace(/\{(kode|koin|role|durasi|limit|kuota|kedaluwarsa|catatan|link)\}/g, (m, k) => f[k]).slice(0, 2000);
   const fn = STYLES[style] || STYLES.rapi;
   return fn(f).filter((l) => l !== null).join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }

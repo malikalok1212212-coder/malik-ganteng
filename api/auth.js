@@ -105,7 +105,7 @@ module.exports = async (req, res) => {
     } catch (e) { console.error('[profile]', e && e.message); return fail(500, 'Gagal menyimpan profil. Coba lagi.'); }
   }
 
-  // Tukar kode redeem -> Premium / VIP. Wajib login; satu pengguna hanya bisa memakai satu kode sekali.
+  // Tukar kode redeem -> koin (dan role Premium / VIP bila kodenya memuat role). Wajib login; satu pengguna hanya bisa memakai satu kode sekali.
   if (action === 'redeem' && req.method === 'POST') {
     const me = getUser(req);
     if (!me) return fail(401, 'Masuk dulu supaya kode bisa dipakai di akunmu.');
@@ -136,7 +136,7 @@ module.exports = async (req, res) => {
       if (!rec) { await redeem.release(code, me.sub).catch(() => {}); return fail(409, refuse || 'Kode tidak bisa dipakai.'); }
       const role = roleOf(me.email, rec);
       await alog.add({ by: 'redeem', act: 'redeem', sub: me.sub, email: me.email, name: rec.dname || rec.name || me.name, detail: redeem.pretty(code) + ' -> ' + redeem.describe(cl.c, extended) });
-      return res.status(200).json({ ok: true, role, roleUntil: roleUntilOf(me.email, rec), credit: credits.info(rec, role), message: 'Kode berhasil dipakai. ' + redeem.describe(cl.c, extended) + ' aktif di akunmu.' });
+      return res.status(200).json({ ok: true, role, roleUntil: roleUntilOf(me.email, rec), credit: credits.info(rec, role), message: 'Kode berhasil dipakai. ' + redeem.describe(cl.c, extended) + '.' });
     } catch (e) { console.error('[redeem]', e && e.message); return fail(500, 'Gagal memakai kode, coba lagi sebentar lagi.'); }
   }
 

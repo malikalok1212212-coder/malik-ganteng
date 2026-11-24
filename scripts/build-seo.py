@@ -165,7 +165,7 @@ info_pages = [
 <ul>
 <li>Google, untuk masuk dengan akun Google.</li>
 <li>Vercel, untuk hosting dan penyimpanan file.</li>
-<li>Upstash, untuk basis data akun, chat, dan limit.</li>
+<li>Upstash, untuk basis data akun, chat, dan saldo koin.</li>
 <li>Penyedia API tool (GenCipta dan api-cloud), yang menerima tautan, teks, atau foto yang kamu kirim lewat tool.</li>
 <li>Penyedia email (SMTP), untuk mengirim kode verifikasi.</li>
 </ul>

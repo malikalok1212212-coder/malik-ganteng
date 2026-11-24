@@ -1,10 +1,11 @@
-// Kode redeem untuk role Premium / VIP. Disimpan di Upstash Redis:
-//   mt:redeem:codes  (hash)  KODE -> JSON { code, role, days, credit, max, exp, note, ts, by }
+// Kode redeem untuk menambah koin (dan, opsional, role Premium / VIP). Disimpan di Upstash Redis:
+//   mt:redeem:codes  (hash)  KODE -> JSON { code, coins, role, days, max, exp, note, ts, by }  (kode lama bisa berisi credit = limit/hari, kini diabaikan)
 //   mt:redeem:used   (hash)  KODE -> jumlah pemakaian (angka, diubah atomik lewat Lua)
 //   mt:redeem:by:KODE (set)  sub pengguna yang sudah memakai kode itu (satu pengguna = satu kali per kode)
 // Kode kanonik = huruf besar + angka tanpa tanda baca ("mt-abcd-efgh" dan "MTABCDEFGH" dianggap sama).
 const crypto = require('crypto');
 const R = require('./_redis');
+const credits = require('./_credits');
 
 const H = 'mt:redeem:codes', U = 'mt:redeem:used', S = (c) => 'mt:redeem:by:' + c;
 const DAY = 24 * 60 * 60 * 1000;
@@ -38,24 +39,36 @@ async function claim(code, sub, now = Date.now()) {
 const release = (code, sub) => R.run([['EVAL', RELEASE, 3, H, U, S(code), code, String(sub)]]);
 
 // Terapkan kode ke data pengguna (rec diubah langsung). Mengembalikan teks alasan bila ditolak, atau null bila berhasil.
-// roleActive dari _auth: true bila Premium/VIP masih berlaku.
+// roleActive dari _auth: true bila Premium/VIP masih berlaku. Kode berisi koin (c.coins) dan/atau role (c.role, opsional).
 function apply(rec, c, now, roleActive) {
   const cur = roleActive(rec, now) ? rec.role : 'member';
-  if (cur === 'owner') return 'Role OWNER sudah punya limit tak terbatas, tidak perlu memakai kode.';
-  const ms = c.days > 0 ? c.days * DAY : 0;
-  if (cur === 'vip' && c.role === 'premium') return 'Kamu sedang VIP. Kode Premium tidak bisa dipakai selama VIP masih aktif.';
-  if (cur === c.role) {
-    if (!rec.roleUntil) return 'Role ' + roleName(cur) + ' kamu sudah permanen, kode ini tidak perlu dipakai.';
-    if (ms === 0) delete rec.roleUntil; else rec.roleUntil += ms; // role sama: masa aktif diperpanjang dari sisa waktu
-    if (c.credit > 0) rec.crMax = Math.max(rec.crMax || 0, c.credit);
-  } else { // member -> role baru, atau Premium -> VIP: dihitung dari sekarang
-    rec.role = c.role;
-    if (ms === 0) delete rec.roleUntil; else rec.roleUntil = now + ms;
-    if (c.credit > 0) rec.crMax = c.credit; else delete rec.crMax;
-  }
+  if (cur === 'owner') return 'Role OWNER sudah punya koin tak terbatas, tidak perlu memakai kode.';
+  const coins = Math.max(0, Math.floor(Number(c.coins)) || 0);
+  if (c.role) {
+    const ms = c.days > 0 ? c.days * DAY : 0;
+    if (cur === 'vip' && c.role === 'premium') { // VIP tidak diturunkan; bila kode berisi koin, koinnya tetap masuk (pembeli koin otomatis VIP)
+      if (!coins) return 'Kamu sedang VIP. Kode Premium tidak bisa dipakai selama VIP masih aktif.';
+      c.skippedRole = true; credits.add(rec, coins); return null;
+    }
+    if (cur === c.role) {
+      if (!rec.roleUntil && !coins) return 'Role ' + roleName(cur) + ' kamu sudah permanen, kode ini tidak perlu dipakai.';
+      if (rec.roleUntil) { if (ms === 0) delete rec.roleUntil; else rec.roleUntil += ms; } // role sama: masa aktif diperpanjang dari sisa waktu
+    } else { // member -> role baru, atau Premium -> VIP: dihitung dari sekarang
+      rec.role = c.role;
+      if (ms === 0) delete rec.roleUntil; else rec.roleUntil = now + ms;
+    }
+  } else if (!coins) return 'Kode ini tidak berisi koin. Hubungi developer.';
+  if (coins > 0) credits.add(rec, coins);
   return null;
 }
-const describe = (c, extended) => roleName(c.role) + (c.days > 0 ? ' ' + c.days + ' hari' : ' permanen') + (extended ? ' (masa aktif diperpanjang)' : '');
+// Kalimat hasil untuk pengguna dan log, mis. "+50 koin masuk ke saldo" atau "PREMIUM 7 hari aktif".
+const describe = (c, extended) => {
+  const parts = [];
+  if (c.coins > 0) parts.push('+' + c.coins + ' koin masuk ke saldo');
+  if (c.role && !c.skippedRole) parts.push(roleName(c.role) + (c.days > 0 ? ' ' + c.days + ' hari' : ' permanen') + (extended ? ' (masa aktif diperpanjang)' : '') + ' aktif');
+  if (c.skippedRole) parts.push('role tetap VIP');
+  return parts.join(' dan ') || 'tanpa isi';
+};
 
 const state = (c, used, now) => (c.exp > 0 && c.exp <= now ? 'kedaluwarsa' : used >= c.max ? 'habis' : 'aktif');
 
@@ -72,7 +85,7 @@ async function list(now = Date.now()) {
   return out.sort((a, b) => (b.ts || 0) - (a.ts || 0));
 }
 
-// spec: { role, days, credit, max, exp, note, by }. custom = kode buatan sendiri (hanya untuk n = 1).
+// spec: { coins, role, days, max, exp, note, by }. custom = kode buatan sendiri (hanya untuk n = 1).
 async function create(spec, n, custom) {
   const [len] = await R.run([['HLEN', H]]);
   if ((len || 0) + n > MAX_CODES) return { error: 'Terlalu banyak kode tersimpan (maksimal ' + MAX_CODES + '). Hapus kode lama dulu.' };

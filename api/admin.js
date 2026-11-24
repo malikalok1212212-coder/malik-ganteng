@@ -71,7 +71,7 @@ async function announceCode(me, spec, code, an, img) {
   return { ok: true, id: d.id || '', total: d.total || 0, channel: !!d.channel };
 }
 
-// Harga tool yang diatur developer: { idTool: jumlahLimit }. 0 = gratis. Tool tanpa entri memakai harga bawaan.
+// Harga tool yang diatur developer: { idTool: jumlahKoin }. 0 = gratis. Tool tanpa entri memakai harga bawaan.
 function pricesOf(m) {
   const out = {};
   for (const id of Object.keys(m || {})) {
@@ -82,8 +82,8 @@ function pricesOf(m) {
   return out;
 }
 
-// Paket role yang dijual: lihat _plans.js (dipakai bersama pay.js).
-const { DEFAULT_PLANS, cleanPlans, plansOf } = require('./_plans');
+// Paket koin yang dijual: lihat _plans.js (dipakai bersama pay.js).
+const { DEFAULT_PLANS, MAX_PLANS, cleanPlans, plansOf } = require('./_plans');
 
 // Tool yang dinonaktifkan sementara oleh developer: daftar id tool server. Disimpan di data tool dengan kunci khusus __off.
 const offOf = (m) => { const e = m && m.__off; return e && Array.isArray(e.list) ? e.list.filter((id) => Object.prototype.hasOwnProperty.call(cfg.tools, id)) : []; };
@@ -146,7 +146,7 @@ module.exports = async (req, res) => {
       if (req.method !== 'POST') return fail(405, 'Metode tidak diizinkan.');
       if (action === 'codepreview') { // pratinjau teks pengumuman tanpa membuat kode
         const style = rmsg.STYLE_IDS.includes(body.style) ? body.style : 'rapi';
-        const spec = { role: body.role === 'vip' ? 'vip' : 'premium', days: Math.max(0, Math.floor(Number(body.days)) || 0), credit: Math.max(0, Math.floor(Number(body.credit)) || 0), max: Math.max(1, Math.floor(Number(body.max)) || 1), exp: Math.floor(Number(body.exp)) || 0, note: clip(body.note, 60) };
+        const spec = { role: ['premium', 'vip'].includes(body.role) ? body.role : '', days: Math.max(0, Math.floor(Number(body.days)) || 0), coins: Math.max(0, Math.floor(Number(body.coins)) || 0), max: Math.max(1, Math.floor(Number(body.max)) || 1), exp: Math.floor(Number(body.exp)) || 0, note: clip(body.note, 60) };
         const shown = body.custom ? redeem.pretty(redeem.canon(body.custom)) : 'MT-ABCD-EFGH-JKLM';
         return res.status(200).json({ ok: true, text: rmsg.build(spec, shown, style, clip(body.text, 2000)) });
       }
@@ -159,17 +159,18 @@ module.exports = async (req, res) => {
         return res.status(200).json({ ok: true, announce });
       }
       if (action === 'codegen') {
-        const role = body.role, days = Math.floor(Number(body.days)), credit = Math.floor(Number(body.credit) || 0), max = Math.floor(Number(body.max) || 1), n = Math.floor(Number(body.count) || 1);
-        if (!['premium', 'vip'].includes(role)) return fail(400, 'Role kode harus Premium atau VIP.');
+        const role = ['premium', 'vip'].includes(body.role) ? body.role : '', coins = Math.floor(Number(body.coins) || 0), days = role ? Math.floor(Number(body.days) || 0) : 0, max = Math.floor(Number(body.max) || 1), n = Math.floor(Number(body.count) || 1);
+        if (body.role && !role) return fail(400, 'Role kode harus Premium, VIP, atau kosong (hanya koin).');
+        if (!(coins >= 0 && coins <= 100000)) return fail(400, 'Koin per kode harus 0 sampai 100.000.');
+        if (!coins && !role) return fail(400, 'Isi jumlah koin, atau pilih role.');
         if (!(days >= 0 && days <= 3650)) return fail(400, 'Masa aktif harus 0 (permanen) sampai 3650 hari.');
-        if (!(credit >= 0 && credit <= 999)) return fail(400, 'Limit per hari harus 0 (bawaan role) sampai 999.');
         if (!(max >= 1 && max <= 10000)) return fail(400, 'Batas pemakaian harus 1 sampai 10000.');
         if (!(n >= 1 && n <= 50)) return fail(400, 'Jumlah kode harus 1 sampai 50.');
         const exp = Math.floor(Number(body.exp)) || 0;
         if (exp && !(exp > Date.now() && exp < 4e12)) return fail(400, 'Waktu kedaluwarsa harus di masa depan.');
         const custom = body.custom ? redeem.canon(body.custom) : '';
         if (custom && (n !== 1 || custom.length < 4 || custom.length > 24)) return fail(400, 'Kode kustom hanya untuk 1 kode, 4 sampai 24 huruf atau angka.');
-        const spec = { role, days, credit, max, exp, note: clip(body.note, 60), by: me.email };
+        const spec = { coins, role, days, max, exp, note: clip(body.note, 60), by: me.email };
         // Umumkan otomatis ke Saluran / grup WhatsApp (opsional). Divalidasi sebelum kode dibuat; kegagalan kirim tidak membatalkan kode.
         const an = body.announce && typeof body.announce === 'object' ? body.announce : null;
         const anCh = !!(an && an.channel === true), anGr = !!(an && an.groups === true);
@@ -226,7 +227,7 @@ module.exports = async (req, res) => {
         const role = roleOf(u.email, u), o = { sub, ...u, owner: isOwner(u.email), role, roleUntil: roleUntilOf(u.email, u) };
         if (!o.owner && ['premium', 'vip'].includes(u.role) && u.roleUntil && u.roleUntil <= now) o.lapsed = { role: u.role, at: u.roleUntil }; // role sudah habis (otomatis jadi member)
         o.credit = credits.info(u, role);
-        delete o.cr; delete o.crBonus; delete o.picture; delete o.dpic; // hemat ukuran; info limit sudah ada di o.credit
+        delete o.cr; delete o.crBonus; delete o.crMax; delete o.coin; delete o.fd; delete o.fr; delete o.picture; delete o.dpic; // hemat ukuran; saldo koin sudah ada di o.credit
         return o;
       }).sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
       return res.status(200).json({ ok: true, store: true, now, dayStart: stats.dayStart(now), users, tools: [], prices: pricesOf(st.tools), plans: plansOf(st.tools), off: offOf(st.tools), announce: st.announce, annState: annState(st.announce, now) });
@@ -281,17 +282,19 @@ module.exports = async (req, res) => {
       const op = body.op;
       if ((op === 'ban' || op === 'remove' || op === 'warn' || op === 'role' || op === 'credit') && isOwner(u.email)) return fail(400, 'Akun developer tidak bisa diubah.');
       let detail = '';
-      if (op === 'credit') { // kompensasi limit: tambah (bonus, dipakai lebih dulu) atau reset pemakaian harian. Atomik, tidak menimpa data lain.
+      if (op === 'credit') { // koin pengguna: tambah (kompensasi/hadiah), kurangi, atau atur saldo persis. Atomik, tidak menimpa data lain.
         const mode = body.mode, n = Math.floor(Number(body.n));
-        if (mode !== 'add' && mode !== 'reset') return fail(400, 'Mode limit tidak dikenal.');
-        if (mode === 'add' && !(n >= 1 && n <= 999)) return fail(400, 'Jumlah limit harus 1 sampai 999.');
+        if (!['add', 'sub', 'set'].includes(mode)) return fail(400, 'Mode koin tidak dikenal.');
+        if (mode === 'set' ? !(n >= 0 && n <= 1000000) : !(n >= 1 && n <= 100000)) return fail(400, mode === 'set' ? 'Saldo koin harus 0 sampai 1.000.000.' : 'Jumlah koin harus 1 sampai 100.000.');
+        let before = 0;
         const rec = await store.mutateUser(body.sub, (r) => {
           if (!r) return null;
-          if (mode === 'reset') delete r.cr; else r.crBonus = Math.min(9999, (r.crBonus || 0) + n);
+          before = credits.balanceOf(r);
+          if (mode === 'add') credits.add(r, n); else if (mode === 'sub') credits.set(r, Math.max(0, before - n)); else credits.set(r, n);
           return r;
         });
         if (!rec) return fail(404, 'Pengguna tidak ditemukan.');
-        await logIt('credit', u, body.sub, mode === 'reset' ? 'Reset pemakaian limit harian' : '+' + n + ' limit bonus' + (body.note ? ' (' + clip(body.note, 80) + ')' : ''));
+        await logIt('credit', u, body.sub, (mode === 'add' ? '+' + n + ' koin' : mode === 'sub' ? '-' + n + ' koin' : 'Saldo koin diatur ke ' + n) + ' (sebelumnya ' + before + ')' + (body.note ? ' (' + clip(body.note, 80) + ')' : ''));
         return res.status(200).json({ ok: true, credit: credits.info(rec, roleOf(u.email, rec)) });
       }
       if (op === 'warn') { const t = clip(body.text, 300); if (!t) return fail(400, 'Isi peringatan dulu.'); u.warning = t; u.warnedAt = Date.now(); detail = t; }
@@ -299,18 +302,15 @@ module.exports = async (req, res) => {
       else if (op === 'role') {
         if (!ASSIGN_ROLES.includes(body.role)) return fail(400, 'Role tidak dikenal.');
         const was = roleOf(u.email, u);
-        if (body.role === 'member') { delete u.role; delete u.roleUntil; delete u.crMax; detail = 'Role dicabut (sebelumnya ' + was.toUpperCase() + ')'; }
-        else if (body.role === 'owner') { u.role = 'owner'; delete u.roleUntil; delete u.crMax; delete u.cr; delete u.crBonus; const op0 = body.plan ? plansOf(st.tools).find((x) => x.id === body.plan && x.role === 'owner') : null; detail = 'OWNER (permanen, limit tak terbatas)' + (op0 ? ', paket ' + op0.id + ' (Rp' + op0.price + ')' : '') + (was !== 'member' ? '; sebelumnya ' + was.toUpperCase() : ''); } // owner: tanpa durasi
+        if (body.role === 'member') { delete u.role; delete u.roleUntil; detail = 'Role dicabut (sebelumnya ' + was.toUpperCase() + ')'; }
+        else if (body.role === 'owner') { u.role = 'owner'; delete u.roleUntil; delete u.crMax; delete u.cr; delete u.crBonus; detail = 'OWNER (permanen, koin tak terbatas)' + (was !== 'member' ? '; sebelumnya ' + was.toUpperCase() : ''); } // owner: tanpa durasi
         else {
-          // days: jumlah hari masa aktif (1-3650), 0 = permanen. Tanpa days = 7 hari. Memberi ulang role = hitung dari sekarang.
-          const plan = body.plan ? plansOf(st.tools).find((x) => x.id === body.plan && x.role === body.role) : null;
-          if (body.plan && !plan) return fail(400, 'Paket tidak ditemukan. Simpan daftar paket dulu.');
-          const days = plan ? plan.days : (body.days === undefined ? 7 : Math.floor(Number(body.days)));
+          // days: jumlah hari masa aktif (1-3650), 0 = permanen. Tanpa days = 7 hari. Memberi ulang role = hitung dari sekarang. Role kini hanya badge (tidak memberi koin).
+          const days = body.days === undefined ? 7 : Math.floor(Number(body.days));
           if (!Number.isFinite(days) || days < 0 || days > 3650) return fail(400, 'Durasi harus 0 (permanen) sampai 3650 hari.');
           u.role = body.role;
-          if (plan) u.crMax = plan.credit; else delete u.crMax; // paket = jatah limit per hari sendiri; tanpa paket = jatah bawaan role
           if (days === 0) delete u.roleUntil; else u.roleUntil = Date.now() + days * 24 * 60 * 60 * 1000;
-          detail = body.role.toUpperCase() + (days === 0 ? ' permanen' : ' ' + days + ' hari') + (plan ? ', paket ' + plan.id + ' (Rp' + plan.price + ')' : '') + (was !== 'member' ? '; sebelumnya ' + was.toUpperCase() : '');
+          detail = body.role.toUpperCase() + (days === 0 ? ' permanen' : ' ' + days + ' hari') + (was !== 'member' ? '; sebelumnya ' + was.toUpperCase() : '');
         }
       }
       else if (op === 'badge') { // badge kustom di samping role: teks maks. 14 karakter + warna dari daftar. Teks kosong = hapus badge.
@@ -343,24 +343,24 @@ module.exports = async (req, res) => {
       return res.status(200).json({ ok: true });
     }
 
-    if (action === 'plans') { // simpan daftar paket harga role
-      if (!Array.isArray(body.plans) || body.plans.length > 12) return fail(400, 'Daftar paket tidak valid (maksimal 12 paket).');
+    if (action === 'plans') { // simpan daftar paket koin
+      if (!Array.isArray(body.plans) || body.plans.length > MAX_PLANS) return fail(400, 'Daftar paket tidak valid (maksimal ' + MAX_PLANS + ' paket).');
       const list = cleanPlans(body.plans);
-      if (list.length !== body.plans.length) return fail(400, 'Ada paket yang tidak valid. Durasi 1-3650 hari, harga 0-100.000.000, limit 1-999 per hari.');
+      if (list.length !== body.plans.length) return fail(400, 'Ada paket yang tidak valid. Koin 1-1.000.000 dan harga 0-100.000.000.');
       st.tools.__plans = { id: '__plans', list };
       await store.save(st);
       await logIt('plans', null, undefined, list.length + ' paket disimpan');
       return res.status(200).json({ ok: true });
     }
 
-    if (action === 'price') { // atur tool gratis atau memakai limit
+    if (action === 'price') { // atur tool gratis atau memakai koin
       const id = String(body.tool || '');
       if (!Object.prototype.hasOwnProperty.call(cfg.tools, id)) return fail(400, 'Tool tidak dikenal.');
       const n = Math.floor(Number(body.credit));
-      if (!Number.isFinite(n) || n < 0 || n > 99) return fail(400, 'Biaya harus angka 0 sampai 99 limit.');
+      if (!Number.isFinite(n) || n < 0 || n > 99) return fail(400, 'Biaya harus angka 0 sampai 99 koin.');
       st.tools[id] = { id, credit: n };
       await store.save(st);
-      await logIt('price', null, undefined, id + ' = ' + n + ' limit');
+      await logIt('price', null, undefined, id + ' = ' + n + ' koin');
       return res.status(200).json({ ok: true });
     }
 
