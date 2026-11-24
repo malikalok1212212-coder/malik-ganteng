@@ -430,6 +430,17 @@ function tk2Css(){if(document.getElementById('tk2css'))return;const s=document.c
  +'.tk2 .rt{min-width:0;flex:1}.tk2 .rt b{display:block;font-size:14px;font-weight:600;color:var(--tx)}.tk2 .rt small{color:var(--dm);font-size:12px}.tk2 .act{display:flex;gap:6px}'
  +'.tk2 .tkb{height:38px;padding:0 14px;margin:0;border-radius:11px;border:0;cursor:pointer;font-weight:600;font-size:13px;font-family:inherit;display:inline-flex;align-items:center;gap:7px;color:#fff;background:linear-gradient(135deg,var(--ac),#5b8cff);box-shadow:0 8px 18px -8px rgba(124,92,255,.8)}.tk2 .tkb:hover{filter:brightness(1.1)}.tk2 .tkb:disabled{opacity:.6;cursor:wait}'
  +'.tk2 .tkb.g{background:var(--s3);box-shadow:none;color:var(--mu);padding:0;width:38px;justify-content:center}.tk2 .tkb.g:hover{color:var(--tx)}'
+ +'/* v432: lawan aturan global .card (flex) dan input/button ber-!important supaya form tool tidak meluber */'
+ +'.tk2{width:100%;max-width:100%;min-width:0;overflow-x:clip}'
+ +'.tk2 .card:not(#_):not(#__):not(#___):not(#____){display:block!important;width:100%;max-width:100%;min-width:0;margin:0!important;padding:0!important;transform:none!important;align-items:stretch!important;gap:0!important;text-decoration:none}'
+ +'.tk2 .card.form:not(#_):not(#__):not(#___):not(#____){padding:14px!important;overflow:hidden}'
+ +'.tk2 .fld:not(#_):not(#__):not(#___):not(#____){display:flex!important;align-items:center;gap:10px;width:100%;max-width:100%;min-width:0;margin:0!important;box-sizing:border-box}'
+ +'.tk2 .fld input:not(#_):not(#__):not(#___):not(#____){flex:1 1 0!important;width:auto!important;min-width:0!important;height:100%!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;color:var(--tx)!important;font-size:16px!important;text-overflow:ellipsis}'
+ +'.tk2 .fld input:not(#_):not(#__):not(#___):not(#____):focus{background:transparent!important;border:0!important;box-shadow:none!important}'
+ +'.tk2 .ib:not(#_):not(#__):not(#___):not(#____),.tk2 .tkb.g:not(#_):not(#__):not(#___):not(#____){flex:none!important;border:0!important;box-shadow:none!important;transform:none!important}'
+ +'.tk2 .gob:not(#_):not(#__):not(#___):not(#____){display:flex!important;width:100%!important;border:0!important;transform:none}'
+ +'.tk2 .res.card:not(#_):not(#__):not(#___):not(#____){display:block!important;overflow:hidden}'
+ +'.tk2 .media,.tk2 .dl,.tk2 .row2{max-width:100%;min-width:0}'
  +'@media(max-width:380px){.tk2 .th{width:84px}.tk2 .tkb span{display:none}.tk2 .tkb{padding:0;width:38px;justify-content:center}}';
  document.head.appendChild(s)}
 function tk2Html(){return `<div class="tk2"><div class="card form"><div class="fld">${tk2I('link')}<input id="e" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://vt.tiktok.com/..." aria-label="Link TikTok"><button type="button" class="ib" id="tkx" aria-label="Hapus" hidden>${tk2I('x','sm')}</button><button type="button" class="ib" id="tkp" aria-label="Tempel">${tk2I('paste','sm')}</button></div>
