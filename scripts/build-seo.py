@@ -42,7 +42,7 @@ PAGE = """<!DOCTYPE html>
 <title>@TITLE@</title>
 <meta name="description" content="@DESC@">
 <meta name="robots" content="index,follow">
-<meta name="theme-color" content="#15162d">
+<meta name="theme-color" content="#0b0c0f">
 <link rel="canonical" href="@URL@">
 <link rel="icon" href="/favicon.ico?v=331" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=331">
@@ -58,7 +58,7 @@ PAGE = """<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Montserrat:ital,wght@1,800&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="/page.css?v=406">
+<link rel="stylesheet" href="/page.css?v=414">
 <script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
 </head>
 <body>

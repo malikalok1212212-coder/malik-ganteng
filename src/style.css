@@ -3820,65 +3820,13 @@ html body main.chatp.chatp.chatp .cpanel.cpanel .cin .cib svg,html body main.cha
    Foto karakter besar bergaya stiker (bingkai tebal, bayangan keras, label miring), judul dengan sorotan kuning,
    bar empat warna. Tirai belah saat selesai tetap sama. Warna latar mengikuti tema. */
 .seo-fallback{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
-.iv{--iv-bg:#14121f;--iv-ink:#faf9f5;--iv-dim:rgba(250,249,245,.66);--iv-track:rgba(250,249,245,.14);--iv-dot:rgba(250,249,245,.08);--pw:min(64vw,270px);
- position:fixed;inset:0;z-index:100;background:var(--iv-bg);color:var(--iv-ink);overflow:hidden}
-:root[data-theme="light"] .iv{--iv-bg:#f3f0ff;--iv-ink:#14121f;--iv-dim:rgba(20,18,31,.66);--iv-track:rgba(20,18,31,.12);--iv-dot:rgba(20,18,31,.08)}
-.noload .iv,.ldgate .iv{display:none}
-.iv .ivs{position:absolute;left:0;right:0;top:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 max(24px,env(safe-area-inset-left))}
-.iv .ivs::before{content:"";position:absolute;inset:0;background:radial-gradient(var(--iv-dot) 1.4px,transparent 1.6px) 0 0/20px 20px;pointer-events:none}
-.iv .ivc{position:relative;display:flex;flex-direction:column;align-items:center;width:100%;max-width:400px}
-.iv .ivpt{position:relative;width:var(--pw);aspect-ratio:1;margin:0 0 36px}
-.iv .ivglow{position:absolute;inset:-26%;border-radius:50%;background:radial-gradient(circle,rgba(91,229,156,.40),transparent 66%)}
-.iv .ivlogo{position:absolute;inset:0;rotate:-4deg;border-radius:30px;overflow:hidden;background:#fff;border:4px solid var(--iv-ink);box-shadow:0 8px 24px -10px var(--sh)}
-.iv .ivlogo img{display:block;width:100%;height:100%;object-fit:cover}
-.iv .ivst{position:absolute;padding:7px 12px;border:3px solid var(--iv-ink);border-radius:999px;font:700 11.5px/1 "Space Mono",ui-monospace,monospace;letter-spacing:.03em;color:#14121f;box-shadow:3px 3px 0 var(--iv-ink);white-space:nowrap}
-.iv .s1{right:-13%;top:9%;rotate:7deg;background:#ff8fb8}
-.iv .s2{left:-11%;bottom:9%;rotate:-7deg;background:#5cd0d8}
-.iv .ivstar{position:absolute;fill:var(--acc);stroke:var(--iv-ink);stroke-width:1.6;stroke-linejoin:round}
-.iv .ivstar.a{left:-9%;top:-7%;width:46px;height:46px;rotate:-12deg}
-.iv .ivstar.b{right:-6%;bottom:-8%;width:30px;height:30px;rotate:14deg;fill:#4fd69a}
-.iv .ivw{margin:0;display:flex;align-items:center;justify-content:center;gap:.24em;white-space:nowrap;font:italic 800 clamp(32px,10.5vw,52px)/1 Montserrat,"Space Grotesk",system-ui,sans-serif;letter-spacing:-.035em;color:var(--iv-ink)}
-.iv .ivl{display:inline-block;overflow:hidden;padding:.06em .08em .1em 0}
-.iv .ivl span{display:inline-block}
-.iv .ivl:last-child{background:var(--acc);border:3px solid var(--iv-ink);border-radius:12px;padding:.02em .14em .08em .08em;box-shadow:4px 4px 0 var(--iv-ink);rotate:-2deg}
-.iv .ivl:last-child span{color:#14121f}
-.iv .ivtag{margin:16px 0 0;text-align:center;font:700 12px/1.4 "Space Mono",ui-monospace,monospace;letter-spacing:.04em;color:var(--iv-dim)}
-.iv .ivinfo{width:100%;margin-top:28px}
-.iv .ivbar{position:relative;height:22px;border-radius:12px;background:var(--iv-track);overflow:hidden;border:3px solid var(--iv-ink);box-shadow:4px 4px 0 var(--iv-ink);box-sizing:border-box}
-.iv .ivbar i{position:absolute;inset:0;background:linear-gradient(90deg,var(--acc) 0 25%,#ff8fb8 25% 50%,#5cd0d8 50% 75%,#4fd69a 75%);clip-path:inset(0 calc((1 - var(--p,0))*100%) 0 0)}
-.iv .ivm{margin:14px 0 0;min-height:20px;text-align:center;font:700 13px/1.4 "Space Mono",ui-monospace,monospace;color:var(--iv-dim)}
-.iv .ivsk{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom));margin:0 auto;width:max-content;padding:8px 6px;min-height:0;background:none;border:0;box-shadow:none!important;border-radius:0;color:var(--iv-dim);font:700 13px "Space Mono",ui-monospace,monospace;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.iv .ivsk:focus-visible{outline:3px solid #8f9aff;outline-offset:3px;border-radius:4px}
-.ldwait .iv .ivsk{visibility:hidden}
-.iv .ivh{position:absolute;left:0;right:0;height:50%;overflow:hidden;background:var(--iv-bg);will-change:transform}
-.iv .ivh.t{top:0}
-.iv .ivh.b{bottom:0}
-.iv .ivh .ivs{height:200%}
-.iv .ivh.b .ivs{top:auto;bottom:0}
-.iv .ivh:after{content:"";position:absolute;left:0;right:0;height:3px;background:var(--iv-ink)}
-.iv .ivh.t:after{bottom:0}
-.iv .ivh.b:after{top:0}
-.iv .ivh *{animation:none!important}
-.iv.split{background:transparent}
+
 @media (prefers-reduced-motion:no-preference){
-@keyframes ivrise{from{transform:translateY(105%)}to{transform:none}}
-@keyframes ivfade{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
-@keyframes ivup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes ivpop{from{opacity:0;scale:.55;translate:0 28px}}
+
 @keyframes ivtop{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:none}}
 @keyframes ivin{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes ivdock{from{opacity:0;transform:translateY(100%)}to{opacity:1;transform:none}}
-.iv .ivglow{animation:ivfade .9s ease both}
-.iv .ivlogo{animation:ivpop .7s cubic-bezier(.2,1.25,.3,1) .05s both}
-.iv .ivst{animation:ivpop .5s cubic-bezier(.2,1.5,.3,1) both}
-.iv .s1{animation-delay:.5s}.iv .s2{animation-delay:.65s}
-.iv .ivstar.a{animation:ivpop .5s cubic-bezier(.2,1.5,.3,1) .35s both}
-.iv .ivstar.b{animation:ivpop .5s cubic-bezier(.2,1.5,.3,1) .8s both}
-.iv .ivl span{animation:ivrise .62s cubic-bezier(.2,.9,.3,1) both;animation-delay:calc(var(--i)*38ms + .3s)}
-.iv .ivtag,.iv .ivinfo,.iv .ivsk{animation:ivup .5s ease .75s both}
-.iv .ivh{transition:transform .72s cubic-bezier(.76,0,.24,1)}
-.iv.out .ivh.t{transform:translateY(-101%)}
-.iv.out .ivh.b{transform:translateY(101%)}
+
 .ldin .top{animation:ivtop .6s cubic-bezier(.2,.9,.3,1) .35s backwards}
 .ldin #main>*{animation:ivin .7s cubic-bezier(.2,.9,.3,1) backwards}
 .ldin #main>*:nth-child(1){animation-delay:.4s}
@@ -3888,11 +3836,6 @@ html body main.chatp.chatp.chatp .cpanel.cpanel .cin .cib svg,html body main.cha
 .ldin #main>*:nth-child(n+5){animation-delay:.8s}
 .ldin .dock:not([hidden]){animation:ivdock .6s cubic-bezier(.2,.9,.3,1) .55s backwards}
 }
-@media (prefers-reduced-motion:reduce){
-.iv{transition:opacity .25s ease}
-.iv.out{opacity:0}
-}
-@media (max-height:620px){.iv{--pw:min(38vw,150px)}.iv .ivpt{margin-bottom:24px}.iv .ivinfo{margin-top:16px}.iv .ivtag{margin-top:10px}}
 
 /* ===== fix-v332: drawer dan Statistik dirapikan, satu bahasa desain dengan kartu lain =====
    Drawer: semua baris utama (info + kategori) satu bentuk kartu; isi kategori datar dengan rel warna.
@@ -4039,22 +3982,6 @@ html body .rk li:not(.empty){box-sizing:border-box;max-width:100%}
 .ann.out{animation:none!important}
 
 /* ===== v335: intro baru. Potret bulat (tanpa latar putih), stiker dipindah jadi chip di bawah tagline, teks dan bar lebih jelas ===== */
-html body .iv{--iv-dim:color-mix(in srgb,var(--iv-ink) 82%,transparent)}
-html body .iv .ivpt{--pw:min(54vw,214px);margin:0 0 30px}
-html body .iv .ivglow{inset:-22%;background:radial-gradient(circle,rgba(91,229,156,.30),transparent 66%)}
-html body .iv .ivst,html body .iv .ivstar{display:none!important}
-html body .iv .ivlogo{rotate:0deg;border-radius:50%;background:#0b0d0c;border:0;box-shadow:0 0 0 4px var(--iv-bg),0 0 0 8px var(--acc),0 0 0 12px var(--iv-bg),0 0 0 15px var(--iv-ink)}
-html body .iv .ivlogo img{object-position:50% 42%;transform:scale(1.08)}
-html body .iv .ivw{font-size:clamp(34px,11vw,52px)}
-html body .iv .ivtag{margin:14px 0 0;font:700 13.5px/1.45 "Space Mono",ui-monospace,monospace;letter-spacing:.02em;color:var(--iv-ink)}
-html body .iv .ivchips{display:flex;justify-content:center;gap:10px;margin-top:14px}
-html body .iv .ivchips span{padding:7px 13px;border:2.5px solid var(--iv-ink);border-radius:999px;font:700 11.5px/1 "Space Mono",ui-monospace,monospace;letter-spacing:.03em;color:#14121f;white-space:nowrap}
-html body .iv .ivchips .c1{background:#ff8fb8}html body .iv .ivchips .c2{background:#5cd0d8}
-html body .iv .ivinfo{margin-top:26px;padding:0 6px}
-html body .iv .ivbar{height:14px;border-radius:999px;border-width:2.5px;box-shadow:none}
-html body .iv .ivm{margin-top:12px;font-size:13px;color:var(--iv-dim)}
-html body .iv .ivsk{color:var(--iv-ink);font-size:13px;opacity:.85}
-@media (max-height:620px){html body .iv .ivpt{--pw:min(34vw,140px);margin-bottom:20px}html body .iv .ivchips{margin-top:10px}html body .iv .ivinfo{margin-top:16px}}
 
 /* ===== v336: di beranda, tarik-segarkan bawaan Chrome dimatikan supaya hanya satu muteran (milik Malik Tools) yang tampil ===== */
 html.ptrh,html.ptrh body{overscroll-behavior-y:contain}
@@ -4308,7 +4235,6 @@ html body #c .amps{min-height:44px}
 :root[data-theme="dark"] .btn[aria-disabled="true"],:root[data-theme="dark"] button.primary:disabled{background:#2a2a2e!important;color:#a5a5ac!important}
 .lhc .lht h2 b,html .lhc .lht h2 b{background:linear-gradient(90deg,#fff 0%,#b9b9c2 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important}
 
-
 /* ===== warna v374: garis dan bayangan dark jadi putih, seperti di light ===== */
 :root[data-theme="dark"]{--ln:#8a8a90}
 :root[data-theme="dark"] #drw{}
@@ -4483,7 +4409,6 @@ html body .lhc .lhtip .lhtag{display:inline-block;margin-right:6px;padding:3px 6
 :root:root:root .lhc .lhtip{display:flex}
 :root:root:root .lhc .lhtip>.lhtag{align-self:center}
 
-
 /* ===== v390 fix: teks tips selalu membungkus dan tidak keluar dari kartu di layar kecil ===== */
 :root:root:root .lhc .lhtip{
   display:flex;align-items:center;gap:10px;width:100%;max-width:100%;min-width:0;
@@ -4499,7 +4424,6 @@ html body .lhc .lhtip .lhtag{display:inline-block;margin-right:6px;padding:3px 6
   :root:root:root .lhc .lhtip{gap:8px;padding-right:9px;font-size:11.5px}
   :root:root:root .lhc .lhtip .lhtag{padding:5px 6px}
 }
-
 
 /* ===== v389 motion polish: interaksi lebih lentur, tetap ringan dan ramah sentuhan ===== */
 :root{--mt-ease:cubic-bezier(.22,1,.36,1)}
@@ -4666,7 +4590,6 @@ html body .lhc .lhtip .lhtag{display:inline-block;margin-right:6px;padding:3px 6
 :root:root:root .rv1{opacity:1;transform:none;transition:opacity .55s ease,transform .6s var(--mt-ease)}
 @media (prefers-reduced-motion:reduce){.rv0{opacity:1;transform:none}.rv1{transition:none}}
 
-
 /* ===== v405 Ikuti gaya API Cloud (referensi): garis 3px, bayangan besar, label pil berwarna, teks mono, tombol header berwarna ===== */
 /* Latar: foto samar + kisi tipis */
 :root:root:root body::before{display:block!important;content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:url(/bg.jpg) 50% 15%/cover no-repeat;opacity:.2!important;filter:grayscale(.2) contrast(1.05)}
@@ -4806,57 +4729,12 @@ html body main[data-tool="spotify-play"] .spft button{max-width:100%;min-width:0
    Sebelumnya intro masih ungu/biru tua (#14121f / #f3f0ff) padahal situs sudah krem (terang) dan hitam netral (gelap),
    dan ukurannya tetap kecil di tablet/desktop. Sekarang warna diambil dari token situs (--bg, --ink, --dot, --acc),
    ukuran potret, judul, bar, dan chip ikut lebar dan tinggi layar. Glow dikurangi supaya ringan. */
-:root:root body .iv{--iv-bg:var(--bg);--iv-ink:var(--ink);--iv-dim:color-mix(in srgb,var(--ink) 78%,transparent);--iv-track:color-mix(in srgb,var(--ink) 12%,var(--panel));--iv-dot:var(--dot);--pw:clamp(112px,min(54vw,33vh),300px);--ivk:clamp(.86,calc(min(100vw,100vh*.62)/390),1.45)}
-html body .iv .ivs::before{background:radial-gradient(var(--iv-dot) 1.6px,transparent 1.8px) 0 0/22px 22px}
-html body .iv .ivc{max-width:clamp(300px,88vw,460px)}
-html body .iv .ivpt{--pw:clamp(112px,min(54vw,33vh),300px);margin:0 0 clamp(16px,4vh,34px)}
-html body .iv .ivglow{inset:-14%;background:radial-gradient(circle,rgba(91,229,156,.16),transparent 68%)}
-:root[data-theme="light"] body .iv .ivglow{display:none}
-html body .iv .ivlogo{box-shadow:0 0 0 clamp(3px,.9vh,4px) var(--iv-bg),0 0 0 clamp(6px,1.6vh,8px) var(--acc),0 0 0 clamp(9px,2.4vh,12px) var(--iv-bg),0 0 0 clamp(12px,3vh,15px) var(--iv-ink),clamp(3px,.8vh,5px) clamp(3px,.8vh,5px) 0 clamp(12px,3vh,15px) var(--sh)}
-html body .iv .ivw{font-size:clamp(34px,min(11vw,6.8vh),66px)}
-html body .iv .ivl:last-child{border-width:var(--nb,3px);box-shadow:clamp(3px,.8vh,5px) clamp(3px,.8vh,5px) 0 var(--sh)}
-html body .iv .ivtag{margin-top:clamp(8px,1.8vh,16px);font-size:clamp(12.5px,min(3.6vw,2vh),16px)}
-html body .iv .ivchips{gap:clamp(8px,1.4vh,12px);margin-top:clamp(8px,1.8vh,16px)}
-html body .iv .ivchips span{border:var(--nb,3px) solid var(--iv-ink);box-shadow:2px 2px 0 var(--sh);padding:clamp(5px,1vh,8px) clamp(10px,2vh,15px);font-size:clamp(11px,min(3.1vw,1.7vh),14px)}
-html body .iv .ivinfo{margin-top:clamp(14px,3.4vh,30px);padding:0 4px}
-html body .iv .ivbar{height:clamp(14px,2.2vh,20px);border:var(--nb,3px) solid var(--iv-ink);border-radius:999px;box-shadow:3px 3px 0 var(--sh)}
-html body .iv .ivm{margin-top:clamp(10px,1.8vh,16px);font-size:clamp(12.5px,min(3.4vw,1.9vh),15px)}
-html body .iv .ivsk{border-color:var(--iv-ink);color:var(--iv-ink);box-shadow:2px 2px 0 var(--sh)}
-@media (max-height:480px){html body .iv .ivs{flex-direction:row;gap:clamp(20px,6vw,56px)}html body .iv .ivpt{--pw:clamp(96px,46vh,180px);margin:0}html body .iv .ivc{max-width:min(360px,52vw)}html body .iv .ivw{font-size:clamp(28px,9vh,44px)}html body .iv .ivchips{display:none}}
-@media (max-height:620px) and (min-height:481px){html body .iv .ivpt{--pw:clamp(96px,30vh,170px);margin-bottom:14px}}
 
 /* ===== v408: intro dibersihkan. Tanpa bintik latar, tanpa glow, tanpa cincin berlapis; konsep tetap (potret, judul, chip, bar). ===== */
-:root:root body .iv .ivs::before{display:none}
-:root:root body .iv .ivglow{display:none}
-:root:root body .iv .ivlogo{border:var(--nb,3px) solid var(--iv-ink);background:#0b0d0c;box-shadow:clamp(6px,1.6vh,10px) clamp(6px,1.6vh,10px) 0 var(--acc),clamp(6px,1.6vh,10px) clamp(6px,1.6vh,10px) 0 calc(var(--nb,3px) + 0px) var(--iv-ink)}
-:root:root body .iv .ivlogo img{transform:none;object-position:50% 40%}
-:root:root body .iv .ivpt{margin-bottom:clamp(22px,5vh,40px)}
-:root:root body .iv .ivbar{height:clamp(16px,2.6vh,22px);box-shadow:4px 4px 0 var(--iv-ink)}
-:root:root body .iv .ivm{letter-spacing:.02em}
 
 /* ===== v409: intro disusun ulang dalam satu kartu neo-brutalist (potret kotak bersudut bulat, judul, tagline, chip, bar). Tanpa bintik, glow, atau cincin. ===== */
-:root:root body .iv .ivc{box-sizing:border-box;width:min(92vw,380px);max-width:none;padding:clamp(18px,3.4vh,30px) clamp(18px,5vw,28px) clamp(20px,3.6vh,32px);background:var(--panel);border:var(--nb,3px) solid var(--iv-ink);border-radius:28px;box-shadow:8px 8px 0 var(--iv-ink)}
-:root:root body .iv .ivpt{--pw:clamp(104px,min(46vw,27vh),210px);margin:0 0 clamp(14px,2.6vh,22px)}
-:root:root body .iv .ivlogo{border-radius:24px;border:var(--nb,3px) solid var(--iv-ink);background:var(--acc);box-shadow:5px 5px 0 var(--iv-ink);overflow:hidden}
-:root:root body .iv .ivlogo img{width:100%;height:100%;object-fit:cover;object-position:50% 38%;transform:none}
-:root:root body .iv .ivw{font-size:clamp(32px,min(10vw,6vh),56px)}
-:root:root body .iv .ivtag{margin-top:clamp(8px,1.6vh,12px);font-size:clamp(12px,min(3.4vw,1.8vh),14.5px);color:var(--iv-dim)}
-:root:root body .iv .ivchips{margin-top:clamp(10px,1.8vh,14px);flex-wrap:wrap}
-:root:root body .iv .ivchips span{box-shadow:none;border-width:2.5px}
-:root:root body .iv .ivinfo{margin-top:clamp(14px,2.8vh,22px);padding:0}
-:root:root body .iv .ivbar{height:clamp(16px,2.4vh,20px);box-shadow:none;border-width:2.5px}
-:root:root body .iv .ivm{margin-top:clamp(8px,1.4vh,12px);min-height:0;font-size:clamp(12px,min(3.3vw,1.8vh),14px)}
-@media (min-width:700px){:root:root body .iv .ivc{width:420px}}
-@media (max-height:480px){:root:root body .iv .ivs{flex-direction:row}:root:root body .iv .ivc{width:min(88vw,560px);display:grid;grid-template-columns:auto 1fr;column-gap:20px;align-items:center;justify-items:center}:root:root body .iv .ivpt{--pw:clamp(84px,44vh,150px);grid-row:1/6;margin:0}:root:root body .iv .ivchips{display:none}}
 
 /* ===== v410: blok judul, tagline, dan chip intro dirapikan: judul lurus, tagline satu font dengan situs, chip netral bertitik hijau ===== */
-:root:root body .iv .ivw{font-size:clamp(34px,min(10.5vw,6.2vh),58px);letter-spacing:-.04em}
-:root:root body .iv .ivl:last-child{rotate:0deg;border-radius:14px;padding:.04em .16em .1em .1em;box-shadow:4px 4px 0 var(--iv-ink)}
-:root:root body .iv .ivtag{margin-top:clamp(12px,2.2vh,18px);font:600 clamp(14px,min(4vw,2vh),16px)/1.4 "Space Grotesk","Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0;color:var(--iv-dim)}
-:root:root body .iv .ivchips{gap:8px;margin-top:clamp(12px,2.2vh,18px)}
-:root:root body .iv .ivchips span,:root:root body .iv .ivchips .c1,:root:root body .iv .ivchips .c2{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--iv-ink);border:2px solid var(--iv-ink);padding:6px 12px;font:700 clamp(11.5px,min(3.2vw,1.8vh),13px)/1 "Space Grotesk","Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0}
-:root:root body .iv .ivchips span::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--ok);border:1.5px solid var(--iv-ink)}
-:root:root body .iv .ivm{font:600 clamp(12.5px,min(3.5vw,1.9vh),14px)/1.4 "Space Grotesk","Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0}
 
 /* ===== v412: Spotify Play dan banner beranda =====
    Spotify: judul lagu, judul pencarian, dan judul daftar memakai warna tinta tema terang (gelap) di atas pemutar yang selalu gelap,
@@ -4940,3 +4818,575 @@ html:root:root:root:root .lhc .lhp{position:absolute;z-index:0;right:16px;top:18
 /* v413c: label TIPS lurus; bintik-bintik latar belakang (body dan layar login) dihapus, garis kisi dan warna latar tetap */
 html:root:root:root:root .lhc .lhtip .lhtag{transform:none}
 html:root:root:root:root body,html:root:root:root:root .gate{background-image:none!important}
+
+/* ===== v414 Elevated dark UI =====
+   Permukaan bertingkat (latar > kartu > panel > menu), garis 1px transparan, bayangan lembut berlapis, kilau tipis di tepi atas.
+   Aksen kuning hemat: tombol utama, tab aktif, ikon bertint. Semua kelas Global Chat sengaja tidak disentuh oleh blok otomatis di bawah. */
+html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="dark"]{--bg:#0b0c0f;--s1:#13151a;--s2:#1a1d24;--s3:#22262f;--panel:#13151a;--field:#0f1115;--bd:rgba(255,255,255,.1);--line:rgba(255,255,255,.075);--line2:rgba(255,255,255,.13);--ink:#eceef3;--muted:#98a0ad;--sh:rgba(0,0,0,.35);--dot:transparent;--nb:1px;--glow:rgba(255,200,61,.085);--acct:#ffc83d;--hi:rgba(255,255,255,.06);
+  --e1:inset 0 1px 0 var(--hi),0 1px 2px rgba(0,0,0,.45);
+  --e2:inset 0 1px 0 var(--hi),0 1px 2px rgba(0,0,0,.4),0 12px 28px -16px rgba(0,0,0,.75);
+  --e3:inset 0 1px 0 rgba(255,255,255,.08),0 2px 6px rgba(0,0,0,.35),0 24px 48px -24px rgba(0,0,0,.85);color-scheme:dark}
+html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"]{--bg:#f2f3f6;--s1:#fff;--s2:#fff;--s3:#fff;--panel:#fff;--field:#f6f7f9;--bd:rgba(16,19,26,.12);--line:rgba(16,19,26,.09);--line2:rgba(16,19,26,.16);--ink:#14161b;--muted:#5b6370;--sh:rgba(16,19,26,.1);--dot:transparent;--nb:1px;--glow:rgba(255,200,61,.22);--acct:#8a5a00;--hi:rgba(255,255,255,.9);
+  --e1:0 1px 2px rgba(16,19,26,.08),0 0 0 1px rgba(16,19,26,.02);
+  --e2:0 1px 2px rgba(16,19,26,.06),0 12px 28px -16px rgba(16,19,26,.25);
+  --e3:0 2px 6px rgba(16,19,26,.07),0 24px 48px -24px rgba(16,19,26,.35);color-scheme:light}
+html:not(#_):not(#__):not(#___):root:root:root:root{--f-ui:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--f-d:"Plus Jakarta Sans","Inter",system-ui,sans-serif}
+html:not(#_):not(#__):not(#___):root:root:root:root body{background:var(--bg)!important;background-image:radial-gradient(90% 38% at 50% -6%,var(--glow),transparent 70%)!important;background-repeat:no-repeat!important;color:var(--ink);font-family:var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root body::before{display:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root h1,html:not(#_):not(#__):not(#___):root:root:root:root h2,html:not(#_):not(#__):not(#___):root:root:root:root h3,html:not(#_):not(#__):not(#___):root:root:root:root .brand,html:not(#_):not(#__):not(#___):root:root:root:root .bt,html:not(#_):not(#__):not(#___):root:root:root:root .card b,html:not(#_):not(#__):not(#___):root:root:root:root .nxt b,html:not(#_):not(#__):not(#___):root:root:root:root .lhq b,html:not(#_):not(#__):not(#___):root:root:root:root .hh{font-family:var(--f-d)!important;letter-spacing:-.015em;text-transform:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root label,html:not(#_):not(#__):not(#___):root:root:root:root .mono,html:not(#_):not(#__):not(#___):root:root:root:root dt,html:not(#_):not(#__):not(#___):root:root:root:root .tag,html:not(#_):not(#__):not(#___):root:root:root:root .note,html:not(#_):not(#__):not(#___):root:root:root:root .hint,html:not(#_):not(#__):not(#___):root:root:root:root .foot,html:not(#_):not(#__):not(#___):root:root:root:root .msg:not([class*=c]){font-family:var(--f-ui)!important;text-transform:none!important}
+/* header */
+html:not(#_):not(#__):not(#___):root:root:root:root .top{background:color-mix(in srgb,var(--bg) 82%,transparent)!important;-webkit-backdrop-filter:saturate(1.4) blur(16px);backdrop-filter:saturate(1.4) blur(16px);border:0!important;border-bottom:1px solid var(--line)!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .ib{background:var(--s2)!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:12px!important;box-shadow:var(--e1)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root #mn{color:var(--acct)!important;background:color-mix(in srgb,var(--acc) 12%,var(--s2))!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .logo{background:var(--acc)!important;border:1px solid var(--line2)!important;border-radius:12px!important;box-shadow:var(--e1)!important;overflow:hidden}
+html:not(#_):not(#__):not(#___):root:root:root:root .pill{background:var(--s2)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:var(--e1)!important;font-family:var(--f-ui)!important;font-weight:600!important;letter-spacing:0!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .pill:before{background:var(--ok,#4fd69a)!important;border-radius:50%!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ok,#4fd69a) 22%,transparent)}
+/* banner sambutan */
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc{background:radial-gradient(120% 100% at 100% 0%,var(--glow),transparent 58%),linear-gradient(165deg,var(--s3),var(--s1))!important;color:var(--ink)!important;border:1px solid var(--line2)!important;border-radius:24px!important;box-shadow:var(--e3)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc::after,html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lhp{border:1px solid var(--line2)!important;border-radius:20px!important;box-shadow:0 10px 24px -10px rgba(0,0,0,.7)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc::before{background:var(--acc)!important;color:#141413!important;border:2px solid var(--s1)!important;box-shadow:none!important;font-family:var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lht small{background:rgba(255,255,255,.06)!important;color:var(--muted)!important;border:1px solid var(--line)!important;border-radius:999px!important;box-shadow:none!important;font:600 11.5px var(--f-ui)!important;letter-spacing:0!important;text-transform:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lht small::before{background:#4fd69a!important;box-shadow:0 0 0 3px rgba(79,214,154,.2)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lht h2{color:var(--muted)!important;font-family:var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lht h2 .lhe{background:transparent!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lht h2 b{background:none!important;color:var(--ink)!important;font-family:var(--f-d)!important;font-weight:800!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lhtip{background:rgba(255,255,255,.045)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lhtip .lhtag{background:color-mix(in srgb,var(--acc) 16%,transparent)!important;color:var(--acct)!important;border:0!important;border-radius:8px!important;font-family:var(--f-ui)!important;font-weight:700!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lhtip .lhtxt{color:var(--ink)!important;font-weight:500!important}
+/* pencarian, aksi cepat, statistik */
+html:not(#_):not(#__):not(#___):root:root:root:root .lhs{background:var(--s1)!important;border:1px solid var(--line)!important;border-radius:16px!important;box-shadow:var(--e1)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhs:focus-within{border-color:color-mix(in srgb,var(--acc) 55%,transparent)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 14%,transparent)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhs input{background:transparent!important;border:0!important;box-shadow:none!important;color:var(--ink)!important;font-family:var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhq{background:var(--s1)!important;border:1px solid var(--line)!important;border-radius:18px!important;box-shadow:var(--e2)!important;color:var(--ink)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhq span{background:color-mix(in srgb,var(--c,var(--acc)) 15%,transparent)!important;color:var(--c,var(--acc))!important;border:0!important;border-radius:12px!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhq:nth-child(1) span{--c:#4fd69a}html:not(#_):not(#__):not(#___):root:root:root:root .lhq:nth-child(2) span{--c:#ffc83d}html:not(#_):not(#__):not(#___):root:root:root:root .lhq:nth-child(3) span{--c:#8f9aff}html:not(#_):not(#__):not(#___):root:root:root:root .lhq:nth-child(4) span{--c:#5cd0d8}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhq b{font-weight:700!important;color:var(--ink)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhi{padding:0 2px!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhi span{background:var(--s1)!important;border:1px solid var(--line)!important;border-radius:14px!important;box-shadow:var(--e1)!important;color:var(--muted)!important;font-weight:500!important;padding:10px 12px!important;flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhi span b{color:var(--ink)!important;font:800 20px var(--f-d)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root #hgo,html:not(#_):not(#__):not(#___):root:root:root:root .lhi button{background:var(--acc)!important;color:#141413!important;border:0!important;border-radius:14px!important;box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 10px 24px -10px color-mix(in srgb,var(--acc) 70%,transparent)!important;font:700 14px var(--f-ui)!important;letter-spacing:0!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhab,html:not(#_):not(#__):not(#___):root:root:root:root .hc,html:not(#_):not(#__):not(#___):root:root:root:root .nxg,html:not(#_):not(#__):not(#___):root:root:root:root .tr,html:not(#_):not(#__):not(#___):root:root:root:root .hst,html:not(#_):not(#__):not(#___):root:root:root:root .card{background:var(--s1)!important;border:1px solid var(--line)!important;border-radius:18px!important;box-shadow:var(--e2)!important;color:var(--ink)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhab h3{font-weight:700!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhab p,html:not(#_):not(#__):not(#___):root:root:root:root .hc small,html:not(#_):not(#__):not(#___):root:root:root:root .nxt small,html:not(#_):not(#__):not(#___):root:root:root:root .trb small{color:var(--muted)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhabc span{background:color-mix(in srgb,var(--acc) 12%,transparent)!important;color:var(--acct)!important;border:0!important;border-radius:999px!important;box-shadow:none!important;font-family:var(--f-ui)!important;font-weight:600!important}
+/* kartu tool dan kategori */
+html:not(#_):not(#__):not(#___):root:root:root:root .tri,html:not(#_):not(#__):not(#___):root:root:root:root .nxi,html:not(#_):not(#__):not(#___):root:root:root:root .trn,html:not(#_):not(#__):not(#___):root:root:root:root .ci,html:not(#_):not(#__):not(#___):root:root:root:root .ic{background:color-mix(in srgb,var(--tc,var(--c,var(--acc))) 15%,transparent)!important;color:var(--tc,var(--c,var(--acc)))!important;border:0!important;border-radius:12px!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .tr{border-radius:14px!important;box-shadow:var(--e1)!important;background:var(--s2)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .nxh{background:transparent!important;border:0!important;box-shadow:none!important;color:var(--ink)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .nxg.open{background:var(--s1)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .nwb{background:color-mix(in srgb,var(--acc) 16%,transparent)!important;color:var(--acct)!important;border:0!important;box-shadow:none!important}
+/* nav bawah */
+html:not(#_):not(#__):not(#___):root:root:root:root .bnav,html:not(#_):not(#__):not(#___):root:root:root:root .dock{background:color-mix(in srgb,var(--s1) 86%,transparent)!important;-webkit-backdrop-filter:saturate(1.4) blur(18px);backdrop-filter:saturate(1.4) blur(18px);border:0!important;border-top:1px solid var(--line)!important;box-shadow:0 -12px 30px -18px rgba(0,0,0,.6)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .bnav a{background:transparent!important;border:0!important;box-shadow:none!important;color:var(--muted)!important;font-family:var(--f-ui)!important;font-weight:600!important;border-radius:14px!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .bnav a[aria-current=page]{background:color-mix(in srgb,var(--acc) 14%,transparent)!important;color:var(--acct)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .dock a{background:transparent!important;border:0!important;box-shadow:none!important;color:var(--muted)!important}
+/* menu samping */
+html:not(#_):not(#__):not(#___):root:root:root:root .drw{background:var(--s1)!important;border-right:1px solid var(--line2)!important;box-shadow:var(--e3)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .dp{background:var(--s2)!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:16px!important;box-shadow:var(--e1)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .av{background:color-mix(in srgb,var(--acc) 18%,var(--s3))!important;color:var(--acct)!important;border:1px solid var(--line2)!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .dl{background:transparent!important;color:var(--ink)!important;border:1px solid transparent!important;border-radius:12px!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .dl[aria-current=page]{background:color-mix(in srgb,var(--acc) 12%,transparent)!important;border-color:color-mix(in srgb,var(--acc) 22%,transparent)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .dh,html:not(#_):not(#__):not(#___):root:root:root:root .dh span{color:var(--muted)!important;font-family:var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .dfoot{background:transparent!important;border:0!important;border-top:1px solid var(--line)!important}
+/* hasil pencarian, kategori, tombol melayang */
+html:not(#_):not(#__):not(#___):root:root:root:root .sr,html:not(#_):not(#__):not(#___):root:root:root:root .panel,html:not(#_):not(#__):not(#___):root:root:root:root .modal,html:not(#_):not(#__):not(#___):root:root:root:root .gate .gc{background:var(--s2)!important;border:1px solid var(--line2)!important;box-shadow:var(--e3)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .up,html:not(#_):not(#__):not(#___):root:root:root:root .ptr,html:not(#_):not(#__):not(#___):root:root:root:root .pwab{background:var(--s3)!important;color:var(--ink)!important;border:1px solid var(--line2)!important;box-shadow:var(--e2)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .cat{background:var(--s2)!important;border:1px solid var(--line)!important;box-shadow:var(--e1)!important;color:var(--ink)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .cat[aria-pressed=true],html:not(#_):not(#__):not(#___):root:root:root:root .cat.on{background:color-mix(in srgb,var(--acc) 16%,var(--s2))!important;color:var(--acct)!important;border-color:color-mix(in srgb,var(--acc) 40%,transparent)!important}
+/* kontrol umum */
+html:not(#_):not(#__):not(#___):root:root:root:root input:not([type=checkbox]):not([type=radio]),html:not(#_):not(#__):not(#___):root:root:root:root textarea,html:not(#_):not(#__):not(#___):root:root:root:root select{background:var(--field)!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:12px!important;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)!important;font-family:var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root input:focus,html:not(#_):not(#__):not(#___):root:root:root:root textarea:focus,html:not(#_):not(#__):not(#___):root:root:root:root select:focus{border-color:color-mix(in srgb,var(--acc) 60%,transparent)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 15%,transparent)!important;outline:0}
+html:not(#_):not(#__):not(#___):root:root:root:root .skip:focus-visible,html:not(#_):not(#__):not(#___):root:root:root:root a:focus-visible,html:not(#_):not(#__):not(#___):root:root:root:root button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lht h2{-webkit-text-fill-color:var(--muted)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhc .lht h2 b{-webkit-text-fill-color:var(--ink)!important;-webkit-background-clip:border-box!important;background-clip:border-box!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .top #th,html:not(#_):not(#__):not(#___):root:root:root:root .top #mn,html:not(#_):not(#__):not(#___):root:root:root:root .top .ib{background:var(--s2)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:var(--e1)!important;border-radius:12px!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .top #mn{color:var(--acct)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .top #th svg,html:not(#_):not(#__):not(#___):root:root:root:root .top .ib svg{stroke:currentColor!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .top .pill{width:40px!important;height:40px!important;padding:0!important;border-radius:50%!important;background:var(--s2)!important;color:var(--ink)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhs input:not([type=checkbox]):not([type=radio]){background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhq span svg,html:not(#_):not(#__):not(#___):root:root:root:root .tri svg,html:not(#_):not(#__):not(#___):root:root:root:root .nxi svg,html:not(#_):not(#__):not(#___):root:root:root:root .ic svg,html:not(#_):not(#__):not(#___):root:root:root:root .trn svg{stroke:currentColor!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .top #mn svg,html:not(#_):not(#__):not(#___):root:root:root:root .top #th svg{stroke:currentColor!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .lhabc span,html:not(#_):not(#__):not(#___):root:root:root:root .lhab .lhabc span{padding:5px 12px!important;font-size:12px!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .nxt b{background:none!important;color:var(--ink)!important;padding:0!important;border:0!important;box-shadow:none!important;transform:none!important;font-size:15px!important;font-weight:700!important;letter-spacing:.01em!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .nxt small{font-size:12px!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .hc::before,html:not(#_):not(#__):not(#___):root:root:root:root .hc::after{display:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .hc{overflow:hidden}
+html:not(#_):not(#__):not(#___):root:root:root:root .hh{color:var(--muted)!important;font-size:12px!important;font-weight:700!important;letter-spacing:.04em!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .nxc{background:var(--s2)!important;color:var(--muted)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+/* panel dan komponen umum halaman */
+html:not(#_):not(#__):not(#___):root:root:root:root .dp .g b,html:not(#_):not(#__):not(#___):root:root:root:root .dp b{color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .dp small,html:not(#_):not(#__):not(#___):root:root:root:root .dp .g small{color:var(--muted)!important;-webkit-text-fill-color:var(--muted)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .panel:not(.cpanel),html:not(#_):not(#__):not(#___):root:root:root:root .owp{background:var(--s1)!important;border:1px solid var(--line2)!important;border-radius:22px!important;box-shadow:var(--e3)!important;overflow:hidden}
+html:not(#_):not(#__):not(#___):root:root:root:root .panel:not(.cpanel) .bar,html:not(#_):not(#__):not(#___):root:root:root:root .owp .bar{background:var(--s3)!important;color:var(--muted)!important;border:0!important;border-bottom:1px solid var(--line)!important;font:600 12px var(--f-ui)!important;letter-spacing:.02em!important;text-transform:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .thero .tile,html:not(#_):not(#__):not(#___):root:root:root:root .tile{background:color-mix(in srgb,var(--tc,var(--acc)) 16%,transparent)!important;color:var(--tc,var(--acc))!important;border:0!important;border-radius:14px!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .tile svg{stroke:currentColor!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .thero h2{font-weight:800!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .sub{color:var(--muted)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .seg{background:var(--field)!important;border:1px solid var(--line)!important;border-radius:14px!important;padding:3px!important;gap:3px!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .seg button{background:transparent!important;color:var(--muted)!important;border:0!important;border-radius:11px!important;box-shadow:none!important;font:600 13px var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .seg button[aria-pressed=true]{background:var(--s3)!important;color:var(--ink)!important;box-shadow:var(--e1)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .ccard{background:var(--s2)!important;border:1px solid var(--line)!important;border-radius:18px!important;box-shadow:var(--e1)!important;color:var(--ink)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .ccard[aria-pressed=true]{border-color:var(--rc,var(--acc))!important;background:color-mix(in srgb,var(--rc,var(--acc)) 10%,var(--s2))!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--rc,var(--acc)) 18%,transparent)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .ccard .cico{color:var(--rc,var(--acc))!important;background:none!important;border:0!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .ccard .cprc{background:color-mix(in srgb,var(--rc,var(--acc)) 14%,transparent)!important;color:var(--rc,var(--acc))!important;border:0!important;box-shadow:none!important;border-radius:999px!important;font-family:var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .ccard .cnum{color:var(--ink)!important;font-family:var(--f-d)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .ccard .clb,html:not(#_):not(#__):not(#___):root:root:root:root .ccard .cper{color:var(--muted)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .msg{border-radius:14px!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .rhe{border:1px dashed var(--line2)!important;border-radius:16px!important}
+html:not(#_):not(#__):not(#___):root:root:root:root body::after{display:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .logo{background:color-mix(in srgb,var(--acc) 14%,var(--s2))!important;color:var(--acct)!important;border:1px solid var(--line2)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .logo svg{stroke:currentColor!important}
+/* profil */
+html:not(#_):not(#__):not(#___):root:root:root:root .pfp .pbn{background:radial-gradient(90% 140% at 80% 0%,color-mix(in srgb,var(--acc) 30%,transparent),transparent 65%),linear-gradient(160deg,var(--s3),var(--s2))!important;border-bottom:1px solid var(--line)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .pfp .pbn::before,html:not(#_):not(#__):not(#___):root:root:root:root .pfp .pbn::after{display:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .pav,html:not(#_):not(#__):not(#___):root:root:root:root .pfp .av{background:color-mix(in srgb,var(--acc) 18%,var(--s3))!important;color:var(--acct)!important;border:3px solid var(--s1)!important;box-shadow:0 0 0 1px var(--line2),var(--e2)!important;font-family:var(--f-d)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .pnm{color:var(--ink)!important;font-family:var(--f-d)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .tg2,html:not(#_):not(#__):not(#___):root:root:root:root .tg2.f,html:not(#_):not(#__):not(#___):root:root:root:root .tg2.g{background:var(--s3)!important;color:var(--muted)!important;border:1px solid var(--line)!important;box-shadow:none!important;border-radius:999px!important;font:600 11px var(--f-ui)!important;letter-spacing:0!important;text-transform:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .acc{background:var(--s2)!important;border:1px solid var(--line)!important;border-radius:18px!important;box-shadow:var(--e1)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .sech{color:var(--muted)!important;font:600 12px var(--f-ui)!important;letter-spacing:.02em!important;text-transform:none!important}
+html:not(#_):not(#__):not(#___):root:root:root:root button.primary,html:not(#_):not(#__):not(#___):root:root:root:root .btn.primary{background:var(--acc)!important;color:#141413!important;border:0!important;border-radius:14px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 10px 22px -12px color-mix(in srgb,var(--acc) 75%,transparent)!important;font:700 14px var(--f-ui)!important;letter-spacing:0!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .row button:not(.primary),html:not(#_):not(#__):not(#___):root:root:root:root .pfa .btn,html:not(#_):not(#__):not(#___):root:root:root:root .pfa button{background:var(--s2)!important;color:var(--ink)!important;border:1px solid var(--line2)!important;border-radius:14px!important;box-shadow:var(--e1)!important;font:600 13.5px var(--f-ui)!important}
+/* ===== CHAT-PALETTE (hanya warna Global Chat; tata letak tidak disentuh; hapus blok ini untuk kembali ke palet lama) ===== */
+html:not(#_):not(#__):not(#___):root:root:root:root .chatp,html:not(#_):not(#__):not(#___):root:root:root:root .cpanel,html:not(#_):not(#__):not(#___):root:root:root:root .chatp .cpanel{--k-line:rgba(255,255,255,.14);--k-muted:#9aa1ad;--k-ink:#eceef3;--k-qt:#1a1d24}
+html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .chatp,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .cpanel{--k-line:rgba(16,19,26,.18);--k-muted:#5b6370;--k-ink:#14161b;--k-qt:#eef0f4}
+/* ===== akhir CHAT-PALETTE ===== */
+
+html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .lhq span,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .tri,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .nxi,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .trn,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .ci,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .ic,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .tile,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .ccard .cico,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .ccard .cprc{color:color-mix(in srgb,var(--tc,var(--c,var(--rc,var(--acc)))) 58%,#000)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .bnav a[aria-current=page],html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .lhabc span,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .nwb,html:not(#_):not(#__):not(#___):root:root:root:root[data-theme="light"] .lhtag{color:var(--acct)!important}
+html:not(#_):not(#__):not(#___):root:root:root:root .chatp a:not(.fbk):not(.cib){color:var(--k-ink)!important}
+
+/* v414 otomatis: bayangan keras, garis 2-4px, font mono, huruf kapital, dan stiker miring dari aturan lama dilunakkan. Global Chat dilewati. */
+.stat:not(#_):not(#__){font-family:var(--f-ui) !important}
+.kick:not(#_):not(#__){font-family:var(--f-ui) !important}
+.stk:not(#_):not(#__){transform:none !important;font-family:var(--f-ui) !important}
+.sechd:not(#_):not(#__){font-family:var(--f-ui) !important}
+label:not(#_):not(#__){text-transform:none !important}
+input:focus:not(#_):not(#__),textarea:focus:not(#_):not(#__){box-shadow:var(--e2) !important}
+.cmp figcaption:not(#_):not(#__){font-family:var(--f-ui) !important}
+.phone .cc:not(#_):not(#__){font-family:var(--f-ui) !important}
+.wa .hd:not(#_):not(#__){font-family:var(--f-ui) !important}
+.dock a:not(#_):not(#__){font-family:var(--f-ui) !important}
+.stickers a:nth-child(odd):not(#_):not(#__){transform:none !important}
+.stickers a:nth-child(even):not(#_):not(#__){transform:none !important}
+.bt .tg:not(#_):not(#__){font-family:var(--f-ui) !important}
+.dl:not(#_):not(#__){border:1px solid var(--line) !important}
+.dh:not(#_):not(#__){font-family:var(--f-ui) !important}
+.dh button:not(#_):not(#__){font-family:var(--f-ui) !important;border-width:1px !important}
+.sr input:not(#_):not(#__){border-width:1px !important}
+.badge:not(#_):not(#__){font-family:var(--f-ui) !important}
+.cl time:not(#_):not(#__){font-family:var(--f-ui) !important}
+.rk .n:not(#_):not(#__){font-family:var(--f-ui) !important}
+.rk .er:not(#_):not(#__){font-family:var(--f-ui) !important}
+.acc.me .av:not(#_):not(#__){border-width:1px !important}
+.mail:not(#_):not(#__){font-family:var(--f-ui) !important}
+.pl:not(#_):not(#__){font-family:var(--f-ui) !important}
+.th:not(#_):not(#__){font-family:var(--f-ui) !important}
+.lg:not(#_):not(#__){font-family:var(--f-ui) !important}
+.ll .bd:not(#_):not(#__){font-family:var(--f-ui) !important}
+.sk:not(#_):not(#__){font-family:var(--f-ui) !important}
+.tg2:not(#_):not(#__){font-family:var(--f-ui) !important}
+.fca img:not(#_):not(#__){border:1px solid var(--line) !important}
+.fca i:not(#_):not(#__){border:1px solid var(--line) !important}
+.fce:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.ann:not(#_):not(#__){border-left:1px solid var(--acc) !important}
+.ann b:not(#_):not(#__){font-family:var(--f-ui) !important}
+.um span:not(#_):not(#__){font-family:var(--f-ui) !important}
+.pav:not(#_):not(#__){border-width:1px !important}
+.gate .or:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.gate .cd:not(#_):not(#__){font-family:var(--f-ui) !important}
+.sn:not(#_):not(#__){font-family:var(--f-ui) !important}
+#c input:focus:not(#_):not(#__),#c textarea:focus:not(#_):not(#__){box-shadow:var(--e2) !important}
+.drw .ext:not(#_):not(#__){font-family:var(--f-ui) !important}
+.drw .dp .av:not(#_):not(#__){border-width:1px !important}
+.drw .dp small:not(#_):not(#__){font-family:var(--f-ui) !important}
+.drw .dp button:not(#_):not(#__){border-width:1px !important}
+.fl button em:not(#_):not(#__){font-family:var(--f-ui) !important}
+.drw .dh:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.cat em:not(#_):not(#__){font-family:var(--f-ui) !important}
+.drw .dfoot span:not(#_):not(#__){font-family:var(--f-ui) !important}
+.wc .wd:not(#_):not(#__){font-family:var(--f-ui) !important}
+.wc .wst span:not(#_):not(#__){text-transform:none !important}
+.wc .tip b:not(#_):not(#__){font-family:var(--f-ui) !important}
+.wc .wst span:not(#_):not(#__){font-family:var(--f-ui) !important}
+.wc .wav:not(#_):not(#__){border:1px solid color-mix(in srgb,var(--tc) 55%,var(--bd)) !important}
+.panel .bar:not(#_):not(#__){font-family:var(--f-ui) !important}
+.panel .bar .pill:not(#_):not(#__){font-family:var(--f-ui) !important}
+.out:not(#_):not(#__){border-left:1px solid var(--tc) !important}
+.rb:not(#_):not(#__){font-family:var(--f-ui) !important}
+.owp .bar:not(#_):not(#__){font-family:var(--f-ui) !important}
+.owp .bar .pill:not(#_):not(#__){font-family:var(--f-ui) !important}
+.owp .ur.wn:not(#_):not(#__){border-left:1px solid var(--acc) !important}
+.pfp .pav:not(#_):not(#__){border:1px solid var(--line) !important}
+.pfp .sech:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.owp .sech:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.owp .ur small:not(#_):not(#__){font-family:var(--f-ui) !important}
+.gate .chips span:not(#_):not(#__){font-family:var(--f-ui) !important}
+.gate label:not(#_):not(#__){font-family:var(--f-ui) !important}
+.crd span:not(#_):not(#__){font-family:var(--f-ui) !important}
+.rcard b:not(#_):not(#__){font-family:var(--f-ui) !important}
+.rcard .rd:not(#_):not(#__){font-family:var(--f-ui) !important}
+.rpi span:not(#_):not(#__){font-family:var(--f-ui) !important}
+#fchat.nw:not(#_):not(#__)::after{border:1px solid var(--line) !important}
+.cmp figcaption:not(#_):not(#__){font-family:var(--f-ui) !important}
+.rescard:not(#_):not(#__),.out.rescard:not(#_):not(#__){border-left:1px solid var(--tc) !important}
+.rcm span:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.nxt small:not(#_):not(#__){font-family:var(--f-ui) !important}
+.nxn:not(#_):not(#__){font-family:var(--f-ui) !important}
+.nxrt em:not(#_):not(#__){font-family:var(--f-ui) !important}
+.nxbd:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.skn small:not(#_):not(#__){font-family:var(--f-ui) !important}
+.skt span:not(#_):not(#__){font-family:var(--f-ui) !important}
+.skg span:not(#_):not(#__){font-family:var(--f-ui) !important}
+.skd:not(#_):not(#__){font-family:var(--f-ui) !important}
+.tg2:not(#_):not(#__){text-transform:none !important}
+.drw .dp .av:not(#_):not(#__){border-width:1px !important}
+.av:not(#_):not(#__){border-width:1px !important}
+.nxi:not(#_):not(#__){border-width:1px !important}
+.nxi:not(#_):not(#__){border-width:1px !important}
+.wc .wav:not(#_):not(#__){border-width:1px !important}
+.lc:not(#_):not(#__){font-family:var(--f-ui) !important}
+.wc .wav:not(#_):not(#__){border-width:1px !important}
+.nxi:not(#_):not(#__){border-width:1px !important}
+.top .ib:not(#_):not(#__){border:1px solid var(--line) !important}
+.top .pill:not(#_):not(#__){border:1px solid var(--line) !important;font-family:var(--f-ui) !important}
+#drw .dp .av:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .dp small:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .dp .tg2:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .st b:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+#drw .st span:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .dl .tg2:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .dh:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw #dall:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .cat .ct small:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .cat em:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .cg .dl .tx small:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .dfoot b:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+#drw .dfoot span:not(#_):not(#__){font-family:var(--f-ui) !important}
+.wc.wc .wt .wd:not(#_):not(#__){font-family:var(--f-ui) !important}
+.wc.wc .tip b:not(#_):not(#__){font-family:var(--f-ui) !important}
+.nxl .nxin .nxbd:not(#_):not(#__){font-family:var(--f-ui) !important}
+.nxt small:not(#_):not(#__){font-family:var(--f-ui) !important}
+.trn:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.panel .bar:not(#_):not(#__){font-family:var(--f-ui) !important}
+#c label:not(#_):not(#__),#c .lb:not(#_):not(#__),#c .lbl:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.rcard .rtag:not(#_):not(#__){font-family:var(--f-ui) !important}
+.rcard .rf li:not(#_):not(#__):before{border-left:1px solid var(--line) !important;border-bottom:1px solid var(--line) !important}
+.rcard .rck:not(#_):not(#__){border:1px solid var(--line) !important}
+.rcard[aria-pressed="true"] .rck:not(#_):not(#__):after{border-left:1px solid var(--line) !important}
+.cnew:not(#_):not(#__){font-family:var(--f-ui) !important}
+.fmeta:not(#_):not(#__){font-family:var(--f-ui) !important}
+.ddsheet .dh2 b:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.sxchips small:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.sxst small:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.sxl span:not(#_):not(#__){font-family:var(--f-ui) !important}
+.sxw:not(#_):not(#__){border:1px solid var(--line) !important}
+.sxpv figcaption:not(#_):not(#__){font-family:var(--f-ui) !important}
+.sxd summary:not(#_):not(#__){font-family:var(--f-ui) !important}
+.sxd textarea:not(#_):not(#__){font-family:var(--f-ui) !important}
+.rdr input:not(#_):not(#__){text-transform:none !important}
+.kcodes:not(#_):not(#__){font-family:var(--f-ui) !important}
+.kcode:not(#_):not(#__){font-family:var(--f-ui) !important}
+.owp .ur.pl .rrow label:not(#_):not(#__){text-transform:none !important}
+.gate label:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.gate button.primary:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .dh:not(#_):not(#__){text-transform:none !important}
+.owp .fl:not(#_):not(#__){text-transform:none !important}
+.css .tt:not(#_):not(#__){text-transform:none !important}
+.css .op .ck:not(#_):not(#__){border:1px solid var(--line) !important}
+.css .op[aria-selected=true] .ck:not(#_):not(#__):after{border-width:1px !important}
+.live .lvp:not(#_):not(#__){font-family:var(--f-ui) !important}
+.live .lvh b:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.live .lva i:not(#_):not(#__){border:1px solid var(--line) !important}
+.live .lva em:not(#_):not(#__){font-family:var(--f-ui) !important}
+.live .lvf>small:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.live .lvs>small:not(#_):not(#__),.live .lvf>small:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.live .lvk span:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.live .lvr em:not(#_):not(#__){font-family:var(--f-ui) !important}
+:root[data-theme="light"] .live:not(#_):not(#__){box-shadow:var(--e2) !important}
+:root[data-theme="light"] .live .lvk div:not(#_):not(#__){box-shadow:var(--e2) !important}
+:root[data-theme="light"] .live .lvi:not(#_):not(#__){box-shadow:var(--e2) !important}
+.lht small:not(#_):not(#__){text-transform:none !important}
+.lhtip .lhtag:not(#_):not(#__){font-family:var(--f-ui) !important}
+.xtr .xh:not(#_):not(#__){text-transform:none !important}
+.xtr button.xd:not(#_):not(#__){text-transform:none !important}
+.mtprc i:not(#_):not(#__){border:1px solid var(--tc) !important}
+.scg span:not(#_):not(#__){text-transform:none !important}
+.hh:not(#_):not(#__){text-transform:none !important}
+.sphd small:not(#_):not(#__){text-transform:none !important}
+main[data-tool="spotify-play"] #c input:not(#_):not(#__){border:1px solid var(--line) !important}
+.owp .qch em:not(#_):not(#__){font-family:var(--f-ui) !important}
+.owp .uc.wn:not(#_):not(#__){border-left:1px solid var(--acc) !important}
+.owp .uc small:not(#_):not(#__){font-family:var(--f-ui) !important}
+.owp .uc .umeta:not(#_):not(#__){font-family:var(--f-ui) !important}
+.osw .osr b:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.osw .ur small:not(#_):not(#__){font-family:var(--f-ui) !important}
+.osw .osec h4:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.gate .fw input.cd:not(#_):not(#__){font-family:var(--f-ui) !important}
+.top:not(#_):not(#__){border-bottom:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+.logo:not(#_):not(#__){border:1px solid var(--line) !important}
+.ib:not(#_):not(#__){border:1px solid var(--line) !important}
+.pill.dev:not(#_):not(#__),.top .pill:not(#_):not(#__){border:1px solid var(--line) !important}
+.panel:not(#_):not(#__),.owp:not(#_):not(#__),.pfp:not(#_):not(#__),.out:not(#_):not(#__),.ann:not(#_):not(#__),.rcard:not(#_):not(#__),.rescard:not(#_):not(#__),.acc:not(#_):not(#__),.wmod .panel:not(#_):not(#__),.lhab:not(#_):not(#__),.hc:not(#_):not(#__),.nxg:not(#_):not(#__),.bento .bt:not(#_):not(#__),.card:not(#_):not(#__),.ban:not(#_):not(#__),.wc:not(#_):not(#__),.rdm:not(#_):not(#__),.gate .gc:not(#_):not(#__){border:1px solid var(--line) !important}
+.panel .bar:not(#_):not(#__),.owp .bar:not(#_):not(#__){border-bottom:1px solid var(--line) !important}
+.lhc:not(#_):not(#__){border:1px solid var(--line) !important}
+.lhs:not(#_):not(#__){border:1px solid var(--line) !important}
+.lhq:not(#_):not(#__){border:1px solid var(--line) !important}
+.lhq:nth-child(odd):not(#_):not(#__){transform:none !important}
+.lhq:nth-child(even):not(#_):not(#__){transform:none !important}
+.nxg.open .nxin:not(#_):not(#__){border-top:1px solid var(--line) !important}
+.drw:not(#_):not(#__){border-right:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+.drw .dp:not(#_):not(#__){border:1px solid var(--line) !important}
+.dock:not(#_):not(#__){border:1px solid var(--line) !important}
+.thero .tile:not(#_):not(#__),.tile:not(#_):not(#__){border:1px solid var(--line) !important}
+.drop:not(#_):not(#__){border:1px dashed var(--line) !important}
+.gate .gbr img:not(#_):not(#__){border:1px solid var(--line) !important}
+.gate .fw input:not(#_):not(#__),.gate .gg:not(#_):not(#__){border:1px solid var(--line) !important}
+.pfp .pbn:not(#_):not(#__){border-bottom:1px solid var(--line) !important}
+html body .pfp .pfa button:not(#_):not(#__),html body .pfp .pfa label:not(#_):not(#__),html body .pfp .row button:not(.primary):not(#_):not(#__){border:1px solid var(--line) !important}
+.ash p:not(#_):not(#__){font-family:var(--f-ui) !important}
+#drw .sub2>div:not(#_):not(#__){border-left:1px solid color-mix(in srgb,var(--tc) 60%,var(--bd)) !important}
+.ei:not(#_):not(#__){border-width:1px !important}
+.bax .bab button:not(#_):not(#__){box-shadow:var(--e2) !important}
+.rtry:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+.rtry:active:not(#_):not(#__){box-shadow:var(--e2) !important}
+.svcw:not(#_):not(#__){border:1px solid var(--line) !important}
+.bar:not(#_):not(#__),.panel>.bar:not(#_):not(#__){border-bottom:1px solid var(--ac-ink) !important;font-family:var(--f-ui) !important;text-transform:none !important}
+.bar .pill:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+.thero:not(#_):not(#__){border-bottom:1px dashed var(--line) !important}
+.seg button:not(#_):not(#__),.ogr button:not(#_):not(#__){border:1px solid var(--ac-ink) !important;box-shadow:var(--e2) !important}
+.seg button[aria-pressed="true"]:not(#_):not(#__),.seg button.on:not(#_):not(#__),.ogr button[aria-pressed="true"]:not(#_):not(#__){box-shadow:var(--e2) !important}
+:root[data-theme="dark"] .seg button:not([aria-pressed="true"]):not(.on):not(#_):not(#__),:root[data-theme="dark"] .ogr button:not([aria-pressed="true"]):not(#_):not(#__){box-shadow:var(--e2) !important}
+.ost>div:not(#_):not(#__),.pst>div:not(#_):not(#__),.stats .stat:not(#_):not(#__){border:1px solid var(--ac-ink) !important;box-shadow:var(--e2) !important;font-family:var(--f-ui) !important}
+.tile:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+:root .live .lvh:not(#_):not(#__){border-bottom:1px solid var(--ac-ink) !important;font-family:var(--f-ui) !important;text-transform:none !important}
+:root .live .lvp:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+:root .live .lvk div:not(#_):not(#__){border:1px solid var(--ac-ink) !important;box-shadow:var(--e2) !important}
+:root .live .lvi:not(#_):not(#__){border:1px solid var(--ac-ink) !important;box-shadow:var(--e2) !important}
+:root .live .lvi .tri:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+:root .live .lvr i:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+:root .live .lva i:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+:root .live .lve:not(#_):not(#__){border:1px dashed var(--ac-ink) !important}
+:root[data-theme="dark"] .panel:not(#_):not(#__),:root[data-theme="dark"] .live:not(#_):not(#__),:root[data-theme="dark"] .card:not(#_):not(#__){box-shadow:var(--e2) !important}
+#drw:not(#_):not(#__),.drw:not(#_):not(#__){border-right:1px solid var(--ac-ink) !important;box-shadow:var(--e2) !important}
+:root[data-theme="dark"] #drw:not(#_):not(#__),:root[data-theme="dark"] .drw:not(#_):not(#__){box-shadow:var(--e2) !important}
+.drw .dl:not(#_):not(#__),#drw .dl:not(#_):not(#__){border:1px solid var(--ac-ink) !important;box-shadow:var(--e2) !important}
+.drw .dl .ic:not(#_):not(#__),#drw .dl .ic:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+.drw .dl .tg2:not(#_):not(#__),#drw .dl .tg2:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+.drw .dp:not(#_):not(#__),#drw .dp:not(#_):not(#__){border:1px solid var(--ac-ink) !important;box-shadow:var(--e2) !important}
+.drw .sr:not(#_):not(#__),#drw .sr:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+
+html body #drw:not(#_):not(#__){border-right:1px solid var(--line) !important}
+html body #drw .dp:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+html body #drw>.dl:not(#_):not(#__),html body #drw .cg>.cat:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+html body #drw>.dl:active:not(#_):not(#__),html body #drw .cg>.cat:active:not(#_):not(#__){box-shadow:var(--e2) !important}
+html body #drw>.dl .ic:not(#_):not(#__),html body #drw .cat .ci:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+html body #drw .cat em:not(#_):not(#__){font-family:var(--f-ui) !important;border:1px solid var(--line) !important}
+html body #drw .dh:not(#_):not(#__){font-family:var(--f-ui) !important}
+html body #drw #dall:not(#_):not(#__){font-family:var(--f-ui) !important}
+html body #drw .sr:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+html body #drw .sub2>div:not(#_):not(#__){border-left:1px solid var(--tc) !important}
+html body #drw .cg .dl .ic:not(#_):not(#__){border:1px solid var(--line) !important}
+html body .rk li:not(.empty):not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+html body .rk .n:not(#_):not(#__){font-family:var(--f-ui) !important;border:1px solid var(--ac-ink) !important}
+html body .rk .rt>b:not(#_):not(#__){font-family:var(--f-ui) !important}
+html body .rk .er:not(#_):not(#__){font-family:var(--f-ui) !important}
+html body .rk .mt:not(#_):not(#__){border:1px solid var(--line) !important}
+html body .rk .mt i:not(#_):not(#__){border-right:1px solid var(--ac-ink) !important}
+html body #c .amps:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+html body .rcs.g:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+html body .rcs.b:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+html body .nwb:not(#_):not(#__){border:1px solid var(--ac-ink) !important}
+html body main[data-tool="spotify-play"] #c input:not(#_):not(#__){border:1px solid var(--line) !important}
+html body main[data-tool="spotify-play"] #c .out.spw:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+html body main[data-tool="spotify-play"] .panel .bar:not(#_):not(#__){border-bottom:1px solid var(--ac-ink) !important}
+html body main[data-tool="spotify-play"] .panel:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+html body #drw .pwab:not(#_):not(#__){border:1px solid var(--ac-ink,#141413) !important;box-shadow:var(--e2) !important}
+html body .pwab img:not(#_):not(#__){border:1px solid var(--ac-ink,#141413) !important}
+html body .pwsc:not(#_):not(#__){border:1px solid var(--ac-ink,#141413) !important}
+html body .pwsh img:not(#_):not(#__){border:1px solid var(--ac-ink,#141413) !important}
+html body .pwsn:not(#_):not(#__){border:1px solid var(--ac-ink,#141413) !important}
+html body .pwsx:not(#_):not(#__){border:1px solid var(--ac-ink,#141413) !important;box-shadow:var(--e2) !important}
+
+.live .lvq:not(#_):not(#__){border:1px solid var(--line) !important}
+.live .lvdl:not(#_):not(#__){font-family:var(--f-ui) !important}
+.live .lvmt:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+:root[data-theme="light"] .live .lvh b.lvm:not(#_):not(#__){box-shadow:var(--e2) !important}
+:root[data-theme="dark"] body .fabs button:not(#_):not(#__),:root[data-theme="dark"] .fabs button:not(#_):not(#__){border:1px solid var(--acc) !important}
+.bnav:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+.bnav a:not(#_):not(#__){border:1px solid var(--line) !important}
+.bnav a.nw:not(#_):not(#__)::after{border:1px solid var(--line) !important}
+.bnav:not(#_):not(#__){border-width:1px !important}
+.bnav a:not(#_):not(#__){border-width:1px !important}
+@media (min-width:600px){.bnav:not(#_):not(#__){border-width:1px !important}}
+:root:root:root .lhc .lht small:not(#_):not(#__){transform:none !important}
+:root:root:root .lhc .lhtip .lhtag:not(#_):not(#__){transform:none !important}
+:root:root:root .lhi:not(#_):not(#__){border:1px solid var(--line) !important}
+:root:root:root .lhi button:not(#_):not(#__){border-top:1px solid var(--line) !important}
+:root:root:root .nxg.open .nxh:not(#_):not(#__){border-bottom:1px solid var(--line) !important}
+:root:root:root .nxg.open .nxi:not(#_):not(#__){transform:none !important}
+:root:root:root .lhc .lhtip:not(#_):not(#__){border:1px solid var(--line) !important}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){:root:root:root .lhi button:hover:not(#_):not(#__){box-shadow:var(--e2) !important}}
+:root:root:root .top:not(#_):not(#__){border-bottom:1px solid var(--line) !important}
+:root:root:root .top .ib:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root .top .logo:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root .top .pill:not(#_):not(#__),:root:root:root .pill.dev:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root .card:not(#_):not(#__),:root:root:root .panel:not(#_):not(#__),:root:root:root .nxg:not(#_):not(#__),:root:root:root .hc:not(#_):not(#__),:root:root:root .tr:not(#_):not(#__),:root:root:root .lhi:not(#_):not(#__),:root:root:root .lhq:not(#_):not(#__),:root:root:root .lhs:not(#_):not(#__),:root:root:root .stat:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root button:not(#_):not(#__),:root:root:root .btn:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root input:not(#_):not(#__),:root:root:root textarea:not(#_):not(#__),:root:root:root select:not(#_):not(#__){border:1px solid var(--line) !important}
+:root:root:root input:focus:not(#_):not(#__),:root:root:root textarea:focus:not(#_):not(#__){box-shadow:var(--e2) !important}
+:root:root:root .tile:not(#_):not(#__),:root:root:root .nxi:not(#_):not(#__),:root:root:root .hc .tri:not(#_):not(#__),:root:root:root .tr .tri:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root .pill:not(#_):not(#__){border:1px solid var(--line) !important}
+:root:root:root .bar:not(#_):not(#__){border-bottom:1px solid var(--line) !important}
+:root:root:root .lhc:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root .lhc .lht small:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important;transform:none !important}
+:root:root:root .lhc .lhtip:not(#_):not(#__){border:1px solid var(--line) !important}
+:root:root:root .lhc .lhtip .lhtag:not(#_):not(#__){border:1px solid var(--line) !important;transform:none !important}
+:root:root:root .lhq span:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root .lhi span+span:not(#_):not(#__){border-left:1px solid var(--line) !important}
+:root:root:root .lhi button:not(#_):not(#__){border-top:1px solid var(--line) !important}
+:root:root:root #hot .hc:not(#_):not(#__)::before{border-bottom:1px solid var(--line) !important}
+:root:root:root .nxg.open .nxh:not(#_):not(#__){border-bottom:1px solid var(--line) !important}
+:root:root:root .nxt small:not(#_):not(#__){border:1px solid var(--line) !important}
+:root:root:root .nxin .tr:not(#_):not(#__){box-shadow:var(--e2) !important}
+:root:root:root .nxc:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root .nxg.open .nxi:not(#_):not(#__){transform:none !important}
+:root:root:root .lhab:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root .lhab span:not(#_):not(#__),:root:root:root .lhab .chips span:not(#_):not(#__){border:1px solid var(--line) !important}
+:root:root:root .bnav:not(#_):not(#__){border-top:1px solid var(--line) !important}
+:root:root:root .bnav a[aria-current=page]:not(#_):not(#__){box-shadow:var(--e2) !important}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){:root:root:root .lhq:hover:not(#_):not(#__),:root:root:root #hot .hc:hover:not(#_):not(#__),:root:root:root .nxg:hover:not(#_):not(#__){box-shadow:var(--e2) !important}
+:root:root:root .nxin .tr:hover:not(#_):not(#__){box-shadow:var(--e2) !important}}
+:root:root:root .lhq:active:not(#_):not(#__),:root:root:root #hot .hc:active:not(#_):not(#__),:root:root:root .nxin .tr:active:not(#_):not(#__),:root:root:root .tr:active:not(#_):not(#__){box-shadow:var(--e2) !important}
+:root:root:root .trn:not(#_):not(#__){border:1px solid var(--line) !important}
+:root:root:root .nxn:not(#_):not(#__){border:1px solid var(--line) !important}
+:root:root:root .nwb:not(#_):not(#__){border:1px solid var(--line) !important}
+:root:root:root .top .pill:not(#_):not(#__),:root:root:root .pill.dev:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+:root:root:root .lht small:not(#_):not(#__),:root:root:root .lhtag:not(#_):not(#__),:root:root:root .nxt small:not(#_):not(#__),:root:root:root .trn:not(#_):not(#__),:root:root:root .nwb:not(#_):not(#__),:root:root:root .bar:not(#_):not(#__),:root:root:root .lhi span:not(#_):not(#__),:root:root:root .tr .trd:not(#_):not(#__),:root:root:root .hh:not(#_):not(#__){font-family:var(--f-ui) !important}
+:root:root:root .hh:not(#_):not(#__){text-transform:none !important}
+:root:root:root:root .lhi span:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root:root .lhi span+span:not(#_):not(#__){border-left:1px solid var(--line) !important}
+:root:root:root:root .lhi button:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important;font-family:var(--f-ui) !important}
+:root:root:root .nxg.open .nxh:not(#_):not(#__){border-bottom:1px solid var(--line) !important}
+:root:root:root .nxh .nxt b:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+:root:root:root .trn:not(#_):not(#__){box-shadow:var(--e2) !important}
+:root:root:root .lhc .lht small:not(#_):not(#__){font-family:var(--f-ui) !important}
+:root:root:root .nfl a:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important;font-family:var(--f-ui) !important}
+.ccard .clb:not(#_):not(#__){font-family:var(--f-ui) !important}
+.ccard .cper:not(#_):not(#__){font-family:var(--f-ui) !important}
+.ccard .ctag:not(#_):not(#__){font-family:var(--f-ui) !important}
+.cbal small:not(#_):not(#__){font-family:var(--f-ui) !important}
+.qp:not(#_):not(#__){border:1px solid var(--line) !important}
+.qp-cd:not(#_):not(#__){font-family:var(--f-ui) !important}
+.qp-amt>small:first-child:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.qp-chips span:not(#_):not(#__){font-family:var(--f-ui) !important;text-transform:none !important}
+.qp-fr:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+.qp-fr>i:not(#_):not(#__){border:1px solid var(--line) !important}
+.qp-lb:not(#_):not(#__){font-family:var(--f-ui) !important}
+.qp-st i:not(#_):not(#__){font-family:var(--f-ui) !important}
+
+html:root:root:root .lhc:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+html:root:root:root .lhc:not(#_):not(#__)::after{border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+html:root:root:root .lhc .lht small:not(#_):not(#__){box-shadow:var(--e2) !important}
+html:root:root:root .lhc .lhtip:not(#_):not(#__){border:1px solid var(--line) !important}
+html:root:root:root:root .lhc:not(#_):not(#__)::after{box-shadow:var(--e2) !important}
+html:root:root:root:root .lhc:not(#_):not(#__)::before{border:1px solid var(--line) !important;box-shadow:var(--e2) !important;font-family:var(--f-ui) !important}
+html:root:root:root:root .lhc .lht h2 .lhe:not(#_):not(#__){box-shadow:var(--e2) !important}
+html:root:root:root:root .lhc .lhtip:not(#_):not(#__){box-shadow:var(--e2) !important}
+html:root:root:root:root .lhc .lhp:not(#_):not(#__){border:1px solid var(--line) !important;box-shadow:var(--e2) !important}
+html:root:root:root:root:root:root .lhc:not(#_):not(#__)::before{border:1px solid var(--line) !important}
+html:root:root:root:root:root:root #hgo:not(#_):not(#__),html:root:root:root:root:root:root .lhi button:not(#_):not(#__){box-shadow:var(--e2) !important}
+
+/* ===== v415: warna icon lebih hidup (override terakhir) =====
+   Akar masalah: aturan lama `.tri svg{color:#141413!important}` membuat garis icon
+   (stroke:currentColor) jadi hitam di atas latar tint gelap. Di sini icon kembali
+   memakai warna aksen (--ic), dengan variasi hue per item. */
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .nxi,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .ci,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .ic:not(.cfm .ic){
+  background:color-mix(in srgb,var(--ic,var(--tc,var(--c,var(--acc)))) 22%,transparent) !important;
+  color:var(--ic,var(--tc,var(--c,var(--acc)))) !important;
+  border:1px solid color-mix(in srgb,var(--ic,var(--tc,var(--c,var(--acc)))) 40%,transparent) !important;
+  box-shadow:none !important}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root[data-theme="light"] .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root[data-theme="light"] .nxi,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root[data-theme="light"] .ci,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root[data-theme="light"] .ic:not(.cfm .ic){
+  color:color-mix(in srgb,var(--ic,var(--tc,var(--c,var(--acc)))) 55%,#000) !important}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .tri svg,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .nxi svg,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .ci svg,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .ic svg,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw .ic *,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw .ci *{
+  color:inherit !important;stroke:currentColor !important;stroke-width:2.2}
+
+/* variasi warna: kartu "Baru/Populer" dan daftar tool */
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #hot .hc:nth-child(6n+1) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .nxin .tr:nth-child(6n+1) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .lvf .lvi:nth-child(6n+1) .tri{--ic:#4fd69a}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #hot .hc:nth-child(6n+2) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .nxin .tr:nth-child(6n+2) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .lvf .lvi:nth-child(6n+2) .tri{--ic:#ffc83d}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #hot .hc:nth-child(6n+3) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .nxin .tr:nth-child(6n+3) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .lvf .lvi:nth-child(6n+3) .tri{--ic:#5cd0d8}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #hot .hc:nth-child(6n+4) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .nxin .tr:nth-child(6n+4) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .lvf .lvi:nth-child(6n+4) .tri{--ic:#ff8fb8}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #hot .hc:nth-child(6n+5) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .nxin .tr:nth-child(6n+5) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .lvf .lvi:nth-child(6n+5) .tri{--ic:#8f9aff}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #hot .hc:nth-child(6n) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .nxin .tr:nth-child(6n) .tri,
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root .lvf .lvi:nth-child(6n) .tri{--ic:#ff9a4d}
+
+/* variasi warna: menu samping */
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw #dhome .ic{--ic:#ffc83d}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw a.dl[href="#chat"] .ic{--ic:#4fd69a}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw a.dl[href="#role"] .ic{--ic:#ffc83d}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw a.dl[href="#changelog"] .ic{--ic:#8f9aff}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw a.dl[href="#feedback"] .ic{--ic:#ff8fb8}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw a.dl[href="#stats"] .ic{--ic:#5cd0d8}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw a.dl[href="#info"] .ic{--ic:#ff9a4d}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw a.dl[href="#riwayat"] .ic{--ic:#8f9aff}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw a.dl[href="#profil"] .ic{--ic:#5cd0d8}
+html:not(#_):not(#__):not(#___):not(#____):root:root:root:root:root #drw a.dl[href^="http"] .ic{--ic:#ff8fb8}
+
+/* v415b: mode terang, icon berlatar warna solid (tidak transparan) */
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root[data-theme="light"] .tri,
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root[data-theme="light"] .nxi,
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root[data-theme="light"] .ci,
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root[data-theme="light"] .ic:not(.cfm .ic),
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root[data-theme="light"] .lhq span{
+  background:color-mix(in srgb,var(--ic,var(--tc,var(--c,var(--acc)))) 78%,#fff) !important;
+  color:#14121f !important;
+  border:1.5px solid color-mix(in srgb,var(--ic,var(--tc,var(--c,var(--acc)))) 55%,#000) !important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root[data-theme="light"] .lhq span svg,
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root[data-theme="light"] #drw .ic *,
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root[data-theme="light"] #drw .ci *{color:inherit !important;stroke:currentColor !important}
+
+/* ===== v416: intro dihapus, diganti loading biasa (logo berputar + bar). Warna ikut token tema. ===== */
+.mld{position:fixed;inset:0;z-index:99990;display:grid;place-items:center;background:var(--bg);color:var(--ink);transition:opacity .3s ease,visibility .3s ease}
+.mld.out{opacity:0;visibility:hidden;pointer-events:none}
+.noload .mld,.ldgate .mld{display:none}
+.mldc{display:flex;flex-direction:column;align-items:center;gap:16px;padding:0 24px}
+.mldlg{position:relative;width:112px;height:112px;display:grid;place-items:center}
+.mldlg img{width:84px;height:84px;display:block;border-radius:50%}
+.mldr{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.mldr circle{fill:none;stroke-width:3.5}
+.mldt{stroke:color-mix(in srgb,var(--ink) 14%,transparent)}
+.mlda{stroke:var(--acc);stroke-linecap:round;stroke-dasharray:289;stroke-dashoffset:210;transform-origin:50% 50%}
+.mldn{margin:0;font:800 22px/1 "Plus Jakarta Sans",Inter,system-ui,sans-serif;letter-spacing:-.02em}
+.mldb{position:relative;width:min(200px,56vw);height:5px;border-radius:99px;background:color-mix(in srgb,var(--ink) 14%,transparent);overflow:hidden}
+.mldb i{position:absolute;inset:0;border-radius:inherit;background:var(--acc);transform-origin:left center;transform:scaleX(var(--p,0))}
+@media (prefers-reduced-motion:no-preference){
+.mlda{animation:mldspin 1.1s linear infinite}
+.mldlg img{animation:mldpulse 1.6s ease-in-out infinite}
+@keyframes mldspin{to{transform:rotate(360deg)}}
+@keyframes mldpulse{0%,100%{transform:scale(1)}50%{transform:scale(.93)}}
+}
+/* v419: logo kucing di header (PNG transparan, tanpa latar kuning) */
+html:not(#_):not(#__):not(#___):root:root:root:root .top .logo:has(>img){background:transparent!important;border:0!important;box-shadow:none!important;border-radius:10px!important}

@@ -98,6 +98,15 @@
           "value": "public, max-age=3600, stale-while-revalidate=604800"
         }
       ]
+    },
+    {
+      "source": "/admin(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ],
   "crons": [
@@ -112,8 +121,63 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/admin/:path*",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/panel/:path*",
+      "destination": "/panel.html"
+    },
+    {
       "source": "/api/status",
       "destination": "/api/presence?s=1"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/panel",
+      "destination": "/admin",
+      "permanent": true
+    },
+    {
+      "source": "/panel/pengguna",
+      "destination": "/admin/users",
+      "permanent": true
+    },
+    {
+      "source": "/panel/tools",
+      "destination": "/admin/tools",
+      "permanent": true
+    },
+    {
+      "source": "/panel/koin",
+      "destination": "/admin/store",
+      "permanent": true
+    },
+    {
+      "source": "/panel/pengumuman",
+      "destination": "/admin/announcements",
+      "permanent": true
+    },
+    {
+      "source": "/panel/log",
+      "destination": "/admin/logs",
+      "permanent": true
+    },
+    {
+      "source": "/panel/broadcast",
+      "destination": "/admin/broadcast",
+      "permanent": true
+    },
+    {
+      "source": "/panel/:path*",
+      "destination": "/admin",
+      "permanent": true
+    },
+    {
+      "source": "/panel.html",
+      "destination": "/admin",
+      "permanent": true
     }
   ]
 }

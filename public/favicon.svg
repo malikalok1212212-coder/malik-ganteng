@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><clipPath id="c"><circle cx="256" cy="256" r="240"/></clipPath></defs>
+<circle cx="256" cy="256" r="240" fill="#000"/>
+<g clip-path="url(#c)">
+<!-- ekor + gear di ujung -->
+<path d="M312 490 C440 490 472 360 420 300" fill="none" stroke="#fff" stroke-width="28" stroke-linecap="round"/>
+<path d="M448.2 274.5 L459.7 276.6 L459.7 287.4 L448.2 289.5 L443.5 300.9 L450.1 310.5 L442.5 318.1 L432.9 311.5 L421.5 316.2 L419.4 327.7 L408.6 327.7 L406.5 316.2 L395.1 311.5 L385.5 318.1 L377.9 310.5 L384.5 300.9 L379.8 289.5 L368.3 287.4 L368.3 276.6 L379.8 274.5 L384.5 263.1 L377.9 253.5 L385.5 245.9 L395.1 252.5 L406.5 247.8 L408.6 236.3 L419.4 236.3 L421.5 247.8 L432.9 252.5 L442.5 245.9 L450.1 253.5 L443.5 263.1 Z" fill="#fff"/><circle cx="414" cy="282" r="15" fill="#000"/>
+<!-- badan -->
+<path d="M214 316 H298 C300 400 316 470 330 520 H182 C196 470 212 400 214 316 Z" fill="#fff"/>
+<!-- kaki depan -->
+<!-- lengan + kunci inggris -->
+<path d="M110 300 L82 196" stroke="#000" stroke-width="40" stroke-linecap="round"/>
+<path d="M110 300 L82 196" stroke="#fff" stroke-width="24" stroke-linecap="round"/>
+<g transform="rotate(14 80 176)"><circle cx="80" cy="170" r="40" fill="#fff"/><rect x="67" y="118" width="26" height="40" rx="2" fill="#000"/></g>
+<path d="M222 396 Q162 384 122 316" stroke="#000" stroke-width="44" stroke-linecap="round" fill="none"/>
+<path d="M222 396 Q162 384 122 316" stroke="#fff" stroke-width="32" stroke-linecap="round" fill="none"/>
+<circle cx="112" cy="300" r="26" fill="#fff"/>
+<!-- kepala miring -->
+<g transform="translate(256 196) rotate(-9) scale(0.94) translate(-256 -200)">
+<path d="M140 196 C136 152 146 112 160 84 C188 98 208 114 224 128 C246 122 266 122 288 128 C304 114 324 98 352 84 C366 112 376 152 372 196 C396 222 388 270 342 296 C312 312 200 312 170 296 C124 270 116 222 140 196 Z" fill="#fff" stroke="#000" stroke-width="14" stroke-linejoin="round" paint-order="stroke"/>
+<path d="M140 196 C136 152 146 112 160 84 C188 98 208 114 224 128 C246 122 266 122 288 128 C304 114 324 98 352 84 C366 112 376 152 372 196 C396 222 388 270 342 296 C312 312 200 312 170 296 C124 270 116 222 140 196 Z" fill="#fff"/>
+<path d="M182 232 Q206 192 230 232" fill="none" stroke="#000" stroke-width="15" stroke-linecap="round"/>
+<path d="M282 232 Q306 192 330 232" fill="none" stroke="#000" stroke-width="15" stroke-linecap="round"/>
+<path d="M240 258 L256 274 L272 258 Z" fill="#000" stroke="#000" stroke-width="6" stroke-linejoin="round"/>
+</g>
+<!-- M di perut -->
+<path d="M236 482 V450 L256 468 L276 450 V482" fill="none" stroke="#000" stroke-width="11" stroke-linejoin="miter"/>
+</g></svg>

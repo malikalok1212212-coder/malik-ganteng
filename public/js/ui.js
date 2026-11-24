@@ -129,7 +129,7 @@ setInterval(function(){tick++;if(typeof mtStatus==='function'&&tick%6===0)mtStat
 (function(){let b=null;const show=()=>{if(b)return;b=document.createElement('div');b.className='offb';b.setAttribute('role','status');b.textContent='Kamu sedang offline. Halaman yang pernah dibuka tetap bisa dipakai.';document.body.appendChild(b)},hide=()=>{if(b){b.remove();b=null}};
  addEventListener('offline',show);addEventListener('online',hide);if(!navigator.onLine)show()})();
 
-/* Bottom bar: navigasi utama (Beranda, Riwayat, Chat, Role, Profil). Disembunyikan di Global Chat, panel Developer, layar login, dan saat keyboard terbuka. */
+/* Bottom bar: navigasi utama (Beranda, Riwayat, Chat, Koin, Profil). Disembunyikan di Global Chat, panel Developer, layar login, dan saat keyboard terbuka. */
 (function(){
  const bar=document.getElementById('bnav');if(!bar)return;
  const S=p=>'<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+p+'</svg>';
@@ -137,7 +137,7 @@ setInterval(function(){tick++;if(typeof mtStatus==='function'&&tick%6===0)mtStat
   ['','Beranda','#ffc83d','<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>'],
   ['riwayat','Riwayat','#5cd0d8','<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'],
   ['chat','Chat','#ff8fb8','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'],
-  ['role','Role','#ff9a4d','<path d="M4 19h16M4 8l4 4 4-7 4 7 4-4-2 11H6z"/>'],
+  ['role','Koin','#ff9a4d','<path d="M4 19h16M4 8l4 4 4-7 4 7 4-4-2 11H6z"/>'],
   ['profil','Profil','#4fd69a','<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>']
  ];
  bar.innerHTML=IT.map(x=>'<a href="#'+x[0]+'" data-k="'+x[0]+'" style="--c:'+x[2]+'">'+S(x[3])+'<span>'+x[1]+'</span></a>').join('');
