@@ -2872,7 +2872,7 @@ main button.primary{font-family:"Plus Jakarta Sans",Inter,system-ui,sans-serif;f
 
 /* ===== sc-v223 ===== */
 .scc{display:grid;gap:12px}
-.scc .scth{width:100%;max-height:280px;aspect-ratio:1;object-fit:cover;border-radius:16px;background:var(--field)}
+.scc .scth{width:100%;max-height:280px;aspect-ratio:1;box-sizing:content-box;max-width:none;object-fit:cover;border-radius:16px;background:var(--field)}
 .scc .scb b{display:block;font-size:17px;line-height:1.3;overflow-wrap:anywhere}
 .scc .scb small{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:4px;color:var(--muted)}
 .scc .scpl{display:block;width:100%;height:166px;border:0;border-radius:14px;background:var(--field)}
@@ -4857,3 +4857,86 @@ html body .iv .ivsk{border-color:var(--iv-ink);color:var(--iv-ink);box-shadow:2p
 :root:root body .iv .ivchips span,:root:root body .iv .ivchips .c1,:root:root body .iv .ivchips .c2{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--iv-ink);border:2px solid var(--iv-ink);padding:6px 12px;font:700 clamp(11.5px,min(3.2vw,1.8vh),13px)/1 "Space Grotesk","Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0}
 :root:root body .iv .ivchips span::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--ok);border:1.5px solid var(--iv-ink)}
 :root:root body .iv .ivm{font:600 clamp(12.5px,min(3.5vw,1.9vh),14px)/1.4 "Space Grotesk","Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0}
+
+/* ===== v412: Spotify Play dan banner beranda =====
+   Spotify: judul lagu, judul pencarian, dan judul daftar memakai warna tinta tema terang (gelap) di atas pemutar yang selalu gelap,
+   sehingga tidak terbaca. Sekarang selalu putih (hijau untuk lagu yang sedang diputar). Lebar semua lapisan dikunci agar isi tidak terpotong di kanan,
+   termasuk di browser yang belum mendukung contain:inline-size.
+   Banner: foto tidak lagi di-zoom sampai hanya mata yang terlihat. Foto jadi stiker kotak di kanan, kartu kuning dengan teks tinta. */
+html:root:root:root main[data-tool="spotify-play"] .spw .spq,
+html:root:root:root main[data-tool="spotify-play"] .spw .spti,
+html:root:root:root main[data-tool="spotify-play"] .spw .sphd b,
+html:root:root:root main[data-tool="spotify-play"] .spw .spm b,
+html:root:root:root main[data-tool="spotify-play"] .spw .spcnt,
+html:root:root:root main[data-tool="spotify-play"] .spw .spl li:not(.on) b,
+html:root:root:root main[data-tool="spotify-play"] .spw .spl li:not(.on) strong{color:#fff!important;-webkit-text-fill-color:#fff}
+html:root:root:root main[data-tool="spotify-play"] .spw .spl li.on b{color:#4fd69a!important;-webkit-text-fill-color:#4fd69a}
+html:root:root:root main[data-tool="spotify-play"] .spw .sphd small{color:rgba(255,255,255,.72)!important}
+html:root:root:root main[data-tool="spotify-play"] .spw .spl li span,html:root:root:root main[data-tool="spotify-play"] .spw .spl li small{color:rgba(255,255,255,.7)}
+html:root:root:root main[data-tool="spotify-play"] .panel,html:root:root:root main[data-tool="spotify-play"] #c,html:root:root:root main[data-tool="spotify-play"] #res{min-width:0;max-width:100%;box-sizing:border-box}
+html:root:root:root main[data-tool="spotify-play"] .spw{overflow:hidden;overflow:clip;width:100%;max-width:100%}
+html:root:root:root main[data-tool="spotify-play"] .spw *{min-width:0;box-sizing:border-box}
+html:root:root:root main[data-tool="spotify-play"] .spw .spn,html:root:root:root main[data-tool="spotify-play"] .spw .spl{width:100%;max-width:100%}
+html:root:root:root main[data-tool="spotify-play"] .spw .spl li .ti{flex:1 1 0;min-width:0;overflow:hidden}
+html:root:root:root main[data-tool="spotify-play"] .spw .spl li .ti b,html:root:root:root main[data-tool="spotify-play"] .spw .spl li .ti span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html:root:root:root main[data-tool="spotify-play"] .spw .spc{display:flex;align-items:center;justify-content:space-between;gap:4px;width:100%}
+html:root:root:root main[data-tool="spotify-play"] .spw .spc button{flex:0 1 auto}
+html:root:root:root main[data-tool="spotify-play"] .spw .spft{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;width:100%}
+html:root:root:root main[data-tool="spotify-play"] .spw .spft button{flex:0 1 auto;max-width:100%}
+
+/* banner beranda */
+html:root:root:root .lhc{min-height:0;padding:16px 14px 14px;background:var(--acc)!important;color:#16130d;display:block;border:var(--nb,3px) solid var(--bd)!important;box-shadow:6px 6px 0 var(--sh)!important;border-radius:22px!important}
+html:root:root:root .lhc::after{content:"";position:absolute;right:14px;top:16px;width:clamp(96px,30vw,128px);aspect-ratio:1;background:url(/hero.jpg?v=252b) 50% 36%/cover no-repeat,#0b0d0c;border:var(--nb,3px) solid #16130d;border-radius:20px;box-shadow:4px 4px 0 #16130d;z-index:0}
+html:root:root:root .lhc .lht{max-width:calc(100% - clamp(96px,30vw,128px) - 14px);min-height:clamp(96px,30vw,128px)}
+html:root:root:root .lhc .lha{display:none}
+html:root:root:root .lhc .lht small{background:#fffdf6!important;color:#16130d!important;box-shadow:2px 2px 0 #16130d}
+html:root:root:root .lhc .lht h2{margin:12px 0 0;font:700 15px/1.25 "Plus Jakarta Sans",Inter,system-ui,sans-serif;color:#16130d!important}
+html:root:root:root .lhc .lht h2 b{margin-top:2px;font:800 clamp(30px,9.5vw,42px)/1.05 "Plus Jakarta Sans",Inter,system-ui,sans-serif;letter-spacing:-.04em;color:#16130d!important;text-shadow:none}
+html:root:root:root .lhc .lhtip{position:relative;z-index:1;display:flex;align-items:center;gap:10px;margin-top:14px;max-width:100%;padding:8px 12px 8px 8px;background:#fffdf6!important;border:var(--nb,3px) solid #16130d!important;border-radius:14px;color:#16130d!important}
+html:root:root:root .lhc .lhtip .lhtxt{color:#16130d!important;font-size:12.5px;line-height:1.4}
+html:root:root:root .lhc .lht h2,html:root:root:root .lhc .lht h2 b{-webkit-text-fill-color:#16130d!important;background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;padding:0}
+html:root:root:root .lhc .lht h2 .lhe{-webkit-text-fill-color:initial}
+html:root:root:root .lhc .lht h2 .lhe{display:none}
+
+/* ===== v413: banner beranda dipercantik =====
+   Kartu kuning kini bertekstur (kilau diagonal), foto jadi stiker lurus yang menampilkan wajah (bukan rambut),
+   lencana bintang di pojok foto, ikon sapaan jadi koin gelap supaya kontras, nama diberi sorotan pink, titik tanggal hijau,
+   dan strip tips punya bayangan keras seperti kartu lain. Semua murni CSS; markup tidak berubah. */
+html:root:root:root:root .lhc{--ps:clamp(100px,31vw,132px);
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,0) 46%),
+    var(--acc)!important}
+/* foto: stiker miring, fokus ke wajah */
+html:root:root:root:root .lhc::after{width:var(--ps);right:16px;top:18px;
+  background:url(/hero.jpg?v=252b) 46% 84%/128% auto no-repeat,#0b0d0c;
+  border-radius:22px;box-shadow:5px 5px 0 #16130d}
+/* lencana bintang di pojok foto */
+html:root:root:root:root .lhc::before{content:"\2605";position:absolute;z-index:2;right:5px;top:calc(18px + var(--ps) - 22px);
+  width:28px;height:28px;display:grid;place-items:center;border-radius:50%;
+  background:var(--cp,#ff8fb8);color:#16130d;border:var(--nb,3px) solid #16130d;box-shadow:2px 2px 0 #16130d;
+  font:800 13px/1 "Space Mono",ui-monospace,monospace;pointer-events:none}
+html:root:root:root:root .lhc .lht{max-width:calc(100% - var(--ps) - 18px);min-height:var(--ps)}
+/* chip tanggal: titik hijau */
+html:root:root:root:root .lhc .lht small{font-size:11px;padding:6px 11px;transform:none}
+html:root:root:root:root .lhc .lht small::before{background:#12874f;box-shadow:0 0 0 2px #fffdf6,0 0 0 3.5px #16130d}
+/* sapaan: ikon jadi koin gelap */
+html:root:root:root:root .lhc .lht h2{margin-top:14px;font-size:15px;font-weight:700;letter-spacing:-.01em}
+html:root:root:root:root .lhc .lht h2 .lhe{display:inline-grid;place-items:center;width:24px;height:24px;margin-left:5px;vertical-align:-6px;
+  border-radius:50%;background:#16130d;border:0;font-size:13px;line-height:1;-webkit-text-fill-color:initial;
+  box-shadow:2px 2px 0 rgba(22,19,13,.28)}
+/* nama: sorotan pink di bawah huruf */
+html:root:root:root:root .lhc .lht h2 b{display:table;margin-top:3px;font-size:clamp(32px,10vw,44px);
+  background:linear-gradient(transparent 58%,var(--cp,#ff8fb8) 58% 88%,transparent 88%)!important;
+  -webkit-background-clip:border-box!important;background-clip:border-box!important;padding:0 4px 0 0;max-width:100%;overflow-wrap:anywhere}
+/* tips: bayangan keras + teks sedikit lebih besar */
+html:root:root:root:root .lhc .lhtip{margin-top:16px;padding:9px 12px 9px 9px;border-radius:16px;box-shadow:3px 3px 0 #16130d}
+html:root:root:root:root .lhc .lhtip .lhtxt{font-size:13px;line-height:1.4;font-weight:600}
+
+/* v413b: foto banner = foto profil pengguna (img.lhp). Tanpa foto profil tetap memakai hero.jpg lewat ::after. */
+html:root:root:root:root .lhc.hp::after{display:none}
+html:root:root:root:root .lhc .lhp{position:absolute;z-index:0;right:16px;top:18px;width:var(--ps);height:var(--ps);aspect-ratio:1;box-sizing:content-box;max-width:none;object-fit:cover;
+  background:#0b0d0c;border:var(--nb,3px) solid #16130d;border-radius:22px;box-shadow:5px 5px 0 #16130d;display:block}
+
+/* v413c: label TIPS lurus; bintik-bintik latar belakang (body dan layar login) dihapus, garis kisi dan warna latar tetap */
+html:root:root:root:root .lhc .lhtip .lhtag{transform:none}
+html:root:root:root:root body,html:root:root:root:root .gate{background-image:none!important}

@@ -1,4 +1,4 @@
-const V='mt-v149',CORE=['/','/offline.html','/style.css?v=410','/js/core.js?v=404','/js/ui.js?v=372','/logo.jpg','/yuu.jpg','/intro.jpg?v=331','/icon-192.png','/favicon.ico','/favicon-32.png','/hero.jpg','/bg.jpg'],LAZY=['/js/fx.js?v=392','/js/tools.js?v=404','/js/pages.js?v=404','/js/chat.js?v=404'];
+const V='mt-v152',CORE=['/','/offline.html','/style.css?v=413','/js/core.js?v=405','/js/ui.js?v=372','/logo.jpg','/yuu.jpg','/intro.jpg?v=331','/icon-192.png','/favicon.ico','/favicon-32.png','/hero.jpg','/bg.jpg'],LAZY=['/js/fx.js?v=392','/js/tools.js?v=405','/js/pages.js?v=405','/js/chat.js?v=405'];
 // Pasang: shell wajib lengkap, modul lazy (Tools, Halaman, Chat) dicoba terpisah supaya satu kegagalan tidak menggagalkan install. Hasilnya: situs bisa dibuka tanpa internet.
 const pre=c=>c.addAll(CORE).then(()=>Promise.all(LAZY.map(u=>c.add(u).catch(()=>{}))));
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(pre).then(()=>self.skipWaiting()))});
