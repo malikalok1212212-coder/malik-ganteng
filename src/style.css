@@ -298,9 +298,7 @@ select{width:100%;font:500 16px/1.4 "Space Grotesk",system-ui,sans-serif;color:v
 .tg2{display:inline-block;font:700 10px "Space Mono",monospace;padding:1px 7px;border:1px solid var(--bd);border-radius:7px;margin-left:6px;background:var(--acc);color:#141413;vertical-align:middle}
 .tg2.r{background:#ff8a95}
 .tg2.g{background:var(--acc)}
-.chm{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.66);display:grid;place-items:center;padding:20px;opacity:0;transition:opacity .2s ease}
-.chm.on{opacity:1}
-/* Popup Follow Channel Resmi (kelas fc*, terpisah dari .chm/.chd milik Global Chat dan chip saldo) */
+/* Popup Follow Channel Resmi (kelas fc*, terpisah dari .chd milik Global Chat dan chip saldo (.cbh)) */
 .fcm{position:fixed;inset:0;z-index:99;display:grid;place-items:center;padding:20px;background:rgba(8,10,14,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .22s ease}
 .fcm.on{opacity:1}
 .fcc{position:relative;width:100%;max-width:380px;max-height:100%;overflow:auto;text-align:center;background:var(--panel);color:var(--ink);border:1px solid var(--bd);border-radius:24px;padding:30px 22px 20px;box-shadow:0 24px 64px rgba(0,0,0,.35);transform:translateY(16px) scale(.97);transition:transform .28s cubic-bezier(.2,.9,.3,1.12)}
@@ -4542,134 +4540,197 @@ html body .lhc .lhtip .lhtag{display:inline-block;margin-right:6px;padding:3px 6
   :root:root:root .lhc,:root:root:root .lhq,:root:root:root .lhi button,:root:root:root #hot .hc,:root:root:root .nxg,:root:root:root .nxh,:root:root:root .nxi,:root:root:root .nxc,:root:root:root .nxb,:root:root:root .nxin .tr,:root:root:root .lhs,:root:root:root .lhabc span{transition:none!important;transform:none!important}
 }
 
-/* ===== v392 Tampilan kalem: palet netral, garis tipis, bayangan lembut, gerak halus =====
-   Menggantikan palet neo-brutalism. Satu aksen saja: ganti --acc di bawah untuk mengubah warna utama.
-   Ditaruh paling akhir supaya menimpa gaya lama; prefiks :root:root:root menang atas aturan lama. */
+/* ===== v404 Neo brutalist kembali (terang dan gelap) =====
+   Menggantikan blok "kalem" v392/v393 (garis 1px, bayangan lembut, palet pucat) yang menghilangkan kesan neo brutalist.
+   Isi: garis tebal --nb, bayangan keras offset (--sh, tanpa blur), ubin ikon berwarna penuh, sudut lebih tegas.
+   Terang = kertas krem + tinta arang. Gelap = hitam netral + garis dan bayangan putih. Gerak halus dan efek scroll tetap.
+   Ubah warna utama lewat --acc. Prefiks :root:root:root menang atas aturan lama. */
 :root:root,:root:root[data-theme="light"],:root:root:not([data-theme="dark"]){
-  --bg:#f5f6f8;--panel:#fff;--field:#f1f3f6;--bd:#e1e4ea;--ink:#1c2028;--muted:#667085;
-  --on:#1c2028;--ok:#1e7a4d;--bad:#c23a3a;--sh:rgba(16,24,40,.09);--dot:transparent;
-  --acc:#cddcff;--tc:var(--acc);--hp:var(--acc);--ac-y:var(--acc);--nb:1px;
-  --cy:#ecdba6;--cp:#f0c8d6;--cg:#b9e1cd;--cv:#cfd4f6;--cb:#c0e2e7;
+  --bg:#f7f0df;--panel:#fffdf6;--field:#fff6df;--bd:#16130d;--ink:#16130d;--muted:#4f4838;
+  --on:#16130d;--ok:#12874f;--bad:#c0392b;--sh:#16130d;--dot:#e2d7ba;
+  --acc:#ffc83d;--tc:var(--acc);--hp:var(--acc);--ac-y:var(--acc);--nb:3px;
+  --cy:var(--acc);--cp:#ff8fb8;--cg:#4fd69a;--cv:#8f9aff;--cb:#5cd0d8;
   --mt-ease:cubic-bezier(.22,1,.36,1);color-scheme:light;
 }
 :root:root:root[data-theme="dark"]{
-  --bg:#111317;--panel:#1a1d23;--field:#14171c;--bd:#2a2f38;--ink:#eceef2;--muted:#9aa3b0;
-  --on:#14171c;--ok:#6fd1a0;--bad:#ff8f8f;--sh:rgba(0,0,0,.45);--dot:transparent;
-  --acc:#8ea8ee;--cy:#d9c481;--cp:#d9a4b8;--cg:#8fc9ac;--cv:#a9b0e8;--cb:#8fc4cb;color-scheme:dark;
+  --bg:#0d0d0e;--panel:#18181a;--field:#111113;--bd:#f5f5f2;--ink:#f5f5f2;--muted:#b9b9bf;
+  --on:#16130d;--ok:#4fd69a;--bad:#ff8a7a;--sh:#f5f5f2;--dot:#1b1b1e;
+  --acc:#ffc83d;--cy:var(--acc);--cp:#ff8fb8;--cg:#4fd69a;--cv:#e9e9ee;--cb:#5cd0d8;--nb:3px;color-scheme:dark;
 }
 @media(prefers-color-scheme:dark){
   :root:root:root:not([data-theme="light"]){
-    --bg:#111317;--panel:#1a1d23;--field:#14171c;--bd:#2a2f38;--ink:#eceef2;--muted:#9aa3b0;
-    --on:#14171c;--ok:#6fd1a0;--bad:#ff8f8f;--sh:rgba(0,0,0,.45);--dot:transparent;
-    --acc:#8ea8ee;--cy:#d9c481;--cp:#d9a4b8;--cg:#8fc9ac;--cv:#a9b0e8;--cb:#8fc4cb;color-scheme:dark;
+    --bg:#0d0d0e;--panel:#18181a;--field:#111113;--bd:#f5f5f2;--ink:#f5f5f2;--muted:#b9b9bf;
+    --on:#16130d;--ok:#4fd69a;--bad:#ff8a7a;--sh:#f5f5f2;--dot:#1b1b1e;
+    --acc:#ffc83d;--cy:var(--acc);--cp:#ff8fb8;--cg:#4fd69a;--cv:#e9e9ee;--cb:#5cd0d8;--nb:3px;color-scheme:dark;
   }
 }
-:root:root:root body{background:var(--bg);background-image:none;color:var(--ink)}
-::selection{background:color-mix(in srgb,var(--acc) 70%,transparent)!important;color:var(--ink)!important}
+:root:root:root body{background-color:var(--bg);background-image:none;color:var(--ink)}
+::selection{background:var(--acc)!important;color:#16130d!important}
 
 /* Header */
-:root:root:root .top{background:var(--panel)!important;border-bottom:1px solid var(--bd)!important;box-shadow:none!important}
-:root:root:root .top .ib{border:1px solid var(--bd)!important;background:var(--panel)!important;color:var(--ink)!important;box-shadow:none!important;border-radius:12px;transition:background-color .2s ease,transform .2s var(--mt-ease)}
-:root:root:root .top .ib:active{background:var(--field);border-color:var(--bd);color:var(--ink);transform:scale(.95)}
-:root:root:root .top .logo{border:1px solid var(--bd)!important;border-radius:10px;box-shadow:none}
-:root:root:root .top .pill,:root:root:root .pill.dev{border:1px solid var(--bd)!important;background:var(--field)!important;color:var(--ink)!important;border-radius:999px!important;box-shadow:none!important}
-:root:root:root .top .pill:before{background:var(--ok)!important}
+:root:root:root .top{background:var(--panel)!important;border-bottom:var(--nb) solid var(--bd)!important;box-shadow:none!important}
+:root:root:root .top .ib{border:var(--nb) solid var(--bd)!important;background:var(--panel)!important;color:var(--ink)!important;box-shadow:3px 3px 0 var(--sh)!important;border-radius:12px;transition:transform .12s ease,box-shadow .12s ease}
+:root:root:root .top .ib:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--sh)!important;background:var(--panel);color:var(--ink)}
+:root:root:root .top .logo{border:var(--nb) solid var(--bd)!important;border-radius:10px;box-shadow:3px 3px 0 var(--sh)}
+:root:root:root .top .pill,:root:root:root .pill.dev{border:var(--nb) solid var(--bd)!important;background:var(--acc)!important;color:#16130d!important;border-radius:999px!important;box-shadow:3px 3px 0 var(--sh)!important}
+:root:root:root .top .pill:before{background:#16130d!important}
 
 /* Permukaan umum: kartu, panel, tombol, kolom isian */
 :root:root:root .card,:root:root:root .panel,:root:root:root .nxg,:root:root:root .hc,:root:root:root .tr,:root:root:root .lhi,:root:root:root .lhq,:root:root:root .lhs,:root:root:root .stat{
-  background:var(--panel)!important;color:var(--ink)!important;border:1px solid var(--bd)!important;box-shadow:0 1px 2px var(--sh)!important}
-:root:root:root .card,:root:root:root .panel{border-radius:16px}
-:root:root:root button,:root:root:root .btn{border:1px solid var(--bd);box-shadow:none;border-radius:12px;transition:background-color .2s ease,transform .2s var(--mt-ease),border-color .2s ease}
-:root:root:root button:active,:root:root:root .btn:active{transform:scale(.98)}
-:root:root:root button.primary,:root:root:root .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-:root:root:root input,:root:root:root textarea,:root:root:root select{border:1px solid var(--bd);border-radius:12px;background:var(--field);transition:border-color .2s ease,box-shadow .2s ease}
-:root:root:root input:focus,:root:root:root textarea:focus{background:var(--panel);border-color:color-mix(in srgb,var(--acc) 80%,var(--ink));box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 45%,transparent)}
+  background:var(--panel)!important;color:var(--ink)!important;border:var(--nb) solid var(--bd)!important;box-shadow:5px 5px 0 var(--sh)!important}
+:root:root:root .card,:root:root:root .panel{border-radius:18px}
+:root:root:root button,:root:root:root .btn{border:var(--nb) solid var(--bd);box-shadow:4px 4px 0 var(--sh);border-radius:12px;transition:transform .12s ease,box-shadow .12s ease,background-color .2s ease}
+:root:root:root button:active,:root:root:root .btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--sh)}
+:root:root:root button.primary,:root:root:root .btn.primary{background:var(--acc);color:#16130d;border-color:var(--bd)}
+:root:root:root input,:root:root:root textarea,:root:root:root select{border:var(--nb) solid var(--bd);border-radius:12px;background:var(--field);transition:box-shadow .15s ease,transform .15s ease}
+:root:root:root input:focus,:root:root:root textarea:focus{background:var(--panel);border-color:var(--bd);box-shadow:4px 4px 0 var(--sh);outline:none}
 :root:root:root .tile,:root:root:root .nxi,:root:root:root .hc .tri,:root:root:root .tr .tri{
-  background:color-mix(in srgb,var(--tc) 26%,var(--panel))!important;color:var(--ink)!important;border:0!important;box-shadow:none!important}
-:root:root:root .nxi svg,:root:root:root .hc .tri svg,:root:root:root .tr .tri svg,:root:root:root .tile svg{stroke:var(--ink)!important}
-:root:root:root .pill,:root:root:root .bar{background:var(--field)!important;color:var(--ink)!important;box-shadow:none!important}
+  background:var(--tc)!important;color:#16130d!important;border:var(--nb) solid var(--bd)!important;box-shadow:3px 3px 0 var(--sh)!important}
+:root:root:root .nxi svg,:root:root:root .hc .tri svg,:root:root:root .tr .tri svg,:root:root:root .tile svg{stroke:#16130d!important}
+:root:root:root .pill{background:var(--panel)!important;color:var(--ink)!important;border:var(--nb) solid var(--bd);box-shadow:none!important}
+:root:root:root .bar{background:var(--ac-i,#8f9aff)!important;color:#16130d!important;border-bottom:var(--nb) solid var(--bd)!important;box-shadow:none!important}
+:root:root:root[data-theme="dark"] .bar{background:#f5f5f2!important}
 
-/* Banner sambutan: foto tetap, chip dan garis bawah dibuat kalem */
-:root:root:root .lhc{border:1px solid var(--bd)!important;box-shadow:0 2px 10px var(--sh)!important;border-radius:22px!important}
-:root:root:root .lhc .lht small{background:rgba(255,255,255,.16)!important;color:#fff!important;border:1px solid rgba(255,255,255,.22);box-shadow:none;font-weight:700}
-:root:root:root .lhc .lht small::before{background:#fff}
-:root:root:root .lhc .lht h2 b{background:none!important;text-shadow:0 2px 14px rgba(0,0,0,.45)}
-:root:root:root .lhc .lhtip{border:1px solid rgba(255,255,255,.16);background:rgba(15,17,21,.55)}
-:root:root:root .lhc .lhtip .lhtag{background:rgba(255,255,255,.18)!important;color:#fff!important}
+/* Banner sambutan: foto tetap, chip miring dan garis tebal */
+:root:root:root .lhc{border:var(--nb) solid var(--bd)!important;box-shadow:6px 6px 0 var(--sh)!important;border-radius:22px!important}
+:root:root:root .lhc .lht small{background:var(--acc)!important;color:#16130d!important;border:var(--nb) solid #16130d;box-shadow:3px 3px 0 #16130d;font-weight:800;transform:rotate(-2deg)}
+:root:root:root .lhc .lht small::before{background:#16130d}
+:root:root:root .lhc .lht h2 b{background:none!important;text-shadow:3px 3px 0 rgba(0,0,0,.6)}
+:root:root:root .lhc .lhtip{border:var(--nb) solid rgba(255,255,255,.7);background:rgba(15,15,15,.62);border-radius:14px}
+:root:root:root .lhc .lhtip .lhtag{background:var(--cp)!important;color:#16130d!important;border:var(--nb) solid #16130d;transform:rotate(-3deg)}
 
-/* Aksi cepat */
+/* Aksi cepat: tombol yang terasa ditekan */
 :root:root:root .lhq b{color:var(--ink)!important}
 :root:root:root .lhq{border-radius:18px!important;background-image:none!important}
-:root:root:root .lhq span{background:color-mix(in srgb,var(--c,var(--acc)) 24%,var(--panel))!important;border:0!important;box-shadow:none!important}
-:root:root:root .lhq span svg,:root:root:root .lhq span svg.i{stroke:var(--ink)!important}
+:root:root:root .lhq span{background:var(--c,var(--acc))!important;border:var(--nb) solid var(--bd)!important;box-shadow:3px 3px 0 var(--sh)!important}
+:root:root:root .lhq span svg,:root:root:root .lhq span svg.i{stroke:#16130d!important}
 
 /* Statistik */
 :root:root:root .lhi{border-radius:18px}
-:root:root:root .lhi span+span{border-left:1px solid var(--bd)}
-:root:root:root .lhi span::after{height:3px;opacity:.75}
-:root:root:root .lhi button{background:var(--field);color:var(--ink);border-top:1px solid var(--bd)}
-:root:root:root .lhi button:active{background:color-mix(in srgb,var(--field) 80%,var(--ink))}
+:root:root:root .lhi span+span{border-left:var(--nb) solid var(--bd)}
+:root:root:root .lhi span::after{height:5px;opacity:1;border:1px solid var(--bd)}
+:root:root:root .lhi button{background:var(--acc);color:#16130d;border-top:var(--nb) solid var(--bd)}
+:root:root:root .lhi button:active{background:color-mix(in srgb,var(--acc) 80%,#000)}
 
 /* Judul bagian, kartu tool, kategori */
-:root:root:root .hh::after{border-top:1px solid var(--bd)}
+:root:root:root .hh::after{border-top:2px dotted color-mix(in srgb,var(--bd) 45%,transparent)}
 :root:root:root #hot .hc{border-radius:18px!important}
-:root:root:root #hot .hc::before{height:3px;border-bottom:0;background:color-mix(in srgb,var(--tc) 75%,var(--panel))}
-:root:root:root .nxg{border-radius:18px!important}
-:root:root:root .nxh{background:color-mix(in srgb,var(--tc) 9%,var(--panel))}
-:root:root:root .nxg.open .nxh{background:color-mix(in srgb,var(--tc) 15%,var(--panel));border-bottom:1px solid var(--bd)}
-:root:root:root .nxg.open .nxin{background:var(--panel)}
-:root:root:root .nxt b{letter-spacing:.02em}
-:root:root:root .nxt small{border:1px solid var(--bd);background:var(--field)}
-:root:root:root .nxc{background:var(--field);border:1px solid var(--bd);box-shadow:none}
-:root:root:root .nxin .tr{border-radius:14px!important}
-:root:root:root .trn{background:color-mix(in srgb,var(--tc) 22%,var(--panel));color:var(--ink);border:0}
+:root:root:root #hot .hc::before{height:12px;border-bottom:var(--nb) solid var(--bd);background:var(--tc)}
+:root:root:root .nxg{border-radius:20px!important}
+:root:root:root .nxh{background:color-mix(in srgb,var(--tc) 22%,var(--panel))}
+:root:root:root .nxg.open .nxh{background:color-mix(in srgb,var(--tc) 40%,var(--panel));border-bottom:var(--nb) solid var(--bd)}
+:root:root:root .nxg.open .nxin{background:color-mix(in srgb,var(--tc) 10%,var(--panel))}
+:root:root:root .nxt b{letter-spacing:.04em}
+:root:root:root .nxt small{border:var(--nb) solid var(--bd);background:var(--panel)}
+:root:root:root .nxin .tr{border-radius:16px!important;box-shadow:4px 4px 0 var(--sh)!important}
+:root:root:root .nxc{background:var(--panel)!important;color:var(--ink)!important;border:var(--nb) solid var(--bd)!important;box-shadow:3px 3px 0 var(--sh)!important}
+:root:root:root .nxg.open .nxi{transform:rotate(-5deg)}
+
+/* Kartu info beranda: bayangan keras juga */
+:root:root:root .lhab{border:var(--nb) solid var(--bd)!important;box-shadow:5px 5px 0 var(--sh)!important;border-radius:20px!important}
+:root:root:root .lhab span,:root:root:root .lhab .chips span{border:var(--nb) solid var(--bd)}
+
+/* Gelap: tint kategori dibuat netral (abu arang), bukan hijau keruh; ubin ikon tetap berwarna penuh */
+:root:root:root[data-theme="dark"] .nxh{background:color-mix(in srgb,var(--ink) 6%,var(--panel))}
+:root:root:root[data-theme="dark"] .nxg.open .nxh{background:color-mix(in srgb,var(--ink) 11%,var(--panel))}
+:root:root:root[data-theme="dark"] .nxg.open .nxin{background:color-mix(in srgb,var(--ink) 3%,var(--panel))}
+@media(prefers-color-scheme:dark){
+  :root:root:root:not([data-theme="light"]) .nxh{background:color-mix(in srgb,var(--ink) 6%,var(--panel))}
+  :root:root:root:not([data-theme="light"]) .nxg.open .nxh{background:color-mix(in srgb,var(--ink) 11%,var(--panel))}
+  :root:root:root:not([data-theme="light"]) .nxg.open .nxin{background:color-mix(in srgb,var(--ink) 3%,var(--panel))}
+}
 
 /* Bottom bar dan tombol melayang */
-:root:root:root .bnav{border:0;border-top:1px solid var(--bd);box-shadow:0 -8px 24px -18px var(--sh)}
-:root:root:root .bnav a[aria-current=page]{background:color-mix(in srgb,var(--acc) 55%,var(--panel));color:var(--ink);border-color:transparent;box-shadow:none}
+:root:root:root .bnav{border:0;border-top:var(--nb) solid var(--bd);box-shadow:none;background:var(--panel)}
+:root:root:root .bnav a[aria-current=page]{background:var(--acc);color:#16130d;border-color:var(--bd);box-shadow:3px 3px 0 var(--sh)}
 :root:root:root .fabs{--fab:var(--acc)}
 
-/* Gerak halus: tanpa rotasi, tanpa tekan keras; hanya naik sedikit dan membesar tipis */
+/* Gerak: kartu terangkat (bayangan membesar) saat disorot, menekan masuk saat disentuh */
 :root:root:root .lhq,:root:root:root #hot .hc,:root:root:root .nxg,:root:root:root .nxin .tr,:root:root:root .lhs,:root:root:root .lhc{
-  transition:transform .35s var(--mt-ease),box-shadow .35s var(--mt-ease),border-color .25s ease,background-color .25s ease}
+  transition:transform .14s ease,box-shadow .14s ease,background-color .25s ease}
 @media (hover:hover) and (prefers-reduced-motion:no-preference){
-  :root:root:root .lhq:hover,:root:root:root #hot .hc:hover,:root:root:root .nxg:hover{transform:translateY(-2px)!important;box-shadow:0 10px 24px -14px var(--sh)!important;filter:none}
-  :root:root:root .nxin .tr:hover{transform:translateX(3px)!important;box-shadow:0 6px 16px -12px var(--sh)!important}
-  :root:root:root .lhq:hover span,:root:root:root #hot .hc:hover .tri,:root:root:root .nxin .tr:hover .tri,:root:root:root .nxg.open .nxi{transform:none}
+  :root:root:root .lhq:hover,:root:root:root #hot .hc:hover,:root:root:root .nxg:hover{transform:translate(-2px,-2px)!important;box-shadow:7px 7px 0 var(--sh)!important}
+  :root:root:root .nxin .tr:hover{transform:translate(-2px,-2px)!important;box-shadow:6px 6px 0 var(--sh)!important}
 }
-:root:root:root .lhq:active,:root:root:root #hot .hc:active,:root:root:root .nxin .tr:active,:root:root:root .tr:active{transform:scale(.975)!important;box-shadow:0 1px 2px var(--sh)!important}
+:root:root:root .lhq:active,:root:root:root #hot .hc:active,:root:root:root .nxin .tr:active,:root:root:root .tr:active{transform:translate(4px,4px)!important;box-shadow:2px 2px 0 var(--sh)!important}
 :root:root:root .nxb{transition:grid-template-rows .42s var(--mt-ease),opacity .35s ease}
-:root:root:root .nxc{transition:transform .35s var(--mt-ease)}
+:root:root:root .nxc{transition:transform .2s ease}
 
-/* Lencana dan tombol kecil: netral, tanpa warna permen */
-:root:root:root .trn,:root:root:root .nxn,:root:root:root .nxc{background:var(--field)!important;color:var(--ink)!important;border:1px solid var(--bd)!important}
-:root:root:root .nwb{background:color-mix(in srgb,var(--acc) 55%,var(--panel))!important;color:var(--ink)!important;border:0!important;box-shadow:none!important}
-:root:root:root .nxg.open .nxi,:root:root:root .nxi{transform:none!important}
+/* Lencana kecil: berwarna, bergaris */
+:root:root:root .trn{background:var(--cp)!important;color:#16130d!important;border:var(--nb) solid var(--bd)!important}
+:root:root:root .nxn{background:var(--panel)!important;color:var(--ink)!important;border:var(--nb) solid var(--bd)!important}
+:root:root:root .nwb{background:var(--acc)!important;color:#16130d!important;border:var(--nb) solid var(--bd)!important;box-shadow:none!important}
 
 /* Muncul saat di-scroll: diatur fx.js; hanya elemen di bawah layar yang disembunyikan sebentar */
 .rv0{opacity:0;transform:translate3d(0,14px,0)}
 :root:root:root .rv1{opacity:1;transform:none;transition:opacity .55s ease,transform .6s var(--mt-ease)}
 @media (prefers-reduced-motion:reduce){.rv0{opacity:1;transform:none}.rv1{transition:none}}
 
-/* v393 dark: tint kategori dinetralkan (abu), tidak lagi hijau/cokelat keruh */
-:root:root:root[data-theme="dark"] .tile,:root:root:root[data-theme="dark"] .nxi,:root:root:root[data-theme="dark"] .hc .tri,:root:root:root[data-theme="dark"] .tr .tri,:root:root:root[data-theme="dark"] .lhq span{background:color-mix(in srgb,var(--ink) 9%,var(--panel))!important}
-:root:root:root[data-theme="dark"] .nxh{background:color-mix(in srgb,var(--ink) 3%,var(--panel))}
-:root:root:root[data-theme="dark"] .nxg.open .nxh{background:color-mix(in srgb,var(--ink) 6%,var(--panel))}
-:root:root:root[data-theme="dark"] #hot .hc::before{background:color-mix(in srgb,var(--ink) 16%,var(--panel))}
-:root:root:root[data-theme="dark"] .trn,:root:root:root[data-theme="dark"] .nxn,:root:root:root[data-theme="dark"] .nxc{background:color-mix(in srgb,var(--ink) 7%,var(--panel))!important}
-:root:root:root[data-theme="dark"] .nwb{background:color-mix(in srgb,var(--ink) 16%,var(--panel))!important}
-:root:root:root[data-theme="dark"] .lhi span::after{background:var(--muted);opacity:.45}
-:root:root:root[data-theme="dark"] .bnav a[aria-current=page]{background:color-mix(in srgb,var(--ink) 12%,var(--panel))}
-@media(prefers-color-scheme:dark){
-:root:root:root:not([data-theme="light"]) .tile,:root:root:root:not([data-theme="light"]) .nxi,:root:root:root:not([data-theme="light"]) .hc .tri,:root:root:root:not([data-theme="light"]) .tr .tri,:root:root:root:not([data-theme="light"]) .lhq span{background:color-mix(in srgb,var(--ink) 9%,var(--panel))!important}
-:root:root:root:not([data-theme="light"]) .nxh{background:color-mix(in srgb,var(--ink) 3%,var(--panel))}
-:root:root:root:not([data-theme="light"]) .nxg.open .nxh{background:color-mix(in srgb,var(--ink) 6%,var(--panel))}
-:root:root:root:not([data-theme="light"]) #hot .hc::before{background:color-mix(in srgb,var(--ink) 16%,var(--panel))}
-:root:root:root:not([data-theme="light"]) .trn,:root:root:root:not([data-theme="light"]) .nxn,:root:root:root:not([data-theme="light"]) .nxc{background:color-mix(in srgb,var(--ink) 7%,var(--panel))!important}
-:root:root:root:not([data-theme="light"]) .nwb{background:color-mix(in srgb,var(--ink) 16%,var(--panel))!important}
-:root:root:root:not([data-theme="light"]) .lhi span::after{background:var(--muted);opacity:.45}
-:root:root:root:not([data-theme="light"]) .bnav a[aria-current=page]{background:color-mix(in srgb,var(--ink) 12%,var(--panel))}
-}
+
+/* ===== v405 Ikuti gaya API Cloud (referensi): garis 3px, bayangan besar, label pil berwarna, teks mono, tombol header berwarna ===== */
+/* Latar: foto samar + kisi tipis */
+:root:root:root body::before{display:block!important;content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:url(/bg.jpg) 50% 15%/cover no-repeat;opacity:.2!important;filter:grayscale(.2) contrast(1.05)}
+:root:root:root[data-theme="dark"] body::before{opacity:.3!important;filter:brightness(.8) contrast(1.05)}
+:root:root:root body::after{display:block!important;content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:1!important;background:linear-gradient(color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1px) 0 0/28px 28px,linear-gradient(90deg,color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1px) 0 0/28px 28px}
+@media(prefers-color-scheme:dark){:root:root:root:not([data-theme="light"]) body::before{opacity:.3!important;filter:brightness(.8) contrast(1.05)}}
+
+/* Header: tombol berwarna, status hijau mono */
+:root:root:root .top{border-bottom-width:4px!important}
+:root:root:root .top #mn{background:var(--acc)!important;color:#16130d!important;border-radius:14px}
+:root:root:root .top #mn svg{stroke:#16130d!important}
+:root:root:root .top #th{background:#8f9aff!important;color:#16130d!important;border-radius:14px}
+:root:root:root .top #th svg{stroke:#16130d!important}
+:root:root:root .top .pill,:root:root:root .pill.dev{background:var(--cg,#4fd69a)!important;font-family:"Space Mono",ui-monospace,monospace;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+
+/* Teks mono untuk label, seperti referensi */
+:root:root:root .lht small,:root:root:root .lhtag,:root:root:root .nxt small,:root:root:root .trn,:root:root:root .nwb,:root:root:root .bar,:root:root:root .lhi span,:root:root:root .tr .trd,:root:root:root .hh{font-family:"Space Mono",ui-monospace,monospace!important}
+:root:root:root .hh{font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+:root:root:root .hh em{font-style:normal}
+
+/* Statistik: tiga ubin berwarna terpisah + tombol kuning, seperti kartu Endpoint/Kategori/JSON */
+:root:root:root:root .lhi{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible;gap:12px;padding:0 6px 6px 0}
+:root:root:root:root .lhi span{background:var(--c,var(--acc))!important;color:#16130d!important;border:var(--nb) solid var(--bd);border-radius:16px;box-shadow:4px 4px 0 var(--sh);align-items:flex-start;padding:12px 12px 10px;gap:2px;font-size:11.5px;font-weight:700}
+:root:root:root:root .lhi span b{color:#16130d!important;font-family:"Space Grotesk",system-ui,sans-serif;font-size:28px}
+:root:root:root:root .lhi span:nth-of-type(1){background:var(--acc)!important}
+:root:root:root:root .lhi span:nth-of-type(2){background:var(--cp,#ff8fb8)!important}
+:root:root:root:root .lhi span:nth-of-type(3){background:var(--cg,#4fd69a)!important}
+:root:root:root:root .lhi span b{font-family:"Space Grotesk",system-ui,sans-serif!important}
+:root:root:root:root .lhi span+span{border-left:var(--nb) solid var(--bd)}
+:root:root:root:root .lhi span::after{display:none}
+:root:root:root:root .lhi button{grid-column:1/-1;border:var(--nb) solid var(--bd);border-radius:14px!important;box-shadow:4px 4px 0 var(--sh);font-family:"Space Mono",ui-monospace,monospace}
+:root:root:root:root .lhi button:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--sh)}
+
+/* Kategori: kartu putih, judul jadi pil berwarna, jumlah mono di kanan, panah polos */
+:root:root:root .nxh{background:transparent!important;gap:10px;padding:14px}
+:root:root:root .nxg.open .nxh{background:transparent!important;border-bottom:var(--nb) solid var(--bd)}
+:root:root:root .nxg.open .nxin{background:transparent!important}
+:root:root:root .nxh .nxi{display:none!important}
+:root:root:root .nxh .nxt{display:contents}
+:root:root:root .nxh .nxt b{order:1;display:inline-block;padding:7px 14px;border:var(--nb) solid var(--bd);border-radius:12px;background:var(--tc);color:#16130d!important;font:800 16px/1.2 "Space Grotesk",system-ui,sans-serif;letter-spacing:0;text-transform:none;box-shadow:2px 2px 0 var(--sh)}
+:root:root:root .nxh .nxt small{order:2;margin:0 0 0 auto;padding:0;border:0!important;background:transparent!important;color:var(--ink)!important;font-size:13px;font-weight:700;letter-spacing:.02em}
+:root:root:root .nxh .nxc{order:3;width:28px;height:28px;background:transparent!important;border:0!important;box-shadow:none!important}
+
+/* Warna pil kategori bergantian seperti API Cloud (indigo, pink, kuning, hijau) */
+:root:root:root .nxl>.nxg:nth-child(4n+1) .nxh .nxt b{background:#8f9aff}
+:root:root:root .nxl>.nxg:nth-child(4n+2) .nxh .nxt b{background:var(--cp,#ff8fb8)}
+:root:root:root .nxl>.nxg:nth-child(4n+3) .nxh .nxt b{background:var(--acc)}
+:root:root:root .nxl>.nxg:nth-child(4n+4) .nxh .nxt b{background:var(--cg,#4fd69a)}
+
+/* Baris tool: ubin ikon berwarna, deskripsi mono, lencana "gratis" hijau seperti "ready" */
+:root:root:root .nxin .tr{padding:12px 10px 12px 12px}
+:root:root:root .trn{background:var(--cg,#4fd69a)!important;border-radius:10px;padding:3px 10px;font-weight:700;font-size:11.5px;box-shadow:2px 2px 0 var(--sh)}
+:root:root:root .trn.k{background:var(--acc)!important}
+:root:root:root .tr .trd{font-size:11.5px;color:var(--muted)}
+
+/* Kartu tool, pencarian, banner: lebih tegas */
+:root:root:root .lhs{border-radius:18px!important}
+:root:root:root .lhc{border-radius:24px!important}
+:root:root:root .lhc .lht small{font-family:"Space Mono",ui-monospace,monospace;letter-spacing:.06em}
+
+/* v406 Tanpa biru saat diklik/fokus: cincin fokus arang/krem, tautan info berbentuk pil neo */
+:root:root:root button:focus-visible,:root:root:root a:focus-visible,:root:root:root [tabindex]:focus-visible,:root:root:root summary:focus-visible{outline:3px solid var(--ink)!important;outline-offset:3px}
+:root:root:root .nfl a{border:var(--nb) solid var(--bd);border-radius:999px;background:var(--panel);color:var(--ink);box-shadow:3px 3px 0 var(--sh);font:700 13px/1 "Space Mono",ui-monospace,monospace;transition:transform .12s ease,box-shadow .12s ease}
+:root:root:root .nfl a:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--sh);background:var(--acc);color:#16130d}
 
 /* Beli Koin: kartu paket 2 kolom (mengikuti daftar harga Nexa React) */
 .ccards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 8px}
@@ -4690,8 +4751,8 @@ html body .lhc .lhtip .lhtag{display:inline-block;margin-right:6px;padding:3px 6
 .crd span a{color:inherit;font-weight:700;text-decoration:underline}
 
 a.cbal{text-decoration:none;color:inherit}
-.cbal.chm{margin:12px 0 0;flex-direction:row;justify-content:space-between;padding:12px 16px}
-.cbal.chm b{font-size:20px}
+.cbal.cbh{margin:12px 0 0;flex-direction:row;justify-content:space-between;padding:12px 16px}
+.cbal.cbh b{font-size:20px}
 
 /* ===== Pembayaran QRIS: kartu bayar (Beli Koin) ===== */
 .rpp.qpo{padding:0;border:0;background:none}
@@ -4732,3 +4793,67 @@ a.cbal{text-decoration:none;color:inherit}
 .qp-ft{margin:0;font:600 12px/1.5 "Space Grotesk",system-ui,sans-serif;color:var(--muted);text-align:center}
 @keyframes qppulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
 @media (prefers-reduced-motion:reduce){.qp #rps:before{animation:none}}
+/* Pemutar Spotify Play: kartu tidak boleh melebar karena lapisan blur dekoratif (.spbg); luapan dipotong penuh (overflow:clip + contain:paint) agar tata letak isi selalu mengikuti lebar kartu */
+html body main[data-tool="spotify-play"] #res,html body main[data-tool="spotify-play"] #c .out.spw{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+html body main[data-tool="spotify-play"] #c .out.spw,html body main[data-tool="spotify-play"] .spn{overflow:hidden;overflow:clip;contain:inline-size paint}
+html body main[data-tool="spotify-play"] .spn{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+html body main[data-tool="spotify-play"] .spn>*{min-width:0;max-width:100%;box-sizing:border-box}
+html body main[data-tool="spotify-play"] .spbg{inset:-30px;transform:none;max-width:none}
+html body main[data-tool="spotify-play"] .spft{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;width:100%}
+html body main[data-tool="spotify-play"] .spft button{max-width:100%;min-width:0}
+
+/* ===== v407: intro mengikuti palet situs dan menyesuaikan ukuran layar =====
+   Sebelumnya intro masih ungu/biru tua (#14121f / #f3f0ff) padahal situs sudah krem (terang) dan hitam netral (gelap),
+   dan ukurannya tetap kecil di tablet/desktop. Sekarang warna diambil dari token situs (--bg, --ink, --dot, --acc),
+   ukuran potret, judul, bar, dan chip ikut lebar dan tinggi layar. Glow dikurangi supaya ringan. */
+:root:root body .iv{--iv-bg:var(--bg);--iv-ink:var(--ink);--iv-dim:color-mix(in srgb,var(--ink) 78%,transparent);--iv-track:color-mix(in srgb,var(--ink) 12%,var(--panel));--iv-dot:var(--dot);--pw:clamp(112px,min(54vw,33vh),300px);--ivk:clamp(.86,calc(min(100vw,100vh*.62)/390),1.45)}
+html body .iv .ivs::before{background:radial-gradient(var(--iv-dot) 1.6px,transparent 1.8px) 0 0/22px 22px}
+html body .iv .ivc{max-width:clamp(300px,88vw,460px)}
+html body .iv .ivpt{--pw:clamp(112px,min(54vw,33vh),300px);margin:0 0 clamp(16px,4vh,34px)}
+html body .iv .ivglow{inset:-14%;background:radial-gradient(circle,rgba(91,229,156,.16),transparent 68%)}
+:root[data-theme="light"] body .iv .ivglow{display:none}
+html body .iv .ivlogo{box-shadow:0 0 0 clamp(3px,.9vh,4px) var(--iv-bg),0 0 0 clamp(6px,1.6vh,8px) var(--acc),0 0 0 clamp(9px,2.4vh,12px) var(--iv-bg),0 0 0 clamp(12px,3vh,15px) var(--iv-ink),clamp(3px,.8vh,5px) clamp(3px,.8vh,5px) 0 clamp(12px,3vh,15px) var(--sh)}
+html body .iv .ivw{font-size:clamp(34px,min(11vw,6.8vh),66px)}
+html body .iv .ivl:last-child{border-width:var(--nb,3px);box-shadow:clamp(3px,.8vh,5px) clamp(3px,.8vh,5px) 0 var(--sh)}
+html body .iv .ivtag{margin-top:clamp(8px,1.8vh,16px);font-size:clamp(12.5px,min(3.6vw,2vh),16px)}
+html body .iv .ivchips{gap:clamp(8px,1.4vh,12px);margin-top:clamp(8px,1.8vh,16px)}
+html body .iv .ivchips span{border:var(--nb,3px) solid var(--iv-ink);box-shadow:2px 2px 0 var(--sh);padding:clamp(5px,1vh,8px) clamp(10px,2vh,15px);font-size:clamp(11px,min(3.1vw,1.7vh),14px)}
+html body .iv .ivinfo{margin-top:clamp(14px,3.4vh,30px);padding:0 4px}
+html body .iv .ivbar{height:clamp(14px,2.2vh,20px);border:var(--nb,3px) solid var(--iv-ink);border-radius:999px;box-shadow:3px 3px 0 var(--sh)}
+html body .iv .ivm{margin-top:clamp(10px,1.8vh,16px);font-size:clamp(12.5px,min(3.4vw,1.9vh),15px)}
+html body .iv .ivsk{border-color:var(--iv-ink);color:var(--iv-ink);box-shadow:2px 2px 0 var(--sh)}
+@media (max-height:480px){html body .iv .ivs{flex-direction:row;gap:clamp(20px,6vw,56px)}html body .iv .ivpt{--pw:clamp(96px,46vh,180px);margin:0}html body .iv .ivc{max-width:min(360px,52vw)}html body .iv .ivw{font-size:clamp(28px,9vh,44px)}html body .iv .ivchips{display:none}}
+@media (max-height:620px) and (min-height:481px){html body .iv .ivpt{--pw:clamp(96px,30vh,170px);margin-bottom:14px}}
+
+/* ===== v408: intro dibersihkan. Tanpa bintik latar, tanpa glow, tanpa cincin berlapis; konsep tetap (potret, judul, chip, bar). ===== */
+:root:root body .iv .ivs::before{display:none}
+:root:root body .iv .ivglow{display:none}
+:root:root body .iv .ivlogo{border:var(--nb,3px) solid var(--iv-ink);background:#0b0d0c;box-shadow:clamp(6px,1.6vh,10px) clamp(6px,1.6vh,10px) 0 var(--acc),clamp(6px,1.6vh,10px) clamp(6px,1.6vh,10px) 0 calc(var(--nb,3px) + 0px) var(--iv-ink)}
+:root:root body .iv .ivlogo img{transform:none;object-position:50% 40%}
+:root:root body .iv .ivpt{margin-bottom:clamp(22px,5vh,40px)}
+:root:root body .iv .ivbar{height:clamp(16px,2.6vh,22px);box-shadow:4px 4px 0 var(--iv-ink)}
+:root:root body .iv .ivm{letter-spacing:.02em}
+
+/* ===== v409: intro disusun ulang dalam satu kartu neo-brutalist (potret kotak bersudut bulat, judul, tagline, chip, bar). Tanpa bintik, glow, atau cincin. ===== */
+:root:root body .iv .ivc{box-sizing:border-box;width:min(92vw,380px);max-width:none;padding:clamp(18px,3.4vh,30px) clamp(18px,5vw,28px) clamp(20px,3.6vh,32px);background:var(--panel);border:var(--nb,3px) solid var(--iv-ink);border-radius:28px;box-shadow:8px 8px 0 var(--iv-ink)}
+:root:root body .iv .ivpt{--pw:clamp(104px,min(46vw,27vh),210px);margin:0 0 clamp(14px,2.6vh,22px)}
+:root:root body .iv .ivlogo{border-radius:24px;border:var(--nb,3px) solid var(--iv-ink);background:var(--acc);box-shadow:5px 5px 0 var(--iv-ink);overflow:hidden}
+:root:root body .iv .ivlogo img{width:100%;height:100%;object-fit:cover;object-position:50% 38%;transform:none}
+:root:root body .iv .ivw{font-size:clamp(32px,min(10vw,6vh),56px)}
+:root:root body .iv .ivtag{margin-top:clamp(8px,1.6vh,12px);font-size:clamp(12px,min(3.4vw,1.8vh),14.5px);color:var(--iv-dim)}
+:root:root body .iv .ivchips{margin-top:clamp(10px,1.8vh,14px);flex-wrap:wrap}
+:root:root body .iv .ivchips span{box-shadow:none;border-width:2.5px}
+:root:root body .iv .ivinfo{margin-top:clamp(14px,2.8vh,22px);padding:0}
+:root:root body .iv .ivbar{height:clamp(16px,2.4vh,20px);box-shadow:none;border-width:2.5px}
+:root:root body .iv .ivm{margin-top:clamp(8px,1.4vh,12px);min-height:0;font-size:clamp(12px,min(3.3vw,1.8vh),14px)}
+@media (min-width:700px){:root:root body .iv .ivc{width:420px}}
+@media (max-height:480px){:root:root body .iv .ivs{flex-direction:row}:root:root body .iv .ivc{width:min(88vw,560px);display:grid;grid-template-columns:auto 1fr;column-gap:20px;align-items:center;justify-items:center}:root:root body .iv .ivpt{--pw:clamp(84px,44vh,150px);grid-row:1/6;margin:0}:root:root body .iv .ivchips{display:none}}
+
+/* ===== v410: blok judul, tagline, dan chip intro dirapikan: judul lurus, tagline satu font dengan situs, chip netral bertitik hijau ===== */
+:root:root body .iv .ivw{font-size:clamp(34px,min(10.5vw,6.2vh),58px);letter-spacing:-.04em}
+:root:root body .iv .ivl:last-child{rotate:0deg;border-radius:14px;padding:.04em .16em .1em .1em;box-shadow:4px 4px 0 var(--iv-ink)}
+:root:root body .iv .ivtag{margin-top:clamp(12px,2.2vh,18px);font:600 clamp(14px,min(4vw,2vh),16px)/1.4 "Space Grotesk","Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0;color:var(--iv-dim)}
+:root:root body .iv .ivchips{gap:8px;margin-top:clamp(12px,2.2vh,18px)}
+:root:root body .iv .ivchips span,:root:root body .iv .ivchips .c1,:root:root body .iv .ivchips .c2{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--iv-ink);border:2px solid var(--iv-ink);padding:6px 12px;font:700 clamp(11.5px,min(3.2vw,1.8vh),13px)/1 "Space Grotesk","Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0}
+:root:root body .iv .ivchips span::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--ok);border:1.5px solid var(--iv-ink)}
+:root:root body .iv .ivm{font:600 clamp(12.5px,min(3.5vw,1.9vh),14px)/1.4 "Space Grotesk","Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:0}
