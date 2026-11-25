@@ -1,8 +1,10 @@
 // Redis palsu di memori (cukup untuk perintah yang dipakai api/*.js) dipasang lewat fetch, tanpa jaringan.
-const hashes = new Map(), kv = new Map(), lists = new Map(), exp = new Map(), sets = new Map();
+const hashes = new Map(), kv = new Map(), lists = new Map(), exp = new Map(), sets = new Map(), zsets = new Map(), hlls = new Map();
+const Z = (k) => { if (!zsets.has(k)) zsets.set(k, new Map()); return zsets.get(k); };
+const bound = (v, d) => (String(v) === '+inf' ? Infinity : String(v) === '-inf' ? -Infinity : Number(v) + d);
 const S = (k) => { if (!sets.has(k)) sets.set(k, new Set()); return sets.get(k); };
 const H = (k) => { if (!hashes.has(k)) hashes.set(k, new Map()); return hashes.get(k); };
-function alive(k) { const e = exp.get(k); if (e && e <= Date.now()) { exp.delete(k); kv.delete(k); hashes.delete(k); lists.delete(k); sets.delete(k); } }
+function alive(k) { const e = exp.get(k); if (e && e <= Date.now()) { exp.delete(k); kv.delete(k); hashes.delete(k); lists.delete(k); sets.delete(k); zsets.delete(k); hlls.delete(k); } }
 function exec([cmd, ...a]) {
   cmd = String(cmd).toUpperCase(); if (a[0] !== undefined && cmd !== 'EVAL') alive(String(a[0]));
   switch (cmd) {
@@ -11,6 +13,20 @@ function exec([cmd, ...a]) {
     case 'HSET': { let n = 0; for (let i = 1; i < a.length; i += 2) { if (!H(a[0]).has(String(a[i]))) n++; H(a[0]).set(String(a[i]), String(a[i + 1])); } return n; }
     case 'HSETNX': { if (H(a[0]).has(String(a[1]))) return 0; H(a[0]).set(String(a[1]), String(a[2])); return 1; }
     case 'HDEL': { let n = 0; for (const f of a.slice(1)) if (H(a[0]).delete(String(f))) n++; return n; }
+    case 'HKEYS': return [...(hashes.get(a[0]) || new Map()).keys()];
+    case 'ZADD': { const gt = a.map(String).includes('GT'), rest = a.slice(1).filter((x) => !['GT', 'LT', 'NX', 'XX'].includes(String(x))); let n = 0;
+      for (let i = 0; i < rest.length; i += 2) { const m = String(rest[i + 1]), sc = Number(rest[i]), cur = Z(a[0]).get(m); if (cur === undefined) n++; if (cur === undefined || !gt || sc > cur) Z(a[0]).set(m, sc); } return n; }
+    case 'ZCARD': return Z(a[0]).size;
+    case 'ZSCORE': { const v = Z(a[0]).get(String(a[1])); return v === undefined ? null : String(v); }
+    case 'ZCOUNT': return [...Z(a[0]).values()].filter((v) => v >= bound(a[1], 0) && v <= bound(a[2], 0)).length;
+    case 'ZREMRANGEBYSCORE': { let n = 0; for (const [m, v] of [...Z(a[0])]) if (v >= bound(a[1], 0) && v <= bound(a[2], 0)) { Z(a[0]).delete(m); n++; } return n; }
+    case 'ZRANGE': { const all = [...Z(a[0])].sort((x, y) => x[1] - y[1]).map((x) => x[0]), e = Number(a[2]); return all.slice(Number(a[1]), e === -1 ? undefined : e + 1); }
+    case 'ZRANGEBYSCORE': { const w = a.map(String).includes('WITHSCORES'), li = a.map(String).indexOf('LIMIT');
+      let r = [...Z(a[0])].filter((x) => x[1] >= bound(a[1], 0) && x[1] <= bound(a[2], 0)).sort((x, y) => x[1] - y[1]);
+      if (li > 0) r = r.slice(Number(a[li + 1]), Number(a[li + 1]) + Number(a[li + 2]));
+      return w ? r.flatMap((x) => [x[0], String(x[1])]) : r.map((x) => x[0]); }
+    case 'PFADD': { if (!hlls.has(a[0])) hlls.set(a[0], new Set()); let n = 0; for (const m of a.slice(1)) if (!hlls.get(a[0]).has(String(m))) { hlls.get(a[0]).add(String(m)); n = 1; } return n; }
+    case 'PFCOUNT': return (hlls.get(a[0]) || new Set()).size;
     case 'HVALS': return [...(hashes.get(a[0]) || new Map()).values()];
     case 'SADD': { let n = 0; for (const m of a.slice(1)) if (!S(a[0]).has(String(m))) { S(a[0]).add(String(m)); n++; } return n; }
     case 'SREM': { let n = 0; for (const m of a.slice(1)) if (S(a[0]).delete(String(m))) n++; return n; }
@@ -47,5 +63,5 @@ function install() {
     return { ok: true, status: 200, json: async () => out };
   };
 }
-function reset() { hashes.clear(); kv.clear(); lists.clear(); exp.clear(); sets.clear(); }
+function reset() { hashes.clear(); kv.clear(); lists.clear(); exp.clear(); sets.clear(); zsets.clear(); hlls.clear(); }
 module.exports = { install, reset, exec };

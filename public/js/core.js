@@ -7,6 +7,9 @@ function mtPill(){const hp=$(document,'.top .pill');if(!hp||hp.classList.contain
 async function mtStatus(){try{const r=await fetch('/api/status',{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();SVC.ok=!!j.ok;SVC.down=j.down||[]}catch(e){SVC.ok=null}mtPill()}
 mtStatus();setInterval(()=>{if(!document.hidden)mtStatus()},120000);
 
+const skelHtml=k=>{const i=(h,w,r)=>`<i style="height:${h}px${w?';width:'+w:''}${r?';border-radius:'+r:''}"></i>`;
+ return k==='tool'?`<div class="skl" role="status" aria-label="Memuat"><div class="skc">${i(14,'35%')}<div class="skr"><i style="height:56px;width:56px;flex:none;border-radius:16px"></i><div>${i(18,'60%')}${i(12)}</div></div>${i(12,'30%')}${i(52,'','14px')}${i(12,'40%')}${i(52,'','14px')}${i(52,'','14px')}</div></div>`
+ :`<div class="skl" role="status" aria-label="Memuat"><div class="skc">${i(20,'45%')}${i(14,'70%')}</div>${i(64,'','18px')}${i(64,'','18px')}${i(64,'','18px')}${i(64,'','18px')}</div>`};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function copy(t,b){const ok=()=>{const x=b.textContent;b.textContent='Tersalin';setTimeout(()=>b.textContent=x,1200)};
  try{navigator.clipboard.writeText(t).then(ok,fb)}catch(e){fb()}
@@ -137,7 +140,12 @@ const TOOL_IDX=[
 ['tiktok-dl2','TikTok Downloader V2'],
 ['am-preset','AM Preset'],
 ['anime-search','Search Anime'],
+['anime-ongoing','Anime Ongoing'],
+['anime-completed','Anime Completed'],
+['anime-episode','Anime Episode'],
+['anime-batch','Anime Batch'],
 ['komik-search','Cari Komik'],
+['mangaplus','MangaPlus'],
 ['open-graph','Open Graph Scraper'],
 ['cek-situs','Cek Situs'],
 ['konversi-gambar','Konversi Gambar'],
@@ -233,7 +241,12 @@ Object.assign(IC,{
  'tiktok-dl':'<path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.4 2.4 2.1 4 4.5 4.2"/>',
  'tiktok-dl2':'<path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.4 2.4 2.1 4 4.5 4.2"/>',
  'anime-search':'<rect x="2" y="7" width="20" height="14" rx="3"/><path d="M8 2l4 5 4-5"/><circle cx="11" cy="14" r="2.6"/><path d="M13 16l2.5 2.5"/>',
+ 'anime-ongoing':'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="M10.5 13.2l4 2.4-4 2.4z"/>',
+ 'anime-completed':'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="M8.5 15.5l2.4 2.4 4.6-4.8"/>',
+ 'anime-episode':'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 4v5M16 4v5"/><path d="M10.5 13.2l4 2.4-4 2.4z"/>',
+ 'anime-batch':'<path d="M12 3l9 4.5-9 4.5-9-4.5z"/><path d="M3 12l9 4.5 9-4.5"/><path d="M12 21v-4.5M9.5 19l2.5 2 2.5-2"/>',
  'komik-search':'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+ 'mangaplus':'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M9 8h7M9 12h5"/>',
  'capcut-dl':'<circle cx="6" cy="7" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="M8 8.5L20 18M8 15.5L20 6"/>',
  'fb-dl':'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.5 9.5l4 2.5-4 2.5z"/>',
  'ig-dl':'<rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/><path d="M16.8 7.2h.01"/>',
@@ -290,7 +303,12 @@ const META={
  'tiktok-dl':{c:'#4fd69a',note:'GRATIS',tab:'TikTok',lead:'Video TikTok tanpa watermark, HD dan audio'},
  'tiktok-dl2':{c:'#4fd69a',note:'GRATIS',tab:'TikTok V2',lead:'Video TikTok tanpa watermark lewat jalur Nexa, HD dan MP3'},
  'anime-search':{c:'#4fd69a',note:'GRATIS',tab:'Anime',lead:'Cari anime berdasarkan judul, lengkap dengan poster, rating, status, dan genre'},
+ 'anime-ongoing':{c:'#4fd69a',note:'GRATIS',tab:'Ongoing',lead:'Daftar anime yang sedang tayang, lengkap dengan poster, episode terbaru, dan hari rilis'},
+ 'anime-completed':{c:'#4fd69a',note:'GRATIS',tab:'Tamat',lead:'Daftar anime yang sudah tamat, lengkap dengan poster, jumlah episode, dan rating'},
+ 'anime-episode':{c:'#4fd69a',note:'GRATIS',tab:'Episode',lead:'Ambil server streaming, mirror, dan link unduhan satu episode dari slug atau link episode'},
+ 'anime-batch':{c:'#4fd69a',note:'GRATIS',tab:'Batch',lead:'Ambil link unduhan batch, seluruh episode dalam satu paket, dari slug atau link batch'},
  'komik-search':{c:'#4fd69a',note:'GRATIS',tab:'Komik',lead:'Cari komik berdasarkan judul, lengkap dengan cover dan rating'},
+ 'mangaplus':{c:'#4fd69a',note:'GRATIS',tab:'MangaPlus',lead:'Daftar beranda MangaPlus: update 24 jam, terbaru, dan ranking dengan cover'},
  'capcut-dl':{c:'#4fd69a',note:'GRATIS',tab:'CapCut',lead:'Video dan template CapCut tanpa watermark'},
  'fb-dl':{c:'#4fd69a',note:'GRATIS',tab:'Facebook',lead:'Video Facebook publik kualitas SD/HD'},
  'ig-dl':{c:'#4fd69a',note:'GRATIS',tab:'Instagram',lead:'Foto, video, Reels, dan Carousel Instagram'},
@@ -379,7 +397,7 @@ META['kolase-foto']={c:'#4fd69a',note:'GRATIS',tab:'Kolase',lead:'Gabungkan 2 sa
 Object.assign(IC,{'angka-romawi':'<path d="M6 5v14M12 5l-3 14M12 5l3 14M18 5v14"/>','kalkulator-tabungan':'<path d="M4 18h16"/><path d="M6 15l4-4 3 3 5-6"/><path d="M15 8h3v3"/>','generator-uuid':'<rect x="4" y="6" width="16" height="12" rx="2"/><path d="M8 10v4M12 10v4M16 10v4"/>','stopwatch':'<circle cx="12" cy="13" r="7"/><path d="M12 13V9M9.5 3h5M18 6l1.5-1.5"/>','bandingkan-teks':'<path d="M5 6h6v12H5zM13 6h6v12h-6z"/><path d="M7 10h2M15 10h2M15 14h2"/>','cek-kontras':'<circle cx="12" cy="12" r="8"/><path d="M12 4v16"/><path d="M12 4a8 8 0 010 16z" fill="currentColor"/>','filter-foto':'<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 15l5-4 4 3 3-2 4 3"/><circle cx="9" cy="9" r="1"/>','kolase-foto':'<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="16" height="7" rx="1"/>'});
 Object.assign(IC,{'kalkulator-persen':'<path d="M6 18L18 6"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/>','konversi-huruf':'<path d="M4 18l4-12 4 12M5.5 14h5"/><path d="M15 9h5M17.5 9v9"/>','timer-pomodoro':'<circle cx="12" cy="13" r="7"/><path d="M12 9v4l2.5 2M9.5 3h5"/>','gradient-maker':'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 16l6-6 4 4 6-6"/>','putar-foto':'<rect x="5" y="7" width="14" height="10" rx="2"/><path d="M4 4v4h4M20 20v-4h-4"/>'});
 META['story-teks']={c:'#4fd69a',note:'GRATIS',tab:'Story',lead:'Teks di latar gradasi untuk story dan status'};
-const CAT={'rch':'tools','rch2':'tools','rch3':'tools','am-premium':'am','am-premium2':'am','cek-prime':'tools','hapus-background':'tools','hd-gambar':'tools','swhd':'tools','wink':'tools','netflix-token':'tools','tiktok-stalker':'tools','am-preset':'tools','igqc':'canvas','carbon':'canvas','jarvis-meme':'canvas','fake-channel':'canvas','bratvid':'canvas','brat-v1':'canvas','iqc-dark':'canvas','duar-viral':'canvas','quote-card':'canvas','fake-call':'canvas','meme-maker':'canvas','sticker-wa':'canvas','watermark-foto':'canvas','avatar-bulat':'canvas','story-teks':'canvas','aio-dl':'dl','tiktok-dl':'dl','tiktok-dl2':'dl','komik-search':'anime','anime-search':'anime','dailymotion-dl':'dl','soundcloud-dl':'dl','youtube-dl':'dl','mediafire-dl':'dl','ig-dl':'dl','capcut-dl':'dl','fb-dl':'dl','ig-dl':'dl','mediafire-dl':'dl','spotify-play':'spotify','bypass-link':'tools','image-to-prompt':'tools','bypass-cf':'tools','upscale':'tools','qr-code':'tools','ssweb':'tools','cek-situs':'tools','konversi-gambar':'util','kompres-gambar':'util','kalkulator-cicilan':'util','generator-password':'util','pengubah-satuan':'util','hitung-kata':'util','kalkulator-zakat':'util','tanda-tangan':'util','kalkulator-umur':'util','kalkulator-diskon':'util','kalkulator-bmi':'util','split-bill':'util','nomor-acak':'util','daftar-tugas':'util','kode-warna':'util','hitung-hari':'util','pembersih-teks':'util','kalkulator-kalori':'util','json-formatter':'util','encode-decode':'util','generator-hash':'util','konversi-timestamp':'util','angka-terbilang':'util','open-graph':'tools','tts-google':'tools','getcontact-start':'gc','am-data':'tools','am-find':'tools','link-wa':'util','react-channel':'tools','kalkulator-persen':'util','konversi-huruf':'util','timer-pomodoro':'tools','gradient-maker':'canvas','putar-foto':'canvas','angka-romawi':'util','kalkulator-tabungan':'util','generator-uuid':'util','stopwatch':'tools','bandingkan-teks':'tools','cek-kontras':'tools','filter-foto':'canvas','kolase-foto':'canvas'};
+const CAT={'rch':'tools','rch2':'tools','rch3':'tools','am-premium':'am','am-premium2':'am','cek-prime':'tools','hapus-background':'tools','hd-gambar':'tools','swhd':'tools','wink':'tools','netflix-token':'tools','tiktok-stalker':'tools','am-preset':'tools','igqc':'canvas','carbon':'canvas','jarvis-meme':'canvas','fake-channel':'canvas','bratvid':'canvas','brat-v1':'canvas','iqc-dark':'canvas','duar-viral':'canvas','quote-card':'canvas','fake-call':'canvas','meme-maker':'canvas','sticker-wa':'canvas','watermark-foto':'canvas','avatar-bulat':'canvas','story-teks':'canvas','aio-dl':'dl','tiktok-dl':'dl','tiktok-dl2':'dl','komik-search':'anime','mangaplus':'anime','anime-search':'anime','anime-ongoing':'anime','anime-completed':'anime','anime-episode':'anime','anime-batch':'anime','dailymotion-dl':'dl','soundcloud-dl':'dl','youtube-dl':'dl','mediafire-dl':'dl','ig-dl':'dl','capcut-dl':'dl','fb-dl':'dl','ig-dl':'dl','mediafire-dl':'dl','spotify-play':'spotify','bypass-link':'tools','image-to-prompt':'tools','bypass-cf':'tools','upscale':'tools','qr-code':'tools','ssweb':'tools','cek-situs':'tools','konversi-gambar':'util','kompres-gambar':'util','kalkulator-cicilan':'util','generator-password':'util','pengubah-satuan':'util','hitung-kata':'util','kalkulator-zakat':'util','tanda-tangan':'util','kalkulator-umur':'util','kalkulator-diskon':'util','kalkulator-bmi':'util','split-bill':'util','nomor-acak':'util','daftar-tugas':'util','kode-warna':'util','hitung-hari':'util','pembersih-teks':'util','kalkulator-kalori':'util','json-formatter':'util','encode-decode':'util','generator-hash':'util','konversi-timestamp':'util','angka-terbilang':'util','open-graph':'tools','tts-google':'tools','getcontact-start':'gc','am-data':'tools','am-find':'tools','link-wa':'util','react-channel':'tools','kalkulator-persen':'util','konversi-huruf':'util','timer-pomodoro':'tools','gradient-maker':'canvas','putar-foto':'canvas','angka-romawi':'util','kalkulator-tabungan':'util','generator-uuid':'util','stopwatch':'tools','bandingkan-teks':'tools','cek-kontras':'tools','filter-foto':'canvas','kolase-foto':'canvas'};
 Object.values(META).forEach(m=>m.c='#4fd69a');
 const FL=[['all','Semua'],['tools','Tools'],['dl','Downloader'],['canvas','Maker'],['util','Utilitas'],['fav','Favorit']],FC={all:'#4fd69a',tools:'#ff9a4d',dl:'#8f9aff',canvas:'#ff9a4d',util:'#4fd69a',fav:'#ff9a4d'},FI={all:'<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>',fav:'<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>'};
 const CATS=[
@@ -474,7 +492,7 @@ function idleLoad(){const c=navigator.connection||{};if(c.saveData||/^(slow-2g|2
  const go=()=>{['tools','pages','chat'].forEach((n,i)=>setTimeout(()=>loadMod(n).catch(()=>{}),i*400))};
  (window.requestIdleCallback||setTimeout)(go,{timeout:6000})}
 addEventListener('load',idleLoad);
-async function renderPage(id){const rt=++RT;if(!PAGES[id]){dock.hidden=true;main.innerHTML='<p class="msg" role="status">Memuat…</p>';try{await loadMod(PAGE_MOD[id])}catch(e){if(rt===RT)main.innerHTML=modFail();return}if(rt!==RT)return}const p=PAGES[id];dock.hidden=true;main.style.setProperty('--tc',PGC[id]||'#4fd69a');$(document,'#logo').innerHTML=svg(IC.back);main.classList.toggle('chatp',id==='chat');main.innerHTML=p.html();p.init&&p.init(main);document.title=p.title+' – Malik Tools';scrollTo(0,0)}
+async function renderPage(id){const rt=++RT;if(!PAGES[id]){dock.hidden=true;main.innerHTML=skelHtml('page');try{await loadMod(PAGE_MOD[id])}catch(e){if(rt===RT)main.innerHTML=modFail();return}if(rt!==RT)return}const p=PAGES[id];dock.hidden=true;main.style.setProperty('--tc',PGC[id]||'#4fd69a');$(document,'#logo').innerHTML=svg(IC.back);main.classList.toggle('chatp',id==='chat');main.innerHTML=p.html();p.init&&p.init(main);document.title=p.title+' – Malik Tools';scrollTo(0,0)}
 const DCATS=CATS.map(c=>[c.k,c.n]);
 const drw=$(document,'#drw'),scrim=$(document,'#scrim'),mn=$(document,'#mn');
 let dq='',dopen=new Set(['tools']);
@@ -530,7 +548,7 @@ async function histLoad(r){const u=AUTH.user;if(!u||u.isOwner||!PAYON)return;try
 async function render(){const rt=++RT;
  main.classList.remove('chatp');const hid=location.hash.slice(1);if(PAGE_MOD[hid]){renderPage(hid);return}
  let t=tools.find(x=>x.id===location.hash.slice(1));
- if(t&&!t.html){dock.hidden=true;main.innerHTML='<p class="msg" role="status">Memuat…</p>';try{await loadMod('tools')}catch(e){if(rt===RT)main.innerHTML=modFail();return}if(rt!==RT)return;t=tools.find(x=>x.id===location.hash.slice(1))}
+ if(t&&!t.html){dock.hidden=true;main.innerHTML=skelHtml('tool');try{await loadMod('tools')}catch(e){if(rt===RT)main.innerHTML=modFail();return}if(rt!==RT)return;t=tools.find(x=>x.id===location.hash.slice(1))}
  if(!t){delete main.dataset.tool;dock.hidden=true;$(document,'#logo').innerHTML=LOGO_HTML;document.title='Malik Tools';
   hq='';main.innerHTML=`${welcomeHtml()}${annHtml()}<div id="hot"></div><div class="nxl" id="bn" role="list" aria-label="Kategori tool"></div><div class="live" id="live" hidden></div><p class="foot">Dibuat oleh Malik</p><nav class="foot2" aria-label="Informasi"><a href="/tentang">Tentang</a><a href="/privasi">Privasi</a><a href="/syarat">Syarat</a><a href="/bantuan">Bantuan</a></nav>`;liveDraw();
   const draw=()=>{const fv=ls.get('mt_fav')||[],chev=svg('<path d="M6 9l6 6 6-6"/>'),go=svg('<path d="M9 6l6 6-6 6"/>');
@@ -640,7 +658,7 @@ const RH=(()=>{const N=60,MAXB=8*1048576;let dbp=null,q=0;
   main.querySelectorAll('.out .bax .al img:not([data-rh]),.out .cmp figure:last-child img:not([data-rh])').forEach(im=>{const u=im.currentSrc||im.getAttribute('src')||'';if(!u)return;im.setAttribute('data-rh','1');add({tool:t,name:'hasil-'+t+'.png',kind:'image',url:u})})}
  new MutationObserver(()=>{if(!q)q=setTimeout(scan,500)}).observe(main,{childList:true,subtree:true});
  return{list,del,clear,add}})();
-// v298: pengunjung online (anonim, tanpa akun)
+// v298: pengunjung online (publik hanya melihat angka; nama hanya terlihat di panel developer)
 let LIVE=null,liveT=0,liveShown=0,liveInit=false;const liveSeen=new Set();let LIVEH=[];try{LIVEH=JSON.parse(sessionStorage.getItem('mt_lvh')||'[]').filter(x=>Number.isFinite(x)).slice(-24)}catch(e){}
 function livePid(){let v=ls.get('mt_pid');if(!v||typeof v!=='string'||v.length<8){v=Array.from(crypto.getRandomValues(new Uint8Array(9)),b=>(b%36).toString(36)).join('')+Date.now().toString(36);ls.set('mt_pid',v)}return v}
 function liveAgo(s){return s<6?'baru saja':s<60?s+' dtk lalu':Math.floor(s/60)+' mnt lalu'}
@@ -662,7 +680,7 @@ function liveDraw(){const el=document.getElementById('live');if(!el)return;
  const tl=(LIVE.tools||[]).map(e=>[nm(e[0]),e[1]]).filter(e=>e[0]),mx=Math.max(1,...tl.map(e=>e[1]));
  const bars=tl.length?`<div class="lvs"><small>Paling ramai sekarang</small><div class="lvr">${tl.map(e=>`<div><span>${esc(e[0])}</span><em>${e[1]}</em><i style="--w:${Math.max(14,Math.round(e[1]/mx*100))}%"></i></div>`).join('')}</div></div>`:'';
  const kp=`<div class="lvk"><div><b>${nf(LIVE.uv)}</b><span>Pengunjung<br>hari ini</span></div><div><b>${nf(LIVE.opens)}</b><span>Tool dibuka<br>hari ini</span></div><div><b>${nf(LIVE.peak)}</b><span>Puncak<br>online</span></div></div>`;
- el.innerHTML=`<div class="lvin${first?' in0':''}"><div class="lvh"><span class="lvp"><i class="lvd"></i>LIVE</span><b class="lvm" data-s="${stt[0]}">${stt[1]}</b></div><div class="lvb"><div class="lvn" id="lvn">${liveShown||n}</div><div class="lvt">orang online<br>sekarang${dlt?`<em class="lvdl ${dlt>0?'up':'dn'}">${dlt>0?'▲':'▼'} ${Math.abs(dlt)}</em>`:''}<small>di Malik Tools</small></div>${spark||`<svg class="lvw" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true"><path class="g" d="${W}"/><path d="${W}"/></svg>`}</div><div class="lva" aria-hidden="true">${av}</div><div class="lvmt"><span>Keramaian vs puncak hari ini</span><em>${pct}%</em><i style="--w:${pct}%"></i></div>${kp}${bars}<div class="lvf"><small>Baru saja dibuka</small>${rows||'<p class="lve">Belum ada aktivitas. Buka satu tool, nanti muncul di sini.</p>'}</div><p class="lvx">Anonim: tanpa nama, tanpa akun. Diperbarui otomatis.</p></div>`;
+ el.innerHTML=`<div class="lvin${first?' in0':''}"><div class="lvh"><span class="lvp"><i class="lvd"></i>LIVE</span><b class="lvm" data-s="${stt[0]}">${stt[1]}</b></div><div class="lvb"><div class="lvn" id="lvn">${liveShown||n}</div><div class="lvt">orang online<br>sekarang${dlt?`<em class="lvdl ${dlt>0?'up':'dn'}">${dlt>0?'▲':'▼'} ${Math.abs(dlt)}</em>`:''}<small>di Malik Tools</small></div>${spark||`<svg class="lvw" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true"><path class="g" d="${W}"/><path d="${W}"/></svg>`}</div><div class="lva" aria-hidden="true">${av}</div><div class="lvmt"><span>Keramaian vs puncak hari ini</span><em>${pct}%</em><i style="--w:${pct}%"></i></div>${kp}${bars}<div class="lvf"><small>Baru saja dibuka</small>${rows||'<p class="lve">Belum ada aktivitas. Buka satu tool, nanti muncul di sini.</p>'}</div><p class="lvx">Kamu hanya melihat jumlah, tanpa nama siapa pun. Diperbarui otomatis.</p></div>`;
  liveCount(el.querySelector('#lvn'),n)}
 async function livePing(ev){if(document.hidden)return;if(ev!==true&&Date.now()-liveT<12000)return;liveT=Date.now();
  const h=location.hash.slice(1),t=tools.some(x=>x.id===h)?h:'';

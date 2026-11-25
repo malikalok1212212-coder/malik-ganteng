@@ -1,8 +1,11 @@
 const { guard } = require('./_http');
-// Pengunjung online (anonim): tiap tab mengirim denyut ringan; yang diam > 100 detik dianggap pergi.
-// Tanpa akun dan tanpa IP: hanya id acak dari browser + id tool yang sedang dibuka.
+const { getUser } = require('./_auth');
+// Pengunjung online: tiap tab mengirim denyut ringan; yang diam > 100 detik dianggap pergi.
+// Tanpa IP: hanya id acak dari browser + id tool yang sedang dibuka. Bila pengunjung sedang login, id akunnya
+// (sub) ikut dicatat di hash SK supaya panel developer bisa menampilkan siapa yang online. Respons publik tetap
+// hanya berisi angka dan nama tool, tidak pernah nama atau akun orang.
 const R = require('./_redis');
-const ZK = 'mt:pres:site', HK = 'mt:pres:tool', FK = 'mt:pres:feed', PK = 'mt:pres:peak', WIN = 100000;
+const ZK = 'mt:pres:site', HK = 'mt:pres:tool', SK = 'mt:pres:sub', FK = 'mt:pres:feed', PK = 'mt:pres:peak', WIN = 100000;
 let cache = { at: 0, tools: [] };
 
 module.exports = async (req, res) => {
@@ -19,7 +22,11 @@ module.exports = async (req, res) => {
     const day = new Date(now + 7 * 3600e3).toISOString().slice(0, 10); // hari menurut WIB
     const UV = 'mt:pres:uv:' + day, OP = 'mt:pres:op:' + day;
     const cmds = [];
-    if (id.length >= 8) { cmds.push(['ZADD', ZK, now, id]); cmds.push(tool ? ['HSET', HK, id, tool] : ['HDEL', HK, id]); cmds.push(['PFADD', UV, id]); }
+    if (id.length >= 8) {
+      let sub = ''; try { const u = getUser(req); sub = u && u.sub ? String(u.sub).slice(0, 80) : ''; } catch (e) { /* tamu */ }
+      cmds.push(['ZADD', ZK, now, id]); cmds.push(tool ? ['HSET', HK, id, tool] : ['HDEL', HK, id]); cmds.push(['PFADD', UV, id]);
+      cmds.push(sub ? ['HSET', SK, id, sub] : ['HDEL', SK, id]); cmds.push(['EXPIRE', SK, 300]);
+    }
     if (tool && String(q.ev) === '1') cmds.push(['LPUSH', FK, tool + '|' + now], ['LTRIM', FK, 0, 19], ['EXPIRE', FK, 3600], ['INCR', OP]);
     cmds.push(['ZREMRANGEBYSCORE', ZK, 0, now - WIN], ['ZCARD', ZK], ['EXPIRE', ZK, 300], ['EXPIRE', HK, 300], ['EXPIRE', UV, 172800], ['EXPIRE', OP, 172800], ['PFCOUNT', UV], ['GET', OP], ['ZSCORE', PK, day], ['LRANGE', FK, 0, 9]);
     const r = await R.run(cmds);
@@ -39,9 +46,10 @@ module.exports = async (req, res) => {
         cache.tools = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 4);
         if (Math.random() < 0.1) { // bersihkan sisa id lama di hash
           const [old] = await R.run([['ZRANGE', ZK, 0, -1]]);
-          const [all] = await R.run([['HKEYS', HK]]);
-          const set = new Set(old || []); const dead = (all || []).filter((k) => !set.has(k)).slice(0, 200);
+          const [all, allS] = (await R.run([['HKEYS', HK], ['HKEYS', SK]]));
+          const set = new Set(old || []); const dead = (all || []).filter((k) => !set.has(k)).slice(0, 200), deadS = (allS || []).filter((k) => !set.has(k)).slice(0, 200);
           if (dead.length) await R.run([['HDEL', HK, ...dead]]);
+          if (deadS.length) await R.run([['HDEL', SK, ...deadS]]);
         }
       } catch (e) { /* sebaran opsional */ }
     }

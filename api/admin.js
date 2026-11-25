@@ -193,28 +193,39 @@ module.exports = async (req, res) => {
       }
     }
 
-    // Real-time ringan untuk panel developer: pengunjung online, kunjungan hari ini, tool yang sedang dibuka, dan statistik. Tanpa memuat daftar pengguna.
+    // Real-time untuk panel developer: pengunjung online, kunjungan hari ini, tool yang sedang dibuka, dan pengguna login yang sedang online.
+    // ?lite=1 (dipakai polling tiap beberapa detik) melewatkan statistik 7 hari supaya ringan. Tanpa memuat seluruh daftar pengguna.
     if (action === 'live' && req.method === 'GET') {
       if (!R.configured()) return fail(500, 'Upstash Redis belum diatur.');
       try {
         const now = Date.now(), WIN = 100000, day = new Date(now + 7 * 3600e3).toISOString().slice(0, 10);
-        const ZK = 'mt:pres:site', HK = 'mt:pres:tool', FK = 'mt:pres:feed', PK = 'mt:pres:peak';
-        const [online, ids, uv, opens, peak, feedRaw] = await R.run([
-          ['ZCOUNT', ZK, now - WIN, '+inf'], ['ZRANGEBYSCORE', ZK, now - WIN, '+inf', 'LIMIT', 0, 300],
+        const ZK = 'mt:pres:site', HK = 'mt:pres:tool', SK = 'mt:pres:sub', FK = 'mt:pres:feed', PK = 'mt:pres:peak';
+        const lite = String((req.query && req.query.lite) || '') === '1';
+        const [online, flat, uv, opens, peak, feedRaw] = await R.run([
+          ['ZCOUNT', ZK, now - WIN, '+inf'], ['ZRANGEBYSCORE', ZK, now - WIN, '+inf', 'WITHSCORES', 'LIMIT', 0, 300],
           ['PFCOUNT', 'mt:pres:uv:' + day], ['GET', 'mt:pres:op:' + day], ['ZSCORE', PK, day], ['LRANGE', FK, 0, 9]
         ]);
-        const live = Array.isArray(ids) ? ids : [];
-        let tools = [];
-        if (live.length) {
-          const [hs] = await R.run([['HMGET', HK, ...live]]);
-          const cnt = {};
+        const ids = [], seen = {};
+        for (let i = 0; i + 1 < (flat || []).length; i += 2) { ids.push(flat[i]); seen[flat[i]] = Number(flat[i + 1]) || now; }
+        let tools = [], members = [];
+        if (ids.length) {
+          const [hs, ss] = await R.run([['HMGET', HK, ...ids], ['HMGET', SK, ...ids]]);
+          const cnt = {}, subs = {};
           (hs || []).forEach((t) => { if (t && /^[a-z0-9-]{1,40}$/.test(t)) cnt[t] = (cnt[t] || 0) + 1; });
           tools = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 6);
+          ids.forEach((id, i) => { const sub = ss && ss[i]; if (!sub) return; // satu akun bisa punya banyak tab: ambil denyut terbaru dan tool-nya
+            const t = hs && hs[i] && /^[a-z0-9-]{1,40}$/.test(hs[i]) ? hs[i] : '', at = seen[id];
+            if (!subs[sub] || at > subs[sub].at) subs[sub] = { at, tool: t || (subs[sub] && subs[sub].tool) || '', tabs: (subs[sub] ? subs[sub].tabs : 0) + 1 }; else subs[sub].tabs++; });
+          const recs = await store.getUsers(Object.keys(subs));
+          members = Object.keys(subs).map((sub) => {
+            const rec = recs[sub] || {}, email = rec.email || '', pic = typeof rec.dpic === 'string' && rec.dpic ? rec.dpic : (rec.picture || '');
+            return { sub, name: String(rec.dname || rec.name || email.split('@')[0] || 'Pengguna').slice(0, 40), role: roleOf(email, rec), pic: /^https:\/\/[^\s"'<>]{1,300}$/.test(pic) ? pic : '', tool: subs[sub].tool, tabs: subs[sub].tabs, ago: Math.max(0, Math.round((now - subs[sub].at) / 1000)) };
+          }).sort((a, b) => a.ago - b.ago).slice(0, 40);
         }
-        const feed = (feedRaw || []).map((x) => String(x).split('|')).map((x) => [x[0], Math.max(0, Math.round((now - Number(x[1])) / 1000))]).filter((x) => /^[a-z0-9-]{1,40}$/.test(x[0]) && x[1] < 900).slice(0, 8);
-        const sm = await stats.summary(7);
-        const on = Number(online) || 0;
-        return res.status(200).json({ ok: true, now, dayStart: stats.dayStart(now), online: on, uv: Math.max(Number(uv) || 0, on), opens: Number(opens) || 0, peak: Math.max(Number(peak) || 0, on), tools, feed, days: sm.days, last: sm.last });
+        const feed = (feedRaw || []).map((x) => String(x).split('|')).map((x) => [x[0], Math.max(0, Math.round((now - Number(x[1])) / 1000)), Number(x[1]) || 0]).filter((x) => /^[a-z0-9-]{1,40}$/.test(x[0]) && x[1] < 900).slice(0, 8); // [tool, detik lalu, waktu mentah]
+        const on = Number(online) || 0, out = { ok: true, now, dayStart: stats.dayStart(now), online: on, members, guests: Math.max(0, on - members.length), uv: Math.max(Number(uv) || 0, on), opens: Number(opens) || 0, peak: Math.max(Number(peak) || 0, on), tools, feed };
+        if (!lite) { const sm = await stats.summary(7); out.days = sm.days; out.last = sm.last; }
+        return res.status(200).json(out);
       } catch (e) { return fail(500, 'Data real-time belum bisa dibaca.'); }
     }
 

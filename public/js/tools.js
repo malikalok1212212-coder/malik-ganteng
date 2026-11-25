@@ -430,7 +430,8 @@ function tk2Css(){if(document.getElementById('tk2css'))return;const s=document.c
  +'.tk2 .rt{min-width:0;flex:1}.tk2 .rt b{display:block;font-size:14px;font-weight:600;color:var(--tx)}.tk2 .rt small{color:var(--dm);font-size:12px}.tk2 .act{display:flex;gap:6px}'
  +'.tk2 .tkb{height:38px;padding:0 14px;margin:0;border-radius:11px;border:0;cursor:pointer;font-weight:600;font-size:13px;font-family:inherit;display:inline-flex;align-items:center;gap:7px;color:#fff;background:linear-gradient(135deg,var(--ac),#5b8cff);box-shadow:0 8px 18px -8px rgba(124,92,255,.8)}.tk2 .tkb:hover{filter:brightness(1.1)}.tk2 .tkb:disabled{opacity:.6;cursor:wait}'
  +'.tk2 .tkb.g{background:var(--s3);box-shadow:none;color:var(--mu);padding:0;width:38px;justify-content:center}.tk2 .tkb.g:hover{color:var(--tx)}'
- +'/* v432: lawan aturan global .card (flex) dan input/button ber-!important supaya form tool tidak meluber */'
+ +'.tk2 .row2{flex-wrap:wrap}.tk2 .pv{flex:1 1 100%;order:9;min-width:0}.tk2 .pv .mtvw,.tk2 .pv .mtaw{margin:0!important;order:0;width:100%}.tk2 .pv .mtvn{margin:0}.tk2 .pv video{width:100%;max-height:62vh;border-radius:12px;background:#000;display:block}.tk2 .pv audio{width:100%;display:block}.tk2 .pv img{max-width:100%;height:auto;border-radius:12px;display:block;margin:0 auto}'
++'/* v432: lawan aturan global .card (flex) dan input/button ber-!important supaya form tool tidak meluber */'
  +'.tk2{width:100%;max-width:100%;min-width:0;overflow-x:clip}'
  +'.tk2 .card:not(#_):not(#__):not(#___):not(#____){display:block!important;width:100%;max-width:100%;min-width:0;margin:0!important;padding:0!important;transform:none!important;align-items:stretch!important;gap:0!important;text-decoration:none}'
  +'.tk2 .card.form:not(#_):not(#__):not(#___):not(#____){padding:14px!important;overflow:hidden}'
@@ -458,9 +459,22 @@ function tk2Card(res,d){
  if(!rows.length){res.innerHTML=`<div class="sec err" role="alert">${tk2I('alert')}<div>Tidak ada tautan unduhan. Pastikan video TikTok publik.</div></div>`;return}
  const th=d.thumbnail&&/^https:/.test(d.thumbnail)?`<img src="${esc(d.thumbnail)}" alt="" referrerpolicy="no-referrer" loading="lazy">`:tk2I('video');
  res.innerHTML=`<section class="sec card res"><div class="media"><div class="th">${th}<span class="pl">${tk2I('play','sm')}</span></div><div class="mt"><h3>${esc(d.judul||'Video TikTok')}</h3><div class="tg"><span class="tag">${tk2I('check','sm')}Siap diunduh</span><span class="tag">${tk2I('file','sm')}${rows.length} file</span></div></div></div>
-<div class="dl"><div class="dlt">Pilih format</div>${rows.map((x,i)=>`<div class="row2"><div class="ico ${x[0]}">${tk2I(x[1])}</div><div class="rt"><b>${x[2]}</b><small>${x[3]}</small></div><div class="act"><button type="button" class="tkb g" data-tkc="${i}" aria-label="Salin link">${tk2I('copy','sm')}</button><button type="button" class="tkb" data-unduh="${esc(x[4])}" data-n="${esc(x[5])}">${tk2I('down','sm')}<span>Unduh</span></button></div></div>`).join('')}</div></section>`;
+<div class="dl"><div class="dlt">Pilih format</div>${rows.map((x,i)=>`<div class="row2"><div class="ico ${x[0]}">${tk2I(x[1])}</div><div class="rt"><b>${x[2]}</b><small>${x[3]}</small></div><div class="act"><button type="button" class="tkb g" data-tkw="${i}" aria-label="Putar dulu sebelum unduh" title="Putar dulu">${tk2I('play','sm')}</button><button type="button" class="tkb g" data-tkc="${i}" aria-label="Salin link">${tk2I('copy','sm')}</button><button type="button" class="tkb" data-unduh="${esc(x[4])}" data-n="${esc(x[5])}">${tk2I('down','sm')}<span>Unduh</span></button></div></div>`).join('')}</div></section>`;
  res.querySelectorAll('img').forEach(i=>{i.onerror=()=>i.remove()});
  res.querySelectorAll('[data-tkc]').forEach(b=>{b.onclick=()=>{const u=rows[+b.dataset.tkc][4],ok=()=>{b.innerHTML=tk2I('check','sm');setTimeout(()=>{b.innerHTML=tk2I('copy','sm')},1200)};(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(ok,()=>{})}});
+ // Pratinjau: video/audio/foto diputar langsung di bawah barisnya (satu yang aktif sekaligus)
+ const stopM=el=>el.querySelectorAll('video,audio').forEach(x=>x.pause());
+ res.querySelectorAll('[data-tkw]').forEach(b=>{b.onclick=()=>{
+  const i=+b.dataset.tkw,row=b.closest('.row2'),old=row.querySelector('.pv');
+  if(old){stopM(old);old.remove();b.innerHTML=tk2I('play','sm');return}
+  res.querySelectorAll('.pv').forEach(p=>{stopM(p);const ob=p.closest('.row2').querySelector('[data-tkw]');p.remove();if(ob)ob.innerHTML=tk2I('play','sm')});
+  const c=rows[i][0],u=rows[i][4];
+  row.insertAdjacentHTML('beforeend','<div class="pv">'+(c==='a'?audHtml(u,true):c==='o'?imgHtml(u):vidHtml(u))+'</div>');
+  b.innerHTML=tk2I('x','sm');
+  const m=row.querySelector('.pv video,.pv audio');if(m)m.play().catch(()=>{});
+ }});
+ const thb=res.querySelector('.th'),f1=res.querySelector('[data-tkw]');
+ if(thb&&f1&&(rows[0][0]==='h'||rows[0][0]==='v')){thb.style.cursor='pointer';thb.onclick=()=>f1.click()}
 }
 function tk2Init(r){
  tk2Css();
@@ -485,13 +499,13 @@ ext:'<path d="M15 3h6v6M10 14L21 3M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 0
 code:'<path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>',box:'<path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7.5L12 12.5l8.7-5M12 22V12.5"/>',star:'<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',
 badge:'<path d="M12 2l2.4 2.1 3.2-.2.9 3.1 2.7 1.8-1 3 1 3-2.7 1.8-.9 3.1-3.2-.2L12 22l-2.4-2.1-3.2.2-.9-3.1L2.8 15l1-3-1-3 2.7-1.8.9-3.1 3.2.2z"/><path d="M9 12l2 2 4-4"/>'});
 function ampCss(){tk2Css();if(document.getElementById('ampcss'))return;const s=document.createElement('style');s.id='ampcss';
- s.textContent='.amp a.tkb{text-decoration:none}.amp .cr{display:flex;align-items:center;gap:12px;padding:14px}.amp .av{width:48px;height:48px;border-radius:50%;background:var(--s3);flex:none;display:grid;place-items:center;overflow:hidden;color:var(--dm);border:1px solid var(--ln2)}.amp .av img{width:100%;height:100%;object-fit:cover;display:block}'
- +'.amp .cr .nm{min-width:0;flex:1}.amp .cr b{display:block;font-size:15px;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.amp .cr small{display:block;color:var(--mu);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
- +'.amp .vd{display:flex;gap:12px;padding:0 14px 14px}.amp .vd .th{width:76px}.amp .vd .vt{min-width:0;flex:1}.amp .vd p{margin:0;font-size:13px;color:var(--mu);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}.amp .st{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.amp .st .tag .tk2i{color:var(--ac2)}'
+ s.textContent='.amp a.tkb{text-decoration:none}.amp .acr{display:flex;align-items:center;gap:12px;padding:14px}.amp .aav{width:48px;height:48px;border-radius:50%;background:var(--s3);flex:none;display:grid;place-items:center;overflow:hidden;color:var(--dm);border:1px solid var(--ln2)}.amp .aav img{width:100%;height:100%;object-fit:cover;display:block}'
+ +'.amp .acr .anm{min-width:0;flex:1}.amp .acr b{display:block;font-size:15px;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.amp .acr small{display:block;color:var(--mu);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+ +'.amp .avd{display:flex;gap:12px;padding:0 14px 14px}.amp .avd .th{width:76px;align-self:flex-start}.amp .avd .avt{min-width:0;flex:1}.amp .avd p{margin:0;font-size:13px;color:var(--mu);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}.amp .ast{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.amp .ast .tag .tk2i{color:var(--ac2)}'
  +'.amp .tabs{display:flex;gap:8px;flex-wrap:wrap;padding:2px 4px 2px}.amp .tab{height:34px;padding:0 13px;margin:0;border-radius:99px;border:1px solid var(--ln);background:var(--bg);color:var(--mu);font-weight:600;font-size:12.5px;font-family:inherit;display:inline-flex;align-items:center;gap:6px;cursor:pointer}.amp .tab.on{background:rgba(124,92,255,.18);border-color:var(--ac);color:#d6ccff}'
- +'.amp .pr{padding:14px;background:var(--bg);border:1px solid var(--ln);border-radius:14px;display:grid;gap:12px;transition:.15s}.amp .pr:hover{border-color:var(--ln2)}.amp .pr[hidden]{display:none}.amp .pr .top{display:flex;align-items:center;gap:12px}'
- +'.amp .pr .tg{margin:0;display:flex;flex-wrap:wrap;gap:6px}.amp .pr .tag .tk2i{color:#a794ff}.amp .pr .dt{margin:0;font-size:13px;color:var(--mu);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}'
- +'.amp .pr .bt{display:flex;gap:8px}.amp .pr .tkb.main{flex:1;justify-content:center}.amp .none{padding:18px;text-align:center;color:var(--dm);font-size:13px}';
+ +'.amp .apr{padding:14px;background:var(--bg);border:1px solid var(--ln);border-radius:14px;display:grid;gap:12px;transition:.15s}.amp .apr:hover{border-color:var(--ln2)}.amp .apr[hidden]{display:none}.amp .apr .atop{display:flex;align-items:center;gap:12px}'
+ +'.amp .apr .tg{margin:0;display:flex;flex-wrap:wrap;gap:6px}.amp .apr .tag .tk2i{color:#a794ff}.amp .apr .dt{margin:0;font-size:13px;color:var(--mu);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}'
+ +'.amp .apr .abt{display:flex;gap:8px}.amp .apr .tkb.main{flex:1;justify-content:center}.amp .none{padding:18px;text-align:center;color:var(--dm);font-size:13px}';
  document.head.appendChild(s)}
 function ampHtml(){return `<div class="tk2 amp"><div class="card form"><div class="fld">${tk2I('link')}<input id="e" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://vt.tiktok.com/..." aria-label="Link TikTok"><button type="button" class="ib" id="tkx" aria-label="Hapus" hidden>${tk2I('x','sm')}</button><button type="button" class="ib" id="tkp" aria-label="Tempel">${tk2I('paste','sm')}</button></div>
 <div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div>
@@ -508,17 +522,17 @@ function ampResult(d){
  const av=a.avatar&&/^https:/.test(a.avatar)?`<img src="${esc(a.avatar)}" alt="" referrerpolicy="no-referrer" loading="lazy">`:tk2I('user');
  const cv=v.cover&&/^https:/.test(v.cover)?`<img src="${esc(v.cover)}" alt="" referrerpolicy="no-referrer" loading="lazy">`:tk2I('video');
  const tabs=kinds.length>1?`<div class="tabs" role="tablist"><button type="button" class="tab on" data-ft="all">${tk2I('star','sm')}Semua ${ps.length}</button>${kinds.map(k=>`<button type="button" class="tab" data-ft="${esc(k)}">${tk2I(k==='5mb'?'box':'code','sm')}${lab(k)} ${ps.filter(p=>p.jenis===k).length}</button>`).join('')}</div>`:'';
- const rows=ps.map((p,i)=>`<div class="pr" data-t="${esc(p.jenis)}"><div class="top"><div class="ico ${p.jenis==='5mb'?'h':'v'}">${tk2I(p.jenis==='5mb'?'box':'code')}</div><div class="rt"><b>Preset ${lab(p.jenis)}</b><small>${p.pengirim?esc(p.pengirim):'Tanpa nama'}</small></div></div>
+ const rows=ps.map((p,i)=>`<div class="apr" data-t="${esc(p.jenis)}"><div class="atop"><div class="ico ${p.jenis==='5mb'?'h':'v'}">${tk2I(p.jenis==='5mb'?'box':'code')}</div><div class="rt"><b>Preset ${lab(p.jenis)}</b><small>${p.pengirim?esc(p.pengirim):'Tanpa nama'}</small></div></div>
 <div class="tg"><span class="tag">${tk2I('chat','sm')}${esc(ampSrc[p.sumber]||(p.sumber?p.sumber.charAt(0).toUpperCase()+p.sumber.slice(1):'Komentar'))}</span>${p.pin?`<span class="tag">${tk2I('pin','sm')}Disematkan</span>`:''}${p.kreator?`<span class="tag">${tk2I('badge','sm')}Dari kreator</span>`:''}</div>
 ${p.detail?`<p class="dt">${esc(p.detail)}</p>`:''}
-<div class="bt"><a class="tkb main" href="${esc(p.unduh)}" target="_blank" rel="noopener noreferrer">${tk2I('down','sm')}<span>Unduh</span></a><a class="tkb g" href="${esc(p.url||p.unduh)}" target="_blank" rel="noopener noreferrer" aria-label="Buka tautan" title="Buka tautan">${tk2I('ext','sm')}</a><button type="button" class="tkb g" data-ampc="${i}" aria-label="Salin link" title="Salin link">${tk2I('copy','sm')}</button></div></div>`).join('');
- return`<section class="sec card res"><div class="cr"><div class="av">${av}</div><div class="nm"><b>${esc(a.nama||a.username||'Kreator TikTok')}</b><small>${a.username?'@'+esc(a.username):''}</small></div><span class="tag">${tk2I('check','sm')}${ps.length} preset</span></div>
-<div class="vd"><div class="th">${cv}</div><div class="vt"><p>${esc(v.judul||'Video TikTok')}</p><div class="st"><span class="tag">${tk2I('eye','sm')}${ampN(v.tayang)}</span><span class="tag">${tk2I('heart','sm')}${ampN(v.suka)}</span><span class="tag">${tk2I('chat','sm')}${ampN(v.komentar)}</span></div></div></div>
+<div class="abt"><a class="tkb main" href="${esc(p.unduh)}" target="_blank" rel="noopener noreferrer">${tk2I('down','sm')}<span>Unduh</span></a><a class="tkb g" href="${esc(p.url||p.unduh)}" target="_blank" rel="noopener noreferrer" aria-label="Buka tautan" title="Buka tautan">${tk2I('ext','sm')}</a><button type="button" class="tkb g" data-ampc="${i}" aria-label="Salin link" title="Salin link">${tk2I('copy','sm')}</button></div></div>`).join('');
+ return`<section class="sec card res"><div class="acr"><div class="aav">${av}</div><div class="anm"><b>${esc(a.nama||a.username||'Kreator TikTok')}</b><small>${a.username?'@'+esc(a.username):''}</small></div><span class="tag">${tk2I('check','sm')}${ps.length} preset</span></div>
+<div class="avd"><div class="th">${cv}</div><div class="avt"><p>${esc(v.judul||'Video TikTok')}</p><div class="ast"><span class="tag">${tk2I('eye','sm')}${ampN(v.tayang)}</span><span class="tag">${tk2I('heart','sm')}${ampN(v.suka)}</span><span class="tag">${tk2I('chat','sm')}${ampN(v.komentar)}</span></div></div></div>
 <div class="dl"><div class="dlt">Preset ditemukan${sc.komentar||sc.balasan?' · '+(sc.komentar||0)+' komentar, '+(sc.balasan||0)+' balasan dipindai':''}</div>${tabs}${rows}</div></section>`}
 function ampCard(res,d){
- res.innerHTML=ampResult(d);const ps=(d.preset||[]).filter(p=>p&&/^https:/.test(p.unduh||''));
+ res.innerHTML=ampResult(d);res.querySelectorAll('.card').forEach(c=>{c.dataset.fx='1'});const ps=(d.preset||[]).filter(p=>p&&/^https:/.test(p.unduh||''));
  res.querySelectorAll('img').forEach(i=>{i.onerror=()=>i.remove()});
- res.querySelectorAll('[data-ft]').forEach(b=>{b.onclick=()=>{res.querySelectorAll('[data-ft]').forEach(x=>x.classList.toggle('on',x===b));res.querySelectorAll('.pr').forEach(r=>{r.hidden=b.dataset.ft!=='all'&&r.dataset.t!==b.dataset.ft})}});
+ res.querySelectorAll('[data-ft]').forEach(b=>{b.onclick=()=>{res.querySelectorAll('[data-ft]').forEach(x=>x.classList.toggle('on',x===b));res.querySelectorAll('.apr').forEach(r=>{r.hidden=b.dataset.ft!=='all'&&r.dataset.t!==b.dataset.ft})}});
  res.querySelectorAll('[data-ampc]').forEach(b=>{b.onclick=()=>{const u=ps[+b.dataset.ampc].unduh,ok=()=>{b.innerHTML=tk2I('check','sm');setTimeout(()=>{b.innerHTML=tk2I('copy','sm')},1200)};(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(ok,()=>{})}})}
 function ampInit(r){
  ampCss();
@@ -637,11 +651,139 @@ function aniInit(r){
  clr.onclick=()=>{e.value='';sync();e.focus()};
  r.querySelectorAll('[data-q]').forEach(b=>{b.onclick=()=>{e.value=b.dataset.q;sync();run()}});
  go.onclick=run;sync()}
+/* Anime Ongoing + Completed: daftar anime per halaman. Tampilan memakai kelas yang sama dengan Search Anime (aniCss). Input API = nomor halaman. */
+const ONG_D=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu','Random'];
+const ONG_T={'anime-ongoing':{done:false,ph:'Filter judul di daftar tayang',lead:'Daftar rilisan anime yang sedang tayang, diambil apa adanya dari Otakudesu. Tombol Tonton membuka halaman anime di situs sumber.',chips:[['img','Poster'],['play','Episode terbaru'],['clock','Hari rilis'],['tv','Otakudesu']],cnt:'anime tayang',empty:'Belum ada anime tayang yang bisa ditampilkan.'},
+ 'anime-completed':{done:true,ph:'Filter judul di daftar tamat',lead:'Daftar anime yang sudah tamat, diambil apa adanya dari Otakudesu. Tombol Tonton membuka halaman anime di situs sumber.',chips:[['img','Poster'],['layers','Jumlah episode'],['star','Rating'],['tv','Otakudesu']],cnt:'anime tamat',empty:'Belum ada anime tamat yang bisa ditampilkan.'}};
+function ongHtml(id){const c=ONG_T[id];return `<div class="tk2 ani"><div class="card form"><div class="fld">${tk2I('scan')}<input id="e" type="text" inputmode="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${c.ph}" aria-label="Filter judul anime"><button type="button" class="ib" id="tkx" aria-label="Hapus" hidden>${tk2I('x','sm')}</button></div>
+<div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div>
+<button type="button" class="gob" id="go">${tk2I('tv')}<span>Muat ulang</span></button>
+<div class="chips">${c.chips.map(x=>`<span class="chip">${tk2I(x[0])}${x[1]}</span>`).join('')}</div>
+<p class="nt">${tk2I('info')}<span>${c.lead}</span></p></div>
+<p class="msg" id="m" role="status"></p><div id="res"></div></div>`}
+function ongEps(v){const x=String(v||'').trim(),n=x.match(/^(\d+)(?:\s*episode)?$/i);return n?n[1]+' eps':x.replace(/^Episode\s*/i,'Eps ')}
+function ongGrid(list,done){return list.map((a,i)=>{const bd=done&&a.rating?`${tk2I('star')}${Number(a.rating).toFixed(1).replace('.',',')}`:a.episode?`${tk2I('play','sm')}${esc(ongEps(a.episode))}`:'';
+ const pill=done?`<span class="st ok"><i></i>Tamat${a.episode?' · '+esc(ongEps(a.episode)):''}</span>`:a.hari?`<span class="st on"><i></i>${a.hari==='Random'?'Jadwal acak':'Tiap '+esc(a.hari)}</span>`:'';
+ return`<a class="ac" style="animation-delay:${Math.min(i,12)*30}ms" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer"><div class="pv">${tk2I('tv')}${a.poster&&/^https:/.test(a.poster)?`<img src="${esc(a.poster)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${bd?`<span class="rt2">${bd}</span>`:''}</div><div class="ab"><h3>${esc(a.judul)}</h3>${pill}<span class="go2">${tk2I('play','sm')}Tonton${tk2I('ext','sm')}</span></div></a>`}).join('')}
+function ongResult(st){
+ const c=ONG_T[st.id],all=st.list;
+ if(!all.length)return`<div class="sec err" role="alert">${tk2I('alert')}<div>${c.empty}</div></div>`;
+ const q=st.q.trim().toLowerCase(),base=q?all.filter(a=>a.judul.toLowerCase().includes(q)):all,cnt={};
+ if(!c.done)base.forEach(a=>{cnt[a.hari]=(cnt[a.hari]||0)+1});
+ const days=ONG_D.filter(d=>cnt[d]),day=days.includes(st.day)?st.day:'',srt=c.done&&st.mode==='rt',f=day?base.filter(a=>a.hari===day):base,list=srt?f.slice().sort((a,b)=>(b.rating||0)-(a.rating||0)):f;
+ const tb=(k,t,n)=>`<button type="button" class="tab${day===k?' on':''}" data-od="${k}">${t} <span class="n">${n}</span></button>`;
+ const tabs=c.done?`<button type="button" class="tab${srt?' on':''}" data-om="rt">${tk2I('star','sm')}Rating</button>`:`${tb('','Semua',base.length)}${days.map(d=>tb(d,d,cnt[d])).join('')}`;
+ return`<section class="sec"><div class="bar"><div><b>${base.length} ${c.cnt}</b><small>${q?'untuk “<em>'+esc(st.q.trim())+'</em>” · ':''}Otakudesu · ${st.page} halaman dimuat</small></div><div class="tabs" role="tablist">${tabs}</div></div>${list.length?`<div class="ag">${ongGrid(list,c.done)}</div>`:`<div class="card empty">${tk2I('filter')}<span>Tidak ada anime yang cocok.</span></div>`}${st.next?`<div style="margin-top:14px"><button type="button" class="gob" id="more">${tk2I('down')}<span>Muat lebih banyak</span></button></div>`:''}</section>`}
+function ongInit(r,id){
+ aniCss();
+ const e=$(r,'#e'),go=$(r,'#go'),m=$(r,'#m'),res=$(r,'#res'),clr=$(r,'#tkx'),st={id,list:[],day:'',mode:'src',q:'',page:0,next:false};
+ const sync=()=>{clr.hidden=!e.value},setGo=b=>{go.disabled=b;go.innerHTML=b?tk2I('loader','spin')+'<span>Memuat...</span>':tk2I('tv')+'<span>Muat ulang</span>'};
+ const bad=t=>{res.innerHTML=`<div class="sec err" role="alert">${tk2I('alert')}<div>${esc(t)}</div></div>`};
+ const draw=()=>{res.innerHTML=ongResult(st);res.querySelectorAll('img').forEach(i=>{i.onerror=()=>i.remove()});
+  res.querySelectorAll('[data-od]').forEach(b=>{b.onclick=()=>{st.day=b.dataset.od;draw()}});
+  res.querySelectorAll('[data-om]').forEach(b=>{b.onclick=()=>{st.mode=st.mode==='rt'?'src':'rt';draw()}});
+  const mb=res.querySelector('#more');if(mb)mb.onclick=()=>{mb.disabled=true;mb.innerHTML=tk2I('loader','spin')+'<span>Memuat...</span>';load(st.page+1,true)}};
+ const load=async(p,add)=>{
+  m.textContent='';
+  if(!add){setGo(true);res.innerHTML='<div class="sec ag">'+'<div class="card skel"><div class="sk" style="width:96px;height:134px;border-radius:14px"></div><div style="flex:1;display:grid;gap:10px;align-content:start"><div class="sk" style="height:16px;width:80%"></div><div class="sk" style="height:22px;width:35%"></div><div class="sk" style="height:14px"></div><div class="sk" style="height:36px;margin-top:6px"></div></div></div>'.repeat(4)+'</div>'}
+  const j=await api(id,String(p),$(r,'#k').value);if(!add)setGo(false);
+  if(!j.ok){if(j.code===401)$(r,'#ac').style.display='block';if(add){m.textContent=j.error||'Gagal memuat halaman berikutnya.';draw()}else bad(j.error||'Gagal.');return}
+  const d=j.data||{},h=Array.isArray(d.hasil)?d.hasil.filter(a=>a&&a.judul&&/^https:/.test(a.link||'')):[];
+  if(add){const seen=new Set(st.list.map(a=>a.link));h.forEach(a=>{if(!seen.has(a.link))st.list.push(a)})}else{st.list=h;st.day=''}
+  st.page=p;st.next=d.adaLagi===true;draw()};
+ e.oninput=()=>{sync();st.q=e.value;if(st.list.length)draw()};e.onkeydown=ev=>{if(ev.key==='Enter')e.blur()};
+ clr.onclick=()=>{e.value='';st.q='';sync();e.focus();if(st.list.length)draw()};
+ go.onclick=()=>load(1,false);sync();load(1,false)}
+/* Anime Episode: ambil server streaming, mirror, dan unduhan satu episode Otakudesu lewat slug atau link episode. Tampilan memakai kelas Search Anime (aniCss) plus gaya .ep. Server dibuka di tab baru (iframe pihak ketiga tidak diizinkan oleh CSP). */
+Object.assign(TK2P,{epPrv:'<path d="M15 18l-6-6 6-6"/>',epNxt:'<path d="M9 18l6-6-6-6"/>',epFilm:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 4v5M16 4v5"/><path d="M10.5 13.2l4 2.4-4 2.4z"/>',epSrv:'<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/>'});
+function epCss(){aniCss();if(document.getElementById('epcss'))return;const s=document.createElement('style');s.id='epcss';
+ s.textContent='.ep .eh{display:flex;align-items:center;gap:12px;margin-bottom:12px}.ep .ehi{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--ac),#5b8cff 60%,var(--ac2));box-shadow:0 10px 22px -10px rgba(124,92,255,.9),0 1px 0 rgba(255,255,255,.3) inset;flex:none}.ep .eh h3{margin:0;font-size:16px;line-height:1.35;color:var(--tx);word-break:break-word}.ep .eh small{display:block;margin-top:3px;color:var(--mu);font-size:12.5px}'
+ +'.ep .ea{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}.ep .ea a{flex:1 1 150px;text-decoration:none;margin:0}.ep .go3{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;border-radius:11px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font-size:12.5px;font-weight:600}'
+ +'.ep .en{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}.ep .en .tab{text-decoration:none}.ep .en .tab[disabled]{opacity:.4;cursor:default}'
+ +'.ep .h4{display:flex;align-items:center;gap:7px;margin:16px 2px 10px;font-size:13.5px;font-weight:700;color:var(--tx)}.ep .h4 .tk2i{width:15px;height:15px;color:var(--ac2)}.ep .h4 .n{font-size:11.5px;color:var(--mu);font-weight:600}'
+ +'.ep .eg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}@media(min-width:640px){.ep .eg{grid-template-columns:repeat(3,minmax(0,1fr))}}'
+ +'.ep .em{display:flex;align-items:center;gap:8px;min-width:0;padding:11px 12px;border-radius:14px;border:1px solid var(--ln);background:linear-gradient(180deg,var(--s2),var(--s1));color:var(--tx);text-decoration:none;font-size:13px;font-weight:600;transition:.15s;animation:tk2up .35s ease both}.ep .em:hover{transform:translateY(-2px);border-color:var(--ln2)}.ep .em span{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ep .em small{display:block;color:var(--mu);font-weight:500;font-size:11px}.ep .em .tk2i{width:14px;height:14px;color:var(--ac2);flex:none}'
+ +'.ep .eb{padding:12px;margin-bottom:10px}.ep .eb b{display:block;font-size:13.5px;color:var(--tx);margin-bottom:9px}.ep .el{display:flex;flex-wrap:wrap;gap:6px}.ep .ec{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:99px;border:1px solid var(--ln);background:var(--bg);color:var(--mu);text-decoration:none;font-size:12.5px;font-weight:600;transition:.15s}.ep .ec:hover{color:var(--tx);border-color:var(--ln2)}.ep .ec .tk2i{width:13px;height:13px;color:var(--ac2)}';
+ document.head.appendChild(s)}
+function epHtml(id){const B=id==='anime-batch';return `<div class="tk2 ani ep"><div class="card form"><div class="fld">${tk2I('link')}<input id="e" type="text" inputmode="url" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${B?'Slug atau link batch, contoh: boruto-batch-sub-indo':'Slug atau link episode, contoh: boruto-episode-1-sub-indo'}" aria-label="${B?'Slug atau link batch':'Slug atau link episode'}"><button type="button" class="ib" id="tkx" aria-label="Hapus" hidden>${tk2I('x','sm')}</button><button type="button" class="ib" id="tkp" aria-label="Tempel">${tk2I('paste','sm')}</button></div>
+<div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div>
+<button type="button" class="gob" id="go">${tk2I('epFilm')}<span>${B?'Ambil batch':'Ambil episode'}</span></button>
+<div class="chips">${B?`<span class="chip">${tk2I('layers')}Satu paket</span><span class="chip">${tk2I('down')}Unduhan</span><span class="chip">${tk2I('tv')}Otakudesu</span>`:`<span class="chip">${tk2I('play')}Streaming</span><span class="chip">${tk2I('epSrv')}Mirror server</span><span class="chip">${tk2I('down')}Unduhan</span><span class="chip">${tk2I('tv')}Otakudesu</span>`}</div>
+<p class="nt">${tk2I('info')}<span>${B?'Slug ada di bagian akhir link batch Otakudesu, misalnya otakudesu.blog/batch/<b>boruto-batch-sub-indo</b>. Link unduhan dibuka di situs sumber.':'Slug ada di bagian akhir link episode Otakudesu, misalnya otakudesu.blog/episode/<b>boruto-episode-1-sub-indo</b>. Server dan unduhan dibuka di situs sumber.'}</span></p></div>
+<p class="msg" id="m" role="status"></p><div id="res"></div></div>`}
+function epResult(d){
+ const hs=u=>/^https:/.test(u||''),mir=(Array.isArray(d.mirror)?d.mirror:[]).filter(x=>x&&hs(x.url)),dl=(Array.isArray(d.unduh)?d.unduh:[]).map(g=>({grup:g&&g.grup,tautan:(g&&Array.isArray(g.tautan)?g.tautan:[]).filter(l=>l&&hs(l.url))})).filter(g=>g.tautan.length),nv=d.nav||{},nd=dl.reduce((a,g)=>a+g.tautan.length,0);
+ const lnk=(u,ic,t,cls)=>`<a class="${cls}" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${tk2I(ic,'sm')}${t}${tk2I('ext','sm')}</a>`;
+ const nb=(sl,ic,t,right)=>sl?`<button type="button" class="tab" data-ep="${esc(sl)}">${right?t+tk2I(ic,'sm'):tk2I(ic,'sm')+t}</button>`:`<button type="button" class="tab" disabled>${right?t+tk2I(ic,'sm'):tk2I(ic,'sm')+t}</button>`;
+ return`<section class="sec"><div class="eh"><span class="ehi">${tk2I('epFilm')}</span><div><h3>${esc(d.judul||d.slug||'Episode')}</h3><small>Otakudesu · ${mir.length?mir.length+' server · ':''}${nd} link unduhan</small></div></div>`
+ +`<div class="ea">${hs(d.stream)?lnk(d.stream,'play','Tonton sekarang','go2'):''}${hs(d.sumber)?lnk(d.sumber,'link','Buka di Otakudesu','go3'):''}</div>`
+ +((nv.sebelumnya||nv.berikutnya||hs(nv.semua))?`<div class="en">${nb(nv.sebelumnya,'epPrv','Sebelumnya',false)}${hs(nv.semua)?lnk(nv.semua,'layers','Semua episode','tab'):''}${nb(nv.berikutnya,'epNxt','Berikutnya',true)}</div>`:'')
+ +(mir.length?`<div class="h4">${tk2I('epSrv')}Server streaming <span class="n">${mir.length}</span></div><div class="eg">${mir.map((m,i)=>`<a class="em" style="animation-delay:${Math.min(i,12)*30}ms" href="${esc(m.url)}" target="_blank" rel="noopener noreferrer">${tk2I('play','sm')}<span>${esc(m.nama||'Server '+(i+1))}${m.kualitas?`<small>${esc(m.kualitas)}</small>`:''}</span>${tk2I('ext','sm')}</a>`).join('')}</div>`:'')
+ +(dl.length?`<div class="h4">${tk2I('down')}Unduhan <span class="n">${nd}</span></div>${dl.map(g=>`<div class="card eb"><b>${esc(g.grup||'Unduhan')}</b><div class="el">${g.tautan.map(l=>`<a class="ec" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${tk2I('down','sm')}${esc(l.nama||'Unduh')}</a>`).join('')}</div></div>`).join('')}`:'')
+ +`</section>`}
+function epInit(r,id){
+ epCss();const B=id==='anime-batch',LB=B?'Ambil batch':'Ambil episode';
+ const e=$(r,'#e'),go=$(r,'#go'),m=$(r,'#m'),res=$(r,'#res'),clr=$(r,'#tkx'),pst=$(r,'#tkp');
+ const sync=()=>{clr.hidden=!e.value;pst.hidden=!!e.value},setGo=b=>{go.disabled=b;go.innerHTML=b?tk2I('loader','spin')+'<span>Mengambil...</span>':tk2I('epFilm')+'<span>'+LB+'</span>'};
+ const bad=t=>{res.innerHTML=`<div class="sec err" role="alert">${tk2I('alert')}<div>${esc(t)}</div></div>`};
+ const run=async()=>{
+  const v=e.value.trim();m.textContent='';
+  if(!/^(https:\/\/\S{8,300}|[a-z0-9][a-z0-9_-]{2,160})$/i.test(v))return bad(B?'Isi slug batch (contoh: boruto-batch-sub-indo) atau link batch Otakudesu.':'Isi slug episode (contoh: boruto-episode-1-sub-indo) atau link episode Otakudesu.');
+  setGo(true);res.innerHTML='<div class="sec"><div class="card skel"><div class="sk" style="width:44px;height:44px;border-radius:14px"></div><div style="flex:1;display:grid;gap:10px;align-content:start"><div class="sk" style="height:16px;width:70%"></div><div class="sk" style="height:36px"></div><div class="sk" style="height:36px"></div></div></div></div>';
+  const j=await api(id,v,$(r,'#k').value);setGo(false);
+  if(!j.ok){bad(j.error||'Gagal.');if(j.code===401)$(r,'#ac').style.display='block';return}
+  res.innerHTML=epResult(j.data||{});
+  res.querySelectorAll('[data-ep]').forEach(b=>{b.onclick=()=>{e.value=b.dataset.ep;sync();run()}})};
+ e.oninput=sync;e.onkeydown=ev=>{if(ev.key==='Enter')run()};
+ clr.onclick=()=>{e.value='';sync();e.focus()};
+ pst.onclick=async()=>{try{const t=await navigator.clipboard.readText();if(t){e.value=t.trim();sync();e.focus()}}catch(x){m.textContent='Izin tempel ditolak. Tempel manual ke kolom di atas.'}};
+ go.onclick=run;sync()}
+/* MangaPlus (api-cloud /komik/mangaplus, type=home): update 24 jam, terbaru, dan ranking. Kartu memakai kelas Search Anime (aniCss). Baca/Buka membuka mangaplus.shueisha.co.jp di tab baru. */
+function mpCss(){aniCss();if(document.getElementById('mpcss'))return;const s=document.createElement('style');s.id='mpcss';
+ s.textContent='.mp .lg{display:flex;align-items:center;gap:10px;margin-bottom:12px}.mp .lg label{font-size:12.5px;color:var(--mu);font-weight:600;flex:none}.mp .lg select{flex:1;min-width:0;height:42px;padding:0 12px;border-radius:12px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:inherit;font-size:14px}.mp .rk{position:absolute;left:6px;top:6px;z-index:1;background:rgba(0,0,0,.7);color:#fff;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:99px}.mp .bb{color:var(--mu);font-size:12.5px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}.mp .au{color:var(--dm);font-size:11.5px}';
+ document.head.appendChild(s)}
+function mpHtml(){return `<div class="tk2 ani mp"><div class="card form"><div class="lg"><label for="lg">Bahasa</label><select id="lg" aria-label="Bahasa"><option value="ind">Indonesia</option><option value="eng">English</option><option value="esp">Español</option><option value="fra">Français</option><option value="por">Português</option><option value="rus">Русский</option><option value="tha">ไทย</option><option value="vie">Tiếng Việt</option><option value="deu">Deutsch</option></select></div>
+<div class="fld">${tk2I('scan')}<input id="e" type="text" inputmode="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Filter judul di daftar" aria-label="Filter judul"><button type="button" class="ib" id="tkx" aria-label="Hapus" hidden>${tk2I('x','sm')}</button></div>
+<div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div>
+<button type="button" class="gob" id="go">${tk2I('epFilm')}<span>Muat ulang</span></button>
+<div class="chips"><span class="chip">${tk2I('clock')}Update 24 jam</span><span class="chip">${tk2I('star')}Ranking</span><span class="chip">${tk2I('img')}Cover</span></div>
+<p class="nt">${tk2I('info')}<span>Daftar beranda MangaPlus apa adanya dari provider, kadang bercampur beberapa bahasa. Tombol Baca membuka situs resmi MangaPlus.</span></p></div>
+<p class="msg" id="m" role="status"></p><div id="res"></div></div>`}
+function mpGrid(list,rank){return list.map((a,i)=>`<a class="ac" style="animation-delay:${Math.min(i,12)*30}ms" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer"><div class="pv">${tk2I('tv')}${a.poster&&/^https:/.test(a.poster)?`<img src="${esc(a.poster)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${rank?`<span class="rk">#${i+1}</span>`:''}</div><div class="ab"><h3>${esc(a.judul)}</h3>${!rank&&(a.nomor||a.nama)?`<span class="bb">${esc([a.nomor,a.nama].filter(Boolean).join(' · '))}</span>`:''}${a.penulis?`<span class="au">${esc(a.penulis)}</span>`:''}<span class="go2">${tk2I(rank?'link':'play','sm')}${rank?'Buka':'Baca'}${tk2I('ext','sm')}</span></div></a>`).join('')}
+function mpResult(st){
+ const d=st.data,tabs=[['update','Update 24 jam',d.update],['terbaru','Terbaru',d.terbaru],['ranking','Ranking',d.ranking]].filter(t=>t[2].length),tab=tabs.some(t=>t[0]===st.tab)?st.tab:(tabs[0]||[''])[0];
+ if(!tabs.length)return`<div class="sec err" role="alert">${tk2I('alert')}<div>Tidak ada data yang bisa ditampilkan.</div></div>`;
+ const q=st.q.trim().toLowerCase(),src=(tabs.find(t=>t[0]===tab)||[])[2]||[],list=q?src.filter(a=>a.judul.toLowerCase().includes(q)):src;
+ return`<section class="sec"><div class="bar"><div><b>${list.length} judul</b><small>${q?'untuk “<em>'+esc(st.q.trim())+'</em>” · ':''}MangaPlus</small></div><div class="tabs" role="tablist">${tabs.map(t=>`<button type="button" class="tab${t[0]===tab?' on':''}" data-mt="${t[0]}">${t[1]} <span class="n">${t[2].length}</span></button>`).join('')}</div></div>${list.length?`<div class="ag">${mpGrid(list,tab==='ranking')}</div>`:`<div class="card empty">${tk2I('filter')}<span>Tidak ada judul yang cocok.</span></div>`}</section>`}
+function mpInit(r){
+ mpCss();
+ const e=$(r,'#e'),go=$(r,'#go'),m=$(r,'#m'),res=$(r,'#res'),clr=$(r,'#tkx'),lg=$(r,'#lg'),st={data:null,tab:'update',q:''};
+ const sync=()=>{clr.hidden=!e.value},setGo=b=>{go.disabled=b;go.innerHTML=b?tk2I('loader','spin')+'<span>Memuat...</span>':tk2I('epFilm')+'<span>Muat ulang</span>'};
+ const bad=t=>{res.innerHTML=`<div class="sec err" role="alert">${tk2I('alert')}<div>${esc(t)}</div></div>`};
+ const draw=()=>{res.innerHTML=mpResult(st);res.querySelectorAll('img').forEach(i=>{i.onerror=()=>i.remove()});res.querySelectorAll('[data-mt]').forEach(b=>{b.onclick=()=>{st.tab=b.dataset.mt;draw()}})};
+ const run=async()=>{
+  m.textContent='';setGo(true);res.innerHTML='<div class="sec ag">'+'<div class="card skel"><div class="sk" style="width:96px;height:134px;border-radius:14px"></div><div style="flex:1;display:grid;gap:10px;align-content:start"><div class="sk" style="height:16px;width:80%"></div><div class="sk" style="height:14px;width:55%"></div><div class="sk" style="height:36px;margin-top:6px"></div></div></div>'.repeat(4)+'</div>';
+  const j=await api('mangaplus','',$(r,'#k').value,'',{lang:lg.value});setGo(false);
+  if(!j.ok){bad(j.error||'Gagal.');if(j.code===401)$(r,'#ac').style.display='block';return}
+  st.data=j.data||{update:[],terbaru:[],ranking:[]};st.tab='update';draw()};
+ e.oninput=()=>{sync();st.q=e.value;if(st.data)draw()};e.onkeydown=ev=>{if(ev.key==='Enter')e.blur()};
+ clr.onclick=()=>{e.value='';st.q='';sync();e.focus();if(st.data)draw()};
+ lg.onchange=run;go.onclick=run;sync();run()}
+// Tampilan downloader (gaya TikTok V2) untuk tool berbasis link: kolom link + tempel/hapus, tombol gradien, chip fitur. ID elemen sama dengan emailInit (#e #k #ac #go #m #res).
+function dlShell(o){const ch=(o.chips||[]).map(c=>`<span class="chip">${tk2I(c[0])}${c[1]}</span>`).join('');
+ return `<div class="tk2"><div class="card form"><div class="fld">${tk2I(o.ic||'link')}<input id="e" type="${o.text?'text':'url'}" inputmode="${o.text?'text':'url'}" autocomplete="off" autocapitalize="off" spellcheck="false" value="${o.val||''}" placeholder="${o.ph||'https://...'}" aria-label="${o.label||'Link'}"><button type="button" class="ib" id="tkx" aria-label="Hapus" hidden>${tk2I('x','sm')}</button><button type="button" class="ib" id="tkp" aria-label="Tempel">${tk2I('paste','sm')}</button></div>
+<div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div>
+<button type="button" class="gob" id="go">${tk2I(o.gi||'down')}<span>${o.btn||'Ambil'}</span></button>${ch?`<div class="chips">${ch}</div>`:''}</div>
+<p class="msg" id="m" role="status"></p><div id="res"></div></div>`}
+function dlWire(r){tk2gCss();const e=$(r,'#e'),clr=$(r,'#tkx'),pst=$(r,'#tkp'),go=$(r,'#go');if(!e||!clr||!pst)return;
+ const sync=()=>{clr.hidden=!e.value};e.addEventListener('input',sync);sync();
+ clr.onclick=()=>{e.value='';sync();e.focus()};
+ pst.onclick=()=>{if(!navigator.clipboard||!navigator.clipboard.readText){e.focus();return}navigator.clipboard.readText().then(t=>{e.value=t.trim();sync();if(/^https?:\/\//i.test(e.value))go.click()}).catch(()=>e.focus())}}
 function linkTool(o){return{id:o.id,name:o.name,desc:o.desc,
- html:()=>`<label for="e">${o.label||'Link yang mau dilewati'}</label><input id="e" type="${o.text?'text':'url'}" inputmode="${o.text?'text':'url'}" autocomplete="off" value="${o.val||''}" placeholder="${o.ph||'https://linkvertise.com/...'}">
+ html:o.dl?()=>dlShell(o):()=>`<label for="e">${o.label||'Link yang mau dilewati'}</label><input id="e" type="${o.text?'text':'url'}" inputmode="${o.text?'text':'url'}" autocomplete="off" value="${o.val||''}" placeholder="${o.ph||'https://linkvertise.com/...'}">
 <div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div>
 <div class="row"><button class="primary" id="go">${o.btn||'Lewati link'}</button></div><p class="msg" id="m" role="status"></p><div id="res"></div>`,
- init:r=>emailInit(r,o.id,!o.nolink,o.text?(v=>v?'':'Isi dulu.'):(v=>/^https?:\/\//i.test(v)?'':'Isi link yang diawali https://'))}}
+ init:r=>{if(o.dl)dlWire(r);return emailInit(r,o.id,!o.nolink,o.text?(v=>v?'':'Isi dulu.'):(v=>/^https?:\/\//i.test(v)?'':'Isi link yang diawali https://'))}}}
 const fmtIn=el=>{el.oninput=()=>{const v=el.value.replace(/\D/g,'').slice(0,13);el.value=v?Number(v).toLocaleString('id-ID'):''}},numVal=el=>Number(el.value.replace(/\D/g,''))||0;
 const mkBad=(m,t)=>{m.className='msg bad';m.textContent=t};
 const mkImg=(f,cb)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{URL.revokeObjectURL(u);cb(i)};i.onerror=()=>{URL.revokeObjectURL(u);cb(null)};i.src=u};
@@ -654,9 +796,9 @@ const TOOLS_FULL=[
 amTool({id:'am-premium',name:'AM Generator',desc:'Aktifkan Alight Motion Pro lewat email verifikasi. Setiap aktivasi memakai 1 koin.',S:'am-send',V:'am-verif'}),
 amTool({id:'am-premium2',name:'AM Prem V2',desc:'Aktifkan Alight Motion Pro lewat jalur V2 (Amprem V5): kirim email verifikasi, lalu verifikasi link dari email. Setiap aktivasi memakai 1 koin.',S:'am-send2',V:'am-verif2'}),
 linkTool({id:'spotify-play',name:'Spotify Play',desc:'Cari lagu Spotify berdasarkan judul atau artis, lalu putar atau unduh audionya (MP3).',label:'Judul lagu atau artis',ph:'Apa yang ingin kamu putar?',btn:'Cari lagu',text:true}),
-linkTool({id:'ig-dl',name:'Instagram Downloader',desc:'Unduh foto, video, Reels, atau Carousel Instagram secara instan.',label:'Link Instagram',ph:'https://www.instagram.com/reel/...',btn:'Ambil media'}),
-linkTool({id:'mediafire-dl',name:'Mediafire Downloader',desc:'Ambil link unduh langsung dari URL Mediafire, lengkap dengan nama file, ukuran, dan tipe file.',label:'Link Mediafire',ph:'https://www.mediafire.com/file/...',btn:'Ambil link unduh'}),
-linkTool({id:'youtube-dl',name:'YouTube Downloader',desc:'Unduh video YouTube (360p dengan suara, atau resolusi tinggi tanpa suara) dan audio M4A.',label:'Link YouTube',ph:'https://www.youtube.com/watch?v=...',btn:'Ambil video'}),
+linkTool({id:'ig-dl',name:'Instagram Downloader',dl:true,ic:'link',chips:[['img','Foto dan Reels'],['video','Video'],['file','Carousel']],desc:'Unduh foto, video, Reels, atau Carousel Instagram secara instan.',label:'Link Instagram',ph:'https://www.instagram.com/reel/...',btn:'Ambil media'}),
+linkTool({id:'mediafire-dl',name:'Mediafire Downloader',dl:true,ic:'link',chips:[['file','Nama dan ukuran file'],['down','Link unduh langsung']],desc:'Ambil link unduh langsung dari URL Mediafire, lengkap dengan nama file, ukuran, dan tipe file.',label:'Link Mediafire',ph:'https://www.mediafire.com/file/...',btn:'Ambil link unduh'}),
+linkTool({id:'youtube-dl',name:'YouTube Downloader',dl:true,ic:'link',chips:[['video','Video 360p'],['hd','Resolusi tinggi'],['music','Audio M4A']],desc:'Unduh video YouTube (360p dengan suara, atau resolusi tinggi tanpa suara) dan audio M4A.',label:'Link YouTube',ph:'https://www.youtube.com/watch?v=...',btn:'Ambil video'}),
 canvasTool({id:'hapus-background',name:'Hapus Background',desc:'Hapus latar belakang foto otomatis dan hasilkan PNG transparan.',btn:'Hapus background',wait:'Menghapus background, mohon tunggu...',ok:'Gambar transparan siap diunduh.',dl:'hapus-background.png',ba:true,chk:true,lbl:'TRANSPARAN',fields:[{key:'url',label:'Gambar',photo:true,req:true}]}),
 canvasTool({id:'tts-google',name:'Google TTS (Gemini)',desc:'Ubah teks menjadi suara natural dengan mesin Gemini milik Google. Hasil berupa audio MP3.',btn:'Buat suara',wait:'Membuat suara...',ok:'Suara siap diputar dan diunduh.',dl:'tts.mp3',audio:true,fields:[{key:'text',label:'Teks',req:true,area:true,max:1000,val:'Konbanwa, genki desu ka?',ph:'Tulis teks yang ingin dibacakan'},{key:'language',label:'Bahasa',select:[['ja-JP','Japanese (ja-JP)'],['id-ID','Indonesian (id-ID)'],['en-US','English US (en-US)'],['en-GB','English UK (en-GB)'],['ko-KR','Korean (ko-KR)'],['zh-CN','Chinese (zh-CN)'],['ar-XA','Arabic (ar-XA)'],['hi-IN','Hindi (hi-IN)'],['es-ES','Spanish (es-ES)'],['fr-FR','French (fr-FR)'],['de-DE','German (de-DE)'],['pt-BR','Portuguese (pt-BR)'],['ru-RU','Russian (ru-RU)'],['th-TH','Thai (th-TH)'],['vi-VN','Vietnamese (vi-VN)'],['tr-TR','Turkish (tr-TR)']]}]}),
 canvasTool({id:'ssweb',name:'Website Screenshot',desc:'Tangkap screenshot situs web, bisa satu halaman penuh, dengan tampilan PC, Tablet, atau Android. Prosesnya bisa sampai 30 detik.',btn:'Ambil screenshot',wait:'Mengambil screenshot, mohon tunggu...',ok:'Screenshot siap diunduh.',dl:'screenshot.png',fields:[{key:'url',label:'Link situs',req:true,max:2000,val:'https://',ph:'https://contoh.com'},{key:'viewport',label:'Viewport',select:[['pc','PC'],['tablet','Tablet'],['android','Android']]},{key:'fullpage',label:'Full page',select:[['true','Ya, satu halaman penuh'],['false','Tidak, hanya layar pertama']]}]}),
@@ -676,13 +818,18 @@ canvasTool({id:'iqc-dark',name:'IQC Dark',desc:'Buat kartu kutipan chat bertema 
 canvasTool({id:'duar-viral',name:'Duar Viral',desc:'Tempel fotomu ke latar ledakan api ala meme viral. Latar foto dihapus otomatis, hasil siap diunduh.',btn:'Buat gambar',wait:'Membuat gambar, mohon tunggu...',ok:'Gambar siap diunduh.',dl:'duar-viral.jpg',fields:[{key:'url',label:'Gambar',photo:true,req:true}]}),
 canvasTool({id:'quote-card',name:'Quoted Card IG Viral',desc:'Tulis teks pendek di atas latar tetap jadi kartu kutipan ala status WA/IG. Latar selalu sama, yang bisa diganti hanya teksnya.',btn:'Buat gambar',wait:'Membuat gambar...',ok:'Gambar siap diunduh.',dl:'quote-card.jpg',fields:[{key:'text',label:'Teks',req:true,max:200,ph:'malik ganteng'},{key:'bold',label:'Gaya teks',select:[['0','Normal'],['1','Tebal']]},{key:'template',label:'Template',select:[['','Default'],['1','Template 1 (asli)'],['2','Template 2'],['3','Template 3 (ayam)'],['4','Template 4'],['5','Template 5']]}]}),
 canvasTool({id:'carbon',name:'Carbon Code',desc:'Ubah potongan kode menjadi gambar bersyntax highlight bergaya Carbon. Prosesnya bisa sampai 15 detik.',btn:'Buat gambar',wait:'Membuat gambar, mohon tunggu...',ok:'Gambar siap diunduh.',dl:'carbon.png',fields:[{key:'code',label:'Kode',req:true,area:true,max:5000,val:"console.log('Hello Carbon!');",ph:'Tempel kode di sini'}]}),
-linkTool({id:'soundcloud-dl',name:'SoundCloud Player',desc:'Putar lagu SoundCloud langsung di sini lewat pemutar resmi. Bila provider menyediakan file MP3, tombol unduh ikut muncul.',label:'Link SoundCloud',ph:'https://soundcloud.com/...',btn:'Putar lagu'}),
-linkTool({id:'dailymotion-dl',name:'Dailymotion Downloader',desc:'Ambil link unduh video Dailymotion publik dalam beberapa kualitas (1080p, 720p, 480p) beserta judul dan durasi.',label:'Link Dailymotion',ph:'https://www.dailymotion.com/video/...',btn:'Ambil video'}),
-linkTool({id:'tiktok-dl',name:'TikTok Downloader',desc:'Unduh video TikTok tanpa watermark, termasuk versi HD dan audio MP3.',label:'Link TikTok',ph:'https://vt.tiktok.com/...',btn:'Ambil video'}),
+linkTool({id:'soundcloud-dl',name:'SoundCloud Player',dl:true,ic:'link',gi:'play',chips:[['play','Putar langsung'],['music','Unduh MP3 bila ada']],desc:'Putar lagu SoundCloud langsung di sini lewat pemutar resmi. Bila provider menyediakan file MP3, tombol unduh ikut muncul.',label:'Link SoundCloud',ph:'https://soundcloud.com/...',btn:'Putar lagu'}),
+linkTool({id:'dailymotion-dl',name:'Dailymotion Downloader',dl:true,ic:'link',chips:[['hd','1080p, 720p, 480p'],['video','Judul dan durasi']],desc:'Ambil link unduh video Dailymotion publik dalam beberapa kualitas (1080p, 720p, 480p) beserta judul dan durasi.',label:'Link Dailymotion',ph:'https://www.dailymotion.com/video/...',btn:'Ambil video'}),
+linkTool({id:'tiktok-dl',name:'TikTok Downloader',dl:true,ic:'link',chips:[['drop','Tanpa watermark'],['hd','Kualitas HD'],['music','Audio MP3']],desc:'Unduh video TikTok tanpa watermark, termasuk versi HD dan audio MP3.',label:'Link TikTok',ph:'https://vt.tiktok.com/...',btn:'Ambil video'}),
 {id:'tiktok-dl2',name:'TikTok Downloader V2',desc:'Unduh video TikTok tanpa watermark lewat jalur Nexa: pilih MP4, MP4 HD, atau audio MP3.',html:tk2Html,init:tk2Init},
 {id:'am-preset',name:'AM Preset',desc:'Cari link preset Alight Motion (XML dan 5MB) dari komentar, balasan, dan bio video TikTok.',html:ampHtml,init:ampInit},
 {id:'anime-search',name:'Search Anime',desc:'Cari anime berdasarkan judul dari Otakudesu, lengkap dengan poster, rating, status, genre, dan tombol tonton.',html:aniHtml,init:aniInit},
+{id:'anime-ongoing',name:'Anime Ongoing',desc:'Daftar anime yang sedang tayang dari Otakudesu, lengkap dengan poster, episode terbaru, dan hari rilis.',html:()=>ongHtml('anime-ongoing'),init:r=>ongInit(r,'anime-ongoing')},
+{id:'anime-completed',name:'Anime Completed',desc:'Daftar anime yang sudah tamat dari Otakudesu, lengkap dengan poster, jumlah episode, dan rating.',html:()=>ongHtml('anime-completed'),init:r=>ongInit(r,'anime-completed')},
+{id:'anime-episode',name:'Anime Episode',desc:'Ambil server streaming, mirror, dan link unduhan satu episode anime dari Otakudesu lewat slug atau link episode.',html:()=>epHtml('anime-episode'),init:r=>epInit(r,'anime-episode')},
+{id:'anime-batch',name:'Anime Batch',desc:'Ambil link unduhan batch (seluruh episode dalam satu paket) dari Otakudesu lewat slug atau link batch.',html:()=>epHtml('anime-batch'),init:r=>epInit(r,'anime-batch')},
 {id:'komik-search',name:'Cari Komik',desc:'Cari komik berdasarkan judul dari Komikindo, lengkap dengan cover, rating, dan tombol baca.',html:kmkHtml,init:kmkInit},
+{id:'mangaplus',name:'MangaPlus',desc:'Daftar beranda MangaPlus: update 24 jam, chapter terbaru, dan ranking judul, lengkap dengan cover dan tombol baca.',html:mpHtml,init:mpInit},
 linkTool({id:'open-graph',name:'Open Graph Scraper',desc:'Ambil metadata Open Graph sebuah situs: judul, deskripsi, gambar pratinjau, dan favicon.',label:'Link situs',ph:'https://contoh.com',btn:'Ambil metadata',nolink:true}),
 linkTool({id:'cek-situs',name:'Cek Situs',desc:'Periksa apakah sebuah situs online: status HTTP, waktu respons, redirect, dan masa berlaku SSL.',label:'Alamat situs',ph:'contoh.com atau https://contoh.com',btn:'Periksa situs',nolink:true,text:true}),
 {id:'konversi-gambar',name:'Konversi Gambar',desc:'Ubah format gambar (JPG, PNG, WebP), kecilkan ukuran file, atau atur lebar. Diproses di perangkatmu, tidak diunggah ke server.',
@@ -1432,6 +1579,60 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
   r.addEventListener('input',draw);
   $(r,'#dl').onclick=()=>{if(!ims.length)return mkBad(m,'Pilih foto dulu.');draw();mkDl(cv,'kolase.png','image/png',m,'Kolase diunduh.')}}},
 ];
+
+
+/* Skin umum gaya TikTok V2 untuk semua tool selain yang sudah memakai .tk2 sendiri: hanya mengubah tampilan elemen bersama (label, kolom isi, tombol, kartu hasil), isi dan logika tool tidak berubah. */
+function tk2gCss(){if(document.getElementById('tk2gcss'))return;tk2Css();const s=document.createElement('style');s.id='tk2gcss';
+ const HV='html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root ',g=x=>x.split('|').map(a=>HV+'.tk2g '+a.trim()).join(',');
+ const TX='input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=color]):not([type=button]):not([type=submit]):not([type=hidden])|select|textarea';
+ const R=[
+ [g('label:not(.drop):not(.hs):not(.chk):not(:has(input))'),'display:block;margin:16px 0 8px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--mu);text-transform:none;letter-spacing:.01em'],
+ [g('label:not(.drop):not(.hs):not(.chk):not(:has(input)):first-child'),'margin-top:0'],
+ [g(TX),'width:100%;max-width:100%;min-width:0;height:52px;margin:0;padding:0 14px;background:var(--bg);color:var(--tx);border:1px solid var(--ln);border-radius:14px;font-family:inherit;font-size:16px;line-height:1.4;outline:0;box-shadow:none;transition:border-color .2s,box-shadow .2s'],
+ [g('textarea'),'height:auto;min-height:108px;padding:14px;line-height:1.55;resize:vertical'],
+ [g('select'),'appearance:none;-webkit-appearance:none;padding-right:40px;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%238b91a3%27 stroke-width=%272.2%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px'],
+ [g('input:focus|select:focus|textarea:focus'),'border-color:var(--ac);box-shadow:0 0 0 4px rgba(124,92,255,.18);background:var(--bg)'],
+ [g('input::placeholder|textarea::placeholder'),'color:var(--dm)'],
+ [g('input[type=range]'),'width:100%;accent-color:var(--ac);background:none;border:0;height:28px;padding:0'],
+ [g('input[type=color]'),'width:100%;height:46px;padding:4px;background:var(--bg);border:1px solid var(--ln);border-radius:12px'],
+ [g('.drop'),'display:flex;align-items:center;gap:12px;padding:16px;margin:0 0 14px;background:var(--bg);color:var(--tx);border:1.5px dashed var(--ln2);border-radius:16px;transition:.2s'],
+ [g('.drop.on|.drop.has|.drop:hover'),'border-color:var(--ac);background:rgba(124,92,255,.07)'],
+ [g('.drop svg'),'color:var(--ac2)'],
+ [g('.drop span span'),'color:var(--mu)'],
+ [g('.row'),'gap:10px;margin-top:14px'],
+ [g('label:has(input[type=checkbox])|label:has(input[type=radio])'),'display:flex;align-items:center;gap:10px;margin:10px 0;color:var(--tx);font-size:14px;font-weight:500;text-transform:none;letter-spacing:0'],
+ [g('input[type=checkbox]|input[type=radio]'),'accent-color:var(--ac);width:20px;height:20px;min-width:20px;flex:none;margin:0;padding:0'],
+ [g('.row button|.row .btn|button.sec|.btn:not(.primary)'),'min-height:46px;padding:0 16px;border-radius:12px;background:var(--s3)!important;color:var(--tx)!important;border:1px solid var(--ln)!important;font-family:inherit;font-weight:600;font-size:14px;box-shadow:none!important;text-transform:none;letter-spacing:0'],
+ [g('button.primary|.btn.primary|#go'),'width:100%;min-height:52px;padding:0 18px;border:0!important;border-radius:14px;color:#fff!important;font-family:inherit;font-weight:600;font-size:15px;text-transform:none;letter-spacing:0;background:linear-gradient(135deg,var(--ac),#5b8cff 60%,var(--ac2))!important;box-shadow:0 12px 26px -10px rgba(124,92,255,.8),0 1px 0 rgba(255,255,255,.3) inset!important;transition:filter .15s,transform .15s'],
+ [g('button.primary:hover|.btn.primary:hover'),'filter:brightness(1.08)'],
+ [g('button.primary:active|.btn.primary:active'),'transform:scale(.99)'],
+ [g('button:disabled'),'opacity:.6;cursor:wait'],
+ [g('.msg'),'margin:12px 2px 0;font-size:13px;line-height:1.5;color:var(--mu)'],
+ [g('.msg:empty'),'display:none'],
+ [g('.msg.good'),'color:#34d399'],
+ [g('.msg.bad'),'padding:12px 14px;margin:12px 0 0;border-radius:14px;color:#fecaca;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.22)'],
+ [g('.out'),'margin-top:16px;padding:14px;background:linear-gradient(180deg,var(--s2),var(--s1));border:1px solid var(--ln);border-radius:18px;color:var(--tx);box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 18px 40px -18px rgba(0,0,0,.8),0 2px 6px rgba(0,0,0,.4);animation:tk2up .35s ease both'],
+ [g('.out.rescard|.rescard'),'border:1px solid var(--ln)!important;border-left:1px solid var(--ln)!important;border-radius:18px;padding:0!important'],
+ [g('.rch'),'display:flex;align-items:center;gap:10px;padding:14px;font-size:15px;color:var(--tx)'],
+ [g('.rck'),'display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(52,211,153,.15);color:#34d399;font-size:13px;flex:none'],
+ [g('.rcm'),'padding:4px 14px 14px;display:flex;flex-direction:column;gap:2px'],
+ [g('.rcm span'),'font-size:12px;color:var(--dm);text-transform:uppercase;letter-spacing:.08em'],
+ [g('.rcm strong'),'font-size:30px;line-height:1.1;background:linear-gradient(135deg,#a794ff,var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent'],
+ [g('.rcl'),'list-style:none;margin:0;padding:0'],
+ [g('.rcl li'),'display:flex;justify-content:space-between;gap:14px;padding:11px 14px;border-top:1px solid var(--ln);font-size:14px'],
+ [g('.rcl li span'),'color:var(--mu);flex:none'],
+ [g('.rcl li b'),'color:var(--tx);font-weight:600;text-align:right;min-width:0;word-break:break-word'],
+ [g('.rcl a'),'color:#a794ff'],
+ [g('.rescard .row'),'padding:12px 14px;border-top:1px solid var(--ln)'],
+ [g('.cmp img|.out img:not(.scth)'),'border-radius:12px;border:1px solid var(--ln)'],
+ [g('.cmp figcaption'),'color:var(--dm);font-size:12px;text-align:center;margin-top:6px'],
+ [g('.out code|.out pre'),'display:block;padding:12px;background:var(--bg);color:var(--tx);border:1px solid var(--ln);border-radius:12px'],
+ [g('.out video|.out audio'),'width:100%;border-radius:12px;display:block'],
+ [g('.unb|.dlb'),'display:flex;align-items:center;justify-content:center;gap:9px;min-height:50px;border-radius:14px;border:0!important;color:#fff!important;font-weight:600;font-size:15px;background:linear-gradient(135deg,var(--ac),#5b8cff)!important;box-shadow:0 10px 22px -10px rgba(124,92,255,.8)!important']
+ ];
+ s.textContent=R.map(x=>x[0]+'{'+x[1]+'}').join('\n');document.head.appendChild(s)}
+{const NAT=new Set(['tiktok-dl2','am-preset','anime-search','anime-ongoing','anime-completed','anime-episode','anime-batch','komik-search','mangaplus']);
+ TOOLS_FULL.forEach(t=>{if(NAT.has(t.id)||typeof t.init!=='function')return;const i0=t.init;t.init=function(r){r.classList.add('tk2','tk2g');tk2gCss();return i0.apply(this,arguments)}})}
 
 
 /* gabungkan ke daftar ringkas: tool bawaan diganti versi lengkap, tool kustom (bila ada) dipertahankan */

@@ -347,6 +347,129 @@ function gcAnime(raw, q) {
   return { link: hasil[0].link, data: { kata: sv(d.query, 100) || sv(q, 100), total: hasil.length, hasil } };
 }
 
+// ---- Anime Ongoing / Completed (GenCipta GET /api/anime/ongoing|completed?page=): { status, data:{ success, page, hasNext, total, anime:[{title,slug,current_episode,release_day,link,poster}] }, creator }. Hanya https yang diteruskan. done=true: daftar tamat (nama field dibaca toleran) ----
+function gcAnimeOngoing(raw, q, done) {
+  if (!raw || typeof raw !== 'object' || raw.status === false) return null;
+  const d = raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data) ? raw.data : raw;
+  if (d.success === false) return null;
+  const sv = (v, n) => (typeof v === 'string' || typeof v === 'number') ? String(v).replace(/\s+/g, ' ').trim().slice(0, n) : '';
+  const hu = (v) => { const u = typeof v === 'string' ? v.trim() : ''; return /^https:\/\//i.test(u) && u.length <= 2500 ? u : ''; };
+  const arr = [d.anime, d.results, d.list, d.items, Array.isArray(d) ? d : null, Array.isArray(raw.data) ? raw.data : null].find((x) => Array.isArray(x)) || [];
+  const first = (r, ks) => { for (const k of ks) { const v = sv(r[k], 80); if (v) return v; } return ''; };
+  const hasil = [];
+  for (const r of arr.slice(0, 60)) {
+    if (!r || typeof r !== 'object') continue;
+    const link = hu(r.link || r.url); if (!link) continue;
+    const judul = sv(r.title || r.name, 200).replace(/\s+Subtitle\s+Indonesia$/i, '') || sv(r.slug, 100);
+    if (!judul) continue;
+    const it = { judul, link, poster: hu(r.poster || r.thumbnail || r.image || r.cover).replace(/^.*noimage.*$/i, ''), episode: first(r, ['current_episode', 'total_episode', 'total_episodes', 'episodes', 'episode']).slice(0, 40) };
+    if (done) {
+      const rt = parseFloat(r.rating !== undefined ? r.rating : r.score);
+      it.rating = Number.isFinite(rt) && rt > 0 && rt <= 10 ? Math.round(rt * 100) / 100 : 0;
+      it.tanggal = first(r, ['last_release_date', 'release_date', 'date']).slice(0, 30);
+    } else it.hari = sv(r.release_day, 20) || 'Random';
+    hasil.push(it);
+  }
+  if (!hasil.length) return null;
+  const pg = parseInt(d.page, 10), more = d.hasNext !== undefined ? d.hasNext : d.has_next;
+  return { link: hasil[0].link, data: { halaman: Number.isFinite(pg) && pg > 0 ? pg : (parseInt(q, 10) || 1), total: hasil.length, adaLagi: more === true, hasil } };
+}
+
+// ---- Anime Episode (GenCipta GET /api/anime/episode?slug=): { status, data:{ success, title, current_url, default_stream, navigation:{previous,next,all_episodes}, total_mirrors, mirrors[], total_downloads, downloads[] }, creator }. Bentuk isi mirrors/downloads belum pasti, jadi nama field dibaca toleran. Hanya https yang diteruskan. Balasan tanpa judul, stream, server, dan unduhan dianggap kosong (null) ----
+function gcAnimeEpisode(raw, q) {
+  if (!raw || typeof raw !== 'object' || raw.status === false) return null;
+  const d = raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data) ? raw.data : raw;
+  if (d.success === false) return null;
+  const sv = (v, n) => (typeof v === 'string' || typeof v === 'number') ? String(v).replace(/\s+/g, ' ').trim().slice(0, n) : '';
+  const hu = (v) => { const u = typeof v === 'string' ? v.trim() : ''; return /^https:\/\//i.test(u) && u.length <= 2500 ? u : ''; };
+  const first = (r, ks, n) => { if (!r || typeof r !== 'object') return ''; for (const k of ks) { const v = sv(r[k], n); if (v) return v; } return ''; };
+  const firstUrl = (r, ks) => { if (!r || typeof r !== 'object') return ''; for (const k of ks) { const v = hu(r[k]); if (v) return v; } return ''; };
+  const slugOf = (v) => {
+    const s = typeof v === 'string' ? v.trim() : '';
+    if (!s) return '';
+    if (/^https?:\/\//i.test(s)) { try { const p = new URL(s).pathname.split('/').filter(Boolean); return p.length ? sv(p[p.length - 1], 160).replace(/[^a-z0-9_-]/gi, '') : ''; } catch (e) { return ''; } }
+    return /^[a-z0-9][a-z0-9_-]{2,160}$/i.test(s) ? s : '';
+  };
+  const UK = ['url', 'link', 'embed', 'embed_url', 'embedUrl', 'iframe', 'src', 'stream', 'stream_url', 'href'];
+  const arr = (v) => (Array.isArray(v) ? v : []);
+  const mirror = [];
+  for (const m of arr(d.mirrors).slice(0, 40)) {
+    const url = typeof m === 'string' ? hu(m) : firstUrl(m, UK);
+    if (!url) continue;
+    mirror.push({ nama: (typeof m === 'object' ? first(m, ['server', 'name', 'label', 'title', 'provider', 'host'], 40) : '') || ('Server ' + (mirror.length + 1)), kualitas: typeof m === 'object' ? first(m, ['quality', 'resolution'], 20) : '', url });
+  }
+  const linkOf = (l) => typeof l === 'string' ? { nama: '', url: hu(l) } : { nama: first(l, ['host', 'server', 'name', 'label', 'provider', 'title'], 40), url: firstUrl(l, UK) };
+  const groups = new Map();
+  const put = (key, l) => { if (!l.url) return; const g = groups.get(key) || []; if (g.length < 20) g.push(l); groups.set(key, g); };
+  for (const r of arr(d.downloads).slice(0, 60)) {
+    if (!r) continue;
+    if (typeof r === 'string') { put('Unduhan', linkOf(r)); continue; }
+    if (typeof r !== 'object') continue;
+    const key = first(r, ['quality', 'resolution', 'format', 'title', 'name', 'label'], 60) || 'Unduhan';
+    const inner = [r.links, r.servers, r.urls, r.items, r.downloads, r.mirrors].find(Array.isArray);
+    if (inner) inner.slice(0, 20).forEach((l) => put(key, linkOf(l)));
+    else put(key, linkOf(r));
+  }
+  const unduh = [...groups.entries()].slice(0, 12).map(([grup, tautan]) => ({ grup, tautan }));
+  const stream = typeof d.default_stream === 'string' ? hu(d.default_stream) : firstUrl(d.default_stream, UK);
+  const nv = d.navigation && typeof d.navigation === 'object' ? d.navigation : {};
+  const navSlug = (v) => slugOf(typeof v === 'object' && v ? (v.slug || v.url || v.link) : v);
+  const judul = sv(d.title, 200).replace(/\s+Subtitle\s+Indonesia$/i, '');
+  const slug = slugOf(d.current_url) || slugOf(q);
+  if (!judul && !stream && !mirror.length && !unduh.length) return null;
+  const sumber = hu(d.current_url);
+  const semua = hu(typeof nv.all_episodes === 'object' && nv.all_episodes ? (nv.all_episodes.url || nv.all_episodes.link) : nv.all_episodes);
+  return { link: stream || (mirror[0] && mirror[0].url) || sumber || null, data: { judul: judul || slug, slug, sumber, stream, mirror, unduh, nav: { sebelumnya: navSlug(nv.previous || nv.prev), berikutnya: navSlug(nv.next), semua } } };
+}
+
+// ---- Anime Batch (GenCipta GET /api/anime/batch?slug=): { status, data:{ success, title, batch_url, total_downloads, downloads[] }, creator }. Memakai ulang pembaca gcAnimeEpisode untuk isi downloads (tanpa stream/server/navigasi) ----
+function gcAnimeBatch(raw, q) {
+  if (!raw || typeof raw !== 'object' || raw.status === false) return null;
+  const d = raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data) ? raw.data : raw;
+  const x = gcAnimeEpisode({ status: true, data: { success: d.success, title: d.title, current_url: d.batch_url || d.current_url, downloads: d.downloads } }, q);
+  if (!x) return null;
+  const nd = x.data.unduh.reduce((a, g) => a + g.tautan.length, 0);
+  if (!x.data.judul && !nd) return null;
+  return { link: x.data.sumber || (x.data.unduh[0] && x.data.unduh[0].tautan[0].url) || null, data: { judul: x.data.judul, slug: x.data.slug, sumber: x.data.sumber, unduh: x.data.unduh } };
+}
+
+// ---- MangaPlus (api-cloud GET /komik/mangaplus?type=home&lang=): { status, result:{ daily_updates[{title_id,title,chapter_id,number,name}], ranking[{title_id,title,author,thumbnail}], latest_updates[] } }. Judul/nomor/nama kadang berupa objek aneh ({"13":[105]}), jadi dibaca toleran; judul yang kosong dilengkapi dari daftar ranking (title_id sama). Kunci apikey dan kuota dari balasan tidak diteruskan ----
+function acMangaPlus(raw, lang) {
+  const r = raw && typeof raw === 'object' && raw.status !== false && raw.result && typeof raw.result === 'object' ? raw.result : null;
+  if (!r) return null;
+  const sv = (v, n) => (typeof v === 'string' || typeof v === 'number') ? String(v).replace(/\s+/g, ' ').trim().slice(0, n) : '';
+  const hu = (v) => { const u = typeof v === 'string' ? v.trim() : ''; return /^https:\/\//i.test(u) && u.length <= 2500 ? u : ''; };
+  const txt = (v, n) => {
+    if (typeof v === 'string' || typeof v === 'number') return sv(v, n);
+    if (v && typeof v === 'object') for (const x of Object.values(v)) { const t = Array.isArray(x) ? x.find((y) => typeof y === 'string') : (typeof x === 'string' ? x : ''); if (t) return sv(t, n); }
+    return '';
+  };
+  const id = (v) => { const x = String(v === undefined || v === null ? '' : v); return /^\d{1,9}$/.test(x) ? x : ''; };
+  const arr = (v) => (Array.isArray(v) ? v : []);
+  const ranking = [], byId = new Map();
+  for (const x of arr(r.ranking).slice(0, 150)) {
+    if (!x || typeof x !== 'object') continue;
+    const tid = id(x.title_id), judul = txt(x.title, 120);
+    if (!tid || !judul) continue;
+    const it = { id: tid, judul, penulis: txt(x.author, 80), poster: hu(x.thumbnail), url: 'https://mangaplus.shueisha.co.jp/titles/' + tid };
+    ranking.push(it); if (!byId.has(tid)) byId.set(tid, it);
+  }
+  const bab = (list) => {
+    const out = [];
+    for (const x of arr(list).slice(0, 100)) {
+      if (!x || typeof x !== 'object') continue;
+      const tid = id(x.title_id), cid = id(x.chapter_id), rk = byId.get(tid);
+      const judul = txt(x.title, 120) || (rk && rk.judul) || '';
+      if (!judul) continue;
+      out.push({ id: tid, judul, penulis: rk ? rk.penulis : '', poster: rk ? rk.poster : '', nomor: txt(x.number, 14), nama: txt(x.name, 160), url: cid ? 'https://mangaplus.shueisha.co.jp/viewer/' + cid : (tid ? 'https://mangaplus.shueisha.co.jp/titles/' + tid : '') });
+    }
+    return out;
+  };
+  const update = bab(r.daily_updates), terbaru = bab(r.latest_updates);
+  if (!update.length && !terbaru.length && !ranking.length) return null;
+  return { link: null, data: { bahasa: sv(lang, 5), update, terbaru, ranking } };
+}
+
 // ---- Dailymotion Downloader (GenCipta /api/downloader/dailymotion): data{ title, thumbnail, duration, qualities[{quality,url,type}] } ----
 function gcDailymotion(raw) {
   if (!raw || typeof raw !== 'object') return null;
@@ -1128,6 +1251,32 @@ module.exports = async (req, res) => {
         const x = gcAnime(data, input);
         if (!x) return { ok: false, code: 404, error: 'Anime tidak ditemukan. Coba judul lain atau ejaan yang berbeda.' };
         return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'gcanimeongoing') {
+        const x = gcAnimeOngoing(data, input);
+        if (!x) return { ok: false, code: 404, error: 'Tidak ada anime tayang di halaman ini. Coba muat ulang atau kembali ke halaman pertama.' };
+        return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'gcanimecompleted') {
+        const x = gcAnimeOngoing(data, input, true);
+        if (!x) return { ok: false, code: 404, error: 'Tidak ada anime tamat di halaman ini. Coba muat ulang atau kembali ke halaman pertama.' };
+        return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'gcanimeepisode') {
+        const x = gcAnimeEpisode(data, input);
+        if (!x) return { ok: false, code: 404, error: 'Episode belum bisa diambil: provider mengembalikan data kosong (tanpa judul, server, atau unduhan). Pastikan slug sama persis dengan bagian akhir link episode di Otakudesu, lalu coba lagi.' };
+        return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'gcanimebatch') {
+        const x = gcAnimeBatch(data, input);
+        if (!x) return { ok: false, code: 404, error: 'Batch belum bisa diambil: provider mengembalikan data kosong (tanpa judul atau link unduhan). Pastikan slug sama persis dengan bagian akhir link batch di Otakudesu, lalu coba lagi.' };
+        return { ok: true, link: x.link, data: x.data };
+      }
+      if (t.shape === 'acmangaplus') {
+        if (data && data.status === false) return { ok: false, code: 502, error: errText(data, 'Provider menolak permintaan.'), retry: true };
+        const x = acMangaPlus(data, multi && multi.lang);
+        if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan daftar MangaPlus. Coba lagi sebentar lagi.', retry: true };
+        return { ok: true, link: null, data: x.data };
       }
       if (t.shape === 'nxampreset') {
         if (data && data.ok === false) return { ok: false, code: 502, error: errText(data, 'Provider menolak permintaan.'), retry: true };

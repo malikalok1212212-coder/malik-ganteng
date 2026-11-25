@@ -10,8 +10,8 @@ import re, json, html, colorsys, pathlib, collections
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PUB = ROOT / 'public'
 SITE = 'https://www.maliktools.biz.id'
-LASTMOD = '2026-11-22'
-LASTMOD_ID = '22 November 2026'
+LASTMOD = '2026-11-25'
+LASTMOD_ID = '25 November 2026'
 
 src = (PUB / 'js' / 'tools.js').read_text(encoding='utf8')
 start = src.index('const TOOLS_FULL=[')
