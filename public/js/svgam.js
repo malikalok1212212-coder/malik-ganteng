@@ -306,6 +306,22 @@ function cleanRing(P) {
   while (out.length > 1 && out[0][0] === out[out.length - 1][0] && out[0][1] === out[out.length - 1][1]) out.pop();
   return out;
 }
+/* penyederhanaan titik untuk jalur SVG: gabungkan titik yang terlalu rapat, buang titik yang sejajar.
+   tol dalam px kanvas; bentuk bergeser paling jauh sekitar tol. tol 0 = mati. */
+function thinRing(P, tol) {
+  if (!(tol > 0) || P.length < 4) return P;
+  const g2 = (tol / 2) * (tol / 2), A = [P[0]];
+  for (let i = 1; i < P.length; i++) { const q = A[A.length - 1]; if ((P[i][0] - q[0]) ** 2 + (P[i][1] - q[1]) ** 2 >= g2) A.push(P[i]); }
+  while (A.length > 1 && (A[0][0] - A[A.length - 1][0]) ** 2 + (A[0][1] - A[A.length - 1][1]) ** 2 < g2) A.pop();
+  if (A.length < 3) return P;
+  let S = A;
+  if (A.length >= 6) S = simplifyRing(A, tol);
+  else { S = A.filter((p, i) => distSeg(p, A[(i + A.length - 1) % A.length], A[(i + 1) % A.length]) >= tol); }
+  if (S.length < 3) S = A;
+  const a0 = area(P), a1 = area(S);
+  if (!a1 || (a0 > 0) !== (a1 > 0) || Math.abs(a1 - a0) > Math.max(1, Math.abs(a0)) * 0.02) return P;
+  return S;
+}
 function area(R) { let a = 0; for (let i = 0, n = R.length; i < n; i++) { const p = R[i], q = R[(i + 1) % n]; a += p[0] * q[1] - q[0] * p[1]; } return a / 2; }
 function bboxOf(R) { let a = Infinity, b = Infinity, c = -Infinity, d = -Infinity; for (const p of R) { if (p[0] < a) a = p[0]; if (p[0] > c) c = p[0]; if (p[1] < b) b = p[1]; if (p[1] > d) d = p[1]; } return [a, b, c, d]; }
 function orient(R, sign) { return (area(R) >= 0) === (sign > 0) ? R : R.slice().reverse(); }
@@ -926,7 +942,7 @@ function canvasSize(box, o) {
 
 /* ---------- konversi utama ---------- */
 function convert(text, opt) {
-  const o = Object.assign({ title: 'svg', duration: 3, fps: 30, canvas: 'auto', width: 1080, height: 1080, holes: 'pecah', tol: 0.05, grad: 'sedang' }, opt || {});
+  const o = Object.assign({ title: 'svg', duration: 3, fps: 30, canvas: 'auto', width: 1080, height: 1080, holes: 'pecah', tol: 0.05, simp: 0.2, grad: 'sedang' }, opt || {});
   const warns = [], warn = (m) => { if (warns.indexOf(m) < 0) warns.push(m); };
   const doc = readSVG(text, warn);
   let box = intrinsic(doc.svg);
@@ -948,10 +964,10 @@ function convert(text, opt) {
   const layers = [], gradLeaves = [];
   const gmode = o.grad === 'rata' || o.grad === 'rendah' || o.grad === 'tinggi' ? o.grad : 'sedang', GQ = GRAD_Q[gmode] || GRAD_Q.sedang;
   const tally = { crossed: 0, self: 0, fallback: 0, many: 0 };
-  let objek = 0;
+  let objek = 0, rawPts = 0;
   for (const lf of leaves) {
     const rings = [];
-    for (const s of lf.subs) { const R = cleanRing(flattenSub(s, lf.m, o.tol)); if (R.length >= 3) rings.push(R); }
+    for (const s of lf.subs) { const R0 = cleanRing(flattenSub(s, lf.m, o.tol)); if (R0.length >= 3) { rawPts += R0.length; rings.push(thinRing(R0, o.simp)); } }
     if (!rings.length) continue;
     const info = {};
     const pwhs = buildPWH(rings, lf.rule, info);
@@ -1038,7 +1054,7 @@ function convert(text, opt) {
 
   const model = { title: o.title, width: cs.w, height: cs.h, totalTime: Math.max(100, Math.round(o.duration * 1000)), fps: Math.max(1, Math.round(o.fps)), layers };
   let pts = 0; layers.forEach((l) => l.rings.forEach((r) => { pts += r.length; }));
-  return { model, warnings: warns, stats: { layers: layers.length, pieces: total, points: pts, width: cs.w, height: cs.h } };
+  return { model, warnings: warns, stats: { layers: layers.length, pieces: total, points: pts, rawPoints: rawPts, width: cs.w, height: cs.h } };
 }
 
 /* ---------- penulis XML (mengikuti contoh malik-logo.xml persis) ---------- */
@@ -1560,7 +1576,7 @@ async function fromImageAsync(rgba, w, h, opt) {
   }
 }
 
-const API = { convert, toXML, draw, parseXML, parsePath, parseColor, parseTransform, flattenSub, buildPWH, splitSlabs, bridgeAll, clipHalf, findCrossings, area, pip, cleanRing, SAMPLE, num, fromImage, fromImageAsync, PHOTO_DETAIL };
+const API = { convert, toXML, draw, parseXML, parsePath, parseColor, parseTransform, flattenSub, buildPWH, splitSlabs, bridgeAll, clipHalf, findCrossings, area, pip, cleanRing, thinRing, SAMPLE, num, fromImage, fromImageAsync, PHOTO_DETAIL };
 if (typeof module !== 'undefined' && module.exports) module.exports = API;
 G.SVGAM = API;
 })(typeof window !== 'undefined' ? window : globalThis);

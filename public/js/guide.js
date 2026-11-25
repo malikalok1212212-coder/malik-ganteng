@@ -64,7 +64,10 @@
       ['.mgc', 'min-height:0;height:34px;margin:0;padding:0 13px;border-radius:99px;border:1px solid rgba(255,255,255,.13);background:#1e222d;color:#eef0f6;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;box-shadow:none;text-transform:none;letter-spacing:0;animation:mgi .25s ease both'],
       ['.mgc.p', 'border:0;color:#fff;background:linear-gradient(135deg,#7c5cff,#5b8cff 60%,#22d3ee)'],
       ['.mgx', 'position:absolute;right:8px;top:8px;width:28px;height:28px;min-height:0;padding:0;margin:0;border-radius:50%;border:0;background:#1e222d;color:#8b91a3;font-size:16px;line-height:1;cursor:pointer;display:grid;place-items:center'],
-      ['.mgo', 'display:block;min-height:0;height:auto;margin:11px 0 0;padding:0;border:0;background:none;color:#5d6377;font-family:inherit;font-size:11.5px;text-decoration:underline;cursor:pointer;box-shadow:none'],
+      ['.mgo,.mgh', 'display:block;min-height:0;height:auto;margin:11px 0 0;padding:0;border:0;background:none;color:#5d6377;font-family:inherit;font-size:11.5px;text-decoration:underline;cursor:pointer;box-shadow:none'],
+      ['.mgo + .mgh', 'margin-top:7px'],
+      ['.mgn', 'position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + env(safe-area-inset-bottom,0px));z-index:82;max-width:calc(100vw - 28px);box-sizing:border-box;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;border-radius:99px;background:#171a23;border:1px solid rgba(255,255,255,.12);box-shadow:0 14px 34px -12px rgba(0,0,0,.85);color:#eef0f6;font-size:13px;line-height:1.4;animation:mgi .22s ease both'],
+      ['.mgn button', 'min-height:0;height:30px;margin:0;padding:0 12px;border-radius:99px;border:0;background:linear-gradient(135deg,#7c5cff,#5b8cff 60%,#22d3ee);color:#fff;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;flex:none'],
       ['.mgsr', 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)'],
       /* tur */
       ['.mgk', 'position:fixed;inset:0;z-index:79;background:transparent'],
@@ -105,7 +108,7 @@
       '<button type="button" class="mgx" aria-label="Tutup pemandu">&times;</button>' +
       '<p class="mgt" aria-hidden="true"></p><span class="mgsr" role="status" aria-live="polite"></span>' +
       '<ol class="mgl" hidden></ol><div class="mga"></div>' +
-      '<button type="button" class="mgo"></button></div>' +
+      '<button type="button" class="mgo"></button><button type="button" class="mgh">Sembunyikan pemandu</button></div>' +
       '<button type="button" class="mgf" aria-label="Buka pemandu Malik" aria-expanded="false"><img src="/pemandu.png" alt="" width="42" height="42"></button>';
     D.body.appendChild(root);
     fab = q('.mgf', root); bub = q('.mgb', root); txt = q('.mgt', root); sr = q('.mgsr', root);
@@ -116,6 +119,7 @@
     q('.mgo', root).onclick = function () {
       ls.s('mt_guide_off', ls.g('mt_guide_off') === '1' ? '0' : '1'); optLabel();
     };
+    q('.mgh', root).onclick = function () { setHidden(true, true); };
     bub.onclick = function (e) { if (e.target === txt) skip(); };
     D.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (tourEls) endTour(true); else if (!bub.hidden) close(); } });
     optLabel();
@@ -286,11 +290,32 @@
     if (!skipped) say('Mantap, tur selesai. Mau langsung cari tool?', { acts: [{ t: 'Cari tool', fn: focusSearch }, { t: 'Nanti saja', p: false, fn: close }] });
   }
 
+  /* ---------- Sembunyikan / tampilkan maskot ---------- */
+  var isHid = function () { return ls.g('mt_guide_hide') === '1'; };
+  var note = null, noteT = 0;
+  function dropNote() { clearTimeout(noteT); if (note) { note.remove(); note = null; } }
+  function toast(msg, label, fn) {
+    dropNote();
+    note = D.createElement('div'); note.className = 'mgn'; note.setAttribute('role', 'status');
+    var sp = D.createElement('span'); sp.textContent = msg; note.appendChild(sp);
+    if (label) { var b = D.createElement('button'); b.type = 'button'; b.textContent = label; b.onclick = function () { dropNote(); fn(); }; note.appendChild(b); }
+    D.body.appendChild(note); noteT = setTimeout(dropNote, 6000);
+  }
+  function setHidden(h, tell) {
+    ls.s('mt_guide_hide', h ? '1' : '0');
+    if (!root) return;
+    close(); dropNote();
+    if (tourEls) endTour(true);
+    onRoute(true);
+    if (h && tell) toast('Pemandu disembunyikan. Munculkan lagi lewat Info.', 'Urungkan', function () { setHidden(false); });
+    try { D.dispatchEvent(new CustomEvent('mtguide', { detail: { hidden: h } })); } catch (e) {}
+  }
+
   /* ---------- Otomatis: sapaan pertama dan saran tool baru ---------- */
   var HIDE = /^(chat|dev|admin)/;
   function onRoute(silent) {
     if (!root) return;
-    var id = hid(); root.hidden = !!tourEls || HIDE.test(id);
+    var id = hid(); root.hidden = !!tourEls || HIDE.test(id) || isHid();
     if (tourEls) return;
     close();
     var t = tool(id);
@@ -325,7 +350,7 @@
     build();
     addEventListener('hashchange', function () { onRoute(); });
     onRoute(true); firstVisit();
-    window.mtGuide = { open: menu, tour: tour, close: close };
+    window.mtGuide = { open: function () { if (isHid()) setHidden(false); menu(); }, tour: function () { if (isHid()) setHidden(false); tour(); }, close: close, hide: function () { setHidden(true); }, show: function () { setHidden(false); }, setHidden: function (h) { setHidden(!!h); }, isHidden: isHid };
   }
   if (D.readyState === 'loading') D.addEventListener('DOMContentLoaded', boot); else boot();
 })();

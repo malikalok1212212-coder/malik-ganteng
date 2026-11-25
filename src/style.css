@@ -5398,3 +5398,19 @@ html:not(#_):not(#__):not(#___):root:root:root:root .tg2.rl-pre{background:#5cd0
 html:not(#_):not(#__):not(#___):root:root:root:root .tg2.rl-vip{background:#ffb020!important;color:#141413!important;border-color:transparent!important;font-weight:700!important}
 html:not(#_):not(#__):not(#___):root:root:root:root .tg2.rl-mem{background:var(--s3)!important;color:var(--muted)!important}
 html:not(#_):not(#__):not(#___):root:root:root:root .tg2.tgc{background:var(--rc,var(--s3))!important;color:#141413!important;border-color:transparent!important;font-weight:700!important}
+
+/* SVG ke XML: nama XML, durasi + FPS sejajar, pengaturan lanjutan, kartu statistik hasil */
+.sxsec{margin:0 0 4px}
+.sxsec input{font-weight:600}
+.sx2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sx2>div{min-width:0}
+.sxadv{border:1px solid var(--bd);border-radius:14px;background:var(--panel);margin:6px 0 16px;padding:0 14px}
+.sxadv summary{display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer;padding:13px 0;font-weight:700;list-style:none}
+.sxadv summary::-webkit-details-marker{display:none}
+.sxadv summary::after{content:"+";display:grid;place-items:center;width:24px;height:24px;border:1px solid var(--bd);border-radius:8px;background:var(--field);font-size:16px;line-height:1}
+.sxadv[open] summary::after{content:"\2212"}
+.sxadv[open]{padding-bottom:6px}
+.sxst{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.sxst div{border:1px solid var(--bd);border-radius:12px;background:var(--field);padding:9px 6px;text-align:center;min-width:0}
+.sxst b{display:block;font-size:15px;overflow-wrap:anywhere}
+.sxst span{display:block;margin-top:2px;font-size:11px;color:var(--muted)}

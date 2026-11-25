@@ -326,3 +326,23 @@ test('foto mode bersih: warna peralihan di tepi tidak jadi layer sendiri', () =>
   const r = S.fromImage(d, w, h, { colors: 8, canvas: 'custom', width: 80, height: 80, bersih: true, ink: false });
   assert.equal(r.model.layers.length, 2);
 });
+
+test('penyederhanaan titik: titik sejajar dibuang, bentuk tetap, bisa dimatikan', () => {
+  let d = 'M0 0'; for (let i = 1; i <= 200; i++) d += 'L' + i * 5 + ' 0'; for (let i = 1; i <= 100; i++) d += 'L1000 ' + i * 10; for (let i = 199; i >= 0; i--) d += 'L' + i * 5 + ' 1000'; d += 'Z';
+  const svg = '<svg viewBox="0 0 1000 1000"><path fill="#123456" d="' + d + '"/></svg>';
+  const off = conv(svg, { simp: 0, canvas: 'custom', width: 1000, height: 1000 }), on = conv(svg, { canvas: 'custom', width: 1000, height: 1000 });
+  assert.equal(off.stats.points, off.stats.rawPoints);
+  assert.equal(on.stats.points, 4);
+  assert.equal(on.stats.rawPoints, off.stats.rawPoints);
+  near(Math.abs(S.area(on.model.layers[0].rings[0])), 1e6, 1);
+});
+
+test('penyederhanaan titik: lengkungan jadi lebih ringan dengan luas nyaris sama', () => {
+  const svg = '<svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="90" fill="#00f"/><path fill="#f00" d="M20 100C20 40 80 20 100 20S180 40 180 100 140 180 100 180 20 160 20 100Z"/></svg>';
+  const big = { canvas: 'custom', width: 1000, height: 1000 }, off = conv(svg, Object.assign({ simp: 0 }, big)), on = conv(svg, big);
+  assert.ok(on.stats.points < off.stats.points * 0.7, on.stats.points + ' vs ' + off.stats.points);
+  const A = (r) => r.model.layers.reduce((s, l) => s + l.rings.reduce((a, q) => a + Math.abs(S.area(q)), 0), 0);
+  assert.ok(Math.abs(A(on) - A(off)) / A(off) < 0.002);
+  const r = S.thinRing([[0, 0], [1, 0], [2, 0], [2, 2], [0, 2]], 0.2);
+  assert.equal(r.length, 4);
+});
