@@ -1366,13 +1366,64 @@ function gaussRing(P, sigma) {
   }
   return Q;
 }
-function refineRing(P, tol, sigma) {
+/* sudut tajam (mis. pertemuan dua bentuk) ditandai supaya tidak ikut membulat saat dihaluskan */
+function findCorners(R, k, ang) {
+  const n = R.length, c = [];
+  const turn = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const a = R[(i - k + n) % n], b = R[i], d = R[(i + k) % n];
+    const v1x = b[0] - a[0], v1y = b[1] - a[1], v2x = d[0] - b[0], v2y = d[1] - b[1];
+    const l = Math.hypot(v1x, v1y) * Math.hypot(v2x, v2y);
+    turn[i] = l > 0 ? Math.acos(Math.max(-1, Math.min(1, (v1x * v2x + v1y * v2y) / l))) : 0;
+  }
+  const th = ang * Math.PI / 180;
+  for (let i = 0; i < n; i++) {
+    if (turn[i] < th) continue;
+    let ok = true;
+    for (let j = -k; j <= k && ok; j++) if (j && turn[(i + j + n) % n] > turn[i]) ok = false;
+    if (ok) c.push(i);
+  }
+  return c;
+}
+function gaussOpen(P, sigma) {
+  const n = P.length, rad = Math.min(Math.ceil(sigma * 3), n - 1);
+  if (rad < 1 || n < 3) return P;
+  const wk = []; let sw = 0;
+  for (let k = -rad; k <= rad; k++) { const v = Math.exp(-(k * k) / (2 * sigma * sigma)); wk.push(v); sw += v; }
+  const at = (i) => {
+    if (i < 0) return [2 * P[0][0] - P[Math.min(-i, n - 1)][0], 2 * P[0][1] - P[Math.min(-i, n - 1)][1]];
+    if (i >= n) { const j = Math.max(2 * (n - 1) - i, 0); return [2 * P[n - 1][0] - P[j][0], 2 * P[n - 1][1] - P[j][1]]; }
+    return P[i];
+  };
+  const Q = new Array(n);
+  for (let i = 0; i < n; i++) {
+    if (i === 0 || i === n - 1) { Q[i] = P[i]; continue; }
+    let x = 0, y = 0;
+    for (let k = -rad; k <= rad; k++) { const q = at(i + k), v = wk[k + rad]; x += q[0] * v; y += q[1] * v; }
+    Q[i] = [x / sw, y / sw];
+  }
+  return Q;
+}
+function refineRing(P, tol, sigma, adapt) {
   if (P.length < 12) return simplifyRing(P, tol);
-  const A = area(P), step = 1;
-  let R = resampleRing(P, step);
-  R = gaussRing(R, sigma);
-  R = gaussRing(R, sigma * 0.6);
-  // jaga luas: gaussian mengecilkan bentuk cembung sedikit, skala balik terhadap titik berat
+  const A = area(P);
+  let R = resampleRing(P, 1);
+  const n = R.length;
+  // bentuk besar dihaluskan lebih kuat (goyangan tangan hilang), bentuk kecil tetap rinci
+  const sg = adapt ? Math.max(sigma, Math.min(12, n / 70)) : sigma;
+  const corners = findCorners(R, Math.max(3, Math.round(sg * 0.8)), adapt ? 38 : 60);
+  if (corners.length >= 2) {
+    const out = [];
+    for (let c = 0; c < corners.length; c++) {
+      const s = corners[c], e = corners[(c + 1) % corners.length], seg = [];
+      for (let i = s; ; i = (i + 1) % n) { seg.push(R[i]); if (i === e) break; }
+      const sm = gaussOpen(gaussOpen(seg, sg), sg * 0.6);
+      for (let i = 0; i < sm.length - 1; i++) out.push(sm[i]);
+    }
+    R = out;
+  } else {
+    R = gaussRing(gaussRing(R, sg), sg * 0.6);
+  }
   const A2 = area(R);
   if (A2 !== 0 && A / A2 > 0 && Math.abs(A) > 40) {
     let cx = 0, cy = 0; for (const p of R) { cx += p[0]; cy += p[1]; } cx /= R.length; cy /= R.length;
@@ -1534,7 +1585,7 @@ function* photoGen(rgba, w, h, opt) {
   const ringsOf = (lv, tol, sm) => {
     const outers = [], holes = [];
     for (const lp of contours(mask, w, h, S, lv)) {
-      const R = refineRing(lp, tol || D.tol, sm === undefined ? D.sm : sm), a = area(R);
+      const R = refineRing(lp, tol || D.tol, sm === undefined ? D.sm : sm, o.bersih), a = area(R);
       if (R.length < 3 || Math.abs(a) < 0.8) continue;
       (a > 0 ? outers : holes).push({ R, a, bb: bboxOf(R), own: [] });
     }
