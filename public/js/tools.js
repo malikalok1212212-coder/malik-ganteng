@@ -945,36 +945,51 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
     res.innerHTML=`<div class="out"><div class="cmp"><figure><img src="${prev}" alt="Hasil kompres"><figcaption>${ow} x ${oh} px · ${fs(out.size)} (${diff})</figcaption></figure></div><div class="row"><a class="btn primary dlb" href="${prev}" download="${esc(base)}-kompres.${ext}">${DLI}Unduh ${ext.toUpperCase()}</a></div></div>`;
     m.textContent='Selesai. Ukuran awal '+fs(x.size)+', sekarang '+fs(out.size)+'.'}
    catch(e){bad('Foto tidak bisa diproses. Coba foto lain.')}}}},
-{id:'svg-ke-xml',name:'SVG ke XML Alight Motion',desc:'Ubah file SVG jadi layer vektor XML untuk Alight Motion: atur durasi, FPS, ukuran kanvas, dan cara menangani bentuk berlubang, lalu periksa layernya sebelum mengunduh. Diproses di perangkatmu, tidak diunggah ke server.',
- html:()=>`<label class="drop" id="sxd" for="sxf">${svg(IC.up)}<span><b>Pilih file SVG</b><span id="sxi">SVG, maksimal 10 MB. Ubah teks menjadi outline dulu.</span></span></label><input id="sxf" type="file" accept=".svg,image/svg+xml,text/xml,application/xml">
+{id:'svg-ke-xml',name:'SVG ke XML Alight Motion',desc:'Ubah file SVG atau foto berwarna (PNG, JPG, WebP) jadi layer vektor XML untuk Alight Motion: atur durasi, FPS, ukuran kanvas, jumlah warna, dan detail, lalu periksa layernya sebelum mengunduh. Diproses di perangkatmu, tidak diunggah ke server.',
+ html:()=>`<label class="drop" id="sxd" for="sxf">${svg(IC.up)}<span><b>Pilih file SVG atau foto</b><span id="sxi">SVG, PNG, JPG, atau WebP, maksimal 10 MB. Untuk SVG, ubah teks menjadi outline dulu.</span></span></label><input id="sxf" type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp,text/xml,application/xml">
 <div class="chips"><button type="button" id="sxs">Coba file contoh</button></div>
+<div id="sxo" hidden><label for="sxk">Jumlah warna</label><select id="sxk"><option>8</option><option>12</option><option>16</option><option selected>24</option><option>32</option><option>48</option><option>64</option><option>96</option><option>128</option></select>
+<label for="sxq">Detail</label><select id="sxq"><option value="rendah">Ringan (cepat, file kecil)</option><option value="sedang" selected>Sedang</option><option value="tinggi">Tinggi (lambat, file besar)</option></select>
+<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="sxg" checked> Pertahankan garis tipis (outline)</label>
+<p class="msg">Foto dipecah jadi bentuk berwarna yang bertumpuk. Makin banyak warna dan detail, makin mirip aslinya tapi makin berat di Alight Motion.</p></div>
 <label for="sxu">Durasi (detik)</label><input id="sxu" type="number" inputmode="decimal" min="0.5" max="600" step="0.5" value="3">
 <label for="sxp">FPS</label><select id="sxp"><option>24</option><option>25</option><option selected>30</option><option>50</option><option>60</option></select>
 <label for="sxc">Ukuran kanvas</label><select id="sxc"><option value="auto">Otomatis (ikuti SVG)</option><option value="1080x1080">1080 x 1080 (1:1)</option><option value="1080x1920">1080 x 1920 (9:16)</option><option value="1920x1080">1920 x 1080 (16:9)</option><option value="custom">Kustom</option></select>
 <div id="sxw" hidden><label for="sxx">Lebar (px)</label><input id="sxx" type="number" inputmode="numeric" min="16" max="8192" value="1080"><label for="sxy">Tinggi (px)</label><input id="sxy" type="number" inputmode="numeric" min="16" max="8192" value="1080"></div>
 <label for="sxh">Bentuk berlubang</label><select id="sxh"><option value="pecah">Pecah per bidang (seperti file contoh)</option><option value="jembatan">Jembatan (1 layer per bentuk)</option></select>
+<label for="sxr">Warna gradasi</label><select id="sxr"><option value="sedang" selected>Sedang (pita warna bertumpuk)</option><option value="tinggi">Halus (lapisan lebih banyak)</option><option value="rendah">Ringan (lapisan sedikit)</option><option value="rata">Warna rata-rata (1 warna per bentuk)</option></select>
 <div class="row"><button class="primary" id="go">Buat XML</button></div><p class="msg" id="m" role="status"></p><div id="res"></div>`,
  init:r=>{const f=$(r,'#sxf'),dz=$(r,'#sxd'),fi=$(r,'#sxi'),h0=fi.textContent,m=$(r,'#m'),res=$(r,'#res'),cs=$(r,'#sxc');let url='',useSample=false;
   cs.onchange=()=>{$(r,'#sxw').hidden=cs.value!=='custom'};
-  f.onchange=()=>{const x=f.files[0];useSample=false;dz.classList.toggle('on',!!x);fi.textContent=x?x.name+' · '+(x.size>=1048576?mb(x.size):Math.round(x.size/1024)+' KB'):h0};
-  $(r,'#sxs').onclick=()=>{f.value='';useSample=true;dz.classList.add('on');fi.textContent='contoh.svg (file contoh)';m.className='msg';m.textContent='File contoh dipilih. Ketuk Buat XML.'};
+  const isImg=x=>!!x&&(/^image\/(png|jpe?g|webp)$/.test(x.type)||/\.(png|jpe?g|webp)$/i.test(x.name));
+  f.onchange=()=>{const x=f.files[0];useSample=false;dz.classList.toggle('on',!!x);fi.textContent=x?x.name+' · '+(x.size>=1048576?mb(x.size):Math.round(x.size/1024)+' KB'):h0;$(r,'#sxo').hidden=!isImg(x);if(isImg(x))$(r,'#sxh').value='jembatan'};
+  $(r,'#sxs').onclick=()=>{f.value='';$(r,'#sxo').hidden=true;useSample=true;dz.classList.add('on');fi.textContent='contoh.svg (file contoh)';m.className='msg';m.textContent='File contoh dipilih. Ketuk Buat XML.'};
   $(r,'#go').onclick=async()=>{const x=f.files[0],bad=t=>{m.className='msg bad';m.textContent=t};
-   if(!x&&!useSample)return bad('Pilih file SVG dulu.');
-   if(x&&!/\.svg$/i.test(x.name)&&x.type!=='image/svg+xml')return bad('Formatnya harus SVG (.svg).');
-   if(x&&x.size>10*1048576)return bad('Ukuran SVG maksimal 10 MB.');
+   if(!x&&!useSample)return bad('Pilih file SVG atau foto dulu.');
+   const ras=isImg(x);
+   if(x&&!ras&&!/\.svg$/i.test(x.name)&&x.type!=='image/svg+xml')return bad('Formatnya harus SVG, PNG, JPG, atau WebP.');
+   if(x&&x.size>10*1048576)return bad('Ukuran file maksimal 10 MB.');
    const dur=parseFloat($(r,'#sxu').value);if(!(dur>=0.5&&dur<=600))return bad('Durasi antara 0,5 dan 600 detik.');
    let cw=0,ch=0;if(cs.value==='custom'){cw=parseInt($(r,'#sxx').value,10);ch=parseInt($(r,'#sxy').value,10);if(!(cw>=16&&cw<=8192&&ch>=16&&ch<=8192))return bad('Lebar dan tinggi kanvas antara 16 dan 8192 px.')}
    m.className='msg';m.textContent='Memproses...';res.innerHTML='';
    try{await loadMod('svgam');await new Promise(k=>setTimeout(k,30));
-    const text=x?await x.text():SVGAM.SAMPLE,base=(x?x.name.replace(/\.[^.]+$/,''):'contoh').replace(/[^\w\- ]+/g,'-').trim().slice(0,40)||'svg';
-    const out=SVGAM.convert(text,{title:base,duration:dur,fps:parseInt($(r,'#sxp').value,10),canvas:cs.value,width:cw,height:ch,holes:$(r,'#sxh').value}),md=out.model,st=out.stats;
+    const base=(x?x.name.replace(/\.[^.]+$/,''):'contoh').replace(/[^\w\- ]+/g,'-').trim().slice(0,40)||(ras?'foto':'svg'),opt={title:base,duration:dur,fps:parseInt($(r,'#sxp').value,10),canvas:cs.value,width:cw,height:ch,holes:$(r,'#sxh').value,grad:$(r,'#sxr').value};
+    let out;
+    if(ras){
+     const det=$(r,'#sxq').value,u=URL.createObjectURL(x);let im;
+     try{im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error('Foto tidak bisa dibuka. Coba foto lain.'));i.src=u})}finally{setTimeout(()=>URL.revokeObjectURL(u),2000)}
+     const iw=im.naturalWidth,ih=im.naturalHeight,k=Math.min(1,SVGAM.PHOTO_DETAIL[det].side/Math.max(iw,ih)),W=Math.max(2,Math.round(iw*k)),H=Math.max(2,Math.round(ih*k)),c=document.createElement('canvas');
+     c.width=W;c.height=H;const cx=c.getContext('2d',{willReadFrequently:true});cx.imageSmoothingQuality='high';cx.drawImage(im,0,0,W,H);
+     out=await SVGAM.fromImageAsync(cx.getImageData(0,0,W,H).data,W,H,Object.assign(opt,{colors:parseInt($(r,'#sxk').value,10),detail:det,ink:$(r,'#sxg').checked,srcW:iw,srcH:ih,onStep:t=>{m.textContent=t}}))}
+    else out=SVGAM.convert(x?await x.text():SVGAM.SAMPLE,opt);
+    const md=out.model,st=out.stats;
     const sw=l=>{const a=parseInt(l.fill.slice(1,3),16)/255;return 'rgba('+parseInt(l.fill.slice(3,5),16)+','+parseInt(l.fill.slice(5,7),16)+','+parseInt(l.fill.slice(7,9),16)+','+a+')'};
     res.innerHTML=`<div class="out"><div class="chk" style="border-radius:12px;overflow:hidden"><canvas id="sxv" style="display:block;width:100%;height:auto" aria-label="Pratinjau hasil"></canvas></div>
 <p class="msg" id="sxn"></p>${out.warnings.length?'<ul>'+out.warnings.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul>':''}
 <p><b>Layer (${md.layers.length})</b>${md.layers.length>1?' · centang yang mau dibawa ke Alight Motion':' · akan dibawa ke Alight Motion'}</p>
 <div id="sxl">${md.layers.map((l,i)=>`<label>${md.layers.length>1?`<input type="checkbox" data-i="${i}" checked>`:''} <span style="display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;border:1px solid rgba(128,128,128,.5);background:${sw(l)}"></span> ${esc(l.label)} · ${l.rings.length} bidang · ${l.rings.reduce((s,q)=>s+q.length,0)} titik</label>`).join('')}</div>
 <div class="row"><a class="btn primary dlb" id="sxa" href="#">${DLI}Unduh XML</a></div>
-<p class="msg">Impor file XML ke Alight Motion, lalu periksa bentuk, warna, dan urutan layer. Garis (stroke), teks, gradasi, dan efek belum ikut diubah.</p></div>`;
+<p class="msg">Impor file XML ke Alight Motion, lalu periksa bentuk, warna, dan urutan layer. ${ras?'Hasil foto berupa bentuk berwarna datar bertumpuk, jadi gradasi halus tampak seperti poster.':'Garis (stroke), teks, gradasi, dan efek belum ikut diubah.'}</p></div>`;
     const cv=$(res,'#sxv'),sc=Math.min(1,900/Math.max(md.width,md.height));cv.width=Math.round(md.width*sc);cv.height=Math.round(md.height*sc);
     const dl=$(res,'#sxa'),info=$(res,'#sxn');
     const upd=()=>{const cx=cv.getContext('2d');cx.clearRect(0,0,cv.width,cv.height);SVGAM.draw(cx,md,sc);

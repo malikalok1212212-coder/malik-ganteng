@@ -178,7 +178,7 @@ test('bentuk cekung (bintang) berlubang bintang, nonzero dengan arah berlawanan'
 test('peringatan: stroke, teks, gradasi, clip-path, filter, CSS rumit', () => {
   const svg = `<svg viewBox="0 0 100 100"><style>div p{fill:red}</style><defs><linearGradient id="g"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient></defs>
    <rect width="10" height="10" fill="url(#g)"/><path d="M0 0L50 50" stroke="red" fill="none"/><text x="1" y="1">a</text><rect x="20" width="10" height="10" clip-path="url(#c)" filter="url(#f)"/></svg>`;
-  const r = conv(svg), w = r.warnings.join('|');
+  const r = conv(svg, { grad: 'rata' }), w = r.warnings.join('|');
   assert.match(w, /Garis \(stroke\)/); assert.match(w, /Teks/); assert.match(w, /Gradasi/); assert.match(w, /Clip-path/); assert.match(w, /Filter/); assert.match(w, /CSS/);
   assert.equal(r.model.layers[0].fill, '#ff808080');
 });
@@ -206,4 +206,113 @@ test('durasi dan FPS masuk ke scene', () => {
   const r = S.convert(S.SAMPLE, { duration: 5.5, fps: 60 });
   const xml = S.toXML(r.model);
   assert.match(xml, /totalTime="5500" fps="60"/); assert.match(xml, /endTime="5500" outTime="5500"/);
+});
+
+/* ---------- foto (raster) ke bidang ---------- */
+const mkImg = (w, h, fn) => { const d = new Uint8ClampedArray(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const c = fn(x, y), p = (y * w + x) * 4; d[p] = c[0]; d[p + 1] = c[1]; d[p + 2] = c[2]; d[p + 3] = c.length > 3 ? c[3] : 255; } return d; };
+const layerAt = (model, pt) => { let hit = null; for (const l of model.layers) if (l.rings.some((R) => S.pip(pt, R))) hit = l; return hit; };
+const hexRGB = (f) => [parseInt(f.slice(3, 5), 16), parseInt(f.slice(5, 7), 16), parseInt(f.slice(7, 9), 16)];
+const photoOpt = (w, h, o) => Object.assign({ canvas: 'custom', width: w, height: h, srcW: w, srcH: h, ink: false }, o);
+
+test('foto: tiap warna jadi layer bertumpuk dan warna tiap titik cocok dengan fotonya (termasuk lubang)', () => {
+  const W = 96, H = 96, BG = [30, 60, 200], RED = [220, 30, 30], WHT = [250, 250, 250], GRN = [30, 190, 60];
+  const src = (x, y) => { const d = Math.hypot(x - 36, y - 40); if (d < 12) return WHT; if (d < 26) return RED; if (x > 64 && x < 90 && y > 60 && y < 90) return GRN; return BG; };
+  const out = S.fromImage(mkImg(W, H, src), W, H, photoOpt(W, H, { colors: 4 }));
+  assert.equal(out.model.layers.length, 4);
+  assert.equal(out.model.width, 96);
+  let bad = 0, tot = 0;
+  for (let y = 2; y < H - 2; y += 2) for (let x = 2; x < W - 2; x += 2) {
+    const c = src(x, y);
+    if ([[3, 0], [-3, 0], [0, 3], [0, -3]].some(([dx, dy]) => src(x + dx, y + dy).join() !== c.join())) continue;
+    tot++;
+    const l = layerAt(out.model, [x + 0.5, y + 0.5]);
+    if (!l || hexRGB(l.fill).some((v, i) => Math.abs(v - c[i]) > 6)) bad++;
+  }
+  assert.ok(tot > 800); assert.equal(bad, 0);
+});
+
+test('foto: lapisan paling bawah menutup seluruh foto, XML-nya valid dan id berurutan', () => {
+  const W = 64, H = 48, src = (x) => (x < 32 ? [200, 40, 40] : [40, 40, 200]);
+  const out = S.fromImage(mkImg(W, H, src), W, H, photoOpt(W, H, { colors: 2 }));
+  const base = out.model.layers[0];
+  assert.equal(base.rings.length, 1); near(S.area(base.rings[0]), W * H, 1);
+  const xml = S.toXML(out.model);
+  [...xml.matchAll(/ id="(\d+)"/g)].forEach((m, i) => assert.equal(+m[1], 100000000 + i));
+  assert.ok(S.parseXML(xml).c.length === 1);
+});
+
+test('foto: piksel transparan tidak ditutup layer apa pun', () => {
+  const W = 80, H = 80, src = (x, y) => (Math.hypot(x - 40, y - 40) < 30 ? [220, 120, 20, 255] : [0, 0, 0, 0]);
+  const out = S.fromImage(mkImg(W, H, src), W, H, photoOpt(W, H, { colors: 3 }));
+  assert.equal(layerAt(out.model, [3, 3]), null); assert.equal(layerAt(out.model, [77, 77]), null);
+  const mid = layerAt(out.model, [40, 40]); assert.ok(mid);
+  assert.ok(hexRGB(mid.fill)[0] > 200);
+});
+
+test('foto: garis tipis diagonal 1 px ikut terbawa lewat layer garis', () => {
+  const W = 120, H = 120, src = (x, y) => (Math.abs(x - y) <= 0 || Math.abs(x - y - 1) <= 0 && x > 200 ? [40, 30, 30] : [235, 215, 200]);
+  const withInk = S.fromImage(mkImg(W, H, src), W, H, photoOpt(W, H, { colors: 4, ink: true }));
+  assert.ok(withInk.model.layers.some((l) => /^Garis/.test(l.label)));
+  let hit = 0, tot = 0;
+  for (let k = 12; k < W - 12; k++) { tot++; const l = layerAt(withInk.model, [k + 0.5, k + 0.5]); if (l && hexRGB(l.fill)[0] < 120) hit++; }
+  assert.ok(hit / tot > 0.9, 'garis tertangkap ' + hit + '/' + tot);
+});
+
+test('foto: versi async sama dengan versi sinkron dan melapor tiap tahap', async () => {
+  const W = 50, H = 50, src = (x, y) => (x + y < 50 ? [250, 200, 0] : [10, 120, 90]);
+  const img = mkImg(W, H, src), steps = [];
+  const a = S.fromImage(img, W, H, photoOpt(W, H, { colors: 2 }));
+  const b = await S.fromImageAsync(img, W, H, photoOpt(W, H, { colors: 2, onStep: (t) => steps.push(t) }));
+  assert.deepEqual(b.stats, a.stats); assert.ok(steps.length >= 4);
+  assert.equal(S.toXML(b.model), S.toXML(a.model));
+});
+
+test('foto: foto kosong atau data rusak ditolak dengan pesan jelas', () => {
+  assert.throws(() => S.fromImage(mkImg(10, 10, () => [0, 0, 0, 0]), 10, 10, photoOpt(10, 10)), /transparan/);
+  assert.throws(() => S.fromImage(new Uint8ClampedArray(8), 10, 10, photoOpt(10, 10)), /tidak valid/);
+});
+
+test('foto: ukuran kanvas otomatis dinaikkan ke 1080 untuk foto kecil dan hasil deterministik', () => {
+  const W = 60, H = 40, src = (x) => (x < 30 ? [255, 0, 0] : [0, 0, 255]);
+  const o = { srcW: W, srcH: H, ink: false, colors: 2 };
+  const a = S.fromImage(mkImg(W, H, src), W, H, o), b = S.fromImage(mkImg(W, H, src), W, H, o);
+  assert.equal(a.model.width, 1080); assert.equal(a.model.height, 720);
+  assert.equal(S.toXML(a.model), S.toXML(b.model));
+});
+
+/* ---------- gradasi asli (pita warna bertumpuk) ---------- */
+const topFill = (m, p) => { let c = null; for (const ly of m.layers) if (ly.rings.some((q) => S.pip(p, q))) c = ly.fill; return c; };
+const rgbOf = (f) => [1, 2, 3].map((i) => parseInt(f.slice(2 * i + 1, 2 * i + 3), 16));
+const closeTo = (f, exp, e) => { const h = rgbOf(f); exp.forEach((v, i) => assert.ok(Math.abs(h[i] - v) <= e, 'kanal ' + i + ': ' + h[i] + ' != ' + v)); };
+
+test('gradasi linear mengikuti warna SVG (bukan rata-rata)', () => {
+  const svg = '<svg viewBox="0 0 100 100"><defs><linearGradient id="g"><stop offset="0" stop-color="#ff0000"/><stop offset="1" stop-color="#0000ff"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/></svg>';
+  const r = conv(svg);
+  assert.ok(r.model.layers.length > 10);
+  for (const t of [0.05, 0.3, 0.5, 0.8, 0.95]) closeTo(topFill(r.model, [t * 100, 50]), [255 * (1 - t), 0, 255 * t], 6);
+  assert.ok(r.warnings.some((w) => /pita warna/.test(w)));
+});
+
+test('gradasi radial dan 3 stop userSpaceOnUse', () => {
+  const rad = conv('<svg viewBox="0 0 100 100"><defs><radialGradient id="g"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient></defs><rect width="100" height="100" fill="url(#g)"/></svg>');
+  for (const p of [[50, 50], [62, 50], [50, 25], [85, 50]]) { const t = Math.min(1, Math.hypot(p[0] - 50, p[1] - 50) / 50); closeTo(topFill(rad.model, p), [255 * (1 - t), 255 * (1 - t), 255 * (1 - t)], 8); }
+  const l3 = conv('<svg viewBox="0 0 100 100"><defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0"><stop offset="0" stop-color="#ff0"/><stop offset=".5" stop-color="#0f0"/><stop offset="1" stop-color="#00f"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/></svg>');
+  closeTo(topFill(l3.model, [50, 50]), [0, 255, 0], 6);
+  closeTo(topFill(l3.model, [25, 50]), [128, 255, 0], 8);
+});
+
+test('gradasi pada bentuk berlubang tidak menutup lubangnya', () => {
+  const r = conv('<svg viewBox="0 0 100 100"><defs><linearGradient id="g"><stop offset="0" stop-color="#f0f"/><stop offset="1" stop-color="#0ff"/></linearGradient></defs><path fill-rule="evenodd" fill="url(#g)" d="M0 0H100V100H0Z M30 30V70H70V30Z"/></svg>');
+  assert.equal(topFill(r.model, [50, 50]), null);
+  assert.ok(topFill(r.model, [10, 10]));
+});
+
+test('mode warna rata-rata dan gradasi radial transparan memakai satu warna', () => {
+  const g = '<svg viewBox="0 0 100 100"><defs><linearGradient id="g"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/></svg>';
+  const r = conv(g, { grad: 'rata' });
+  assert.equal(r.model.layers.length, 1);
+  assert.ok(r.warnings.some((w) => /rata-rata/.test(w)));
+  const t = conv('<svg viewBox="0 0 100 100"><defs><radialGradient id="g"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="100" height="100" fill="url(#g)"/></svg>');
+  assert.equal(t.model.layers.length, 1);
+  assert.ok(t.warnings.some((w) => /radial yang transparan/.test(w)));
 });

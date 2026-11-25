@@ -120,7 +120,8 @@ function parseColor(str, cur) {
   return null;
 }
 const hex2 = (v) => (v < 16 ? '0' : '') + v.toString(16);
-const argb = (c, op) => '#' + hex2(Math.max(0, Math.min(255, Math.round(c.a * op * 255)))) + hex2(c.r) + hex2(c.g) + hex2(c.b);
+const ch8 = (v) => Math.max(0, Math.min(255, Math.round(v)));
+const argb = (c, op) => '#' + hex2(ch8(c.a * op * 255)) + hex2(ch8(c.r)) + hex2(ch8(c.g)) + hex2(ch8(c.b));
 
 /* ---------- matriks [a,b,c,d,e,f] ---------- */
 const IDM = [1, 0, 0, 1, 0, 0];
@@ -634,6 +635,169 @@ function gradientColor(el, ids, rules, cur) {
   return { r: Math.round(r / n), g: Math.round(gg / n), b: Math.round(b / n), a: a / n };
 }
 
+
+/* ---------- gradasi asli: dipecah jadi pita warna bertumpuk ---------- */
+const GRAD_Q = { rendah: { lv: 12, max: 24 }, sedang: { lv: 5, max: 48 }, tinggi: { lv: 2.5, max: 96 } };
+const GRAD_BUDGET = 1500;   // batas total pita untuk satu file agar Alight Motion tidak berat
+function matInv(m) {
+  const d = m[0] * m[3] - m[1] * m[2];
+  if (!(Math.abs(d) > 1e-12)) return null;
+  return [m[3] / d, -m[1] / d, -m[2] / d, m[0] / d, (m[2] * m[5] - m[3] * m[4]) / d, (m[1] * m[4] - m[0] * m[5]) / d];
+}
+const mapPt = (m, x, y) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
+function gradAttr(el, ids, name) {
+  let n = el, g = 0;
+  while (n && g++ < 8) { if (n.a[name] !== undefined) return n.a[name]; const h = n.a.href; n = h && h[0] === '#' ? ids[h.slice(1)] : null; }
+  return undefined;
+}
+// membaca definisi gradasi apa adanya (stop, geometri, satuan, transform); null bila bukan gradasi sungguhan
+function gradSpec(el, ids, rules, cur, box) {
+  let node = el, stops = [], g = 0;
+  while (node && g++ < 8) {
+    stops = node.c.filter((c) => c.t === 'stop');
+    if (stops.length) break;
+    const h = node.a.href; node = h && h[0] === '#' ? ids[h.slice(1)] : null;
+  }
+  if (stops.length < 2) return null;
+  const S = []; let prev = 0;
+  for (const s of stops) {
+    const st = computeStyle(s, null, rules);
+    const col = parseColor(st['stop-color'] !== undefined ? st['stop-color'] : 'black', cur) || { r: 0, g: 0, b: 0, a: 1 };
+    let o = String(s.a.offset === undefined ? '0' : s.a.offset).trim();
+    o = /%$/.test(o) ? parseFloat(o) / 100 : parseFloat(o);
+    if (!(o === o)) o = 0;
+    o = Math.max(prev, Math.min(1, Math.max(0, o))); prev = o;
+    const so = st['stop-opacity'] !== undefined ? parseFloat(st['stop-opacity']) : 1;
+    S.push({ o, c: { r: col.r, g: col.g, b: col.b, a: col.a * (so === so ? Math.max(0, Math.min(1, so)) : 1) } });
+  }
+  const radial = el.t === 'radialGradient';
+  const units = gradAttr(el, ids, 'gradientUnits') === 'userSpaceOnUse' ? 'user' : 'bbox';
+  const W = box ? box.w : 1, H = box ? box.h : 1, D = Math.sqrt((W * W + H * H) / 2);
+  const val = (name, def, ax) => {
+    let v = gradAttr(el, ids, name); if (v === undefined) v = def;
+    v = String(v).trim();
+    const f = parseFloat(v); if (!(f === f)) return parseFloat(def) / (/%$/.test(def) ? 100 : 1) * (units === 'user' && /%$/.test(def) ? (ax === 'x' ? W : ax === 'y' ? H : D) : 1);
+    if (/%$/.test(v)) return f / 100 * (units === 'user' ? (ax === 'x' ? W : ax === 'y' ? H : D) : 1);
+    return f;
+  };
+  const sp = gradAttr(el, ids, 'spreadMethod');
+  const spec = { radial, units, stops: S, spread: sp === 'reflect' || sp === 'repeat' ? sp : 'pad', gt: parseTransform(gradAttr(el, ids, 'gradientTransform')) };
+  if (radial) {
+    spec.cx = val('cx', '50%', 'x'); spec.cy = val('cy', '50%', 'y'); spec.r = val('r', '50%', 'd');
+    const fx = gradAttr(el, ids, 'fx'), fy = gradAttr(el, ids, 'fy');
+    spec.focal = (fx !== undefined && Math.abs(val('fx', '50%', 'x') - spec.cx) > 1e-6) || (fy !== undefined && Math.abs(val('fy', '50%', 'y') - spec.cy) > 1e-6);
+    if (!(spec.r > 0)) return { flat: S[S.length - 1].c };
+  } else {
+    spec.x1 = val('x1', '0%', 'x'); spec.y1 = val('y1', '0%', 'y'); spec.x2 = val('x2', '100%', 'x'); spec.y2 = val('y2', '0%', 'y');
+    if (Math.abs(spec.x2 - spec.x1) < 1e-12 && Math.abs(spec.y2 - spec.y1) < 1e-12) return { flat: S[S.length - 1].c };
+  }
+  return spec;
+}
+function colorAt(spec, t) {
+  if (spec.spread === 'repeat') t = t - Math.floor(t);
+  else if (spec.spread === 'reflect') { const m = ((t % 2) + 2) % 2; t = m > 1 ? 2 - m : m; }
+  const S = spec.stops;
+  if (t <= S[0].o) return S[0].c;
+  for (let i = 1; i < S.length; i++) {
+    if (t <= S[i].o) {
+      const a = S[i - 1], b = S[i], w = b.o - a.o > 1e-12 ? (t - a.o) / (b.o - a.o) : 1;
+      return { r: a.c.r + (b.c.r - a.c.r) * w, g: a.c.g + (b.c.g - a.c.g) * w, b: a.c.b + (b.c.b - a.c.b) * w, a: a.c.a + (b.c.a - a.c.a) * w };
+    }
+  }
+  return S[S.length - 1].c;
+}
+// gradasi -> fungsi t(titik kanvas), plus ukuran satu satuan t dalam piksel
+function gradField(spec, lm, bb) {
+  let U = IDM;
+  if (spec.units === 'bbox') U = [bb.w, 0, 0, bb.h, bb.x, bb.y];
+  const G = mul(lm, mul(U, spec.gt)), Gi = matInv(G);
+  if (!Gi) return null;
+  const det = Math.abs(G[0] * G[3] - G[1] * G[2]);
+  if (!spec.radial) {
+    const dx = spec.x2 - spec.x1, dy = spec.y2 - spec.y1, L2 = dx * dx + dy * dy;
+    const A = (Gi[0] * dx + Gi[1] * dy) / L2, B = (Gi[2] * dx + Gi[3] * dy) / L2, C = ((Gi[4] - spec.x1) * dx + (Gi[5] - spec.y1) * dy) / L2;
+    const n = Math.hypot(A, B);
+    if (!(n > 0)) return null;
+    return { G, Gi, t: (p) => A * p[0] + B * p[1] + C, unitPx: 1 / n };
+  }
+  return { G, Gi, t: (p) => { const q = mapPt(Gi, p[0], p[1]); return Math.hypot(q[0] - spec.cx, q[1] - spec.cy) / spec.r; }, unitPx: spec.r * Math.sqrt(det) };
+}
+// rentang t yang benar-benar dipakai bentuk (jangan membuang pita untuk bagian yang tidak terlihat)
+function tRange(spec, fld, rings) {
+  let lo = Infinity, hi = -Infinity;
+  if (!spec.radial) {
+    for (const R of rings) for (const p of R) { const t = fld.t(p); if (t < lo) lo = t; if (t > hi) hi = t; }
+    return [lo, hi];
+  }
+  let inside = false, md = Infinity;
+  for (const R of rings) {
+    const Q = R.map((p) => { const q = mapPt(fld.Gi, p[0], p[1]); return [q[0] - spec.cx, q[1] - spec.cy]; });
+    for (const q of Q) { const t = Math.hypot(q[0], q[1]) / spec.r; if (t > hi) hi = t; }
+    if (pip([0, 0], Q)) inside = true;
+    for (let i = 0; i < Q.length; i++) {
+      const a = Q[i], b = Q[(i + 1) % Q.length], dx = b[0] - a[0], dy = b[1] - a[1], l = dx * dx + dy * dy;
+      let u = l ? -(a[0] * dx + a[1] * dy) / l : 0; u = Math.max(0, Math.min(1, u));
+      const d = Math.hypot(a[0] + u * dx, a[1] + u * dy) / spec.r; if (d < md) md = d;
+    }
+  }
+  return [inside ? 0 : md, hi];
+}
+// membagi rentang t jadi pita-pita; makin besar perubahan warna, makin banyak pita
+function planBands(spec, t0, t1, unitPx, q, mult) {
+  const lv = q.lv * mult, mx = Math.max(2, Math.floor(q.max / mult));
+  const cuts = new Set([t0, t1]), add = (v) => { if (v > t0 + 1e-9 && v < t1 - 1e-9) cuts.add(v); };
+  if (spec.spread === 'pad') { add(0); add(1); spec.stops.forEach((s) => add(s.o)); }
+  else {
+    if (t1 - t0 > 80) return null;
+    for (let i = Math.floor(t0); i <= Math.ceil(t1); i++) { add(i); spec.stops.forEach((s) => { add(i + s.o); add(i + 1 - s.o); }); }
+  }
+  const pts = Array.from(cuts).sort((a, b) => a - b), out = [];
+  for (let i = 0; i + 1 < pts.length; i++) {
+    const a = pts[i], b = pts[i + 1], e = (b - a) * 0.001, ca = colorAt(spec, a + e), cb = colorAt(spec, b - e);
+    const dl = Math.max(Math.abs(ca.r - cb.r), Math.abs(ca.g - cb.g), Math.abs(ca.b - cb.b), Math.abs(ca.a - cb.a) * 255);
+    let n = Math.max(1, Math.min(mx, Math.ceil(dl / lv), Math.ceil((b - a) * unitPx / 1.5)));
+    for (let k = 0; k < n; k++) {
+      const x = a + (b - a) * k / n, y = a + (b - a) * (k + 1) / n, c = colorAt(spec, (x + y) / 2);
+      const last = out[out.length - 1];
+      if (last && Math.round(last.c.r) === Math.round(c.r) && Math.round(last.c.g) === Math.round(c.g) && Math.round(last.c.b) === Math.round(c.b) && Math.abs(last.c.a - c.a) < 0.004) last.b = y;
+      else out.push({ a: x, b: y, c });
+    }
+  }
+  return out;
+}
+// Sutherland-Hodgman: simpan bagian ring yang s(p) >= 0
+function clipSide(ring, s) {
+  const out = [], n = ring.length;
+  for (let i = 0; i < n; i++) {
+    const a = ring[i], b = ring[(i + 1) % n], da = s(a), db = s(b);
+    if (da >= 0) out.push(a);
+    if ((da >= 0) !== (db >= 0)) { const t = da / (da - db); out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]); }
+  }
+  return out;
+}
+function keepRings(list) {
+  const fin = [];
+  for (const R of list) { if (R.length < 3) continue; const C = cleanRing(R); if (C.length >= 3 && Math.abs(area(C)) > 1e-3) fin.push(C); }
+  return fin;
+}
+const clipRings = (rings, s) => keepRings(rings.map((R) => clipSide(R, s)));
+function discPoly(spec, fld, rho) {
+  const Rpx = rho * spec.r * Math.sqrt(Math.abs(fld.G[0] * fld.G[3] - fld.G[1] * fld.G[2]));
+  const n = Rpx < 0.4 ? 16 : Math.max(16, Math.min(180, Math.ceil(Math.PI / Math.acos(Math.max(-1, 1 - 0.25 / Rpx)))));
+  const P = [];
+  for (let i = 0; i < n; i++) { const th = 2 * Math.PI * i / n; P.push(mapPt(fld.G, spec.cx + rho * spec.r * Math.cos(th), spec.cy + rho * spec.r * Math.sin(th))); }
+  return P;
+}
+function clipDisc(rings, poly) {
+  const sg = area(poly) >= 0 ? 1 : -1;
+  let cur = rings;
+  for (let i = 0; i < poly.length && cur.length; i++) {
+    const a = poly[i], b = poly[(i + 1) % poly.length], ex = b[0] - a[0], ey = b[1] - a[1];
+    cur = keepRings(cur.map((R) => clipSide(R, (p) => sg * (ex * (p[1] - a[1]) - ey * (p[0] - a[0])))));
+  }
+  return cur;
+}
+
 function collect(doc, base, warn) {
   const { svg, ids, rules } = doc, leaves = [];
   const cnt = {};
@@ -644,7 +808,15 @@ function collect(doc, base, warn) {
     const u = /^url\(\s*['"]?#([^)'"]+)['"]?\s*\)\s*(.*)$/i.exec(raw);
     if (u) {
       const t = ids2[u[1]];
-      if (t && (t.t === 'linearGradient' || t.t === 'radialGradient')) { const c = gradientColor(t, ids2, rules, st.color); if (c) { note('grad'); return c; } }
+      if (t && (t.t === 'linearGradient' || t.t === 'radialGradient')) {
+        const c = gradientColor(t, ids2, rules, st.color);
+        if (c) {
+          const sp = gradSpec(t, ids2, rules, st.color, intrinsic(svg));
+          if (sp && sp.flat) return sp.flat;
+          note('grad'); if (sp && sp.focal) note('fokus');
+          return sp ? Object.assign({}, c, { gs: sp }) : c;
+        }
+      }
       note('pola');
       if (u[2]) { const f = parseColor(u[2], st.color); if (f) return f; }
       return null;
@@ -718,13 +890,14 @@ function collect(doc, base, warn) {
     const fo = st['fill-opacity'] !== undefined && parseFloat(st['fill-opacity']) === parseFloat(st['fill-opacity']) ? Math.max(0, Math.min(1, parseFloat(st['fill-opacity']))) : 1;
     const col = paint(st, ids);
     if (!col || col.a * op * fo <= 0) return;
-    leaves.push({ tag: t, subs, m: M, col, alpha: op * fo, rule: st['fill-rule'] === 'evenodd' ? 'evenodd' : 'nonzero' });
+    leaves.push({ tag: t, subs, m: M, col, grad: col.gs || null, alpha: op * fo, rule: st['fill-rule'] === 'evenodd' ? 'evenodd' : 'nonzero' });
   }
   walk(svg, { m: base, st: null, op: 1, depth: 0 });
   if (cnt.stroke) warn('Garis (stroke) pada ' + cnt.stroke + ' bentuk tidak ikut diubah. Ubah ke outline dulu di editor desain (Stroke to Path / Outline Stroke), lalu konversi lagi.');
   if (cnt.teks) warn('Teks tidak didukung (' + cnt.teks + ' elemen dilewati). Ubah teks menjadi outline di editor desain sebelum mengonversi.');
   if (cnt.gambar) warn('Gambar bitmap di dalam SVG tidak didukung (' + cnt.gambar + ' dilewati).');
-  if (cnt.grad) warn('Gradasi diganti satu warna rata-rata pada ' + cnt.grad + ' bentuk.');
+  if (cnt.fokus) warn('Gradasi radial dengan titik fokus (fx/fy) dibuat dari titik tengahnya saja, bentuk fokusnya bisa sedikit berbeda.');
+  leaves.grads = cnt.grad || 0;
   if (cnt.pola) warn('Pola (pattern) tidak didukung, ' + cnt.pola + ' bentuk dilewati atau memakai warna cadangan.');
   if (cnt.clip) warn('Clip-path atau mask pada ' + cnt.clip + ' elemen diabaikan, bentuknya tidak terpotong.');
   if (cnt.filter) warn('Filter (blur, bayangan, dan sejenisnya) pada ' + cnt.filter + ' elemen diabaikan.');
@@ -753,7 +926,7 @@ function canvasSize(box, o) {
 
 /* ---------- konversi utama ---------- */
 function convert(text, opt) {
-  const o = Object.assign({ title: 'svg', duration: 3, fps: 30, canvas: 'auto', width: 1080, height: 1080, holes: 'pecah', tol: 0.05 }, opt || {});
+  const o = Object.assign({ title: 'svg', duration: 3, fps: 30, canvas: 'auto', width: 1080, height: 1080, holes: 'pecah', tol: 0.05, grad: 'sedang' }, opt || {});
   const warns = [], warn = (m) => { if (warns.indexOf(m) < 0) warns.push(m); };
   const doc = readSVG(text, warn);
   let box = intrinsic(doc.svg);
@@ -772,7 +945,8 @@ function convert(text, opt) {
   const base = [sc, 0, 0, sc, (cs.w - box.w * sc) / 2 - box.x * sc, (cs.h - box.h * sc) / 2 - box.y * sc];
   const leaves = collect(doc, base, warn);
 
-  const layers = [];
+  const layers = [], gradLeaves = [];
+  const gmode = o.grad === 'rata' || o.grad === 'rendah' || o.grad === 'tinggi' ? o.grad : 'sedang', GQ = GRAD_Q[gmode] || GRAD_Q.sedang;
   const tally = { crossed: 0, self: 0, fallback: 0, many: 0 };
   let objek = 0;
   for (const lf of leaves) {
@@ -799,8 +973,62 @@ function convert(text, opt) {
     for (const R of pieces) { const C = cleanRing(R); if (C.length >= 3 && Math.abs(area(C)) > 1e-3) fin.push(C); }
     if (!fin.length) continue;
     objek++;
-    layers.push({ n: objek, label: 'Objek ' + objek, fill: argb(lf.col, lf.alpha), rings: fin, on: true });
+    lf.fin = fin; lf.n = objek;
+    if (lf.grad && gmode !== 'rata') {
+      let bb = null;
+      if (lf.grad.units === 'bbox') {
+        let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+        for (const s of lf.subs) for (const pt of flattenSub(s, IDM, 0.5)) { x0 = Math.min(x0, pt[0]); y0 = Math.min(y0, pt[1]); x1 = Math.max(x1, pt[0]); y1 = Math.max(y1, pt[1]); }
+        if (x1 > x0 && y1 > y0) bb = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+      } else bb = { x: 0, y: 0, w: 1, h: 1 };
+      const fld = bb && gradField(lf.grad, lf.m, bb);
+      if (fld) { const rg = tRange(lf.grad, fld, fin); if (rg[1] > rg[0]) { lf.fld = fld; lf.rg = rg; gradLeaves.push(lf); } }
+    }
+    layers.push({ n: objek, label: 'Objek ' + objek, fill: argb(lf.col, lf.alpha), rings: fin, on: true, lf });
   }
+  // gradasi: rencanakan pita warna, hemat bila totalnya terlalu banyak
+  let gradLayers = 0, gradShapes = 0, gradFlat = 0, gradTrans = 0;
+  if (gradLeaves.length) {
+    let mult = 1, plans;
+    for (let it = 0; it < 12; it++) {
+      let tot = 0;
+      plans = gradLeaves.map((lf) => { const pl = planBands(lf.grad, lf.rg[0], lf.rg[1], lf.fld.unitPx, GQ, mult); if (pl) tot += pl.length; return pl; });
+      if (tot <= GRAD_BUDGET) break;
+      mult *= Math.max(1.25, tot / GRAD_BUDGET);
+    }
+    if (mult > 1) warn('Gradasi banyak sekali, jadi pitanya dikurangi agar hasilnya tidak berat. Pilih bagian gradasi lain atau kurangi bentuk bila ingin lebih halus.');
+    gradLeaves.forEach((lf, gi) => {
+      const bands = plans[gi], sp = lf.grad, fld = lf.fld, fin = lf.fin;
+      const ly = layers.find((l) => l.lf === lf);
+      if (!bands || bands.length < 2) {
+        if (bands && bands.length === 1) { ly.fill = argb(bands[0].c, lf.alpha); }
+        gradFlat++; return;
+      }
+      const trans = bands.some((b) => b.c.a * lf.alpha < 0.999);
+      if (trans && sp.radial) { gradTrans++; return; }
+      const out = [];
+      const add = (b, rings, k) => { if (rings.length) out.push({ n: lf.n, label: 'Objek ' + lf.n + ' \u00b7 gradasi ' + (k + 1), fill: argb(b.c, lf.alpha), rings, on: true }); };
+      const N = bands.length;
+      if (!sp.radial) {
+        for (let k = 0; k < N; k++) {
+          let rs = fin;
+          if (k > 0) rs = clipRings(rs, (p) => fld.t(p) - bands[k].a);
+          if (trans && k < N - 1) rs = clipRings(rs, (p) => bands[k].b - fld.t(p));
+          add(bands[k], rs, k);
+        }
+      } else {
+        for (let j = N - 1; j >= 0; j--) add(bands[j], j === N - 1 ? fin : clipDisc(fin, discPoly(sp, fld, bands[j].b)), j);
+      }
+      if (!out.length) { gradFlat++; return; }
+      const at = layers.indexOf(ly);
+      layers.splice(at, 1, ...out);
+      gradShapes++; gradLayers += out.length;
+    });
+  }
+  layers.forEach((l) => { delete l.lf; });
+  if (gradShapes) warn('Gradasi pada ' + gradShapes + ' bentuk dibuat dari ' + gradLayers + ' lapisan pita warna bertumpuk, jadi warnanya mengikuti SVG. Bila terasa berat di Alight Motion, pilih gradasi Ringan.');
+  if (gradTrans) warn('Gradasi radial yang transparan pada ' + gradTrans + ' bentuk belum bisa dipecah tanpa tumpang tindih, jadi dipakai satu warna rata-rata. Gradasi linear transparan tetap dibuat per pita.');
+  if (gmode === 'rata' && leaves.grads) warn('Gradasi diganti satu warna rata-rata pada ' + leaves.grads + ' bentuk (mode Warna rata-rata).');
   if (!layers.length) throw new Error('SVG ini tidak punya bentuk berisi warna yang bisa dikonversi. Pastikan bentuknya punya fill (bukan hanya garis atau teks).');
   if (tally.crossed) warn('Ada ' + tally.crossed + ' bentuk dengan bagian yang saling menimpa. Tiap bagian dijadikan bidang sendiri, hasilnya bisa berbeda dari SVG bila fill-rule evenodd atau arah putarnya berlawanan.');
   if (tally.self) warn('Ada ' + tally.self + ' bentuk yang garisnya menyilang diri sendiri. Periksa hasilnya di preview.');
@@ -879,7 +1107,414 @@ function draw(ctx, model, scale) {
 
 const SAMPLE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#12161c"/><path fill="#4fd69a" fill-rule="evenodd" d="M256 64a192 192 0 1 0 0 384a192 192 0 1 0 0-384zM256 144a112 112 0 1 1 0 224a112 112 0 1 1 0-224z"/><path fill="#ffc83d" d="M256 190l20 42 46 6-34 32 9 46-41-23-41 23 9-46-34-32 46-6z"/></svg>';
 
-const API = { convert, toXML, draw, parseXML, parsePath, parseColor, parseTransform, flattenSub, buildPWH, splitSlabs, bridgeAll, clipHalf, findCrossings, area, pip, cleanRing, SAMPLE, num };
+/* ---------- foto (raster) ke bidang berwarna: kuantisasi warna + kontur bertumpuk ---------- */
+/* Cara kerja: foto dihaluskan (bilateral), warnanya dikelompokkan jadi K warna (k-means di ruang Lab),
+   bercak kecil dirapikan, lalu tiap warna dibuat satu layer BERTUMPUK: layer ke-i berisi semua piksel
+   berwarna ke-i dan warna yang lebih kecil di atasnya. Karena bertumpuk, tidak ada celah antar warna
+   dan lubang jauh lebih sedikit. Kontur diambil dengan marching squares (halus sampai sub-piksel). */
+const PHOTO_DETAIL = {
+  rendah: { side: 512, tol: 0.8, speck: 15000, sigma: 26 },
+  sedang: { side: 768, tol: 0.55, speck: 40000, sigma: 20 },
+  tinggi: { side: 1024, tol: 0.4, speck: 90000, sigma: 14 }
+};
+
+function srgbToLab(r, g, b) {
+  const f = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const R = f(r), G = f(g), B = f(b);
+  const X = (0.4124564 * R + 0.3575761 * G + 0.1804375 * B) / 0.95047, Y = 0.2126729 * R + 0.7151522 * G + 0.072175 * B, Z = (0.0193339 * R + 0.119192 * G + 0.9503041 * B) / 1.08883;
+  const h = (t) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116);
+  const fx = h(X), fy = h(Y), fz = h(Z);
+  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
+}
+
+/* penghalus yang menjaga tepi: bercak JPEG hilang, garis tegas tetap */
+function bilateral(src, w, h, sigmaR) {
+  const out = new Uint8ClampedArray(src);
+  const R = 2, sp = [];
+  for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) sp.push([dx, dy, Math.exp(-(dx * dx + dy * dy) / (2 * 1.6 * 1.6))]);
+  const lut = new Float32Array((3 * 255 * 255 >> 3) + 2), k = 1 / (2 * sigmaR * sigmaR);
+  for (let i = 0; i < lut.length; i++) lut[i] = Math.exp(-(i * 8) * k);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const p = (y * w + x) * 4;
+    if (src[p + 3] < 128) continue;
+    const r0 = src[p], g0 = src[p + 1], b0 = src[p + 2];
+    let sr = 0, sg = 0, sb = 0, sw = 0;
+    for (let t = 0; t < sp.length; t++) {
+      const xx = x + sp[t][0], yy = y + sp[t][1];
+      if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
+      const q = (yy * w + xx) * 4;
+      if (src[q + 3] < 128) continue;
+      const dr = src[q] - r0, dg = src[q + 1] - g0, db = src[q + 2] - b0;
+      const wt = sp[t][2] * lut[(dr * dr + dg * dg + db * db) >> 3];
+      sr += src[q] * wt; sg += src[q + 1] * wt; sb += src[q + 2] * wt; sw += wt;
+    }
+    out[p] = sr / sw; out[p + 1] = sg / sw; out[p + 2] = sb / sw;
+  }
+  return out;
+}
+
+/* piksel di tepi tegas (garis tipis, kontur) diberi bobot lebih supaya warna garisnya ikut jadi layer sendiri */
+const EDGE_T = 40;
+function edgeWeights(px, w, h, boost) {
+  const N = w * h, Y = new Float32Array(N), out = new Float32Array(N).fill(1);
+  for (let i = 0; i < N; i++) Y[i] = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+  if (!(boost > 0)) return out;
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const p = y * w + x, c = Y[p];
+    const g = Math.max(Math.abs(c - Y[p - 1]), Math.abs(c - Y[p + 1]), Math.abs(c - Y[p - w]), Math.abs(c - Y[p + w]));
+    out[p] = 1 + boost * Math.min(1, g / (EDGE_T));
+  }
+  return out;
+}
+
+/* k-means berbobot pada histogram warna (6 bit per kanal), awal deterministik (titik terjauh) */
+function quantize(px, N, K, wgt) {
+  const SH = 2, hist = new Float64Array(1 << 18), map = new Int32Array(1 << 18).fill(-1);
+  const sr = new Float64Array(1 << 18), sg = new Float64Array(1 << 18), sb = new Float64Array(1 << 18);
+  const binOf = new Int32Array(N).fill(-1);
+  for (let i = 0; i < N; i++) {
+    if (px[i * 4 + 3] < 128) continue;
+    const r = px[i * 4], g = px[i * 4 + 1], b = px[i * 4 + 2], bi = ((r >> SH) << 12) | ((g >> SH) << 6) | (b >> SH);
+    const wt = wgt ? wgt[i] : 1;
+    binOf[i] = bi; hist[bi] += wt; sr[bi] += r * wt; sg[bi] += g * wt; sb[bi] += b * wt;
+  }
+  const ids = []; for (let bi = 0; bi < hist.length; bi++) if (hist[bi] > 0) { map[bi] = ids.length; ids.push(bi); }
+  const nb = ids.length;
+  if (!nb) return null;
+  const L = new Float64Array(nb), A = new Float64Array(nb), B = new Float64Array(nb), Wt = new Float64Array(nb);
+  for (let j = 0; j < nb; j++) { const bi = ids[j], c = hist[bi], lab = srgbToLab(sr[bi] / c, sg[bi] / c, sb[bi] / c); L[j] = lab[0]; A[j] = lab[1]; B[j] = lab[2]; Wt[j] = c; }
+  const k = Math.min(K, nb), cen = [];
+  let first = 0; for (let j = 1; j < nb; j++) if (Wt[j] > Wt[first]) first = j;
+  cen.push([L[first], A[first], B[first]]);
+  const md = new Float64Array(nb).fill(Infinity);
+  while (cen.length < k) {
+    const c = cen[cen.length - 1];
+    let best = -1, bs = 0;
+    for (let j = 0; j < nb; j++) {
+      const d = (L[j] - c[0]) ** 2 + (A[j] - c[1]) ** 2 + (B[j] - c[2]) ** 2;
+      if (d < md[j]) md[j] = d;
+      const s = md[j] * Math.pow(Wt[j], 0.6);
+      if (s > bs) { bs = s; best = j; }
+    }
+    if (best < 0) break;
+    cen.push([L[best], A[best], B[best]]);
+  }
+  const lab = new Int16Array(nb);
+  for (let it = 0; it < 14; it++) {
+    let moved = 0;
+    for (let j = 0; j < nb; j++) {
+      let bd = Infinity, bc = 0;
+      for (let c = 0; c < cen.length; c++) { const d = (L[j] - cen[c][0]) ** 2 + (A[j] - cen[c][1]) ** 2 + (B[j] - cen[c][2]) ** 2; if (d < bd) { bd = d; bc = c; } }
+      if (lab[j] !== bc || it === 0) { if (lab[j] !== bc) moved++; lab[j] = bc; }
+    }
+    const s = cen.map(() => [0, 0, 0, 0]);
+    for (let j = 0; j < nb; j++) { const q = s[lab[j]]; q[0] += L[j] * Wt[j]; q[1] += A[j] * Wt[j]; q[2] += B[j] * Wt[j]; q[3] += Wt[j]; }
+    s.forEach((q, c) => { if (q[3] > 0) cen[c] = [q[0] / q[3], q[1] / q[3], q[2] / q[3]]; });
+    if (!moved && it > 0) break;
+  }
+  const out = new Int16Array(N).fill(-1);
+  for (let i = 0; i < N; i++) if (binOf[i] >= 0) out[i] = lab[map[binOf[i]]];
+  return { lab: out, count: cen.length };
+}
+
+/* bercak yang lebih kecil dari minArea dilebur ke tetangga yang paling banyak bersentuhan.
+   Konektivitas 8 arah dan bercak memanjang (garis tipis) dipertahankan supaya garis diagonal tidak hilang. */
+function cleanSpecks(lab, w, h, minArea) {
+  const N = w * h, DX = [-1, 1, 0, 0, -1, 1, -1, 1], DY = [0, 0, -1, 1, -1, -1, 1, 1];
+  for (let pass = 0; pass < 3; pass++) {
+    const comp = new Int32Array(N).fill(-1), order = new Int32Array(N), start = [], size = [], ext = [];
+    let top = 0, nc = 0;
+    for (let s = 0; s < N; s++) {
+      if (comp[s] >= 0 || lab[s] < 0) continue;
+      const Lb = lab[s], c = nc++, st = top;
+      let x0 = w, x1 = 0, y0 = h, y1 = 0;
+      comp[s] = c; order[top++] = s;
+      for (let q = st; q < top; q++) {
+        const p = order[q], x = p % w, y = (p - x) / w;
+        if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+        for (let k = 0; k < 8; k++) {
+          const xx = x + DX[k], yy = y + DY[k];
+          if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
+          const n = yy * w + xx;
+          if (comp[n] < 0 && lab[n] === Lb) { comp[n] = c; order[top++] = n; }
+        }
+      }
+      start.push(st); size.push(top - st); ext.push(Math.max(x1 - x0, y1 - y0) + 1);
+    }
+    const small = []; for (let c = 0; c < nc; c++) if (size[c] < minArea && ext[c] < 10) small.push(c);
+    if (!small.length) return;
+    small.sort((a, b) => size[a] - size[b]);
+    const cnt = new Map(); let changed = 0;
+    for (const c of small) {
+      cnt.clear();
+      const st = start[c], en = st + size[c], own = lab[order[st]];
+      for (let q = st; q < en; q++) {
+        const p = order[q], x = p % w, y = (p - x) / w;
+        for (let k = 0; k < 4; k++) {
+          const xx = x + DX[k], yy = y + DY[k];
+          if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
+          const l = lab[yy * w + xx];
+          if (l >= 0 && l !== own) cnt.set(l, (cnt.get(l) || 0) + 1);
+        }
+      }
+      let best = -1, bn = 0; for (const [l, n] of cnt) if (n > bn) { bn = n; best = l; }
+      if (best < 0) continue;
+      for (let q = st; q < en; q++) lab[order[q]] = best;
+      changed++;
+    }
+    if (!changed) return;
+  }
+}
+
+/* marching squares: topeng 0/1 -> daftar kontur tertutup (piksel kerja). Kontur luar berputar positif, lubang negatif. */
+function contours(mask, w, h, S, lv) {
+  const NX = w + 2, NY = h + 2, f = S.f, nxt = S.nxt, T = lv || 0.5, SAD = T * 0.7;
+  f.fill(0);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const p = y * w + x, c = mask[p];
+    const l = x > 0 ? mask[p - 1] : c, r = x < w - 1 ? mask[p + 1] : c, u = y > 0 ? mask[p - w] : c, d = y < h - 1 ? mask[p + w] : c;
+    f[(y + 1) * NX + x + 1] = 0.7 * c + 0.075 * (l + r + u + d);
+  }
+  const starts = [];
+  const link = (a, b) => { nxt[a] = b; starts.push(a); };
+  for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
+    const a = f[j * NX + i], b = f[j * NX + i + 1], c = f[(j + 1) * NX + i + 1], d = f[(j + 1) * NX + i];
+    const cs = (a >= T ? 8 : 0) | (b >= T ? 4 : 0) | (c >= T ? 2 : 0) | (d >= T ? 1 : 0);
+    if (cs === 0 || cs === 15) continue;
+    const eT = 2 * (j * NX + i), eB = 2 * ((j + 1) * NX + i), eL = 2 * (j * NX + i) + 1, eR = 2 * (j * NX + i + 1) + 1;
+    switch (cs) {
+      case 1: link(eL, eB); break;
+      case 2: link(eB, eR); break;
+      case 3: link(eL, eR); break;
+      case 4: link(eR, eT); break;
+      case 5: if ((a + b + c + d) / 4 >= SAD) { link(eL, eT); link(eR, eB); } else { link(eR, eT); link(eL, eB); } break;
+      case 6: link(eB, eT); break;
+      case 7: link(eL, eT); break;
+      case 8: link(eT, eL); break;
+      case 9: link(eT, eB); break;
+      case 10: if ((a + b + c + d) / 4 >= SAD) { link(eT, eR); link(eB, eL); } else { link(eT, eL); link(eB, eR); } break;
+      case 11: link(eT, eR); break;
+      case 12: link(eR, eL); break;
+      case 13: link(eR, eB); break;
+      case 14: link(eB, eL); break;
+    }
+  }
+  const pt = (e) => {
+    const id = e >> 1, i = id % NX, j = (id / NX) | 0;
+    if (!(e & 1)) { const fa = f[id], fb = f[id + 1]; return [i + (T - fa) / (fb - fa) - 0.5, j - 0.5]; }
+    const fa = f[id], fb = f[id + NX]; return [i - 0.5, j + (T - fa) / (fb - fa) - 0.5];
+  };
+  const loops = [];
+  for (const s of starts) {
+    if (nxt[s] < 0) continue;
+    const pts = []; let e = s, g = 0;
+    do { pts.push(pt(e)); const n = nxt[e]; nxt[e] = -1; e = n; } while (e !== s && e >= 0 && ++g < 4e6);
+    if (pts.length >= 3 && e === s) loops.push(pts);
+  }
+  for (const s of starts) nxt[s] = -1;
+  return loops;
+}
+
+function smoothRing(P, it) {
+  for (let k = 0; k < it; k++) {
+    const n = P.length, Q = new Array(n);
+    for (let i = 0; i < n; i++) { const a = P[(i + n - 1) % n], b = P[i], c = P[(i + 1) % n]; Q[i] = [0.25 * a[0] + 0.5 * b[0] + 0.25 * c[0], 0.25 * a[1] + 0.5 * b[1] + 0.25 * c[1]]; }
+    P = Q;
+  }
+  return P;
+}
+function simplifyRing(P, tol) {
+  const n = P.length;
+  if (n < 6) return P;
+  let far = 1, fd = -1;
+  for (let i = 1; i < n; i++) { const d = (P[i][0] - P[0][0]) ** 2 + (P[i][1] - P[0][1]) ** 2; if (d > fd) { fd = d; far = i; } }
+  const keep = new Uint8Array(n); keep[0] = 1; keep[far] = 1;
+  const st = [[0, far], [far, n]], t2 = tol * tol;
+  while (st.length) {
+    const [a, b] = st.pop(), A = P[a], B = P[b % n], dx = B[0] - A[0], dy = B[1] - A[1], l2 = dx * dx + dy * dy;
+    let md = -1, mi = -1;
+    for (let i = a + 1; i < b; i++) {
+      const p = P[i]; let d;
+      if (l2 === 0) d = (p[0] - A[0]) ** 2 + (p[1] - A[1]) ** 2;
+      else { const t = Math.max(0, Math.min(1, ((p[0] - A[0]) * dx + (p[1] - A[1]) * dy) / l2)), qx = A[0] + t * dx - p[0], qy = A[1] + t * dy - p[1]; d = qx * qx + qy * qy; }
+      if (d > md) { md = d; mi = i; }
+    }
+    if (md > t2 && mi > 0) { keep[mi] = 1; st.push([a, mi], [mi, b]); }
+  }
+  const out = []; for (let i = 0; i < n; i++) if (keep[i]) out.push(P[i]);
+  return out;
+}
+
+/* garis tipis: piksel yang jadi lembah gelap sempit (lebar 1 sampai 2 px) dibanding sekitarnya.
+   Garis 1 px hasil antialias sering terputus-putus kalau hanya mengandalkan pengelompokan warna. */
+function inkPixels(px, w, h, T) {
+  const N = w * h, Y = new Float32Array(N), out = new Uint8Array(N);
+  for (let i = 0; i < N; i++) Y[i] = px[i * 4 + 3] < 128 ? 255 : 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+  const D = [[1, 0], [0, 1], [1, 1], [1, -1]];
+  for (let y = 2; y < h - 2; y++) for (let x = 2; x < w - 2; x++) {
+    const p = y * w + x, v = Y[p];
+    if (v > 205 || px[p * 4 + 3] < 128) continue;
+    for (let k = 0; k < 4; k++) {
+      const dx = D[k][0], dy = D[k][1], o1 = dy * w + dx;
+      if (v > Y[p - o1] || v > Y[p + o1]) continue;
+      if (Y[p - 2 * o1] - v > T && Y[p + 2 * o1] - v > T) { out[p] = 1; break; }
+    }
+  }
+  return out;
+}
+/* tutup celah 1 sampai 2 px pada topeng (dilasi lalu erosi 3x3) supaya garis tidak putus-putus */
+function closeMask(m, w, h) {
+  const N = w * h, d = new Uint8Array(N), e = new Uint8Array(N);
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const p = y * w + x;
+    d[p] = (m[p] | m[p - 1] | m[p + 1] | m[p - w] | m[p + w] | m[p - w - 1] | m[p - w + 1] | m[p + w - 1] | m[p + w + 1]) ? 1 : 0;
+  }
+  for (let y = 2; y < h - 2; y++) for (let x = 2; x < w - 2; x++) {
+    const p = y * w + x;
+    e[p] = (d[p] & d[p - 1] & d[p + 1] & d[p - w] & d[p + w] & d[p - w - 1] & d[p - w + 1] & d[p + w - 1] & d[p + w + 1]) ? 1 : 0;
+  }
+  for (let p = 0; p < N; p++) m[p] = m[p] | e[p];
+}
+/* buang gugus kecil pada topeng 0/1 (konektivitas 8 arah) */
+function dropSmall(mask, w, h, minSize) {
+  const N = w * h, seen = new Uint8Array(N), q = new Int32Array(N);
+  for (let s = 0; s < N; s++) {
+    if (!mask[s] || seen[s]) continue;
+    let a = 0, b = 0; q[b++] = s; seen[s] = 1;
+    while (a < b) {
+      const p = q[a++], x = p % w, y = (p - x) / w;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const xx = x + dx, yy = y + dy;
+        if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
+        const n = yy * w + xx;
+        if (mask[n] && !seen[n]) { seen[n] = 1; q[b++] = n; }
+      }
+    }
+    if (b < minSize) for (let t = 0; t < b; t++) mask[q[t]] = 0;
+  }
+}
+
+function* photoGen(rgba, w, h, opt) {
+  const o = Object.assign({ title: 'foto', duration: 3, fps: 30, canvas: 'auto', width: 1080, height: 1080, colors: 24, detail: 'sedang', holes: 'jembatan', edge: 5, ink: true, srcW: w, srcH: h }, opt || {});
+  const D = PHOTO_DETAIL[o.detail] || PHOTO_DETAIL.sedang, N = w * h;
+  const K = Math.max(2, Math.min(128, Math.round(o.colors) || 24));
+  if (!(w > 1 && h > 1) || rgba.length < N * 4) throw new Error('Data foto tidak valid.');
+  const warns = [], warn = (m) => { if (warns.indexOf(m) < 0) warns.push(m); };
+  let clear = 0; for (let i = 0; i < N; i++) if (rgba[i * 4 + 3] < 128) clear++;
+  if (clear === N) throw new Error('Foto ini kosong atau transparan penuh.');
+
+  yield 'Menghaluskan foto...';
+  const px = bilateral(rgba, w, h, D.sigma);
+  yield 'Mengelompokkan warna...';
+  const q = quantize(px, N, K, edgeWeights(px, w, h, o.edge)), lab = q.lab;
+  yield 'Merapikan bercak kecil...';
+  cleanSpecks(lab, w, h, Math.max(3, Math.round(N / D.speck)));
+
+  const acc = new Map();
+  for (let i = 0; i < N; i++) { const l = lab[i]; if (l < 0) continue; let a = acc.get(l); if (!a) acc.set(l, a = [0, 0, 0, 0]); a[0] += rgba[i * 4]; a[1] += rgba[i * 4 + 1]; a[2] += rgba[i * 4 + 2]; a[3]++; }
+  const cl = [...acc.entries()].map(([id, a]) => ({ id, n: a[3], r: Math.round(a[0] / a[3]), g: Math.round(a[1] / a[3]), b: Math.round(a[2] / a[3]) })).sort((p, r) => r.n - p.n);
+  const M = cl.length, ord = new Int16Array(q.count + 1).fill(-1);
+  cl.forEach((c, i) => { ord[c.id] = i; });
+  const oi = new Int16Array(N); for (let i = 0; i < N; i++) oi[i] = lab[i] < 0 ? -1 : ord[lab[i]];
+
+  const box = { x: 0, y: 0, w: o.srcW, h: o.srcH };
+  let cs;
+  if (o.canvas === 'custom' || /^\d+x\d+$/.test(String(o.canvas))) cs = canvasSize(box, o);
+  else { const big = Math.max(box.w, box.h), s = big < 1080 ? 1080 / big : big > 2160 ? 2160 / big : 1; cs = { w: Math.max(16, Math.round(box.w * s)), h: Math.max(16, Math.round(box.h * s)), fit: false }; }
+  const sc = cs.fit ? Math.min(cs.w / box.w, cs.h / box.h) : cs.w / box.w;
+  const ox = (cs.w - box.w * sc) / 2, oy = (cs.h - box.h * sc) / 2, kx = sc * o.srcW / w, ky = sc * o.srcH / h;
+  const tr = (R) => R.map((p) => [p[0] * kx + ox, p[1] * ky + oy]);
+
+  const S = { f: new Float32Array((w + 2) * (h + 2)), nxt: new Int32Array(2 * (w + 2) * (h + 2)).fill(-1) };
+  const mask = new Uint8Array(N), layers = [], tally = { fallback: 0, lost: 0 };
+  const ringsOf = (lv, tol, sm) => {
+    const outers = [], holes = [];
+    for (const lp of contours(mask, w, h, S, lv)) {
+      const R = simplifyRing(smoothRing(lp, lp.length >= 12 ? (sm === undefined ? 2 : sm) : lp.length >= 6 ? 1 : 0), tol || D.tol), a = area(R);
+      if (R.length < 3 || Math.abs(a) < 0.8) continue;
+      (a > 0 ? outers : holes).push({ R, a, bb: bboxOf(R), own: [] });
+    }
+    outers.sort((p, r) => p.a - r.a);
+    for (const hl of holes) {
+      let par = null;
+      for (const ot of outers) { if (ot.bb[0] <= hl.bb[0] && ot.bb[1] <= hl.bb[1] && ot.bb[2] >= hl.bb[2] && ot.bb[3] >= hl.bb[3] && pip(hl.R[0], ot.R)) { par = ot; break; } }
+      if (par) par.own.push(hl.R); else tally.lost++;
+    }
+    const rings = [];
+    for (const ot of outers) {
+      if (!ot.own.length) { rings.push(ot.R); continue; }
+      if (o.holes === 'pecah') {
+        try { for (const r of splitSlabs({ outer: ot.R, holes: ot.own }, 0)) rings.push(r); continue; } catch (e) { /* lanjut ke jembatan */ }
+      }
+      const b = bridgeAll(ot.R, ot.own);
+      if (b.bad.length) {
+        try { for (const r of splitSlabs({ outer: ot.R, holes: ot.own }, 0)) rings.push(r); tally.fallback++; continue; } catch (e) { /* biarkan */ }
+        tally.lost += b.bad.length;
+      }
+      rings.push(b.ring);
+    }
+    return rings.map(tr);
+  };
+  const hex = (r, g, b) => '#ff' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
+  const push = (label, fill, rings) => {
+    const fin = [];
+    for (const R of rings) { const C = cleanRing(R); if (C.length >= 3 && Math.abs(area(C)) > 1e-3) fin.push(C); }
+    if (fin.length) layers.push({ n: layers.length + 1, label, fill, rings: fin, on: true });
+  };
+  for (let i = 0; i < M; i++) {
+    yield 'Membentuk layer ' + (i + 1) + ' dari ' + M + '...';
+    const c = cl[i];
+    if (i === 0 && !clear) { push('Warna 1', hex(c.r, c.g, c.b), [tr([[0, 0], [w, 0], [w, h], [0, h]])]); continue; }
+    for (let p = 0; p < N; p++) mask[p] = oi[p] >= i ? 1 : 0;
+    push('Warna ' + (layers.length + 1), hex(c.r, c.g, c.b), ringsOf());
+  }
+  let inkN = 0;
+  if (o.ink) {
+    yield 'Mencari garis tipis...';
+    const flag = inkPixels(rgba, w, h, 24);
+    closeMask(flag, w, h);
+    dropSmall(flag, w, h, 6);
+    const tmp = new Uint8ClampedArray(N * 4); let nf = 0;
+    for (let p = 0; p < N; p++) if (flag[p]) { tmp[p * 4] = rgba[p * 4]; tmp[p * 4 + 1] = rgba[p * 4 + 1]; tmp[p * 4 + 2] = rgba[p * 4 + 2]; tmp[p * 4 + 3] = 255; nf++; }
+    if (nf >= 12) {
+      const qi = quantize(tmp, N, 3), sum = new Map();
+      const lum = (p) => rgba[p * 4] + rgba[p * 4 + 1] + rgba[p * 4 + 2], ls = new Map();
+      for (let p = 0; p < N; p++) { const l = qi.lab[p]; if (l < 0) continue; let a = ls.get(l); if (!a) ls.set(l, a = [0, 0]); a[0] += lum(p); a[1]++; }
+      for (let p = 0; p < N; p++) { const l = qi.lab[p]; if (l < 0) continue; const m = ls.get(l); if (lum(p) > m[0] / m[1]) continue; let a = sum.get(l); if (!a) sum.set(l, a = [0, 0, 0, 0]); a[0] += rgba[p * 4]; a[1] += rgba[p * 4 + 1]; a[2] += rgba[p * 4 + 2]; a[3]++; }
+      const inks = [...sum.entries()].map(([id, a]) => ({ id, r: Math.round(a[0] / a[3]), g: Math.round(a[1] / a[3]), b: Math.round(a[2] / a[3]), n: a[3] })).sort((p, r) => (p.r + p.g + p.b) - (r.r + r.g + r.b));
+      for (const ink of inks) {
+        if (ink.n < 12) continue;
+        for (let p = 0; p < N; p++) mask[p] = qi.lab[p] === ink.id ? 1 : 0;
+        const before = layers.length;
+        push('Garis ' + (++inkN), hex(ink.r, ink.g, ink.b), ringsOf(0.3, 0.3, 2));
+        if (layers.length === before) inkN--;
+      }
+    }
+  }
+  if (!layers.length) throw new Error('Tidak ada bentuk yang bisa dibuat dari foto ini.');
+  if (tally.fallback) warn(tally.fallback + ' bentuk berlubang dikerjakan dengan cara lain karena penyambungan lubang gagal.');
+  if (tally.lost) warn('Ada ' + tally.lost + ' lubang kecil yang tidak bisa dibuat. Warna di area itu bisa sedikit berbeda dari foto.');
+  const total = layers.reduce((s, l) => s + l.rings.length, 0);
+  let pts = 0; layers.forEach((l) => l.rings.forEach((r) => { pts += r.length; }));
+  if (pts > 150000) warn('Hasilnya ' + pts + ' titik, XML cukup besar dan bisa berat di Alight Motion. Kurangi jumlah warna atau turunkan detail.');
+  const model = { title: o.title, width: cs.w, height: cs.h, totalTime: Math.max(100, Math.round(o.duration * 1000)), fps: Math.max(1, Math.round(o.fps)), layers };
+  return { model, warnings: warns, stats: { layers: layers.length, pieces: total, points: pts, width: cs.w, height: cs.h } };
+}
+function fromImage(rgba, w, h, opt) {
+  const g = photoGen(rgba, w, h, opt);
+  for (;;) { const r = g.next(); if (r.done) return r.value; }
+}
+async function fromImageAsync(rgba, w, h, opt) {
+  const g = photoGen(rgba, w, h, opt), step = (opt && opt.onStep) || null;
+  for (;;) {
+    const r = g.next();
+    if (r.done) return r.value;
+    if (step) step(r.value);
+    await new Promise((k) => setTimeout(k, 0));
+  }
+}
+
+const API = { convert, toXML, draw, parseXML, parsePath, parseColor, parseTransform, flattenSub, buildPWH, splitSlabs, bridgeAll, clipHalf, findCrossings, area, pip, cleanRing, SAMPLE, num, fromImage, fromImageAsync, PHOTO_DETAIL };
 if (typeof module !== 'undefined' && module.exports) module.exports = API;
 G.SVGAM = API;
 })(typeof window !== 'undefined' ? window : globalThis);
