@@ -1129,9 +1129,9 @@ const SAMPLE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><r
    berwarna ke-i dan warna yang lebih kecil di atasnya. Karena bertumpuk, tidak ada celah antar warna
    dan lubang jauh lebih sedikit. Kontur diambil dengan marching squares (halus sampai sub-piksel). */
 const PHOTO_DETAIL = {
-  rendah: { side: 512, tol: 0.8, speck: 15000, sigma: 26 },
-  sedang: { side: 768, tol: 0.55, speck: 40000, sigma: 20 },
-  tinggi: { side: 1024, tol: 0.4, speck: 90000, sigma: 14 }
+  rendah: { side: 512, tol: 0.8, sm: 3.2, speck: 15000, sigma: 26 },
+  sedang: { side: 768, tol: 0.45, sm: 2.6, speck: 40000, sigma: 20 },
+  tinggi: { side: 1024, tol: 0.35, sm: 2.0, speck: 90000, sigma: 14 }
 };
 
 function srgbToLab(r, g, b) {
@@ -1339,6 +1339,48 @@ function smoothRing(P, it) {
   }
   return P;
 }
+/* merapikan kontur: sampel ulang dengan jarak seragam (titik tidak menumpuk), haluskan dengan gaussian sepanjang kontur
+   (gerigi piksel hilang, lengkung jadi mulus), lalu sederhanakan dengan toleransi kecil. */
+function resampleRing(P, step) {
+  const n = P.length; let L = 0; const cum = new Float64Array(n + 1);
+  for (let i = 0; i < n; i++) { const a = P[i], b = P[(i + 1) % n]; L += Math.hypot(b[0] - a[0], b[1] - a[1]); cum[i + 1] = L; }
+  const m = Math.max(8, Math.round(L / step)), out = new Array(m); let j = 0;
+  for (let k = 0; k < m; k++) {
+    const d = (k / m) * L;
+    while (j < n - 1 && cum[j + 1] < d) j++;
+    const a = P[j], b = P[(j + 1) % n], seg = cum[j + 1] - cum[j], t = seg > 0 ? (d - cum[j]) / seg : 0;
+    out[k] = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+  }
+  return out;
+}
+function gaussRing(P, sigma) {
+  const n = P.length, rad = Math.min(Math.ceil(sigma * 3), (n >> 1) - 1);
+  if (rad < 1) return P;
+  const wk = []; let sw = 0;
+  for (let k = -rad; k <= rad; k++) { const v = Math.exp(-(k * k) / (2 * sigma * sigma)); wk.push(v); sw += v; }
+  const Q = new Array(n);
+  for (let i = 0; i < n; i++) {
+    let x = 0, y = 0;
+    for (let k = -rad; k <= rad; k++) { const q = P[(i + k + n * 4) % n], v = wk[k + rad]; x += q[0] * v; y += q[1] * v; }
+    Q[i] = [x / sw, y / sw];
+  }
+  return Q;
+}
+function refineRing(P, tol, sigma) {
+  if (P.length < 12) return simplifyRing(P, tol);
+  const A = area(P), step = 1;
+  let R = resampleRing(P, step);
+  R = gaussRing(R, sigma);
+  R = gaussRing(R, sigma * 0.6);
+  // jaga luas: gaussian mengecilkan bentuk cembung sedikit, skala balik terhadap titik berat
+  const A2 = area(R);
+  if (A2 !== 0 && A / A2 > 0 && Math.abs(A) > 40) {
+    let cx = 0, cy = 0; for (const p of R) { cx += p[0]; cy += p[1]; } cx /= R.length; cy /= R.length;
+    const k = Math.min(1.02, Math.sqrt(A / A2));
+    if (isFinite(k) && k > 1) R = R.map((p) => [cx + (p[0] - cx) * k, cy + (p[1] - cy) * k]);
+  }
+  return simplifyRing(R, tol);
+}
 function simplifyRing(P, tol) {
   const n = P.length;
   if (n < 6) return P;
@@ -1492,7 +1534,7 @@ function* photoGen(rgba, w, h, opt) {
   const ringsOf = (lv, tol, sm) => {
     const outers = [], holes = [];
     for (const lp of contours(mask, w, h, S, lv)) {
-      const R = simplifyRing(smoothRing(lp, lp.length >= 12 ? (sm === undefined ? 2 : sm) : lp.length >= 6 ? 1 : 0), tol || D.tol), a = area(R);
+      const R = refineRing(lp, tol || D.tol, sm === undefined ? D.sm : sm), a = area(R);
       if (R.length < 3 || Math.abs(a) < 0.8) continue;
       (a > 0 ? outers : holes).push({ R, a, bb: bboxOf(R), own: [] });
     }
