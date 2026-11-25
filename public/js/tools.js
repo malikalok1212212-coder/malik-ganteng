@@ -950,6 +950,7 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
 <div class="chips"><button type="button" id="sxs">Coba file contoh</button></div>
 <div id="sxo" hidden><label for="sxk">Jumlah warna</label><select id="sxk"><option>8</option><option>12</option><option>16</option><option selected>24</option><option>32</option><option>48</option><option>64</option><option>96</option><option>128</option></select>
 <label for="sxq">Detail</label><select id="sxq"><option value="rendah">Ringan (cepat, file kecil)</option><option value="sedang" selected>Sedang</option><option value="tinggi">Tinggi (lambat, file besar)</option></select>
+<label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="sxb" checked> Ilustrasi bersih (warna rata, tanpa pinggiran piksel)</label>
 <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="sxg" checked> Pertahankan garis tipis (outline)</label>
 <p class="msg">Foto dipecah jadi bentuk berwarna yang bertumpuk. Makin banyak warna dan detail, makin mirip aslinya tapi makin berat di Alight Motion.</p></div>
 <label for="sxu">Durasi (detik)</label><input id="sxu" type="number" inputmode="decimal" min="0.5" max="600" step="0.5" value="3">
@@ -980,7 +981,7 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
      try{im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error('Foto tidak bisa dibuka. Coba foto lain.'));i.src=u})}finally{setTimeout(()=>URL.revokeObjectURL(u),2000)}
      const iw=im.naturalWidth,ih=im.naturalHeight,k=Math.min(1,SVGAM.PHOTO_DETAIL[det].side/Math.max(iw,ih)),W=Math.max(2,Math.round(iw*k)),H=Math.max(2,Math.round(ih*k)),c=document.createElement('canvas');
      c.width=W;c.height=H;const cx=c.getContext('2d',{willReadFrequently:true});cx.imageSmoothingQuality='high';cx.drawImage(im,0,0,W,H);
-     out=await SVGAM.fromImageAsync(cx.getImageData(0,0,W,H).data,W,H,Object.assign(opt,{colors:parseInt($(r,'#sxk').value,10),detail:det,ink:$(r,'#sxg').checked,srcW:iw,srcH:ih,onStep:t=>{m.textContent=t}}))}
+     out=await SVGAM.fromImageAsync(cx.getImageData(0,0,W,H).data,W,H,Object.assign(opt,{colors:parseInt($(r,'#sxk').value,10),detail:det,bersih:$(r,'#sxb').checked,ink:$(r,'#sxg').checked&&!$(r,'#sxb').checked,srcW:iw,srcH:ih,onStep:t=>{m.textContent=t}}))}
     else out=SVGAM.convert(x?await x.text():SVGAM.SAMPLE,opt);
     const md=out.model,st=out.stats;
     const sw=l=>{const a=parseInt(l.fill.slice(1,3),16)/255;return 'rgba('+parseInt(l.fill.slice(3,5),16)+','+parseInt(l.fill.slice(5,7),16)+','+parseInt(l.fill.slice(7,9),16)+','+a+')'};

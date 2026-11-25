@@ -316,3 +316,13 @@ test('mode warna rata-rata dan gradasi radial transparan memakai satu warna', ()
   assert.equal(t.model.layers.length, 1);
   assert.ok(t.warnings.some((w) => /radial yang transparan/.test(w)));
 });
+
+test('foto mode bersih: warna peralihan di tepi tidak jadi layer sendiri', () => {
+  const w = 80, h = 80, d = new Uint8ClampedArray(w * h * 4);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = (y * w + x) * 4, t = Math.max(0, Math.min(1, (x - 39) / 2));   // tepi antialias hitam -> kuning selebar 2 px
+    d[i] = 16 + t * 225; d[i + 1] = 15 + t * 162; d[i + 2] = 10 + t * 14; d[i + 3] = 255;
+  }
+  const r = S.fromImage(d, w, h, { colors: 8, canvas: 'custom', width: 80, height: 80, bersih: true, ink: false });
+  assert.equal(r.model.layers.length, 2);
+});

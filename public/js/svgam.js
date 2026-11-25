@@ -1394,8 +1394,53 @@ function dropSmall(mask, w, h, minSize) {
   }
 }
 
+
+/* ilustrasi bersih: warna peralihan (antialias) di tepi bentuk dibuang. Klaster yang tipis (hampir semua pikselnya di batas)
+   dan warnanya terletak di antara dua tetangga utamanya dilebur ke tetangga terdekat, jadi tidak ada pinggiran warna aneh. */
+function dropBlend(lab, rgba, w, h) {
+  const N = w * h, DX = [-1, 1, 0, 0], DY = [0, 0, -1, 1];
+  const st = new Map();
+  for (let i = 0; i < N; i++) {
+    const l = lab[i]; if (l < 0) continue;
+    let a = st.get(l); if (!a) st.set(l, a = { n: 0, r: 0, g: 0, b: 0, bd: 0, nb: new Map() });
+    a.n++; a.r += rgba[i * 4]; a.g += rgba[i * 4 + 1]; a.b += rgba[i * 4 + 2];
+    const x = i % w, y = (i - x) / w; let edge = false;
+    for (let k = 0; k < 4; k++) {
+      const xx = x + DX[k], yy = y + DY[k]; if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
+      const m = lab[yy * w + xx]; if (m >= 0 && m !== l) { edge = true; a.nb.set(m, (a.nb.get(m) || 0) + 1); }
+    }
+    if (edge) a.bd++;
+  }
+  const cen = (a) => [a.r / a.n, a.g / a.n, a.b / a.n], drop = new Set();
+  for (const [l, a] of st) {
+    if (a.n > N * 0.03 || a.bd < a.n * 0.7 || a.nb.size < 2) continue;
+    const top = [...a.nb.entries()].sort((p, q) => q[1] - p[1]).slice(0, 2), A = cen(st.get(top[0][0])), B = cen(st.get(top[1][0])), C = cen(a);
+    const ab = [B[0] - A[0], B[1] - A[1], B[2] - A[2]], l2 = ab[0] * ab[0] + ab[1] * ab[1] + ab[2] * ab[2];
+    if (l2 < 900) continue;
+    const t = ((C[0] - A[0]) * ab[0] + (C[1] - A[1]) * ab[1] + (C[2] - A[2]) * ab[2]) / l2;
+    if (t < 0.06 || t > 0.94) continue;
+    const d = Math.hypot(C[0] - (A[0] + t * ab[0]), C[1] - (A[1] + t * ab[1]), C[2] - (A[2] + t * ab[2]));
+    if (d < 45) drop.add(l);
+  }
+  if (!drop.size) return 0;
+  // isi ulang piksel yang dibuang dari tetangga yang tersisa (perambatan dari batas, jadi tepinya jatuh di tengah)
+  const q = new Int32Array(N); let a0 = 0, b0 = 0;
+  for (let i = 0; i < N; i++) if (lab[i] >= 0 && !drop.has(lab[i])) q[b0++] = i;
+  const out = Int16Array.from(lab);
+  for (let i = 0; i < N; i++) if (drop.has(lab[i])) out[i] = -2;
+  while (a0 < b0) {
+    const i = q[a0++], x = i % w, y = (i - x) / w;
+    for (let k = 0; k < 4; k++) {
+      const xx = x + DX[k], yy = y + DY[k]; if (xx < 0 || yy < 0 || xx >= w || yy >= h) continue;
+      const n = yy * w + xx; if (out[n] === -2) { out[n] = out[i]; q[b0++] = n; }
+    }
+  }
+  for (let i = 0; i < N; i++) lab[i] = out[i] === -2 ? -1 : out[i];
+  return drop.size;
+}
+
 function* photoGen(rgba, w, h, opt) {
-  const o = Object.assign({ title: 'foto', duration: 3, fps: 30, canvas: 'auto', width: 1080, height: 1080, colors: 24, detail: 'sedang', holes: 'jembatan', edge: 5, ink: true, srcW: w, srcH: h }, opt || {});
+  const o = Object.assign({ title: 'foto', duration: 3, fps: 30, canvas: 'auto', width: 1080, height: 1080, colors: 24, detail: 'sedang', holes: 'jembatan', edge: 5, ink: true, bersih: false, srcW: w, srcH: h }, opt || {});
   const D = PHOTO_DETAIL[o.detail] || PHOTO_DETAIL.sedang, N = w * h;
   const K = Math.max(2, Math.min(128, Math.round(o.colors) || 24));
   if (!(w > 1 && h > 1) || rgba.length < N * 4) throw new Error('Data foto tidak valid.');
@@ -1406,7 +1451,8 @@ function* photoGen(rgba, w, h, opt) {
   yield 'Menghaluskan foto...';
   const px = bilateral(rgba, w, h, D.sigma);
   yield 'Mengelompokkan warna...';
-  const q = quantize(px, N, K, edgeWeights(px, w, h, o.edge)), lab = q.lab;
+  const q = quantize(px, N, K, edgeWeights(px, w, h, o.bersih ? 0 : o.edge)), lab = q.lab;
+  if (o.bersih) for (let it = 0; it < 3; it++) if (!dropBlend(lab, rgba, w, h)) break;
   yield 'Merapikan bercak kecil...';
   cleanSpecks(lab, w, h, Math.max(3, Math.round(N / D.speck)));
 
