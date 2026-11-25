@@ -945,6 +945,46 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
     res.innerHTML=`<div class="out"><div class="cmp"><figure><img src="${prev}" alt="Hasil kompres"><figcaption>${ow} x ${oh} px · ${fs(out.size)} (${diff})</figcaption></figure></div><div class="row"><a class="btn primary dlb" href="${prev}" download="${esc(base)}-kompres.${ext}">${DLI}Unduh ${ext.toUpperCase()}</a></div></div>`;
     m.textContent='Selesai. Ukuran awal '+fs(x.size)+', sekarang '+fs(out.size)+'.'}
    catch(e){bad('Foto tidak bisa diproses. Coba foto lain.')}}}},
+{id:'svg-ke-xml',name:'SVG ke XML Alight Motion',desc:'Ubah file SVG jadi layer vektor XML untuk Alight Motion: atur durasi, FPS, ukuran kanvas, dan cara menangani bentuk berlubang, lalu periksa layernya sebelum mengunduh. Diproses di perangkatmu, tidak diunggah ke server.',
+ html:()=>`<label class="drop" id="sxd" for="sxf">${svg(IC.up)}<span><b>Pilih file SVG</b><span id="sxi">SVG, maksimal 10 MB. Ubah teks menjadi outline dulu.</span></span></label><input id="sxf" type="file" accept=".svg,image/svg+xml">
+<div class="chips"><button type="button" id="sxs">Coba file contoh</button></div>
+<label for="sxu">Durasi (detik)</label><input id="sxu" type="number" inputmode="decimal" min="0.5" max="600" step="0.5" value="3">
+<label for="sxp">FPS</label><select id="sxp"><option>24</option><option>25</option><option selected>30</option><option>50</option><option>60</option></select>
+<label for="sxc">Ukuran kanvas</label><select id="sxc"><option value="auto">Otomatis (ikuti SVG)</option><option value="1080x1080">1080 x 1080 (1:1)</option><option value="1080x1920">1080 x 1920 (9:16)</option><option value="1920x1080">1920 x 1080 (16:9)</option><option value="custom">Kustom</option></select>
+<div id="sxw" hidden><label for="sxx">Lebar (px)</label><input id="sxx" type="number" inputmode="numeric" min="16" max="8192" value="1080"><label for="sxy">Tinggi (px)</label><input id="sxy" type="number" inputmode="numeric" min="16" max="8192" value="1080"></div>
+<label for="sxh">Bentuk berlubang</label><select id="sxh"><option value="pecah">Pecah per bidang (seperti file contoh)</option><option value="jembatan">Jembatan (1 layer per bentuk)</option></select>
+<div class="row"><button class="primary" id="go">Buat XML</button></div><p class="msg" id="m" role="status"></p><div id="res"></div>`,
+ init:r=>{const f=$(r,'#sxf'),dz=$(r,'#sxd'),fi=$(r,'#sxi'),h0=fi.textContent,m=$(r,'#m'),res=$(r,'#res'),cs=$(r,'#sxc');let url='',useSample=false;
+  cs.onchange=()=>{$(r,'#sxw').hidden=cs.value!=='custom'};
+  f.onchange=()=>{const x=f.files[0];useSample=false;dz.classList.toggle('on',!!x);fi.textContent=x?x.name+' · '+(x.size>=1048576?mb(x.size):Math.round(x.size/1024)+' KB'):h0};
+  $(r,'#sxs').onclick=()=>{f.value='';useSample=true;dz.classList.add('on');fi.textContent='contoh.svg (file contoh)';m.className='msg';m.textContent='File contoh dipilih. Ketuk Buat XML.'};
+  $(r,'#go').onclick=async()=>{const x=f.files[0],bad=t=>{m.className='msg bad';m.textContent=t};
+   if(!x&&!useSample)return bad('Pilih file SVG dulu.');
+   if(x&&!/\.svg$/i.test(x.name)&&x.type!=='image/svg+xml')return bad('Formatnya harus SVG (.svg).');
+   if(x&&x.size>10*1048576)return bad('Ukuran SVG maksimal 10 MB.');
+   const dur=parseFloat($(r,'#sxu').value);if(!(dur>=0.5&&dur<=600))return bad('Durasi antara 0,5 dan 600 detik.');
+   let cw=0,ch=0;if(cs.value==='custom'){cw=parseInt($(r,'#sxx').value,10);ch=parseInt($(r,'#sxy').value,10);if(!(cw>=16&&cw<=8192&&ch>=16&&ch<=8192))return bad('Lebar dan tinggi kanvas antara 16 dan 8192 px.')}
+   m.className='msg';m.textContent='Memproses...';res.innerHTML='';
+   try{await loadMod('svgam');await new Promise(k=>setTimeout(k,30));
+    const text=x?await x.text():SVGAM.SAMPLE,base=(x?x.name.replace(/\.[^.]+$/,''):'contoh').replace(/[^\w\- ]+/g,'-').trim().slice(0,40)||'svg';
+    const out=SVGAM.convert(text,{title:base,duration:dur,fps:parseInt($(r,'#sxp').value,10),canvas:cs.value,width:cw,height:ch,holes:$(r,'#sxh').value}),md=out.model,st=out.stats;
+    const sw=l=>{const a=parseInt(l.fill.slice(1,3),16)/255;return 'rgba('+parseInt(l.fill.slice(3,5),16)+','+parseInt(l.fill.slice(5,7),16)+','+parseInt(l.fill.slice(7,9),16)+','+a+')'};
+    res.innerHTML=`<div class="out"><div class="chk" style="border-radius:12px;overflow:hidden"><canvas id="sxv" style="display:block;width:100%;height:auto" aria-label="Pratinjau hasil"></canvas></div>
+<p class="msg" id="sxn"></p>${out.warnings.length?'<ul>'+out.warnings.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul>':''}
+<p><b>Layer (${md.layers.length})</b> · centang yang mau dibawa ke Alight Motion</p>
+<div id="sxl">${md.layers.map((l,i)=>`<label><input type="checkbox" data-i="${i}" checked> <span style="display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;border:1px solid rgba(128,128,128,.5);background:${sw(l)}"></span> ${esc(l.label)} · ${l.rings.length} bidang · ${l.rings.reduce((s,q)=>s+q.length,0)} titik</label>`).join('')}</div>
+<div class="row"><a class="btn primary dlb" id="sxa" href="#">${DLI}Unduh XML</a></div>
+<p class="msg">Impor file XML ke Alight Motion, lalu periksa bentuk, warna, dan urutan layer. Garis (stroke), teks, gradasi, dan efek belum ikut diubah.</p></div>`;
+    const cv=$(res,'#sxv'),sc=Math.min(1,900/Math.max(md.width,md.height));cv.width=Math.round(md.width*sc);cv.height=Math.round(md.height*sc);
+    const dl=$(res,'#sxa'),info=$(res,'#sxn');
+    const upd=()=>{const cx=cv.getContext('2d');cx.clearRect(0,0,cv.width,cv.height);SVGAM.draw(cx,md,sc);
+     const on=md.layers.filter(l=>l.on!==false);if(url)URL.revokeObjectURL(url);
+     if(!on.length){dl.removeAttribute('href');dl.classList.add('off');info.textContent='Pilih minimal satu layer.';return}
+     const xml=SVGAM.toXML(md);url=URL.createObjectURL(new Blob([xml],{type:'application/xml'}));dl.href=url;dl.download=base+'.xml';dl.classList.remove('off');
+     info.textContent=md.width+' x '+md.height+' px · '+Math.round(md.totalTime/10)/100+' detik · '+md.fps+' FPS · '+on.length+' layer · '+on.reduce((s,l)=>s+l.rings.length,0)+' bidang · XML '+Math.max(1,Math.round(xml.length/1024))+' KB'};
+    $(res,'#sxl').onchange=e=>{const i=e.target.dataset&&e.target.dataset.i;if(i===undefined)return;md.layers[+i].on=e.target.checked;upd()};
+    upd();m.textContent='Selesai. '+st.layers+' layer, '+st.pieces+' bidang.'}
+   catch(e){bad(e&&e.message&&!/^Modul /.test(e.message)?e.message:'SVG tidak bisa diproses. Coba file lain atau muat ulang halaman.')}}}},
 {id:'kalkulator-cicilan',name:'Kalkulator Cicilan',desc:'Hitung cicilan bulanan KPR, kendaraan, atau pinjaman dengan bunga anuitas atau flat, lengkap dengan tabel angsuran. Diproses di browser.',
  html:()=>`<label for="cp">Harga atau jumlah pinjaman (Rp)</label><input id="cp" inputmode="numeric" autocomplete="off" placeholder="500.000.000">
 <label for="cd">Uang muka: <span id="cdv">20</span>%</label><input id="cd" type="range" min="0" max="90" step="5" value="20">

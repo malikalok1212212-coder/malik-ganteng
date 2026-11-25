@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!--
+Created by SML Verter
+Based on observed Alight Motion XML export structure
+-->
+<scene title="malik-logo" width="1536" height="1536" exportWidth="1536" exportHeight="1536" precompose="dynamicResolution" bgcolor="#00000000" totalTime="3000" fps="30" modifiedTime="0" amver="1028425" ffver="106" am="com.alightcreative.motion/5.0.273.1028425" amplatform="android" retime="freeze" retimeAdaptFPS="false">
+  <embedScene id="100000000" label="malik-logo" startTime="0" endTime="3000" outTime="3000" fillType="intrinsic" mediaFillMode="fill">
+    <transform>
+      <location value="768,768,0" />
+    </transform>
+    <fillColor value="#ff000000" />
+    <scene title="" width="1536" height="1536" exportWidth="1536" exportHeight="1536" precompose="dynamicResolution" bgcolor="#00000000" totalTime="3000" fps="30" modifiedTime="0" amver="1028425" ffver="106" am="com.alightcreative.motion/5.0.273.1028425" amplatform="android" retime="off" retimeAdaptFPS="false">
+      <shape id="100000001" label="Objek 1" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+        <transform>
+          <location value="768,768,0" />
+        </transform>
+        <fillColor value="#ff000000" />
+        <path d="M -768 -768L 768 -768L 768 768L -768 768L -768 -768Z" />
+      </shape>
+      <embedScene id="100000002" label="Objek 2" startTime="0" endTime="3000" outTime="3000" fillType="intrinsic" mediaFillMode="fill">
+        <transform>
+          <location value="760,802.5,0" />
+        </transform>
+        <fillColor value="#ff000000" />
+        <scene title="" width="1536" height="1536" exportWidth="1536" exportHeight="1536" precompose="dynamicResolution" bgcolor="#00000000" totalTime="3000" fps="30" modifiedTime="0" amver="1028425" ffver="106" am="com.alightcreative.motion/5.0.273.1028425" amplatform="android" retime="off" retimeAdaptFPS="false">
+          <shape id="100000003" label="Objek 2 · bidang 1" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M -100.5 256.788L -100.5 334.667L -117 331L -141 323L -187 302L -230 275L -264 247L -299 211L -333 167L -362 121L -378 119L -394 112L -406 103L -414 93L -419 84L -423 72L -424 51L -419 33L -414 24L -403 12L -403 8L -436 -120L -439 -127L -447 -162L -450 -167L -468 -172L -478 -177L -493 -188L -502 -197L -516 -219L -523 -241L -524 -268L -522 -280L -517 -294L -508 -310L -499 -321L -487 -332L -475 -340L -450 -350L -437 -352L -452 -297L -447 -293L -443 -293L -440 -291L -395 -279L -392 -279L -387 -285L -387 -289L -373 -337L -359 -327L -345 -311L -336 -293L -332 -280L -331 -249L -333 -238L -339 -222L -355 -199L -372 -184L -390 -173L -389 -165L -386 -158L -376 -115L -361 -63L -347 -6L -344 -3L -339 -3L -330 0L -320 5L -302 21L -294 36L -291 46L -290 64L -293 77L -295 80L -293 85L -269 123L -257 139L -223 178L -192 206L -146 237L -107 255L -100.5 256.788Z" />
+          </shape>
+          <shape id="100000004" label="Objek 2 · bidang 2" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M -100.5 -352.5L -129 -372L -181 -400L -210 -412L -227 -417L -229 -419L -247 -424L -252 -423L -266 -370L -272 -335L -273 -313L -275 -304L -275 -253L -273 -242L -273 -229L -263 -168L -272 -155L -282 -132L -286 -109L -286 -92L -282 -69L -270 -38L -252 -10L -235 8L -209 27L -191 37L -167 47L -142 54L -101 59L -100.5 59L -100.5 -135L -105 -135L -112 -132L -118 -127L -128 -112L -140 -88L -146 -81L -155 -77L -164 -78L -173 -85L -176 -91L -175 -104L -162 -128L -144 -152L -132 -162L -124 -167L -112 -171L -100.5 -171.958L -100.5 -352.5Z" />
+          </shape>
+          <shape id="100000005" label="Objek 2 · bidang 3" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M -100.5 351.889L -100.5 539.026L -107 538L -150 527L -162 521L -138 412L -127 346L -125 345L -118 348L -100.5 351.889Z" />
+          </shape>
+          <shape id="100000006" label="Objek 2 · bidang 4" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M -100.5 98L -100.5 239L -109 236L -113 233L -109 199L -103 98L -100.5 98Z" />
+          </shape>
+          <shape id="100000007" label="Objek 2 · bidang 5" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M -101.5 58.939L -101 59L -52 59L 2.5 55.0364L 2.5 -34.1548L -19 -49L -23 -55L -22 -60L -14 -65L 2.5 -67.3571L 2.5 -369.115L -25 -367L -56 -360L -91 -346L -101.5 -353.184L -101.5 -171.875L -100 -172L -88 -170L -63 -157L -45 -142L -29 -126L -26 -119L -27 -108L -33 -100L -40 -97L -49 -97L -55 -99L -91 -132L -99 -135L -101.5 -135L -101.5 58.939Z" />
+          </shape>
+          <shape id="100000008" label="Objek 2 · bidang 6" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M -101.5 238.647L -101.5 98L 2.5 98L 2.5 457.556L 2 458L -58 405L -61 404L -62 511L -60 513L -37 513L -34 511L -33 465L 1 496L 2.5 496L 2.5 548L -22 548L -33 546L -69 544L -101.5 538.868L -101.5 351.667L -91 354L -79 354L -66 351L -51 343L -42 335L -34 324L -28 308L -28 292L -32 279L -38 269L -46 260L -64 249L -92 242L -101.5 238.647Z" />
+          </shape>
+          <shape id="100000009" label="Objek 2 · bidang 7" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M -101.5 334.444L -101.5 256.513L -67 266L -56 274L -51 280L -46 292L -46 306L -52 320L -64 331L -72 335L -90 337L -101.5 334.444Z" />
+          </shape>
+          <shape id="100000010" label="Objek 2 · bidang 8" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M 129.5 -443.439L 121 -437L 80 -398L 53 -366L 14 -370L 1.5 -369.038L 1.5 -67.2143L 63 -76L 69 -71L 68 -63L 32 -19L 23 -20L 1.5 -34.8452L 1.5 55.1091L 3 55L 54 48L 102 39L 129.5 31.9902L 129.5 -167L 123 -167L 115 -163L 109 -157L 96 -136L 91 -125L 84 -117L 78 -114L 65 -115L 57 -122L 55 -127L 55 -134L 58 -142L 70 -164L 80 -178L 100 -196L 111 -201L 121 -203L 129.5 -203L 129.5 -443.439Z" />
+          </shape>
+          <shape id="100000011" label="Objek 2 · bidang 9" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M 129.5 363.333L 129.5 534.226L 83 543L 27 548L 1.5 548L 1.5 496L 3 496L 24 476L 37 466L 37 511L 40 513L 65 512L 66 405L 64 403L 2 458L 1.5 457.558L 1.5 98L 103 98L 104 134L 106 144L 109 205L 111 214L 112 237L 117 271L 120 309L 123 320L 124 335L 127 348L 127 355L 129 359L 129.5 363.333Z" />
+          </shape>
+          <shape id="100000012" label="Objek 2 · bidang 10" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M 153 26L 128.5 32.2451L 128.5 -167L 131 -167L 140 -163L 154 -152L 169 -137L 181 -130L 189 -130L 196 -133L 202 -140L 203 -151L 200 -158L 193 -166L 165 -190L 145 -200L 132 -203L 128.5 -203L 128.5 -442.682L 154 -462L 180 -479L 188 -479L 210 -445L 222 -422L 237 -387L 247 -357L 251 -338L 253 -335L 260 -298L 261 -280L 263 -272L 263 -241L 284 -221L 291 -212L 302 -191L 308 -169L 309 -137L 307 -121L 302 -101L 289 -70L 271 -43L 251 -22L 227 -4L 212 4L 180 17L 153 26Z" />
+          </shape>
+          <shape id="100000013" label="Objek 2 · bidang 11" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M 393.5 -97L 380 -97L 377 -86L 375 -69L 372 -66L 362 -63L 349 -56L 345 -57L 323 -72L 319 -70L 305 -56L 305 -53L 320 -31L 320 -28L 309 -3L 279 3L 278 28L 282 31L 303 34L 310 37L 320 62L 305 82L 304 86L 320 103L 325 102L 339 92L 348 88L 362 96L 374 100L 377 127L 379 131L 393.5 131L 393.5 54.7083L 390 55L 380 53L 372 49L 359 36L 355 27L 354 10L 359 -3L 370 -15L 381 -21L 393.5 -21.625L 393.5 -97Z" />
+          </shape>
+          <shape id="100000014" label="Objek 2 · bidang 12" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M 393.5 368.263L 393.5 402.129L 371 421L 322 455L 283 477L 237 499L 210 510L 172 523L 136 533L 128.5 534.415L 128.5 358L 129 359L 132 385L 134 389L 136 408L 139 417L 140 429L 149 471L 151 475L 153 490L 157 498L 187 495L 226 487L 269 473L 305 455L 339 431L 365 406L 391 373L 393.5 368.263Z" />
+          </shape>
+          <shape id="100000015" label="Objek 2 · bidang 13" startTime="0" endTime="3000" fillType="color" mediaFillMode="fill">
+            <transform>
+              <location value="776,733.5,0" />
+            </transform>
+            <fillColor value="#ffffffff" />
+            <path d="M 392.5 370.158L 410 337L 425 292L 428 270L 430 265L 432 243L 432 215L 430 194L 424 164L 410 125L 408 123L 406 125L 404 131L 392.5 131L 392.5 54.7917L 402 54L 415 48L 427 35L 432 22L 431 6L 425 -6L 413 -17L 401 -22L 392.5 -21.575L 392.5 -97L 406 -97L 411 -76L 411 -70L 414 -66L 419 -65L 439 -55L 466 -71L 483 -54L 483 -52L 468 -31L 467 -26L 478 -2L 508 4L 508 29L 504 31L 478 36L 465 63L 481 87L 481 89L 471 99L 471 101L 480 120L 488 144L 499 196L 501 234L 497 275L 494 286L 467 325L 430 368L 402 395L 392.5 402.968L 392.5 370.158Z" />
+          </shape>
+        </scene>
+      </embedScene>
+    </scene>
+  </embedScene>
+</scene>
