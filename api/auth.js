@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
       try { const u = await store.getUser(user.sub); if (u && u.warning) user.warning = u.warning; if (u && !isOwner(user.email) && Date.now() - (u.lastSeen || 0) > 30 * 60e3) { // tandai aktif (paling sering tiap 30 menit), untuk statistik dan filter terakhir aktif
         await Promise.all([store.mutateUser(user.sub, (r) => { if (!r) return null; r.lastSeen = Date.now(); return r; }).catch(() => {}), stats.active(user.sub)]);
       }
-      if (u) { user.role = roleOf(user.email, u); user.roleUntil = roleUntilOf(user.email, u); user.badge = badgeOf(u); if (u.dname) user.name = u.dname; if (typeof u.dpic === 'string') user.picture = u.dpic; } } catch (e) { /* abaikan */ }
+      if (u) { user.role = roleOf(user.email, u); user.roleUntil = roleUntilOf(user.email, u); user.badge = badgeOf(u); if (u.dname) user.name = u.dname; if (typeof u.dpic === 'string') user.picture = u.dpic; if (typeof u.dban === 'string') user.banner = u.dban; } } catch (e) { /* abaikan */ }
     }
     return res.status(200).json({ ok: true, user, clientId, requireLogin: loginRequired(), smtp: mail.ready() });
   }
@@ -89,7 +89,21 @@ module.exports = async (req, res) => {
           newPic = (await blob.put('avatar/foto.jpg', buf, { access: 'public', addRandomSuffix: true, contentType: 'image/jpeg' })).url;
         }
       }
-      let old;
+      let newBan; // undefined = banner tidak diubah; '' = hapus; 'p:<id>' = preset; selain itu URL Blob (banner custom)
+      if (typeof b.banner === 'string') {
+        if (b.banner === '') newBan = '';
+        else if (/^p:[a-z0-9-]{1,24}$/.test(b.banner)) newBan = b.banner;
+        else {
+          const m = /^data:image\/jpeg;base64,([A-Za-z0-9+/=]+)$/.exec(b.banner);
+          if (!m) return fail(415, 'Format banner tidak didukung.');
+          const buf = Buffer.from(m[1], 'base64');
+          if (buf.length > 450 * 1024) return fail(413, 'Banner terlalu besar.');
+          if (!(buf.length > 12 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff)) return fail(415, 'Format banner tidak didukung.');
+          if (!blob || !process.env.BLOB_READ_WRITE_TOKEN) return fail(500, 'Banner custom butuh Vercel Blob.');
+          newBan = (await blob.put('avatar/banner.jpg', buf, { access: 'public', addRandomSuffix: true, contentType: 'image/jpeg' })).url;
+        }
+      }
+      let old, oldBan;
       const rec = await store.mutateUser(me.sub, (u) => {
         u = u || { firstSeen: Date.now(), logins: 0, email: me.email };
         if (typeof b.name === 'string') {
@@ -98,10 +112,13 @@ module.exports = async (req, res) => {
         }
         old = u.dpic;
         if (newPic !== undefined) u.dpic = newPic;
+        oldBan = u.dban;
+        if (newBan !== undefined) { if (newBan) u.dban = newBan; else delete u.dban; }
         return u;
       });
       if (newPic !== undefined && old && old !== newPic && /blob\.vercel-storage\.com\/avatar\//.test(old) && blob) { try { await blob.del(old); } catch (e) { /* abaikan */ } }
-      return res.status(200).json({ ok: true, name: rec.dname || me.name, picture: typeof rec.dpic === 'string' ? rec.dpic : (me.picture || '') });
+      if (newBan !== undefined && oldBan && oldBan !== newBan && /blob\.vercel-storage\.com\/avatar\//.test(oldBan) && blob) { try { await blob.del(oldBan); } catch (e) { /* abaikan */ } }
+      return res.status(200).json({ ok: true, name: rec.dname || me.name, picture: typeof rec.dpic === 'string' ? rec.dpic : (me.picture || ''), banner: typeof rec.dban === 'string' ? rec.dban : '' });
     } catch (e) { console.error('[profile]', e && e.message); return fail(500, 'Gagal menyimpan profil. Coba lagi.'); }
   }
 
