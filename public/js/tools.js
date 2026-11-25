@@ -958,12 +958,15 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
 <label for="sxc">Ukuran kanvas</label><select id="sxc"><option value="auto">Otomatis (ikuti SVG)</option><option value="1080x1080">1080 x 1080 (1:1)</option><option value="1080x1920">1080 x 1920 (9:16)</option><option value="1920x1080">1920 x 1080 (16:9)</option><option value="custom">Kustom</option></select>
 <div id="sxw" hidden><label for="sxx">Lebar (px)</label><input id="sxx" type="number" inputmode="numeric" min="16" max="8192" value="1080"><label for="sxy">Tinggi (px)</label><input id="sxy" type="number" inputmode="numeric" min="16" max="8192" value="1080"></div>
 <label for="sxh">Bentuk berlubang</label><select id="sxh"><option value="pecah">Pecah per bidang (seperti file contoh)</option><option value="jembatan">Jembatan (1 layer per bentuk)</option></select>
+<label for="sxm">Cara membaca SVG</label><select id="sxm"><option value="render" selected>Render dulu lalu trace (hasil sama dengan tampilan SVG, bersih seperti foto)</option><option value="vektor">Vektor langsung (untuk SVG bergradasi atau bentuk sangat presisi)</option></select>
 <label for="sxr">Warna gradasi</label><select id="sxr"><option value="sedang" selected>Sedang (pita warna bertumpuk)</option><option value="tinggi">Halus (lapisan lebih banyak)</option><option value="rendah">Ringan (lapisan sedikit)</option><option value="rata">Warna rata-rata (1 warna per bentuk)</option></select>
 <div class="row"><button class="primary" id="go">Buat XML</button></div><p class="msg" id="m" role="status"></p><div id="res"></div>`,
  init:r=>{const f=$(r,'#sxf'),dz=$(r,'#sxd'),fi=$(r,'#sxi'),h0=fi.textContent,m=$(r,'#m'),res=$(r,'#res'),cs=$(r,'#sxc');let url='',useSample=false;
   cs.onchange=()=>{$(r,'#sxw').hidden=cs.value!=='custom'};
+  const showOpt=()=>{const x=f.files[0],on=isImg(x)||(!!x&&$(r,'#sxm').value==='render');$(r,'#sxo').hidden=!on;if(on){$(r,'#sxh').value='jembatan';if(!isImg(x))$(r,'#sxq').value='tinggi'}};
+  $(r,'#sxm').onchange=showOpt;
   const isImg=x=>!!x&&(/^image\/(png|jpe?g|webp)$/.test(x.type)||/\.(png|jpe?g|webp)$/i.test(x.name));
-  f.onchange=()=>{const x=f.files[0];useSample=false;dz.classList.toggle('on',!!x);fi.textContent=x?x.name+' · '+(x.size>=1048576?mb(x.size):Math.round(x.size/1024)+' KB'):h0;$(r,'#sxo').hidden=!isImg(x);if(isImg(x))$(r,'#sxh').value='jembatan'};
+  f.onchange=()=>{const x=f.files[0];useSample=false;dz.classList.toggle('on',!!x);fi.textContent=x?x.name+' · '+(x.size>=1048576?mb(x.size):Math.round(x.size/1024)+' KB'):h0;showOpt()};
   $(r,'#sxs').onclick=()=>{f.value='';$(r,'#sxo').hidden=true;useSample=true;dz.classList.add('on');fi.textContent='contoh.svg (file contoh)';m.className='msg';m.textContent='File contoh dipilih. Ketuk Buat XML.'};
   $(r,'#go').onclick=async()=>{const x=f.files[0],bad=t=>{m.className='msg bad';m.textContent=t};
    if(!x&&!useSample)return bad('Pilih file SVG atau foto dulu.');
@@ -976,10 +979,11 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
    try{await loadMod('svgam');await new Promise(k=>setTimeout(k,30));
     const base=(x?x.name.replace(/\.[^.]+$/,''):'contoh').replace(/[^\w\- ]+/g,'-').trim().slice(0,40)||(ras?'foto':'svg'),opt={title:base,duration:dur,fps:parseInt($(r,'#sxp').value,10),canvas:cs.value,width:cw,height:ch,holes:$(r,'#sxh').value,grad:$(r,'#sxr').value};
     let out;
-    if(ras){
-     const det=$(r,'#sxq').value,u=URL.createObjectURL(x);let im;
-     try{im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error('Foto tidak bisa dibuka. Coba foto lain.'));i.src=u})}finally{setTimeout(()=>URL.revokeObjectURL(u),2000)}
-     const iw=im.naturalWidth,ih=im.naturalHeight,k=Math.min(1,SVGAM.PHOTO_DETAIL[det].side/Math.max(iw,ih)),W=Math.max(2,Math.round(iw*k)),H=Math.max(2,Math.round(ih*k)),c=document.createElement('canvas');
+    const rend=!ras&&!!x&&$(r,'#sxm').value==='render';
+    if(ras||rend){
+     const det=$(r,'#sxq').value,u=URL.createObjectURL(rend?new Blob([await x.text()],{type:'image/svg+xml'}):x);let im;
+     try{im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error(rend?'SVG tidak bisa dirender browser. Pastikan filenya SVG yang valid.':'Foto tidak bisa dibuka. Coba foto lain.'));i.src=u})}finally{setTimeout(()=>URL.revokeObjectURL(u),2000)}
+     const iw=im.naturalWidth||1024,ih=im.naturalHeight||1024,k=rend?SVGAM.PHOTO_DETAIL[det].side/Math.max(iw,ih):Math.min(1,SVGAM.PHOTO_DETAIL[det].side/Math.max(iw,ih)),W=Math.max(2,Math.round(iw*k)),H=Math.max(2,Math.round(ih*k)),c=document.createElement('canvas');
      c.width=W;c.height=H;const cx=c.getContext('2d',{willReadFrequently:true});cx.imageSmoothingQuality='high';cx.drawImage(im,0,0,W,H);
      out=await SVGAM.fromImageAsync(cx.getImageData(0,0,W,H).data,W,H,Object.assign(opt,{colors:parseInt($(r,'#sxk').value,10),detail:det,bersih:$(r,'#sxb').checked,ink:$(r,'#sxg').checked&&!$(r,'#sxb').checked,srcW:iw,srcH:ih,onStep:t=>{m.textContent=t}}))}
     else out=SVGAM.convert(x?await x.text():SVGAM.SAMPLE,opt);
