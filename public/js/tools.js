@@ -987,16 +987,16 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
     if(ras||rend){
      const det=$(r,'#sxq').value,u=URL.createObjectURL(rend?new Blob([await x.text()],{type:'image/svg+xml'}):x);let im;
      try{im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error(rend?'SVG tidak bisa dirender browser. Pastikan filenya SVG yang valid.':'Foto tidak bisa dibuka. Coba foto lain.'));i.src=u})}finally{setTimeout(()=>URL.revokeObjectURL(u),2000)}
-     const iw=im.naturalWidth||1024,ih=im.naturalHeight||1024,k=rend?SVGAM.PHOTO_DETAIL[det].side/Math.max(iw,ih):Math.min(1,SVGAM.PHOTO_DETAIL[det].side/Math.max(iw,ih)),W=Math.max(2,Math.round(iw*k)),H=Math.max(2,Math.round(ih*k)),c=document.createElement('canvas');
+     const iw=im.naturalWidth||1024,ih=im.naturalHeight||1024,sd=SVGAM.PHOTO_DETAIL[det].side,mx=Math.max(iw,ih),k=rend?sd/mx:(mx<sd*0.7?Math.min(3,sd*0.75/mx):Math.min(1,sd/mx)),W=Math.max(2,Math.round(iw*k)),H=Math.max(2,Math.round(ih*k)),c=document.createElement('canvas');
      c.width=W;c.height=H;const cx=c.getContext('2d',{willReadFrequently:true});cx.imageSmoothingQuality='high';cx.drawImage(im,0,0,W,H);
      out=await SVGAM.fromImageAsync(cx.getImageData(0,0,W,H).data,W,H,Object.assign(opt,{colors:parseInt($(r,'#sxk').value,10),detail:det,bersih:$(r,'#sxb').checked,ink:$(r,'#sxg').checked&&!$(r,'#sxb').checked,srcW:iw,srcH:ih,onStep:t=>{m.textContent=t}}))}
     else out=SVGAM.convert(x?await x.text():SVGAM.SAMPLE,opt);
     const md=out.model,st=out.stats;
     const sw=l=>{const a=parseInt(l.fill.slice(1,3),16)/255;return 'rgba('+parseInt(l.fill.slice(3,5),16)+','+parseInt(l.fill.slice(5,7),16)+','+parseInt(l.fill.slice(7,9),16)+','+a+')'};
     res.innerHTML=`<div class="out"><div class="chk" style="border-radius:12px;overflow:hidden"><canvas id="sxv" style="display:block;width:100%;height:auto" aria-label="Pratinjau hasil"></canvas></div>
-<div class="sxst" id="sxz"></div><p class="msg" id="sxn"></p>${out.warnings.length?'<ul>'+out.warnings.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul>':''}
-<p><b>Layer (${md.layers.length})</b>${md.layers.length>1?' · centang yang mau dibawa ke Alight Motion':' · akan dibawa ke Alight Motion'}</p>
-<div id="sxl">${md.layers.map((l,i)=>`<label>${md.layers.length>1?`<input type="checkbox" data-i="${i}" checked>`:''} <span style="display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;border:1px solid rgba(128,128,128,.5);background:${sw(l)}"></span> ${esc(l.label)} · ${l.rings.length} bidang · ${l.rings.reduce((s,q)=>s+q.length,0)} titik</label>`).join('')}</div>
+<div class="sxst" id="sxz"></div><p class="msg" id="sxn"></p>${out.warnings.length?'<div class="sxwn" role="note"><b>Catatan</b><ul>'+out.warnings.map(w=>'<li>'+esc(w)+'</li>').join('')+'</ul></div>':''}
+<p class="sxlh"><b>Layer (${md.layers.length})</b><span>${md.layers.length>1?'Centang yang mau dibawa ke Alight Motion':'Akan dibawa ke Alight Motion'}</span></p>
+<div id="sxl" class="sxly">${md.layers.map((l,i)=>`<label class="sxr">${md.layers.length>1?`<input type="checkbox" data-i="${i}" checked>`:''}<i class="sxsw" style="--c:${sw(l)}"></i><span class="sxrn">${esc(l.label)}</span><small>${l.rings.length} bidang · ${l.rings.reduce((s,q)=>s+q.length,0)} titik</small></label>`).join('')}</div>
 <div class="row"><a class="btn primary dlb" id="sxa" href="#">${DLI}Unduh XML</a></div>
 <p class="msg">Impor file XML ke Alight Motion, lalu periksa bentuk, warna, dan urutan layer. ${ras?'Hasil foto berupa bentuk berwarna datar bertumpuk, jadi gradasi halus tampak seperti poster.':'Garis (stroke), teks, gradasi, dan efek belum ikut diubah.'}</p></div>`;
     const cv=$(res,'#sxv'),sc=Math.min(1,900/Math.max(md.width,md.height));cv.width=Math.round(md.width*sc);cv.height=Math.round(md.height*sc);

@@ -1129,9 +1129,9 @@ const SAMPLE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><r
    berwarna ke-i dan warna yang lebih kecil di atasnya. Karena bertumpuk, tidak ada celah antar warna
    dan lubang jauh lebih sedikit. Kontur diambil dengan marching squares (halus sampai sub-piksel). */
 const PHOTO_DETAIL = {
-  rendah: { side: 512, tol: 0.8, sm: 3.2, speck: 15000, sigma: 26 },
-  sedang: { side: 768, tol: 0.45, sm: 2.6, speck: 40000, sigma: 20 },
-  tinggi: { side: 1024, tol: 0.35, sm: 2.0, speck: 90000, sigma: 14 }
+  rendah: { side: 512, tol: 1.0, sm: 3.2, speck: 15000, sigma: 26 },
+  sedang: { side: 768, tol: 0.7, sm: 2.6, speck: 40000, sigma: 20 },
+  tinggi: { side: 1024, tol: 0.5, sm: 2.0, speck: 90000, sigma: 14 }
 };
 
 function srgbToLab(r, g, b) {
@@ -1283,14 +1283,31 @@ function cleanSpecks(lab, w, h, minArea) {
 }
 
 /* marching squares: topeng 0/1 -> daftar kontur tertutup (piksel kerja). Kontur luar berputar positif, lubang negatif. */
-function contours(mask, w, h, S, lv) {
+function blurMask(mask, w, h, sig, out, tmp) {
+  const rad = Math.max(1, Math.ceil(sig * 2.6)), K = new Float32Array(2 * rad + 1); let sk = 0;
+  for (let k = -rad; k <= rad; k++) { const v = Math.exp(-(k * k) / (2 * sig * sig)); K[k + rad] = v; sk += v; }
+  for (let k = 0; k < K.length; k++) K[k] /= sk;
+  for (let y = 0; y < h; y++) {
+    const o = y * w;
+    for (let x = 0; x < w; x++) {
+      let a = 0;
+      for (let k = -rad; k <= rad; k++) { let xx = x + k; xx = xx < 0 ? 0 : xx >= w ? w - 1 : xx; a += mask[o + xx] * K[k + rad]; }
+      tmp[o + x] = a;
+    }
+  }
+  const NX = w + 2;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    let a = 0;
+    for (let k = -rad; k <= rad; k++) { let yy = y + k; yy = yy < 0 ? 0 : yy >= h ? h - 1 : yy; a += tmp[yy * w + x] * K[k + rad]; }
+    out[(y + 1) * NX + x + 1] = a;
+  }
+}
+/* marching squares pada medan hasil blur Gaussian topeng 0/1: kontur sub-piksel yang mulus dan konsisten antar layer. */
+function contours(mask, w, h, S, lv, sig) {
   const NX = w + 2, NY = h + 2, f = S.f, nxt = S.nxt, T = lv || 0.5, SAD = T * 0.7;
   f.fill(0);
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const p = y * w + x, c = mask[p];
-    const l = x > 0 ? mask[p - 1] : c, r = x < w - 1 ? mask[p + 1] : c, u = y > 0 ? mask[p - w] : c, d = y < h - 1 ? mask[p + w] : c;
-    f[(y + 1) * NX + x + 1] = 0.7 * c + 0.075 * (l + r + u + d);
-  }
+  if (!S.tmp || S.tmp.length < w * h) S.tmp = new Float32Array(w * h);
+  blurMask(mask, w, h, sig || 1.1, f, S.tmp);
   const starts = [];
   const link = (a, b) => { nxt[a] = b; starts.push(a); };
   for (let j = 0; j <= h; j++) for (let i = 0; i <= w; i++) {
@@ -1582,10 +1599,10 @@ function* photoGen(rgba, w, h, opt) {
 
   const S = { f: new Float32Array((w + 2) * (h + 2)), nxt: new Int32Array(2 * (w + 2) * (h + 2)).fill(-1) };
   const mask = new Uint8Array(N), layers = [], tally = { fallback: 0, lost: 0 };
-  const ringsOf = (lv, tol, sm) => {
+  const ringsOf = (lv, tol, sg) => {
     const outers = [], holes = [];
-    for (const lp of contours(mask, w, h, S, lv)) {
-      const R = refineRing(lp, tol || D.tol, sm === undefined ? D.sm : sm, o.bersih), a = area(R);
+    for (const lp of contours(mask, w, h, S, lv, sg)) {
+      const R = simplifyRing(lp, tol || D.tol), a = area(R);
       if (R.length < 3 || Math.abs(a) < 0.8) continue;
       (a > 0 ? outers : holes).push({ R, a, bb: bboxOf(R), own: [] });
     }
@@ -1641,7 +1658,7 @@ function* photoGen(rgba, w, h, opt) {
         if (ink.n < 12) continue;
         for (let p = 0; p < N; p++) mask[p] = qi.lab[p] === ink.id ? 1 : 0;
         const before = layers.length;
-        push('Garis ' + (++inkN), hex(ink.r, ink.g, ink.b), ringsOf(0.3, 0.3, 2));
+        push('Garis ' + (++inkN), hex(ink.r, ink.g, ink.b), ringsOf(0.3, 0.3, 0.8));
         if (layers.length === before) inkN--;
       }
     }
