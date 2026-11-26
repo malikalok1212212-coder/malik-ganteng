@@ -1129,9 +1129,9 @@ const SAMPLE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><r
    berwarna ke-i dan warna yang lebih kecil di atasnya. Karena bertumpuk, tidak ada celah antar warna
    dan lubang jauh lebih sedikit. Kontur diambil dengan marching squares (halus sampai sub-piksel). */
 const PHOTO_DETAIL = {
-  rendah: { side: 512, tol: 1.0, sm: 3.2, speck: 15000, sigma: 26 },
-  sedang: { side: 768, tol: 0.7, sm: 2.6, speck: 40000, sigma: 20 },
-  tinggi: { side: 1024, tol: 0.5, sm: 2.0, speck: 90000, sigma: 14 }
+  rendah: { side: 512, tol: 0.4, sm: 2.6, speck: 15000, sigma: 26 },
+  sedang: { side: 768, tol: 0.28, sm: 2.2, speck: 40000, sigma: 20 },
+  tinggi: { side: 1024, tol: 0.22, sm: 1.8, speck: 90000, sigma: 14 }
 };
 
 function srgbToLab(r, g, b) {
@@ -1184,7 +1184,7 @@ function edgeWeights(px, w, h, boost) {
 }
 
 /* k-means berbobot pada histogram warna (6 bit per kanal), awal deterministik (titik terjauh) */
-function quantize(px, N, K, wgt) {
+function quantize(px, N, K, wgt, merge) {
   const SH = 2, hist = new Float64Array(1 << 18), map = new Int32Array(1 << 18).fill(-1);
   const sr = new Float64Array(1 << 18), sg = new Float64Array(1 << 18), sb = new Float64Array(1 << 18);
   const binOf = new Int32Array(N).fill(-1);
@@ -1228,9 +1228,32 @@ function quantize(px, N, K, wgt) {
     s.forEach((q, c) => { if (q[3] > 0) cen[c] = [q[0] / q[3], q[1] / q[3], q[2] / q[3]]; });
     if (!moved && it > 0) break;
   }
+  // gabungkan klaster yang warnanya nyaris sama (selisih Lab < merge): mencegah satu warna terpecah jadi bercak-bercak
+  let remap = null, count = cen.length;
+  if (merge > 0 && cen.length > 1) {
+    const wt = cen.map(() => 0); for (let j = 0; j < nb; j++) wt[lab[j]] += Wt[j];
+    const tot = wt.reduce((a, b) => a + b, 0) || 1, top3 = wt.slice().sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0) / tot;
+    const thr = top3 > 0.9 ? Math.max(merge, 14) : merge * 0.45;   // line art / logo: gabung kuat; foto: gabung ringan
+    const alive = cen.map((_, i) => i), par = cen.map((_, i) => i), m2 = thr * thr;
+    for (;;) {
+      let bi = -1, bj = -1, bd = Infinity;
+      for (let x = 0; x < alive.length; x++) for (let y = x + 1; y < alive.length; y++) {
+        const a = cen[alive[x]], b = cen[alive[y]], d = (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2;
+        if (d < bd) { bd = d; bi = x; bj = y; }
+      }
+      if (bd >= m2 || bi < 0) break;
+      const a = alive[bi], b = alive[bj], tw = wt[a] + wt[b] || 1;
+      cen[a] = [0, 1, 2].map((k) => (cen[a][k] * wt[a] + cen[b][k] * wt[b]) / tw);
+      wt[a] = tw; par[b] = a; alive.splice(bj, 1);
+    }
+    const id = new Int16Array(cen.length).fill(-1); alive.forEach((c, i) => { id[c] = i; });
+    const root = (c) => { while (par[c] !== c) c = par[c]; return c; };
+    remap = new Int16Array(cen.length); for (let c = 0; c < cen.length; c++) remap[c] = id[root(c)];
+    count = alive.length;
+  }
   const out = new Int16Array(N).fill(-1);
-  for (let i = 0; i < N; i++) if (binOf[i] >= 0) out[i] = lab[map[binOf[i]]];
-  return { lab: out, count: cen.length };
+  for (let i = 0; i < N; i++) if (binOf[i] >= 0) { const l = lab[map[binOf[i]]]; out[i] = remap ? remap[l] : l; }
+  return { lab: out, count };
 }
 
 /* bercak yang lebih kecil dari minArea dilebur ke tetangga yang paling banyak bersentuhan.
@@ -1577,7 +1600,7 @@ function* photoGen(rgba, w, h, opt) {
   yield 'Menghaluskan foto...';
   const px = bilateral(rgba, w, h, D.sigma);
   yield 'Mengelompokkan warna...';
-  const q = quantize(px, N, K, edgeWeights(px, w, h, o.bersih ? 0 : o.edge)), lab = q.lab;
+  const q = quantize(px, N, K, edgeWeights(px, w, h, o.bersih ? 0 : o.edge), o.bersih ? 10 : 4), lab = q.lab;
   if (o.bersih) for (let it = 0; it < 3; it++) if (!dropBlend(lab, rgba, w, h)) break;
   yield 'Merapikan bercak kecil...';
   cleanSpecks(lab, w, h, Math.max(3, Math.round(N / D.speck)));
@@ -1599,10 +1622,10 @@ function* photoGen(rgba, w, h, opt) {
 
   const S = { f: new Float32Array((w + 2) * (h + 2)), nxt: new Int32Array(2 * (w + 2) * (h + 2)).fill(-1) };
   const mask = new Uint8Array(N), layers = [], tally = { fallback: 0, lost: 0 };
-  const ringsOf = (lv, tol, sg) => {
+  const ringsOf = (lv, tol, sg, smoothed) => {
     const outers = [], holes = [];
     for (const lp of contours(mask, w, h, S, lv, sg)) {
-      const R = simplifyRing(lp, tol || D.tol), a = area(R);
+      const R = smoothed ? refineRing(lp, tol || D.tol, D.sm, false) : simplifyRing(lp, tol || D.tol), a = area(R);
       if (R.length < 3 || Math.abs(a) < 0.8) continue;
       (a > 0 ? outers : holes).push({ R, a, bb: bboxOf(R), own: [] });
     }
@@ -1627,7 +1650,10 @@ function* photoGen(rgba, w, h, opt) {
     }
     return rings.map(tr);
   };
-  const hex = (r, g, b) => '#ff' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
+  const hex = (r, g, b) => {
+    if (r >= 238 && g >= 238 && b >= 238) { r = g = b = 255; } else if (r <= 22 && g <= 22 && b <= 22) { r = g = b = 0; }   // putih/hitam murni
+    return '#ff' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
+  };
   const push = (label, fill, rings) => {
     const fin = [];
     for (const R of rings) { const C = cleanRing(R); if (C.length >= 3 && Math.abs(area(C)) > 1e-3) fin.push(C); }
@@ -1638,7 +1664,7 @@ function* photoGen(rgba, w, h, opt) {
     const c = cl[i];
     if (i === 0 && !clear) { push('Warna 1', hex(c.r, c.g, c.b), [tr([[0, 0], [w, 0], [w, h], [0, h]])]); continue; }
     for (let p = 0; p < N; p++) mask[p] = oi[p] >= i ? 1 : 0;
-    push('Warna ' + (layers.length + 1), hex(c.r, c.g, c.b), ringsOf());
+    push('Warna ' + (layers.length + 1), hex(c.r, c.g, c.b), ringsOf(undefined, undefined, undefined, true));
   }
   let inkN = 0;
   if (o.ink) {
