@@ -435,7 +435,7 @@ async function api(...a){const j=await api0(...a);rec(a[0],!!(j&&j.ok));return j
 const shell=(bar,body)=>`<section class="panel"><div class="bar"><span>${bar}</span></div><div class="in">${body}</div></section>`;
 const hero=(ic,h,sub)=>`<div class="thero"><span class="tile">${svg(IC[ic])}</span><div><h2>${h}</h2><p class="sub">${sub}</p></div></div>`;
 const AUTH={user:null,clientId:'',requireLogin:false,ready:false};
-async function authLoad(){const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),6000);try{const r=await fetch('/api/auth?action=me',{credentials:'same-origin',signal:ac.signal}),j=await r.json();AUTH.user=j.user||null;AUTH.clientId=j.clientId||'';AUTH.requireLogin=!!j.requireLogin}catch(e){}clearTimeout(tm);AUTH.ready=true}
+async function authLoad(){const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),4000);try{const r=await fetch('/api/auth?action=me',{credentials:'same-origin',signal:ac.signal}),j=await r.json();AUTH.user=j.user||null;AUTH.clientId=j.clientId||'';AUTH.requireLogin=!!j.requireLogin}catch(e){}clearTimeout(tm);AUTH.ready=true}
 let RDM_NOTE='';
 const kpretty=c=>/^MT[A-Z0-9]{12}$/.test(c)?'MT-'+c.slice(2,6)+'-'+c.slice(6,10)+'-'+c.slice(10):c;
 const redeemBox=()=>{const u=AUTH.user;if(u&&(u.isOwner||u.role==='owner'))return'';
@@ -910,25 +910,22 @@ function mtLoader(){
   try{
    const timed=f=>new Promise(r=>f(()=>r(1)));
    const logo=timed(d=>{const i=new Image();i.onload=i.onerror=d;i.src=LOGO});
-   const img=timed(d=>{const i=new Image(),a=document.querySelector('.ban-art');i.onload=i.onerror=d;i.src=a?a.src:'hero.jpg?v=252b'});
    const fonts=(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>1);
-   const steps=[authP,logo,img,fonts],t0=Date.now();
+   const steps=[authP,logo,fonts].map(st=>Promise.resolve(st).catch(()=>1)),t0=Date.now();
    let n=0;
-   for(const st of steps){
-    if(closed)return;
-    await Promise.race([st,sleep(2500)]);
-    if(closed)return;n++;target=n/steps.length;
-   }
+   steps.forEach(st=>st.then(()=>{n++;target=Math.max(target,n/steps.length)}));
+   await Promise.race([Promise.all(steps),sleep(2500)]);
    if(closed)return;
    target=1;
    const rest=MIN-(Date.now()-t0);if(rest>0)await sleep(rest);
   }catch(e){}
   out();
  })();
- setTimeout(done,6000);
+ setTimeout(done,4000);
 }
 // Loader baru jalan setelah pengguna login (layar login tampil dulu), sekali per sesi.
 (function(){const root=document.documentElement,l=document.getElementById('ld');
+ setTimeout(()=>{const x=document.getElementById('ld');if(x&&!root.classList.contains('ldgate')){root.classList.remove('ldwait','ldon');x.remove()}},7000);
  if(root.classList.contains('noload')){if(l)l.remove();root.classList.remove('ldwait');setTimeout(mtChannel,800);return}
  const start=()=>{root.classList.remove('ldwait','ldgate');mtLoader()};
  const chk=()=>{if(AUTH.user){start();return}root.classList.add('ldgate');const iv=setInterval(()=>{if(AUTH.user){clearInterval(iv);start()}},400)};
