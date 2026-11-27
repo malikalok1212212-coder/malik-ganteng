@@ -1,4 +1,4 @@
-const V='mt-v198',CORE=['/','/offline.html','/style.css?v=462','/js/core.js?v=461','/js/ui.js?v=373','/icon-192.png?v=461','/yuu.jpg','/icon-192.png?v=461','/favicon.ico?v=461','/favicon-32.png','/hero.jpg','/bg.jpg'],LAZY=['/js/fx.js?v=392','/js/guide.js?v=438','/pemandu.png?v=461','/js/tools.js?v=461','/js/pages.js?v=461','/js/chat.js?v=461'];
+const V='mt-v200',CORE=['/','/offline.html','/style.css?v=465','/js/core.js?v=464','/js/ui.js?v=373','/icon-192.png?v=464','/yuu.jpg','/icon-192.png?v=464','/favicon.ico?v=464','/favicon-32.png','/hero.jpg','/bg.jpg'],LAZY=['/js/fx.js?v=392','/js/guide.js?v=464','/pemandu.png?v=464','/js/tools.js?v=464','/js/pages.js?v=464','/js/chat.js?v=464'];
 // Pasang: shell wajib lengkap, modul lazy (Tools, Halaman, Chat) dicoba terpisah supaya satu kegagalan tidak menggagalkan install. Hasilnya: situs bisa dibuka tanpa internet.
 const pre=c=>c.addAll(CORE).then(()=>Promise.all(LAZY.map(u=>c.add(u).catch(()=>{}))));
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(pre).then(()=>self.skipWaiting()))});
@@ -42,7 +42,7 @@ self.addEventListener('push',e=>{
   const url=typeof d.url==='string'&&d.url.charAt(0)==='/'?d.url:'/#chat';
   e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{
     if(cs.some(c=>c.visibilityState==='visible'&&c.focused))return;
-    return self.registration.showNotification(String(d.title||'Malik Tools').slice(0,80),{body:String(d.body||'').slice(0,120),icon:'/icon-192.png?v=461',badge:'/icon-192.png?v=461',tag:String(d.tag||'mt-chat'),renotify:true,data:{url}});
+    return self.registration.showNotification(String(d.title||'Malik Tools').slice(0,80),{body:String(d.body||'').slice(0,120),icon:'/icon-192.png?v=464',badge:'/icon-192.png?v=464',tag:String(d.tag||'mt-chat'),renotify:true,data:{url}});
   }));
 });
 // Kunci langganan diganti browser: daftar ulang otomatis supaya push tidak berhenti diam-diam.

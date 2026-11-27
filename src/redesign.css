@@ -215,3 +215,70 @@
 §[data-theme=light] #drw .dl .ic svg,§[data-theme=light] #drw .cat .ci svg{opacity:1!important}
 /* ikon tile aksen (kartu tool, drawer, hero): merah aksen sedikit lebih tua agar tajam di atas tile abu-abu */
 §[data-theme=light] .tri svg,§[data-theme=light] .nxi svg,§[data-theme=light] .trn svg,§[data-theme=light] .ci svg,§[data-theme=light] .tile svg,§[data-theme=light] .ic:not(.cfm .ic) svg,§[data-theme=light] .lhq>span svg{color:var(--ica)!important;stroke:currentColor!important;opacity:1!important}
+
+/* ---------- v464: bersihkan sisa warna neobrutalism lama + ringankan efek glow/blur (CSS saja) ---------- */
+/* 1) Bayangan murah: tanpa blur besar. Token e2/e3 dipakai panel, banner, modal, drawer. */
+§,§[data-theme=dark]{--e1:none;--e2:0 1px 2px rgba(0,0,0,.35);--e3:0 1px 3px rgba(0,0,0,.4);--glow:transparent}
+§[data-theme=light]{--e1:none;--e2:0 1px 2px rgba(11,11,13,.08);--e3:0 1px 3px rgba(11,11,13,.1);--glow:transparent}
+/* 2) Lapisan dekorasi layar penuh dibuang (titik-titik fixed + masker, glow radial, watermark logo) */
+§ body{background-image:none!important}
+§ body::after,§[data-theme=light] body::after,§ main[data-tool]::after,§[data-theme=light] main[data-tool]::after{display:none!important;content:none!important}
+/* 3) Blur latar (backdrop-filter) paling berat di HP: diganti warna solid */
+§ .top,§ .bnav,§ .dock,§ .lhc .lhtip,§ .lht,§ .fcm,§ .ann,§ .csb,§ .wc,§ .cmp figcaption{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+§ .top{background:var(--bg)!important}
+§ .bnav,§ .dock{background:var(--s1)!important;box-shadow:none!important}
+§ .bnav a[aria-current=page]::after{display:none!important}
+/* 4) Glow berwarna di tombol, ikon, tile: dihapus */
+§ #hgo,§ .lhi button,§ button.primary,§ .btn.primary,§ #go.primary,§ .lpb1,§ .tile,§ .tri,§ .nxi,§ .ci,§ .lhq span,§ .hc .tri,§ .thero .tile,§ .lpb i,§ .tr .tri,§ .mgf,§ .mgb{box-shadow:none!important}
+§ button.primary,§ .btn.primary,§ #hgo,§ .lpb1{background-image:none!important}
+§ .thero .tile{background:var(--s3)!important}
+/* 5) Gradien berlapis -> warna rata */
+§ .lhc,§[data-theme=light] .lhc,§ .dp,§ .lhi span,§ .lhab,§ .hc,§ .nxg,§ .lp{background:var(--s2)!important}
+§ .lp{background:var(--s1)!important}
+§ .lp::after{display:none!important}
+§ .panel:not(.cpanel)::before{height:2px!important;background:var(--acc)!important}
+§ .tr{background:var(--field)!important}
+/* 6) Filter berat (drop-shadow/blur) */
+§ .live .lvn,§ .live .lvw path{filter:none!important}
+§ .spbg{filter:blur(18px) saturate(1.2) brightness(.62)!important}
+§ *{text-shadow:none!important}
+/* 7) Animasi tak berujung yang hanya dekorasi: dimatikan (spinner, skeleton, equalizer, loading tetap jalan) */
+§ .pu,§ .live .lvd:after,§ .live .lvq,§ .live .lvin:after,§ .dvd:not(.off),§ .gate .sh,§ .qp #rps:before,§ .drw .st i,§ .pl:before,§ .mldlg img,§ .tl,§ .dc.c,§ .dc.q,§ .sd,§ .mgf img,§ .mgf.talk img,§ .mgf.new:before{animation:none!important}
+
+/* 8) Halaman Koin: kuning/emas lama -> aksen merah */
+§ .ccard{--rc:var(--acc)!important}
+§ .ccard .ctag{background:var(--acc)!important;color:#fff!important}
+§ .cbal{border:1px solid var(--line2)!important;background:var(--s2)!important}
+§ .qp-chips .v{background:var(--acc)!important;color:#fff!important}
+§ .qp-fr{border:1px solid var(--line2)!important;box-shadow:none!important}
+§ [data-tool=svg-ke-xml] .sxwn b{color:var(--acct)!important}
+
+/* 9) Global Chat: palet krem/terracotta + border 3px + bayangan keras -> charcoal/merah, border tipis */
+§ main.chatp .cpanel,§[data-theme=dark] main.chatp .cpanel{--k-ink:#f5f5f6;--k-ink2:#d4d4d8;--k-line:rgba(255,255,255,.13);--k-muted:#a1a1a9;--k-bg:#0b0b0d;--k-card:#141416;--k-field:#1a1a1d;--k-qt:#1a1a1d;--k-link:#ff5b62;--k-url:#ff5b62;--k-acc:#e3262e;--k-btn:#e3262e;--k-btnic:#fff;--k-me:#3a1517;--k-av:#242426;--k-dev:#ffb4b8;--k-own:#ff8a90;--k-pre:#9fe3bd;--k-vip:#f5d77a;--k-mem:#d4d4d8;--k-mnt:rgba(227,38,46,.16);--k-bw:1px}
+§[data-theme=light] main.chatp .cpanel{--k-ink:#121214;--k-ink2:#3f3f46;--k-line:rgba(11,11,13,.14);--k-muted:#5d5d66;--k-bg:#f4f4f5;--k-card:#fff;--k-field:#f4f4f5;--k-qt:#ececee;--k-link:#c4161d;--k-url:#c4161d;--k-acc:#d91f26;--k-btn:#d91f26;--k-btnic:#fff;--k-me:#fde8e9;--k-av:#ececee;--k-dev:#ffb4b8;--k-own:#ff8a90;--k-pre:#9fe3bd;--k-vip:#f5d77a;--k-mem:#d4d4d8;--k-mnt:rgba(217,31,38,.12);--k-bw:1px}
+§ main.chatp .cpanel,§ main.chatp .cpanel *{border-width:1px!important;box-shadow:none!important}
+§ main.chatp .cpanel{border-radius:18px!important}
+§ main.chatp .cpanel .cin #cs{background:var(--acc)!important}
+§ main.chatp .cpanel .cmsg.mnt .cb{box-shadow:0 0 0 2px var(--acc)!important}
+§ main.chatp .cpanel .cmsg .cav{border-width:1px!important}
+§ main.chatp .cpanel .cmsg.pop .cb,§ main.chatp .cpanel .cmsg.pop .cstk,§ main.chatp .cpanel .cmsg.pop .stt{outline-width:2px!important}
+§ .fcc,§ .gob{box-shadow:none!important}
+
+/* ---------- v464b: halaman Profil lebih menarik (flat, tanpa glow) ---------- */
+§ .pfp .pbn:not(.has){background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 38%,var(--s3)),var(--s3) 62%,var(--s2))!important}
+§ .pfp .pav{width:92px!important;height:92px!important;border:3px solid var(--acc)!important;outline:4px solid var(--s1);font-size:38px!important;font-weight:800!important}
+§ .pfp .pnm{font:800 24px var(--f-d)!important;letter-spacing:-.02em}
+§ .pfp .mail{color:var(--muted)!important;font-size:13px}
+§ .pfp .pbd{gap:6px}
+§ .pfp .tg2:not(.f){background:var(--acc)!important;color:#fff!important;border:0!important}
+§ .pfp .tg2.f{background:var(--s3)!important;color:var(--muted)!important;border:1px solid var(--line)!important}
+§ .pfp .ost{display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px}
+§ .pfp .ost>div{background:var(--s2)!important;border:1px solid var(--line2)!important;border-radius:16px!important;box-shadow:none!important;padding:14px 6px 12px!important;position:relative;overflow:hidden}
+§ .pfp .ost>div::before{content:"";position:absolute;left:14px;right:14px;top:0;height:3px;border-radius:0 0 3px 3px;background:var(--acc)}
+§ .pfp .ost>div:nth-child(2)::before{background:var(--ok)}
+§ .pfp .ost>div:nth-child(3)::before{background:var(--ink);opacity:.5}
+§ .pfp .ost b{color:var(--ink)!important;font:800 26px var(--f-d)!important;letter-spacing:-.02em}
+§ .pfp .ost span{color:var(--muted)!important;font-size:12px!important;font-weight:600!important}
+§ .pfp .sech{margin-top:22px!important}
+§ .pfp .pbs button{border:1px solid var(--line2)!important;border-radius:14px!important;box-shadow:none!important}
+§ .pfp .pbs button[aria-pressed=true]{border-color:var(--acc)!important;outline:2px solid var(--acc);outline-offset:1px}
