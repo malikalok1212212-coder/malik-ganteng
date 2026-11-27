@@ -1,0 +1,217 @@
+/* Malik Tools v461: FULL UI REDESIGN. Gaya hitam-charcoal + aksen merah, kartu abu gelap, border tipis.
+   Hanya tampilan: tidak ada perubahan JS/API/routing. Tanda § diganti prefiks spesifisitas tinggi oleh scripts/build-redesign.py
+   (jalankan setiap selesai mengubah file ini). Hapus blok REDESIGN di src/style.css untuk kembali ke tampilan v460. */
+
+/* ---------- token ---------- */
+§,§[data-theme=dark]{--bg:#0b0b0d;--s1:#141416;--s2:#242426;--s3:#2d2d30;--panel:#141416;--field:#1a1a1d;--bd:rgba(255,255,255,.09);--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.13);--ink:#f5f5f6;--muted:#a1a1a9;--sh:rgba(0,0,0,.5);--dot:transparent;--nb:1px;--glow:rgba(227,38,46,.11);--acc:#e3262e;--acc2:#c81f27;--acct:#ff5b62;--on:#fff;--ok:#3ecf8e;--bad:#ff6b73;--hi:rgba(255,255,255,.05);--ac-y:var(--acc);--ac-i:var(--acc);--ac-p:var(--acc);--ac-c:var(--acc);--ac-o:var(--acc);--ac-ink:#f5f5f6;--r1:20px;--r2:16px;--r3:12px;--e1:0 1px 2px rgba(0,0,0,.4);--e2:0 1px 2px rgba(0,0,0,.35),0 12px 28px -16px rgba(0,0,0,.8);--e3:0 2px 6px rgba(0,0,0,.35),0 24px 48px -24px rgba(0,0,0,.9);color-scheme:dark}
+§[data-theme=light]{--bg:#f4f4f5;--s1:#fff;--s2:#fff;--s3:#ececee;--panel:#fff;--field:#f4f4f5;--bd:rgba(11,11,13,.12);--line:rgba(11,11,13,.09);--line2:rgba(11,11,13,.16);--ink:#121214;--muted:#5d5d66;--sh:rgba(11,11,13,.1);--dot:transparent;--nb:1px;--glow:rgba(227,38,46,.07);--acc:#d91f26;--acc2:#b9181f;--acct:#c4161d;--on:#fff;--ok:#16794a;--bad:#c4161d;--hi:#fff;--ac-y:var(--acc);--ac-i:var(--acc);--ac-p:var(--acc);--ac-c:var(--acc);--ac-o:var(--acc);--ac-ink:#121214;--e1:0 1px 2px rgba(11,11,13,.08);--e2:0 1px 2px rgba(11,11,13,.06),0 12px 28px -16px rgba(11,11,13,.22);--e3:0 2px 6px rgba(11,11,13,.07),0 24px 48px -24px rgba(11,11,13,.3);color-scheme:light}
+§{--tc:var(--acc);--hp:var(--acc);--f-ui:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--f-d:"Plus Jakarta Sans","Inter",system-ui,sans-serif}
+§ [style*="--tc"],§ main,§ .tri,§ .nxi,§ .ci,§ .ic,§ .tile{--tc:var(--acc)!important;--ic:var(--acc)!important}
+§ body{background:var(--bg)!important;background-image:radial-gradient(80% 32% at 50% -8%,var(--glow),transparent 72%)!important;background-repeat:no-repeat!important;font-family:var(--f-ui)!important;color:var(--ink)}
+§ ::selection{background:var(--acc);color:#fff}
+§ h1,§ h2,§ h3,§ .brand,§ .bt{font-family:var(--f-d)!important;letter-spacing:-.02em}
+
+/* ---------- header ---------- */
+§ .top{background:color-mix(in srgb,var(--bg) 86%,transparent)!important;-webkit-backdrop-filter:saturate(1.4) blur(18px);backdrop-filter:saturate(1.4) blur(18px);border:0!important;border-bottom:1px solid var(--line)!important;box-shadow:none!important}
+§ .top .ib,§ .top #th,§ .top #mn{background:var(--s2)!important;color:var(--ink)!important;border:1px solid var(--line)!important;border-radius:12px!important;box-shadow:none!important}
+§ .top .ib:hover{border-color:var(--line2)!important}
+§ .top #mn{color:var(--ink)!important}
+§ .top .pill{background:var(--s2)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+§ .top .brand .bt{font-weight:800!important;font-size:18px}
+§ .top .brand .bt::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--acc);margin-left:6px;vertical-align:middle}
+
+/* ---------- beranda ---------- */
+§ .lhc{background:radial-gradient(120% 100% at 100% 0%,rgba(227,38,46,.16),transparent 58%),var(--s2)!important;color:var(--ink)!important;border:1px solid var(--line2)!important;border-radius:24px!important;box-shadow:var(--e2)!important}
+§ .lhc::before{background:var(--acc)!important;color:#fff!important;border:2px solid var(--s2)!important;box-shadow:none!important}
+§ .lhc .lht small{background:var(--s3)!important;color:var(--muted)!important;border:1px solid var(--line)!important;border-radius:999px!important}
+§ .lhc .lht h2,§ .lhc .lht h2 b{-webkit-text-fill-color:currentColor!important}
+§ .lhc .lht h2{color:var(--muted)!important}
+§ .lhc .lht h2 b{color:var(--ink)!important}
+§ .lhc .lhtip{background:var(--s1)!important;border:1px solid var(--line)!important;border-radius:14px!important;box-shadow:none!important}
+§ .lhc .lhtip .lhtag{background:color-mix(in srgb,var(--acc) 18%,transparent)!important;color:var(--acct)!important}
+§ .lhs{background:var(--s2)!important;border:1px solid var(--line)!important;border-radius:16px!important;box-shadow:none!important;transition:border-color .2s,box-shadow .2s}
+§ .lhs:focus-within{border-color:var(--acc)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 22%,transparent)!important}
+§ .lhq,§ .lhi span,§ .lhab,§ .hc,§ .nxg,§ .tr,§ .hst,§ .ccard,§ .acc,§ .dp{background:var(--s2)!important;border:1px solid var(--line)!important;box-shadow:none!important;color:var(--ink)!important}
+§ .lhq{border-radius:18px!important}
+§ .lhq span{background:var(--s3)!important;color:var(--acc)!important;border:0!important;border-radius:12px!important}
+§ .lhq span svg,§ .tri svg,§ .nxi svg,§ .ci svg,§ .ic svg,§ .tile svg{stroke:currentColor!important}
+§ .lhi span b{color:var(--ink)!important}
+§ #hgo,§ .lhi button{background:var(--acc)!important;background-image:none!important;color:#fff!important;border:0!important;border-radius:14px!important;box-shadow:0 10px 24px -12px var(--acc)!important}
+§ .lhab h3{font-weight:800!important}
+§ .lhabc span{background:var(--s3)!important;color:var(--muted)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+§ .hh,§ .sech{color:var(--ink)!important;font:800 17px var(--f-d)!important;letter-spacing:-.01em!important;text-transform:none!important}
+§ .hh::after{content:"";display:inline-block;width:18px;height:3px;border-radius:3px;background:var(--acc);margin-left:10px;vertical-align:middle}
+
+/* ---------- kartu tool ---------- */
+§ .tri,§ .nxi,§ .trn,§ .ci,§ .ic:not(.cfm .ic),§ .tile{background:var(--s3)!important;color:var(--acc)!important;border:1px solid var(--line)!important;box-shadow:none!important;border-radius:14px!important}
+§ .trn{border-radius:999px!important;color:var(--muted)!important;font-weight:600!important}
+§ .hc{border-radius:20px!important}
+§ .tr{border-radius:16px!important;background:var(--field)!important}
+§ .nxg{border-radius:20px!important}
+§ .nxg.open{background:var(--s1)!important}
+§ .nxh,§ .nxt b{background:none!important;color:var(--ink)!important;border:0!important;box-shadow:none!important;font-weight:700!important}
+§ .nxt small,§ .hc small,§ .trb small,§ .trd,§ .lhab p{color:var(--muted)!important}
+§ .nxc{background:var(--s3)!important;color:var(--muted)!important;border:1px solid var(--line)!important;border-radius:999px!important}
+§ .nwb{background:color-mix(in srgb,var(--acc) 18%,transparent)!important;color:var(--acct)!important;border:0!important}
+@media (hover:hover){§ .hc:hover,§ .tr:hover,§ .lhq:hover{border-color:color-mix(in srgb,var(--acc) 55%,transparent)!important;transform:translateY(-2px)}}
+§ .hc:active,§ .tr:active,§ .lhq:active{transform:scale(.985)}
+
+/* ---------- navigasi ---------- */
+§ .bnav,§ .dock{background:color-mix(in srgb,var(--s1) 92%,transparent)!important;-webkit-backdrop-filter:saturate(1.4) blur(18px);backdrop-filter:saturate(1.4) blur(18px);border:0!important;border-top:1px solid var(--line)!important;box-shadow:0 -12px 30px -18px rgba(0,0,0,.7)!important}
+§ .bnav a,§ .dock a{background:transparent!important;border:0!important;box-shadow:none!important;color:var(--muted)!important;font-family:var(--f-ui)!important;font-weight:600!important;position:relative;transition:color .2s}
+§ .bnav a[aria-current=page],§ .dock a.on,§ .dock a[aria-current=page]{background:transparent!important;color:var(--acc)!important}
+§ .bnav a[aria-current=page]::before{content:"";position:absolute;top:-1px;left:50%;width:22px;height:3px;margin-left:-11px;border-radius:0 0 3px 3px;background:var(--acc)}
+§ .drw{background:var(--s1)!important;border-right:1px solid var(--line2)!important;box-shadow:var(--e3)!important}
+§ .dl{background:transparent!important;color:var(--ink)!important;border:1px solid transparent!important;box-shadow:none!important;border-radius:12px!important}
+§ .dl[aria-current=page]{background:color-mix(in srgb,var(--acc) 14%,transparent)!important;border-color:color-mix(in srgb,var(--acc) 30%,transparent)!important}
+§ .dh,§ .dh span{color:var(--muted)!important}
+§ .av,§ .pav,§ .pfp .av{background:color-mix(in srgb,var(--acc) 20%,var(--s3))!important;color:var(--acct)!important;border:1px solid var(--line2)!important;box-shadow:none!important}
+
+/* ---------- halaman tool ---------- */
+§ .panel:not(.cpanel),§ .owp,§ .modal,§ .gate .gc,§ .sr{background:var(--s1)!important;border:1px solid var(--line2)!important;border-radius:22px!important;box-shadow:var(--e3)!important;overflow:hidden}
+§ .panel:not(.cpanel) .bar,§ .owp .bar{background:var(--s2)!important;color:var(--muted)!important;border:0!important;border-bottom:1px solid var(--line)!important;font:700 12px var(--f-ui)!important;letter-spacing:.04em!important}
+§ .bar .pill{background:var(--s3)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+§ .thero{border-bottom:1px dashed var(--line2)!important}
+§ .thero h2{font-weight:800!important}
+§ .sub,§ .lede,§ .hint,§ .note,§ .foot{color:var(--muted)!important}
+§ label{color:var(--muted)!important;font-family:var(--f-ui)!important;font-weight:600!important;letter-spacing:.03em!important}
+§ input:not([type=checkbox]):not([type=radio]):not([type=range]),§ textarea,§ select{background:var(--field)!important;color:var(--ink)!important;border:1px solid var(--line2)!important;border-radius:14px!important;box-shadow:none!important;font-family:var(--f-ui)!important;transition:border-color .2s,box-shadow .2s}
+§ input:focus,§ textarea:focus,§ select:focus{border-color:var(--acc)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 22%,transparent)!important;outline:none!important}
+§ input::placeholder,§ textarea::placeholder{color:color-mix(in srgb,var(--muted) 70%,transparent)}
+§ button,§ .btn{font-family:var(--f-ui)!important;transition:transform .15s,background-color .2s,border-color .2s,box-shadow .2s}
+§ button.primary,§ .btn.primary,§ #go.primary{background:var(--acc)!important;background-image:none!important;color:#fff!important;border:0!important;border-radius:14px!important;box-shadow:0 10px 24px -12px var(--acc)!important;font-weight:700!important}
+§ button.primary:hover,§ .btn.primary:hover{background:var(--acc2)!important}
+§ button.primary:active,§ .btn.primary:active{transform:scale(.98)}
+§ .row button:not(.primary),§ .pfa button,§ .pfa .btn,§ .up,§ .ptr,§ .pwab{background:var(--s3)!important;color:var(--ink)!important;border:1px solid var(--line2)!important;border-radius:14px!important;box-shadow:none!important}
+§ .seg{background:var(--field)!important;border:1px solid var(--line)!important;border-radius:14px!important;box-shadow:none!important}
+§ .seg button{background:transparent!important;color:var(--muted)!important;border:0!important;box-shadow:none!important}
+§ .seg button[aria-pressed=true]{background:var(--acc)!important;color:#fff!important}
+§ .cat{background:var(--s2)!important;border:1px solid var(--line)!important;box-shadow:none!important;color:var(--ink)!important}
+§ .cat[aria-pressed=true],§ .cat.on{background:color-mix(in srgb,var(--acc) 16%,var(--s2))!important;color:var(--acct)!important;border-color:var(--acc)!important}
+§ .msg{border-radius:14px!important;font-family:var(--f-ui)!important}
+§ .msg.bad{color:var(--bad)!important}
+§ .msg.good{color:var(--ok)!important}
+§ .out,§ #res>*{border-radius:16px}
+§ .out,§ #res .panel{overflow-wrap:anywhere}
+§ pre,§ code{max-width:100%;overflow-x:auto}
+§ .ccard[aria-pressed=true]{border-color:var(--acc)!important;background:color-mix(in srgb,var(--acc) 10%,var(--s2))!important}
+§ .tg2{background:var(--s3)!important;color:var(--muted)!important;border:1px solid var(--line)!important;box-shadow:none!important}
+§ .tg2.rl-dev{background:var(--acc)!important;color:#fff!important;border-color:transparent!important}
+§ .tg2.rl-own{background:var(--ink)!important;color:var(--bg)!important;border-color:transparent!important}
+§ .tg2.rl-pre{background:var(--s3)!important;color:var(--acct)!important}
+§ a:focus-visible,§ button:focus-visible{outline:2px solid var(--acc)!important;outline-offset:2px!important}
+
+/* ---------- loading ---------- */
+§ .mld{background:var(--bg)!important}
+§ .mlda,§ .mldb i{stroke:var(--acc);background:var(--acc)}
+§ .mlda{background:none}
+
+/* ---------- desktop ---------- */
+@media (min-width:900px){
+§ .shell{max-width:1040px}
+§ .nxin{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+§ .lhg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+§ .bnav{left:50%!important;right:auto!important;width:min(560px,100%);transform:translateX(-50%);border-radius:20px 20px 0 0;border:1px solid var(--line)!important}
+}
+@media (prefers-reduced-motion:reduce){§ *{transition:none!important;animation-duration:.01ms!important}}
+§ .lhs input:not([type=checkbox]):not([type=radio]){background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+§ .lhi{background:none!important;border:0!important;box-shadow:none!important}
+/* gerak: ringan dan cepat. Fade-muncul (.rv1) dipertahankan, hover/tap responsif, masuk kategori tidak berlama-lama */
+§ .hc,§ .tr,§ .nxg,§ .lhq,§ .rv1{transition:opacity .3s ease,transform .28s var(--mt-ease,cubic-bezier(.22,1,.36,1)),border-color .18s,background-color .18s!important}
+§ .hc:active,§ .tr:active,§ .lhq:active{transition-duration:.08s!important}
+§ .nxl.in .nxg{animation:bin .32s var(--mt-ease,ease) both!important;animation-delay:calc(var(--i,0)*35ms)!important}
+§ .nxb{transition:grid-template-rows .24s var(--mt-ease,ease),visibility 0s .24s!important}
+§ .nxg.open .nxb{transition:grid-template-rows .24s var(--mt-ease,ease),visibility 0s!important}
+@media (prefers-reduced-motion:reduce){§ .nxl.in .nxg{animation:none!important}}
+§ .cnew,§ .sn,§ [class*=badge].on,§ .badge{color:#fff!important}
+§ .cnew,§ .sn{background:var(--acc)!important}
+
+/* ---------- dekorasi v461b: isi bagian yang polos (CSS saja, tanpa ubah fungsi) ---------- */
+§ body::after{display:block!important;content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.075) 1px,transparent 1.6px) 0 0/22px 22px;-webkit-mask:linear-gradient(#000,transparent 60%);mask:linear-gradient(#000,transparent 60%)}
+§[data-theme=light] body::after{background-image:radial-gradient(circle at 1px 1px,rgba(11,11,13,.09) 1px,transparent 1.6px)}
+§ main[data-tool]::after{content:"";display:block;height:240px;margin-top:30px;background:url(/logo-malik-tools.svg?v=461) center 40px/116px no-repeat;opacity:.07;filter:grayscale(1);pointer-events:none}
+§ .panel:not(.cpanel)::before{content:"";display:block;height:3px;background:linear-gradient(90deg,var(--acc),color-mix(in srgb,var(--acc) 0%,transparent) 75%)}
+§ .thero .tile{width:56px!important;height:56px!important;background:linear-gradient(145deg,color-mix(in srgb,var(--acc) 24%,var(--s3)),var(--s3))!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--acc) 32%,transparent),0 10px 26px -10px color-mix(in srgb,var(--acc) 70%,transparent)!important}
+§ .lhc{background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.07) 1px,transparent 1.6px) 0 0/16px 16px,radial-gradient(120% 100% at 100% 0%,rgba(227,38,46,.2),transparent 58%),var(--s2)!important}
+§[data-theme=light] .lhc{background:radial-gradient(circle at 1px 1px,rgba(11,11,13,.08) 1px,transparent 1.6px) 0 0/16px 16px,radial-gradient(120% 100% at 100% 0%,rgba(227,38,46,.14),transparent 58%),var(--s2)!important}
+§ .lhi span,§ .lhab{background:linear-gradient(var(--acc),var(--acc)) 14px 0/26px 3px no-repeat,linear-gradient(160deg,var(--s3),var(--s2) 60%)!important}
+§ .lhq span{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 24%,transparent),0 8px 18px -10px color-mix(in srgb,var(--acc) 60%,transparent)!important}
+§ .hc{background:linear-gradient(160deg,var(--s3),var(--s2) 58%)!important}
+§ .hc .tri{box-shadow:0 8px 20px -10px color-mix(in srgb,var(--acc) 65%,transparent)!important}
+§ .nxg{background:linear-gradient(135deg,var(--s2),var(--s1))!important}
+§ .nxg.open{border-color:color-mix(in srgb,var(--acc) 38%,transparent)!important;box-shadow:inset 3px 0 0 var(--acc)!important}
+§ .nxh{letter-spacing:.07em!important}
+§ .hh{display:flex!important;align-items:center;gap:10px}
+§ .hh::before{content:"";width:4px;height:16px;border-radius:2px;background:var(--acc);flex:none}
+§ .hh::after{content:"";flex:1;width:auto!important;height:1px!important;margin:0!important;border-radius:0!important;background:linear-gradient(90deg,var(--line2),transparent)!important}
+§ .dp{background:radial-gradient(120% 150% at 100% 0,rgba(227,38,46,.2),transparent 62%),var(--s2)!important}
+§ .bnav a[aria-current=page]::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(70% 90% at 50% 0,color-mix(in srgb,var(--acc) 22%,transparent),transparent);pointer-events:none}
+§ button.primary,§ .btn.primary,§ #hgo{background-image:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0) 55%)!important}
+§ .out{border-left:3px solid var(--acc)!important}
+§ .msg.good:not(:empty),§ .msg.bad:not(:empty){padding:10px 12px;border:1px solid transparent}
+§ .msg.good:not(:empty){background:color-mix(in srgb,var(--ok) 12%,transparent);border-color:color-mix(in srgb,var(--ok) 30%,transparent)}
+§ .msg.bad:not(:empty){background:color-mix(in srgb,var(--bad) 12%,transparent);border-color:color-mix(in srgb,var(--bad) 32%,transparent)}
+§[data-theme=light] main[data-tool]::after{opacity:.04}
+
+/* ---------- hero tamu (sebelum login) ---------- */
+§ .lp{position:relative;overflow:hidden;margin:0 0 16px;padding:22px 18px 18px;text-align:center;border:1px solid var(--line2);border-radius:26px;background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/28px 28px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/28px 28px,radial-gradient(120% 70% at 50% 0,rgba(227,38,46,.26),transparent 70%),var(--s1)}
+§ .lp::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,var(--s1));pointer-events:none}
+§ .lp>*{position:relative;z-index:1}
+§ .lpb{display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:7px 8px 7px 12px;border:1px solid var(--line2);border-radius:999px;background:color-mix(in srgb,var(--bg) 70%,transparent);color:var(--ink);font:600 13px var(--f-ui);cursor:pointer}
+§ .lpb i{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 25%,transparent)}
+§ .lpb b{color:var(--acct)}
+§ .lpb svg{width:22px;height:22px;padding:4px;border-radius:50%;background:var(--s3);stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+§ .lpt{margin:18px 0 12px;font:800 clamp(30px,9.4vw,42px)/1.08 var(--f-d)!important;letter-spacing:-.03em;color:var(--ink)}
+§ .lpt em{font-style:normal;color:var(--acct)}
+§ .lps{margin:0 auto 20px;max-width:32ch;color:var(--muted);font-size:15px;line-height:1.55}
+§ .lpa{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+§ .lpb1,§ .lpb2{display:grid;place-items:center;min-height:48px;padding:0 20px;border-radius:14px;font:700 15px var(--f-ui);text-decoration:none;cursor:pointer;transition:transform .15s,background-color .2s,border-color .2s}
+§ .lpb1{background:var(--acc)!important;background-image:linear-gradient(180deg,rgba(255,255,255,.18),transparent 55%)!important;color:#fff!important;border:0;box-shadow:0 10px 24px -12px var(--acc)}
+§ .lpb2{background:var(--s2)!important;color:var(--ink)!important;border:1px solid var(--line2)!important}
+§ .lpb1:active,§ .lpb2:active{transform:scale(.98)}
+§ .lpw{margin:22px auto 0;max-width:340px;text-align:left;border:1px solid var(--line2);border-radius:18px;background:color-mix(in srgb,var(--bg) 80%,transparent);overflow:hidden}
+§ .lpwh{display:flex;align-items:center;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line)}
+§ .lpwh i{width:9px;height:9px;border-radius:50%;background:var(--s3)}
+§ .lpwh span{margin-left:8px;padding:3px 10px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--muted);font:500 12px ui-monospace,Menlo,monospace}
+§ .lpw ol{margin:0;padding:12px 14px 14px;list-style:none;display:grid;gap:10px}
+§ .lpw li{display:flex;align-items:center;gap:10px;color:var(--ink);font-size:13.5px}
+§ .lpw li b{display:grid;place-items:center;flex:none;width:22px;height:22px;border-radius:7px;background:color-mix(in srgb,var(--acc) 18%,transparent);color:var(--acct);font:800 12px var(--f-ui)}
+§ .lp+.lh .lhc{display:none!important}
+@media (min-width:640px){§ .lpa{flex-direction:row;justify-content:center}§ .lpb1,§ .lpb2{min-width:200px}}
+§ .lpa{display:grid!important;grid-template-columns:minmax(0,1fr);gap:12px!important}
+§ .lpb1,§ .lpb2{width:100%!important;margin:0!important;flex:none!important;box-sizing:border-box}
+@media (min-width:640px){§ .lpa{grid-template-columns:repeat(2,minmax(0,220px));justify-content:center}}
+
+/* ---------- v462: ikon mode LIGHT (solid 100%, kontras jelas). Hanya aktif saat data-theme=light; mode dark tidak diubah ---------- */
+§[data-theme=light]{--ic1:#171717;--ic2:#525252;--ica:var(--acct);--ic-bad:#b91c1c;--icd1:#f5f5f5;--icd2:#d4d4d8}
+/* ikon sekunder: abu-abu tegas (chevron, panah dropdown, pencarian, tab tidak aktif) */
+§[data-theme=light] .bnav a:not([aria-current=page]) svg,§[data-theme=light] .dock a:not([aria-current=page]) svg,
+§[data-theme=light] .ddb svg,§[data-theme=light] .dd svg,
+§[data-theme=light] .trf svg,§[data-theme=light] .nxc svg,
+§[data-theme=light] .sr svg.i,§[data-theme=light] label#lhs2 svg,§[data-theme=light] .lhs svg,
+§[data-theme=light] .cat>svg.i,§[data-theme=light] .es svg{color:var(--ic2)!important;opacity:1!important}
+/* ikon utama: gelap solid */
+§[data-theme=light] .top .ib svg,§[data-theme=light] .top #th svg,§[data-theme=light] .top #mn svg,§[data-theme=light] .amh .ib svg,§[data-theme=light] .lpb.lpgo svg{color:var(--ic1)!important;opacity:1!important}
+/* ikon aktif / aksen: merah aksen, solid */
+§[data-theme=light] .bnav a[aria-current=page] svg,§[data-theme=light] .dock a[aria-current=page] svg{color:var(--acc)!important;opacity:1!important}
+/* area unggah (dropzone): sebelumnya cyan pucat di atas latar terang */
+§[data-theme=light] .drop svg,§[data-theme=light] .drop svg.i,§[data-theme=light] #c label.drop svg,§[data-theme=light] .tk2g .drop svg{color:var(--ica)!important;opacity:1!important}
+/* ikon di dalam panel gelap (kartu downloader .tk2 tetap gelap di mode light): terang solid */
+§[data-theme=light] .tk2 .fld>svg,§[data-theme=light] .tk2 .fld svg,§[data-theme=light] .tk2 p.nt svg,§[data-theme=light] .tk2 .ib svg,§[data-theme=light] .tk2 #tkp svg,§[data-theme=light] .tk2 #tkx svg{color:var(--icd1)!important;opacity:1!important}
+§[data-theme=light] .tk2 .ico.o svg,§[data-theme=light] .tk2 .chip svg,§[data-theme=light] .tk2 .sgb svg{opacity:1!important}
+§[data-theme=light] .tk2 .ico.o{color:var(--icd2)!important}
+/* ikon galat: merah tua solid (sebelumnya #f87171 pucat di atas latar pink) */
+§[data-theme=light] .sec.err svg,§[data-theme=light] .msg.bad svg,§[data-theme=light] .err svg{color:var(--ic-bad)!important;stroke:currentColor!important;opacity:1!important}
+/* placeholder skeleton: tidak transparan */
+§[data-theme=light] .sk-img svg,§[data-theme=light] .sk-vid svg{opacity:1!important;stroke:var(--ica)!important}
+§[data-theme=light] .sk-vid svg{fill:color-mix(in srgb,var(--ica) 14%,#fff)!important}
+/* pemutar Spotify (panel #282828 tetap gelap): putih solid, bukan 80% */
+§[data-theme=light] .spsp button svg{color:#fff!important;opacity:1!important}
+§[data-theme=light] .spsp .spsh .tc svg{color:var(--icd2)!important}
+/* centang daftar Follow Channel: putih di atas lingkaran merah (sebelumnya gelap) */
+§[data-theme=light] .fcl li:before{background:var(--acc) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/12px no-repeat!important}
+/* ikon di drawer: sebelumnya 62% transparan di aturan lama */
+§[data-theme=light] #drw .dl .ic,§[data-theme=light] #drw .cg .dl .ic,§[data-theme=light] #drw .cat .ci{color:var(--ica)!important}
+§[data-theme=light] #drw .dl .ic svg,§[data-theme=light] #drw .cat .ci svg{opacity:1!important}
+/* ikon tile aksen (kartu tool, drawer, hero): merah aksen sedikit lebih tua agar tajam di atas tile abu-abu */
+§[data-theme=light] .tri svg,§[data-theme=light] .nxi svg,§[data-theme=light] .trn svg,§[data-theme=light] .ci svg,§[data-theme=light] .tile svg,§[data-theme=light] .ic:not(.cfm .ic) svg,§[data-theme=light] .lhq>span svg{color:var(--ica)!important;stroke:currentColor!important;opacity:1!important}

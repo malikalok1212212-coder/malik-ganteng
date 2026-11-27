@@ -165,12 +165,13 @@ module.exports = async (req, res) => {
         if (!coins && !role) return fail(400, 'Isi jumlah koin, atau pilih role.');
         if (!(days >= 0 && days <= 3650)) return fail(400, 'Masa aktif harus 0 (permanen) sampai 3650 hari.');
         if (!(max >= 1 && max <= 10000)) return fail(400, 'Batas pemakaian harus 1 sampai 10000.');
-        if (!(n >= 1 && n <= 50)) return fail(400, 'Jumlah kode harus 1 sampai 50.');
+        if (!(n >= 1 && n <= 200)) return fail(400, 'Jumlah kode harus 1 sampai 200.');
         const exp = Math.floor(Number(body.exp)) || 0;
         if (exp && !(exp > Date.now() && exp < 4e12)) return fail(400, 'Waktu kedaluwarsa harus di masa depan.');
         const custom = body.custom ? redeem.canon(body.custom) : '';
         if (custom && (n !== 1 || custom.length < 4 || custom.length > 24)) return fail(400, 'Kode kustom hanya untuk 1 kode, 4 sampai 24 huruf atau angka.');
         const spec = { coins, role, days, max, exp, note: clip(body.note, 60), by: me.email };
+        if (body.batch === true && n > 1) spec.batch = redeem.newBatch(); // 1 akun hanya boleh memakai 1 kode dari paket ini
         // Umumkan otomatis ke Saluran / grup WhatsApp (opsional). Divalidasi sebelum kode dibuat; kegagalan kirim tidak membatalkan kode.
         const an = body.announce && typeof body.announce === 'object' ? body.announce : null;
         const anCh = !!(an && an.channel === true), anGr = !!(an && an.groups === true);
@@ -179,7 +180,7 @@ module.exports = async (req, res) => {
         if (want && await rate.limited('bcsend', me.sub || me.email, 5, 60)) return fail(429, 'Terlalu cepat. Tunggu sebentar sebelum membuat kode yang diumumkan lagi.');
         const out = await redeem.create(spec, n, custom);
         if (out.error) return fail(out.made && out.made.length ? 500 : 400, out.error);
-        await alog.add({ by: me.email, act: 'code-gen', detail: out.made.length + ' kode ' + role.toUpperCase() + ' ' + (days ? days + ' hari' : 'permanen') + ', ' + max + 'x pakai' + (spec.note ? ' (' + spec.note + ')' : '') });
+        await alog.add({ by: me.email, act: 'code-gen', detail: out.made.length + ' kode ' + role.toUpperCase() + ' ' + (days ? days + ' hari' : 'permanen') + ', ' + max + 'x pakai' + (spec.batch ? ', 1 akun 1 kode (paket ' + spec.batch + ')' : '') + (spec.note ? ' (' + spec.note + ')' : '') });
         const announce = want ? await announceCode(me, spec, out.made[0], an, '') : null;
         return res.status(200).json({ ok: true, codes: out.made.map(redeem.pretty), announce });
       }

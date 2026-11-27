@@ -416,7 +416,7 @@ const CATS=[
 const catOf=t=>CATS.some(c=>c.k===CAT[t.id])?CAT[t.id]:'tools';
 let hq='';let flt='all';const nxo=new Set(['tools','util']),NXN=Object.assign({fav:'Favorit'},Object.fromEntries(CATS.map(c=>[c.k,c.n])));let nxFirst=true;
 const main=$(document,'#main'),dock=$(document,'#dock'),root=document.documentElement;
-const LOGO='/icon-192.png?v=419',LOGO_HTML=`<img src="${LOGO}" alt="" width="36" height="36" onerror="this.replaceWith(document.createTextNode('M'))">`;
+const LOGO='/icon-192.png?v=461',LOGO_HTML=`<img src="${LOGO}" alt="" width="36" height="36" onerror="this.replaceWith(document.createTextNode('M'))">`;
 $(document,'#logo').innerHTML=LOGO_HTML;
 function buildDock(){dock.innerHTML=tools.map(t=>`<a href="#${t.id}" data-id="${t.id}" style="--tc:${META[t.id].c}">${svg(IC[t.id])}${esc(META[t.id].tab)}</a>`).join('');const cur=location.hash.slice(1);dock.querySelectorAll('a').forEach(a=>{if(a.dataset.id===cur)a.setAttribute('aria-current','page')})}
 buildDock();
@@ -529,6 +529,7 @@ drw.addEventListener('click',e=>{
  if(e.target.id==='dall'){dopen=dopen.size===DCATS.length?new Set():new Set(DCATS.map(x=>x[0]));dList()}});
 $(drw,'#dq').oninput=e=>{dq=e.target.value;dList()};
 const TIPS=['Ketuk ☆ di tool untuk menyimpannya ke favorit.','Foto besar dikecilkan otomatis sebelum diunggah.','Ngobrol bareng di Global Chat lewat menu samping.','Hasil tool bisa disalin sekali ketuk.','Ganti tema terang/gelap lewat tombol matahari di atas.'];
+function guestHeroHtml(){return `<section class="lp" aria-label="Selamat datang di Malik Tools"><button type="button" class="lpb lpgo" aria-label="Lihat semua tool"><i aria-hidden="true"></i><span><b>${tools.length}</b> tool aktif sekarang</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><h2 class="lpt">Satu tempat untuk semua <em>tools</em> yang kamu butuhkan.</h2><p class="lps">Downloader, maker, Spotify, dan puluhan utilitas lain, langsung dari browser HP tanpa instal aplikasi.</p><div class="lpa"><a class="lpb1" href="#profil">Masuk gratis</a><button type="button" class="lpb2 lpgo">Jelajahi semua tool</button></div><div class="lpw" aria-hidden="true"><div class="lpwh"><i></i><i></i><i></i><span>maliktools.biz.id</span></div><ol><li><b>1</b>Pilih tool yang kamu butuhkan</li><li><b>2</b>Tempel link atau isi form</li><li><b>3</b>Hasil siap diunduh atau disalin</li></ol></div></section>`}
 function welcomeHtml(){const u=AUTH.user,h=new Date().getHours(),g=h<4?'Selamat malam':h<11?'Selamat pagi':h<15?'Selamat siang':h<18?'Selamat sore':'Selamat malam',n=pName()||'Tamu',st=ls.get('mt_stats')||{},vs=Object.values(st),ok=vs.reduce((a,x)=>a+x.ok,0),all=ok+vs.reduce((a,x)=>a+x.err,0),fv=(ls.get('mt_fav')||[]).length,d=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long'}),tip=TIPS[Math.floor(Date.now()/864e5)%TIPS.length];
  const nm=esc(n.split(' ')[0]);
  const ini=esc((n.trim()[0]||'T').toUpperCase()),emo=h<4?'🌙':h<11?'☀️':h<15?'🌤️':h<18?'🌇':'🌙';
@@ -553,7 +554,7 @@ async function render(){const rt=++RT;
  let t=tools.find(x=>x.id===location.hash.slice(1));
  if(t&&!t.html){dock.hidden=true;main.innerHTML=skelHtml('tool');try{await loadMod('tools')}catch(e){if(rt===RT)main.innerHTML=modFail();return}if(rt!==RT)return;t=tools.find(x=>x.id===location.hash.slice(1))}
  if(!t){delete main.dataset.tool;dock.hidden=true;$(document,'#logo').innerHTML=LOGO_HTML;document.title='Malik Tools';
-  hq='';main.innerHTML=`${welcomeHtml()}${annHtml()}<div id="hot"></div><div class="nxl" id="bn" role="list" aria-label="Kategori tool"></div><div class="live" id="live" hidden></div><p class="foot">Dibuat oleh Malik</p><nav class="foot2" aria-label="Informasi"><a href="/tentang">Tentang</a><a href="/privasi">Privasi</a><a href="/syarat">Syarat</a><a href="/bantuan">Bantuan</a></nav>`;liveDraw();
+  hq='';main.innerHTML=`${AUTH.user?'':guestHeroHtml()}${welcomeHtml()}${annHtml()}<div id="hot"></div><div class="nxl" id="bn" role="list" aria-label="Kategori tool"></div><div class="live" id="live" hidden></div><p class="foot">Dibuat oleh Malik</p><nav class="foot2" aria-label="Informasi"><a href="/tentang">Tentang</a><a href="/privasi">Privasi</a><a href="/syarat">Syarat</a><a href="/bantuan">Bantuan</a></nav>`;liveDraw();
   const draw=()=>{const fv=ls.get('mt_fav')||[],chev=svg('<path d="M6 9l6 6 6-6"/>'),go=svg('<path d="M9 6l6 6-6 6"/>');
    const star=svg('<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>');
    const row=x=>{const m=META[x.id],f=fv.includes(x.id),nt=(m.note||'GRATIS'),kr=/koin/i.test(nt);return `<a class="tr" role="listitem" href="#${x.id}" style="--tc:${m.c}"><span class="tri" aria-hidden="true">${svg(IC[x.id]||IC.go)}</span><span class="trb"><span class="trh"><b>${esc(x.name)}${isNew(x.id)?'<span class="nwb">BARU</span>':''}</b><span class="trn${kr?' k':''}">${esc(nt.toLowerCase())}</span></span><span class="trd">${esc(m.lead)}</span></span><span class="trf${f?' on':''}" data-fav="${x.id}" role="button" aria-label="Favorit ${esc(x.name)}" aria-pressed="${f}">${star}</span><span class="trg" aria-hidden="true">${go}</span></a>`};
@@ -563,7 +564,7 @@ async function render(){const rt=++RT;
    $(main,'#bn').innerHTML=G.map((g,i)=>{const k=g[0],n=g[4].length,o=n>0&&nxo.has(k);
     return `<section class="nxg${o?' open':''}" role="listitem" style="--tc:${g[2]};--i:${i}"><button type="button" class="nxh" data-g="${k}"${n?'':' disabled'} aria-expanded="${o}" aria-controls="nx-${k}"><span class="nxi">${svg(g[3])}</span><span class="nxt"><b>${g[1]}</b><small>${n?n+' tool':'Segera hadir'}</small></span><span class="nxc" aria-hidden="true"${n?'':' style="visibility:hidden"'}>${chev}</span></button><div class="nxb" id="nx-${k}"><div class="nxin">${g[4].map(row).join('')}</div></div></section>`}).join('');nxFirst=false};
   {const hv=$(main,'#hcv');if(hv)crLoad().then(c=>{const e=$(main,'#hcv');if(e)e.textContent=c?(c.unlimited?'Tak terbatas':Number(c.left||0).toLocaleString('id-ID')+' koin'):'-'})}
-  const hg=$(main,'#hgo');if(hg)hg.onclick=()=>{const b=$(main,'#bn');if(b)b.scrollIntoView({behavior:'smooth',block:'start'})};
+  const hg=$(main,'#hgo');if(hg)hg.onclick=()=>{const b=$(main,'#bn');if(b)b.scrollIntoView({behavior:'smooth',block:'start'})};main.querySelectorAll('.lpgo').forEach(x=>x.onclick=()=>{const b=$(main,'#bn');if(b)b.scrollIntoView({behavior:'smooth',block:'start'})});
   const ap=$(main,'.apo');if(ap){ap.querySelector('.x').onclick=()=>{try{sessionStorage.setItem('mt_ann',String(ANN.ts))}catch(e){}ap.remove()};ap.querySelector('img').onclick=e=>{const d=document.createElement('div');d.className='lbx';d.innerHTML=`<img src="${esc(e.target.src)}" alt="Poster">${unduhBtn(e.target.src,'poster.jpg','Unduh Foto')}`;d.onclick=ev=>{if(!(ev.target.closest&&ev.target.closest('.unb')))d.remove()};document.body.appendChild(d)}}
   annToast();
   {const hqi=$(main,'#hq');if(hqi)hqi.oninput=()=>{hq=hqi.value;draw()}}
@@ -697,7 +698,7 @@ let dpr=null;
 const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),
  isStd=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true,
  pwaCan=()=>!isStd()&&(!!dpr||isIOS);
-const PWA_IMG='/icon-192.png?v=417';
+const PWA_IMG='/icon-192.png?v=461';
 function pwaSheet(){if(document.getElementById('pws'))return;const d=document.createElement('div');d.id='pws';d.className='pws';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');d.setAttribute('aria-label','Cara pasang ke layar utama');
  const shr='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 00-1 1v8a1 1 0 001 1h14a1 1 0 001-1v-8a1 1 0 00-1-1h-1"/></svg>',pls='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',ok='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
  const steps=isIOS?[[shr,'Ketuk tombol <b>Bagikan</b> di bawah Safari'],[pls,'Pilih <b>Tambah ke Layar Utama</b>'],[ok,'Ketuk <b>Tambah</b>, selesai']]:[[shr,'Buka menu <b>⋮</b> di pojok kanan atas browser'],[pls,'Pilih <b>Pasang aplikasi</b> atau <b>Tambahkan ke layar utama</b>'],[ok,'Ketuk <b>Pasang</b>, selesai']];
@@ -776,7 +777,7 @@ authP.then(()=>{if(location.hash.slice(1)==='chat')renderPage('chat')});
 authP.then(()=>PUSH.sync());
 const mentionsMe=m=>{const u=AUTH.user;if(!u||!m||m.mine||(m.sub&&m.sub===u.sub))return false;if(m.all)return true;const n=(u.name||'').split(' ')[0].toLowerCase();return !!n&&!!m.text&&m.text.toLowerCase().includes('@'+n)};
 const notifOn=()=>ls.get('mt_notif')!==false;
-function showNotif(title,body){try{if(!('Notification' in window)||Notification.permission!=='granted')return;const o={body,icon:'/icon-192.png',badge:'/icon-192.png',tag:'mt-chat',renotify:true,data:{url:'/#chat'}};
+function showNotif(title,body){try{if(!('Notification' in window)||Notification.permission!=='granted')return;const o={body,icon:'/icon-192.png?v=461',badge:'/icon-192.png?v=461',tag:'mt-chat',renotify:true,data:{url:'/#chat'}};
  if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(r=>r.showNotification(title,o)).catch(()=>{try{new Notification(title,o)}catch(e){}});else new Notification(title,o)}catch(e){}}
 /* ===== Web Push (notifikasi saat situs ditutup; pengirim ada di api/_push.js) ===== */
 const PUSH={
@@ -860,7 +861,7 @@ addEventListener('hashchange',route);route();
  function open(){
   if(g)return;
   g=document.createElement('div');g.className='gate';g.setAttribute('role','dialog');g.setAttribute('aria-modal','true');g.setAttribute('aria-label','Masuk');
-  g.innerHTML='<div class="gb"><div class="gbr"><img src="/icon-192.png?v=419" alt="" width="56" height="56"><span>Malik Tools<small>Tools gratis, langsung dari HP</small></span></div><div class="gc"></div><p class="gl">Dengan masuk, kamu setuju dengan <a href="/syarat" target="_blank" rel="noopener">Syarat Penggunaan</a> dan <a href="/privasi" target="_blank" rel="noopener">Kebijakan Privasi</a>.</p><div class="chips" aria-hidden="true"><span style="--c:#4fd69a">AM Premium</span><span style="--c:#4fd69a">Hapus BG</span><span style="--c:#4fd69a">HD Gambar</span><span style="--c:#ff8fb8">Bypass Link</span><span style="--c:#8f9aff">Global Chat</span></div></div>';
+  g.innerHTML='<div class="gb"><div class="gbr"><img src="/icon-192.png?v=461" alt="" width="56" height="56"><span>Malik Tools<small>Tools gratis, langsung dari HP</small></span></div><div class="gc"></div><p class="gl">Dengan masuk, kamu setuju dengan <a href="/syarat" target="_blank" rel="noopener">Syarat Penggunaan</a> dan <a href="/privasi" target="_blank" rel="noopener">Kebijakan Privasi</a>.</p><div class="chips" aria-hidden="true"><span style="--c:#4fd69a">AM Premium</span><span style="--c:#4fd69a">Hapus BG</span><span style="--c:#4fd69a">HD Gambar</span><span style="--c:#ff8fb8">Bypass Link</span><span style="--c:#8f9aff">Global Chat</span></div></div>';
   g.addEventListener('click',e=>{const t=e.target.closest('[data-go],[data-eye]');if(!t)return;
    if(t.dataset.go){go(t.dataset.go)}
    else{const i=g.querySelector('#'+t.dataset.eye);i.type=i.type==='password'?'text':'password'}});
@@ -874,7 +875,7 @@ function mtChannel(){
  if(!/^https:\/\/(www\.)?whatsapp\.com\/channel\/[\w-]+$/i.test(CHANNEL_URL)||/ISI_LINK/.test(CHANNEL_URL))return;
  if(document.querySelector('.gate,.fcm'))return;
  const m=document.createElement('div');m.className='fcm';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.setAttribute('aria-labelledby','fct1');m.setAttribute('aria-describedby','fcd1');
- m.innerHTML='<div class="fcc"><button type="button" class="fcx" id="fcx" aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="fca"><img src="/icon-192.png?v=419" alt="" width="84" height="84"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></svg></i></div><p class="fce">Channel Resmi</p><h2 id="fct1">Follow Malik Tools</h2><p class="fcd" id="fcd1">Biar tidak ketinggalan info dan kode dari kami, follow channel WhatsApp resmi Malik Tools.</p><ul class="fcl"><li>Info terbaru Malik Tools</li><li>Kode redeem Premium atau VIP</li></ul><div class="fcb"><a class="fcg" id="fcf" href="'+CHANNEL_URL+'" target="_blank" rel="noopener noreferrer">Follow Channel<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a><button type="button" class="fcs" id="fcn">Nanti saja</button></div></div>';
+ m.innerHTML='<div class="fcc"><button type="button" class="fcx" id="fcx" aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="fca"><img src="/icon-192.png?v=461" alt="" width="84" height="84"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></svg></i></div><p class="fce">Channel Resmi</p><h2 id="fct1">Follow Malik Tools</h2><p class="fcd" id="fcd1">Biar tidak ketinggalan info dan kode dari kami, follow channel WhatsApp resmi Malik Tools.</p><ul class="fcl"><li>Info terbaru Malik Tools</li><li>Kode redeem Premium atau VIP</li></ul><div class="fcb"><a class="fcg" id="fcf" href="'+CHANNEL_URL+'" target="_blank" rel="noopener noreferrer">Follow Channel<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a><button type="button" class="fcs" id="fcn">Nanti saja</button></div></div>';
  document.body.appendChild(m);
  const prev=document.activeElement;
  const close=f=>{if(f===true)try{localStorage.setItem('mt_chf','1')}catch(e){}document.removeEventListener('keydown',key);m.classList.remove('on');setTimeout(()=>{m.remove();if(prev&&prev.focus)try{prev.focus()}catch(e){}},220)};

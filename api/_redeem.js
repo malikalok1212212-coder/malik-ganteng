@@ -7,36 +7,43 @@ const crypto = require('crypto');
 const R = require('./_redis');
 const credits = require('./_credits');
 
-const H = 'mt:redeem:codes', U = 'mt:redeem:used', S = (c) => 'mt:redeem:by:' + c;
+const H = 'mt:redeem:codes', U = 'mt:redeem:used', S = (c) => 'mt:redeem:by:' + c, B = (b) => 'mt:redeem:batch:' + b;
 const DAY = 24 * 60 * 60 * 1000;
 const ALPHA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 32 karakter, tanpa I dan O (mudah tertukar dengan 1 dan 0)
 const MAX_CODES = 3000;
 
 const canon = (v) => String(v == null ? '' : v).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 40);
 const pretty = (c) => (/^MT[A-Z0-9]{12}$/.test(c) ? 'MT-' + c.slice(2, 6) + '-' + c.slice(6, 10) + '-' + c.slice(10) : c);
+const newBatch = () => crypto.randomBytes(6).toString('hex').toUpperCase();
 const gen = () => { let s = ''; for (let i = 0; i < 12; i++) s += ALPHA[crypto.randomInt(ALPHA.length)]; return 'MT' + s; };
 const roleName = (r) => String(r || '').toUpperCase();
 
 // Ambil jatah satu pemakaian secara atomik: cek ada, tidak kedaluwarsa, pengguna belum pernah pakai, kuota masih ada.
-const CLAIM = "local raw=redis.call('HGET',KEYS[1],ARGV[1]); if not raw then return {'NOCODE'} end; local c=cjson.decode(raw); local exp=tonumber(c['exp']) or 0; if exp>0 and exp<=tonumber(ARGV[3]) then return {'EXPIRED'} end; if redis.call('SISMEMBER',KEYS[3],ARGV[2])==1 then return {'DUP'} end; local used=tonumber(redis.call('HGET',KEYS[2],ARGV[1]) or '0'); local max=tonumber(c['max']) or 1; if used>=max then return {'EMPTY'} end; redis.call('HINCRBY',KEYS[2],ARGV[1],1); redis.call('SADD',KEYS[3],ARGV[2]); return {'OK',raw}";
+const CLAIM = "local raw=redis.call('HGET',KEYS[1],ARGV[1]); if not raw then return {'NOCODE'} end; local c=cjson.decode(raw); local exp=tonumber(c['exp']) or 0; if exp>0 and exp<=tonumber(ARGV[3]) then return {'EXPIRED'} end; if redis.call('SISMEMBER',KEYS[3],ARGV[2])==1 then return {'DUP'} end; if ARGV[4]=='1' and redis.call('SISMEMBER',KEYS[4],ARGV[2])==1 then return {'BATCH'} end; local used=tonumber(redis.call('HGET',KEYS[2],ARGV[1]) or '0'); local max=tonumber(c['max']) or 1; if used>=max then return {'EMPTY'} end; redis.call('HINCRBY',KEYS[2],ARGV[1],1); redis.call('SADD',KEYS[3],ARGV[2]); if ARGV[4]=='1' then redis.call('SADD',KEYS[4],ARGV[2]) end; return {'OK',raw}";
 // Batalkan jatah yang sudah diambil (dipakai bila role gagal diterapkan).
-const RELEASE = "if redis.call('SREM',KEYS[3],ARGV[2])==1 then local u=tonumber(redis.call('HGET',KEYS[2],ARGV[1]) or '0'); if u>0 then redis.call('HINCRBY',KEYS[2],ARGV[1],-1) end end; return 1";
+const RELEASE = "if ARGV[3]=='1' then redis.call('SREM',KEYS[4],ARGV[2]) end; if redis.call('SREM',KEYS[3],ARGV[2])==1 then local u=tonumber(redis.call('HGET',KEYS[2],ARGV[1]) or '0'); if u>0 then redis.call('HINCRBY',KEYS[2],ARGV[1],-1) end end; return 1";
 
 const MSG = {
   NOCODE: 'Kode tidak ditemukan. Cek lagi penulisannya.',
   EXPIRED: 'Kode ini sudah kedaluwarsa.',
   DUP: 'Kamu sudah pernah memakai kode ini.',
-  EMPTY: 'Kode ini sudah habis dipakai.'
+  EMPTY: 'Kode ini sudah habis dipakai.',
+  BATCH: 'Akunmu sudah memakai satu kode dari paket ini. Satu akun hanya boleh memakai satu kode per paket.'
 };
 
 async function claim(code, sub, now = Date.now()) {
-  const [res] = await R.run([['EVAL', CLAIM, 3, H, U, S(code), code, String(sub), String(now)]]);
+  const c0 = await get(code); // butuh id paket (batch) untuk kunci "1 akun 1 kode per paket"
+  const batch = c0 && c0.batch ? String(c0.batch) : '';
+  const [res] = await R.run([['EVAL', CLAIM, 4, H, U, S(code), B(batch || '-'), code, String(sub), String(now), batch ? '1' : '0']]);
   const tag = Array.isArray(res) ? res[0] : '';
   if (tag !== 'OK') return { error: MSG[tag] || 'Kode tidak bisa dipakai.' };
   let c; try { c = JSON.parse(res[1]); } catch (e) { return { error: 'Data kode rusak. Hubungi developer.' }; }
   return { c };
 }
-const release = (code, sub) => R.run([['EVAL', RELEASE, 3, H, U, S(code), code, String(sub)]]);
+const release = async (code, sub) => {
+  const c = await get(code); const batch = c && c.batch ? String(c.batch) : '';
+  return R.run([['EVAL', RELEASE, 4, H, U, S(code), B(batch || '-'), code, String(sub), batch ? '1' : '0']]);
+};
 
 // Terapkan kode ke data pengguna (rec diubah langsung). Mengembalikan teks alasan bila ditolak, atau null bila berhasil.
 // roleActive dari _auth: true bila Premium/VIP masih berlaku. Kode berisi koin (c.coins) dan/atau role (c.role, opsional).
@@ -108,4 +115,4 @@ async function remove(code) {
 async function users(code) { const [m] = await R.run([['SMEMBERS', S(code)]]); return m || []; }
 async function get(code) { const [raw] = await R.run([['HGET', H, code]]); try { return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
 
-module.exports = { canon, pretty, claim, release, apply, describe, list, create, remove, users, get, roleName };
+module.exports = { newBatch, canon, pretty, claim, release, apply, describe, list, create, remove, users, get, roleName };
