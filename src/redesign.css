@@ -601,3 +601,8 @@
 § .bar{background:var(--bg)!important}
 /* Latar Spotify: tanpa blur besar */
 § .spbg{filter:brightness(.62)!important}
+
+/* ===== v484: chip fitur (Tanpa watermark, Kualitas HD, ...) di semua tool: selalu turun baris, tidak terpotong/meluber di layar sempit ===== */
+§ .tk2 .chips,§ .tk2 .card.form .chips{display:flex!important;flex-wrap:wrap!important;justify-content:flex-start!important;align-items:flex-start!important;overflow:visible!important;min-width:0!important;max-width:100%!important;gap:6px!important}
+§ .tk2 .chip,§ .tk2 .card.form .chip{flex:0 1 auto!important;min-width:0!important;max-width:100%!important;height:auto!important;min-height:28px!important;padding:4px 9px!important;white-space:normal!important;line-height:1.25!important;overflow-wrap:anywhere}
+§ .tk2 .chip svg,§ .tk2 .card.form .chip svg{flex:none!important}
