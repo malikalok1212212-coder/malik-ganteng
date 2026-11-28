@@ -652,6 +652,22 @@ function amFind(raw) {
   if (!list.length) data.catatan = 'Tidak ada link preset di komentar video ini.';
   return { link: null, data };
 }
+function storyClean(raw) {
+  // api-cloud /tools/storyclean: { status, result:{ mode, job, filename, type, bytes, status, code, note } }
+  const r = raw && typeof raw === 'object' && raw.result && typeof raw.result === 'object' ? raw.result : null;
+  if (!r || typeof r.code !== 'string' || !r.code.trim()) return null;
+  const data = { kode: r.code.trim().slice(0, 80) };
+  if (r.mode) data.mode = String(r.mode).slice(0, 30);
+  if (r.job) data.job = String(r.job).slice(0, 60);
+  if (r.status) data.status = String(r.status).slice(0, 30);
+  if (r.filename) data.file = String(r.filename).slice(0, 120);
+  if (r.type) data.tipe = String(r.type).slice(0, 60);
+  if (Number.isFinite(Number(r.bytes))) data.ukuran = String(Number(r.bytes));
+  if (r.note) data.catatan = String(r.note).slice(0, 300);
+  const gu = String(process.env.STORYCLEAN_GROUP_URL || '').trim(); // link grup WhatsApp tempat kode dikirim (opsional)
+  if (/^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9_-]+/.test(gu)) data.grup = gu.slice(0, 200);
+  return { link: null, data };
+}
 function gcOpenGraph(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const r = raw.hybridGraph || raw.openGraph || raw.htmlInferred ? raw : (raw.result && typeof raw.result === 'object' ? raw.result : (raw.data && typeof raw.data === 'object' ? raw.data : raw));
@@ -1220,6 +1236,11 @@ module.exports = async (req, res) => {
       if (t.shape === 'amfind') {
         const x = amFind(data);
         if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan data video. Pastikan link TikTok publik, lalu coba lagi.', retry: true };
+        return { ok: true, link: null, data: x.data };
+      }
+      if (t.shape === 'storyclean') {
+        const x = storyClean(data);
+        if (!x) return { ok: false, code: 502, error: 'Provider tidak mengembalikan kode. Coba lagi sebentar lagi.', retry: true };
         return { ok: true, link: null, data: x.data };
       }
       if (t.shape === 'gcopengraph') {
