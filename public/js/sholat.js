@@ -161,7 +161,7 @@
       + '@keyframes sltdr{from{transform:translateX(-50px)}to{transform:translateX(90px)}}'
       + '@keyframes sltss{0%,86%{opacity:0;transform:translate(0,0)}88%{opacity:.95}100%{opacity:0;transform:translate(-70px,32px)}}'
       + '.slt.sltz .sltb svg *{animation-play-state:paused!important}'
-      + '@media (prefers-reduced-motion:reduce){.sltb svg *{animation:none!important}}'
+      + '@media (prefers-reduced-motion:reduce){.sltb .cl1,.sltb .cl2,.sltb .ss{animation:none!important}.sltb .tw{animation-duration:5s}.sltb .wn{animation-duration:7s}.sltb .mh{animation-duration:8s}}'
       + '.sltg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}'
       + '.slti{border:1px solid var(--line,var(--bd));border-radius:12px;padding:9px 10px;background:var(--s1,var(--field));min-width:0}'
       + '.slti small{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}'
