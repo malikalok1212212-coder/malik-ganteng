@@ -893,6 +893,19 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
    res.innerHTML=`<div class="out"><code style="display:block;word-break:break-all;max-height:9em;overflow:auto">${esc(d.token||'')}</code><div class="row"><button class="primary" id="cp">Salin token</button></div>${d.mode||d.durasi?`<dl>${d.mode?`<dt>Mode</dt><dd>${esc(d.mode)}</dd>`:''}${d.durasi?`<dt>Durasi</dt><dd>${esc(d.durasi)}</dd>`:''}</dl>`:''}</div>`;
    $(r,'#cp').onclick=x=>copy(d.token||'',x.target)};
   go.onclick=run;$(r,'#u').onkeydown=ev=>{if(ev.key==='Enter')run()}}},
+{id:'story-clean',name:'Story Clean',desc:'Buat kode Story Clean. Kirim kode yang muncul lalu videonya (maks. 100 MB) di grup WhatsApp untuk melanjutkan prosesnya.',
+ html:()=>`<label for="md">Mode</label><select id="md"><option value="story">Story</option></select>
+<div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div>
+<div class="row"><button class="primary" id="go">Buat kode</button></div><p class="msg" id="m" role="status"></p><div id="res"></div>`,
+ init:r=>{const go=$(r,'#go'),m=$(r,'#m'),res=$(r,'#res');
+  const run=async()=>{go.disabled=true;m.className='msg';m.textContent='Membuat kode...';res.innerHTML='';
+   const j=await api('story-clean','',$(r,'#k').value,'',{mode:$(r,'#md').value});go.disabled=false;
+   if(!j.ok){m.className='msg bad';m.textContent=j.error||'Gagal.';if(j.code===401&&!/Masuk dulu/.test(j.error||''))$(r,'#ac').style.display='block';return}
+   const d=j.data||{};m.className='msg good';m.textContent='Kode siap dipakai.';
+   const rows=[['Mode',d.mode],['Job',d.job],['Status',d.status],['File',d.file],['Tipe',d.tipe],['Ukuran',d.ukuran?d.ukuran+' byte':'']].filter(x=>x[1]);
+   res.innerHTML=`<div class="out"><code style="display:block;word-break:break-all;font-size:1.25em;text-align:center">${esc(d.kode||'')}</code><div class="row"><button class="primary" id="cp">Salin kode</button></div><p>Kirim kode ini lalu videonya (maks. 100 MB) di grup WhatsApp.</p>${d.grup?`<div class="row"><a class="btn wag" target="_blank" rel="noopener noreferrer" href="${esc(d.grup)}">Gabung grup</a></div>`:''}${rows.length?`<dl>${rows.map(x=>`<dt>${x[0]}</dt><dd>${esc(x[1])}</dd>`).join('')}</dl>`:''}</div>`;
+   $(r,'#cp').onclick=x=>copy(d.kode||'',x.target)};
+  go.onclick=run}},
 {id:'link-wa',name:'Link WhatsApp',desc:'Buat link chat WhatsApp dengan pesan yang sudah terisi. Diproses di browser.',
  html:()=>`<label for="n">Nomor WhatsApp</label>
 <div class="phone"><span class="cc">+62</span><input id="n" inputmode="tel" autocomplete="off" placeholder="812 3456 7890"></div>
