@@ -141,6 +141,11 @@ setInterval(function(){tick++;if(typeof mtStatus==='function'&&tick%6===0)mtStat
   ['profil','Profil','#4fd69a','<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>']
  ];
  bar.innerHTML=IT.map(x=>'<a href="#'+x[0]+'" data-k="'+x[0]+'" style="--c:'+x[2]+'">'+S(x[3])+'<span>'+x[1]+'</span></a>').join('');
+ const ind=document.createElement('i');ind.className='bni';ind.setAttribute('aria-hidden','true');bar.appendChild(ind);let rdy=false;
+ // penanda merah meluncur mulus ke item aktif (pertama kali langsung di tempat, tanpa animasi dari kiri)
+ const place=()=>{const a=bar.querySelector('a[aria-current=page]');if(!a||bar.hidden||!a.offsetWidth){ind.style.opacity='0';return}
+  const x=Math.round(a.offsetLeft+(a.offsetWidth-ind.offsetWidth)/2);ind.style.transform='translateX('+x+'px)';ind.style.opacity='1';
+  if(!rdy){rdy=true;requestAnimationFrame(()=>requestAnimationFrame(()=>ind.classList.add('go')))}};
  const links=[...bar.querySelectorAll('a')],chatA=bar.querySelector('[data-k="chat"]'),mn=document.getElementById('mn');
  let typing=false;
  const isTyping=a=>!!a&&((a.tagName==='INPUT'&&!/^(checkbox|radio|range|button|submit|reset|file|color|image)$/i.test(a.type))||a.tagName==='TEXTAREA'||a.isContentEditable);
@@ -148,7 +153,9 @@ setInterval(function(){tick++;if(typeof mtStatus==='function'&&tick%6===0)mtStat
   const h=location.hash.slice(1),g=document.querySelector('.gate'),gate=!!g&&g.getClientRects().length>0,off=h==='chat'||h==='owner'||gate;
   bar.hidden=off;bar.classList.toggle('kb',typing);document.body.classList.toggle('hasbn',!off&&!typing);
   links.forEach(a=>a.dataset.k===h?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+  requestAnimationFrame(place);
  };
+ addEventListener('resize',place);
  // ketuk item yang sedang aktif: gulir ke atas (Beranda bukan reload)
  bar.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;const h=location.hash.slice(1);
   if(a.dataset.k===h){e.preventDefault();scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}});
