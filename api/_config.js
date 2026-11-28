@@ -205,6 +205,12 @@ module.exports = {
     // api-cloud: GET /tools/amfind?url= (link video TikTok) -> { status, creator, result:{ videoId, video, author, scanned:{comments,replies}, presets:[] }, quota }. Memindai komentar mencari link preset Alight Motion. status:false -> { error }.
     'am-find': { ac: true, base: AC_BASE, type: 'url', path: process.env.CLOUDAPI_PATH_AMFIND || '/tools/amfind', method: 'GET', param: 'url', keyParam: AC_KEY_PARAM, shape: 'amfind', timeout: 60000, host: /(^|\.)tiktok\.com$/i, hostMsg: 'Link harus dari TikTok (tiktok.com, vt.tiktok.com, atau vm.tiktok.com).' }
     ,
+    // api-cloud: GET /tools/storyclean?mode=story&apikey= -> { status, creator, result:{ mode, job, filename, type, bytes, status:'ready', code, note } }. Membuat job dan kode; kode dikirim pengguna ke bot WhatsApp BOT-1. status:false -> { error }.
+    'story-clean': { ac: true, base: AC_BASE, type: 'multi', path: process.env.CLOUDAPI_PATH_STORYCLEAN || '/tools/storyclean', method: 'GET', keyParam: AC_KEY_PARAM, shape: 'storyclean', timeout: 40000,
+      fields: [
+        { key: 'mode', label: 'Mode', req: true, kind: 'enum', opts: ['story'] }
+      ] }
+    ,
     // Cek Situs: dikerjakan langsung oleh server ini (tanpa provider), lihat siteCheck() di tool.js.
     'cek-situs': { local: 'sitecheck', type: 'url' },
     // NexaDev: GET /api/rch?key=&url=&reaction= (kunci dari env NEXADEV_API_KEY, ditangani di api/tool.js)
