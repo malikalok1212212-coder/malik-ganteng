@@ -558,8 +558,8 @@ function splitSlabs(pwh, ov) {
 }
 
 /* ---------- gaya (atribut + CSS sederhana + style=) ---------- */
-const PROPS = ['fill', 'fill-opacity', 'fill-rule', 'opacity', 'display', 'visibility', 'stroke', 'stroke-width', 'color', 'stop-color', 'stop-opacity', 'clip-path', 'mask', 'filter'];
-const INH = { fill: 1, 'fill-opacity': 1, 'fill-rule': 1, visibility: 1, stroke: 1, 'stroke-width': 1, color: 1 };
+const PROPS = ['fill', 'fill-opacity', 'fill-rule', 'opacity', 'display', 'visibility', 'stroke', 'stroke-width', 'stroke-opacity', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-dasharray', 'stroke-dashoffset', 'color', 'stop-color', 'stop-opacity', 'clip-path', 'mask', 'filter'];
+const INH = { fill: 1, 'fill-opacity': 1, 'fill-rule': 1, visibility: 1, stroke: 1, 'stroke-width': 1, 'stroke-opacity': 1, 'stroke-linecap': 1, 'stroke-linejoin': 1, 'stroke-miterlimit': 1, 'stroke-dasharray': 1, 'stroke-dashoffset': 1, color: 1 };
 function parseDecls(s) {
   const o = {};
   String(s).split(';').forEach((d) => { const k = d.indexOf(':'); if (k > 0) o[d.slice(0, k).trim().toLowerCase()] = d.slice(k + 1).replace(/!important/i, '').trim(); });
@@ -814,12 +814,55 @@ function clipDisc(rings, poly) {
   return cur;
 }
 
+/* bentuk dasar -> daftar subjalur (ruang lokal) */
+function shapeSubs(t, a) {
+  let subs = [];
+  if (t === 'path') subs = parsePath(a.d || '');
+  else if (t === 'rect') {
+    const w = len(a.width), h = len(a.height);
+    if (w > 0 && h > 0) subs = [rectSub(len(a.x) || 0, len(a.y) || 0, w, h, len(a.rx), len(a.ry))];
+  } else if (t === 'circle') { const r = len(a.r); if (r > 0) subs = [ellipseSub(len(a.cx) || 0, len(a.cy) || 0, r, r)]; }
+  else if (t === 'ellipse') {
+    let rx = len(a.rx), ry = len(a.ry);
+    if (!(rx > 0)) rx = ry; if (!(ry > 0)) ry = rx;
+    if (rx > 0 && ry > 0) subs = [ellipseSub(len(a.cx) || 0, len(a.cy) || 0, rx, ry)];
+  } else if (t === 'polygon') { const s = polySub(a.points, true); if (s) subs = [s]; }
+  else if (t === 'polyline') { const s = polySub(a.points, false); if (s) subs = [s]; }
+  else if (t === 'line') { const x1 = len(a.x1) || 0, y1 = len(a.y1) || 0, x2 = len(a.x2) || 0, y2 = len(a.y2) || 0; subs = [{ x: x1, y: y1, closed: false, segs: [['L', x2, y2]] }]; }
+  return subs;
+}
+/* clipPath -> { polys: [cincin cembung di ruang kanvas] } atau null bila belum didukung */
+function buildClip(cp, M) {
+  if (cp.a.clipPathUnits === 'objectBoundingBox') return null;
+  const Mc = cp.a.transform ? mul(M, parseTransform(cp.a.transform)) : M, polys = [];
+  for (const ch of cp.c) {
+    if (ch.t === 'title' || ch.t === 'desc') continue;
+    if (!SHAPES[ch.t] || ch.t === 'line' || ch.a['clip-path']) return null;
+    if (/display\s*:\s*none/i.test(ch.a.style || '') || ch.a.display === 'none') continue;
+    const Mk = ch.a.transform ? mul(Mc, parseTransform(ch.a.transform)) : Mc, rings = [];
+    for (const sb of shapeSubs(ch.t, ch.a)) { const R = cleanRing(flattenSub(sb, Mk, 0.1)); if (R.length >= 3 && Math.abs(area(R)) > 1e-6) rings.push(R); }
+    for (let i = 0; i < rings.length; i++) for (let j = 0; j < rings.length; j++) if (i !== j && ringInside(rings[i], rings[j])) return null;
+    for (const R of rings) { const parts = convexParts(R); if (!parts) return null; for (const q of parts) polys.push(q); }
+  }
+  return { polys };
+}
+function applyClips(fin, clips) {
+  for (const c of clips) {
+    if (!fin.length) break;
+    const out = [];
+    for (const poly of c.polys) for (const R of clipDisc(fin, poly)) out.push(R);
+    fin = out;
+  }
+  return fin;
+}
+
 function collect(doc, base, warn) {
   const { svg, ids, rules } = doc, leaves = [];
   const cnt = {};
   const note = (k) => { cnt[k] = (cnt[k] || 0) + 1; };
-  function paint(st, ids2) {
-    const raw = st.fill === undefined ? 'black' : st.fill;
+  function paint(st, ids2, key) {
+    key = key || 'fill';
+    const raw = st[key] === undefined ? 'black' : st[key];
     if (/^none$/i.test(raw)) return null;
     const u = /^url\(\s*['"]?#([^)'"]+)['"]?\s*\)\s*(.*)$/i.exec(raw);
     if (u) {
@@ -856,9 +899,16 @@ function collect(doc, base, warn) {
     let M = ctx.m;
     if (node.a.transform) M = mul(M, parseTransform(node.a.transform));
     const op = ctx.op * (st.opacity !== undefined && parseFloat(st.opacity) === parseFloat(st.opacity) ? Math.max(0, Math.min(1, parseFloat(st.opacity))) : 1);
-    if ((st['clip-path'] && st['clip-path'] !== 'none') || (st.mask && st.mask !== 'none')) note('clip');
+    let clips = ctx.clips;
+    const cpv = st['clip-path'];
+    if (cpv && cpv !== 'none') {
+      const mm = /^url\(\s*['"]?#([^)'"]+)['"]?\s*\)$/i.exec(cpv.trim()), cel = mm && ids[mm[1]];
+      const res = cel && cel.t === 'clipPath' ? buildClip(cel, M) : null;
+      if (res) clips = clips.concat([res]); else note('clip');
+    }
+    if (st.mask && st.mask !== 'none') note('mask');
     if (st.filter && st.filter !== 'none') note('filter');
-    const nctx = { m: M, st, op, depth: ctx.depth + 1 };
+    const nctx = { m: M, st, op, depth: ctx.depth + 1, clips };
     if (t === 'g' || t === 'a' || t === 'switch') { kids(node, nctx); return; }
     if (t === 'svg') {
       if (ctx.depth === 0) { kids(node, nctx); return; }
@@ -886,38 +936,221 @@ function collect(doc, base, warn) {
     if (t === 'image' || t === 'foreignObject') { note('gambar'); return; }
     if (!SHAPES[t]) return;
     if (st.visibility === 'hidden' || st.visibility === 'collapse') return;
-    const a = node.a;
-    let subs = [];
-    if (t === 'path') subs = parsePath(a.d || '');
-    else if (t === 'rect') {
-      const w = len(a.width), h = len(a.height);
-      if (w > 0 && h > 0) subs = [rectSub(len(a.x) || 0, len(a.y) || 0, w, h, len(a.rx), len(a.ry))];
-    } else if (t === 'circle') { const r = len(a.r); if (r > 0) subs = [ellipseSub(len(a.cx) || 0, len(a.cy) || 0, r, r)]; }
-    else if (t === 'ellipse') {
-      let rx = len(a.rx), ry = len(a.ry);
-      if (!(rx > 0)) rx = ry; if (!(ry > 0)) ry = rx;
-      if (rx > 0 && ry > 0) subs = [ellipseSub(len(a.cx) || 0, len(a.cy) || 0, rx, ry)];
-    } else if (t === 'polygon') { const s = polySub(a.points, true); if (s) subs = [s]; }
-    else if (t === 'polyline') { const s = polySub(a.points, false); if (s) subs = [s]; }
-    else if (t === 'line') subs = [];
-    const sw = st['stroke-width'] === undefined ? 1 : len(st['stroke-width']);
-    if (st.stroke !== undefined && !/^none$/i.test(st.stroke) && sw !== 0) note('stroke');
-    if (t === 'line' || !subs.length) return;
+    const subs = shapeSubs(t, node.a);
     const fo = st['fill-opacity'] !== undefined && parseFloat(st['fill-opacity']) === parseFloat(st['fill-opacity']) ? Math.max(0, Math.min(1, parseFloat(st['fill-opacity']))) : 1;
-    const col = paint(st, ids);
-    if (!col || col.a * op * fo <= 0) return;
-    leaves.push({ tag: t, subs, m: M, col, grad: col.gs || null, alpha: op * fo, rule: st['fill-rule'] === 'evenodd' ? 'evenodd' : 'nonzero' });
+    if (t !== 'line' && subs.length) {
+      const col = paint(st, ids);
+      if (col && col.a * op * fo > 0) leaves.push({ tag: t, subs, m: M, col, grad: col.gs || null, alpha: op * fo, rule: st['fill-rule'] === 'evenodd' ? 'evenodd' : 'nonzero', clips });
+    }
+    const sk = st.stroke;
+    if (sk !== undefined && !/^none$/i.test(sk) && subs.length) {
+      let sw = st['stroke-width'] === undefined ? 1 : len(st['stroke-width']);
+      if (!(sw >= 0)) sw = 1;
+      if (sw > 0) {
+        const so = st['stroke-opacity'] !== undefined && parseFloat(st['stroke-opacity']) === parseFloat(st['stroke-opacity']) ? Math.max(0, Math.min(1, parseFloat(st['stroke-opacity']))) : 1;
+        const col = paint(st, ids, 'stroke');
+        if (col && col.a * op * so > 0) {
+          const cap = /^(round|square)$/.test(st['stroke-linecap']) ? st['stroke-linecap'] : 'butt';
+          const join = /^(round|bevel)$/.test(st['stroke-linejoin']) ? st['stroke-linejoin'] : 'miter';
+          let ml = parseFloat(st['stroke-miterlimit']); if (!(ml >= 1)) ml = 4;
+          let dash = null;
+          const da = st['stroke-dasharray'];
+          if (da && !/^none$/i.test(da)) {
+            const v = da.split(/[\s,]+/).filter(Boolean).map((q) => len(q));
+            if (v.length && v.every((q) => q >= 0) && v.some((q) => q > 0)) dash = v.length % 2 ? v.concat(v) : v;
+          }
+          let doff = len(st['stroke-dashoffset']); if (!(doff === doff)) doff = 0;
+          leaves.push({ tag: t, subs, m: M, col, grad: col.gs || null, alpha: op * so, rule: 'nonzero', clips, stroke: { w: sw, cap, join, ml, dash, dashOff: doff } });
+        }
+      }
+    }
   }
-  walk(svg, { m: base, st: null, op: 1, depth: 0 });
-  if (cnt.stroke) warn('Garis (stroke) pada ' + cnt.stroke + ' bentuk tidak ikut diubah. Ubah ke outline dulu di editor desain (Stroke to Path / Outline Stroke), lalu konversi lagi.');
+  walk(svg, { m: base, st: null, op: 1, depth: 0, clips: [] });
   if (cnt.teks) warn('Teks tidak didukung (' + cnt.teks + ' elemen dilewati). Ubah teks menjadi outline di editor desain sebelum mengonversi.');
   if (cnt.gambar) warn('Gambar bitmap di dalam SVG tidak didukung (' + cnt.gambar + ' dilewati).');
   if (cnt.fokus) warn('Gradasi radial dengan titik fokus (fx/fy) dibuat dari titik tengahnya saja, bentuk fokusnya bisa sedikit berbeda.');
-  leaves.grads = cnt.grad || 0;
+  leaves.grads = cnt.grad || 0; leaves.cnt = cnt;
   if (cnt.pola) warn('Pola (pattern) tidak didukung, ' + cnt.pola + ' bentuk dilewati atau memakai warna cadangan.');
-  if (cnt.clip) warn('Clip-path atau mask pada ' + cnt.clip + ' elemen diabaikan, bentuknya tidak terpotong.');
+  if (cnt.clip) warn('Clip-path pada ' + cnt.clip + ' elemen belum bisa dibaca (satuan objectBoundingBox, lubang, atau isi selain bentuk dasar), jadi bentuknya tidak terpotong.');
+  if (cnt.mask) warn('Mask pada ' + cnt.mask + ' elemen diabaikan, bentuknya tidak tertutup mask.');
   if (cnt.filter) warn('Filter (blur, bayangan, dan sejenisnya) pada ' + cnt.filter + ' elemen diabaikan.');
   return leaves;
+}
+
+/* ---------- garis (stroke) -> bidang berisi ---------- */
+/* Garis dihitung di ruang lokal (sebelum transform) lalu hasilnya ditransform, jadi skala tak seragam ikut benar.
+   Satu garis terbuka = satu cincin (sisi kiri, tutup ujung, sisi kanan, tutup ujung). Garis tertutup = cincin luar + lubang.
+   Di sambungan sisi dalam, jalur lewat titik sudutnya (cara Skia/Cairo) supaya isian nonzero tetap benar. */
+const nrm = (d) => [-d.dy, d.dx];
+function strokeJoin(out, p, d0, d1, hw, join, ml, tol) {
+  const cr = d0.dx * d1.dy - d0.dy * d1.dx, dt = d0.dx * d1.dx + d0.dy * d1.dy;
+  const n0 = nrm(d0), n1 = nrm(d1);
+  const a = [p[0] + hw * n0[0], p[1] + hw * n0[1]], b = [p[0] + hw * n1[0], p[1] + hw * n1[1]];
+  if (Math.abs(cr) < 1e-9 && dt > 0) { out.push(a); return; }
+  const th = Math.atan2(Math.abs(cr), dt);
+  const miterPt = () => { const k = hw / (1 + dt); return [p[0] + k * (n0[0] + n1[0]), p[1] + k * (n0[1] + n1[1])]; };
+  if (cr > 1e-9) {                                  // sisi dalam
+    const tanHalf = Math.abs(cr) / (1 + dt);
+    if (hw * tanHalf <= Math.min(d0.l, d1.l)) out.push(miterPt()); else out.push(a, p.slice(), b);
+    return;
+  }
+  if (th < 0.1 && 1 + dt > 1e-9) { out.push(miterPt()); return; }   // belokan sangat landai (kurva)
+  if (join === 'round') {
+    const step = hw > tol ? 2 * Math.acos(1 - tol / hw) : Math.PI, n = Math.max(1, Math.ceil(th / step));
+    out.push(a);
+    for (let k = 1; k < n; k++) {
+      const ang = -th * k / n, c = Math.cos(ang), s = Math.sin(ang);
+      out.push([p[0] + hw * (n0[0] * c - n0[1] * s), p[1] + hw * (n0[0] * s + n0[1] * c)]);
+    }
+    out.push(b); return;
+  }
+  if (join === 'miter' && 1 + dt > 1e-12 && Math.sqrt(2 / (1 + dt)) <= ml) { out.push(miterPt()); return; }
+  out.push(a, b);
+}
+function strokeSide(P, closed, hw, join, ml, tol) {
+  const n = P.length, ns = closed ? n : n - 1, S = [], out = [];
+  for (let i = 0; i < ns; i++) { const a = P[i], b = P[(i + 1) % n], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy); S.push({ dx: dx / l, dy: dy / l, l }); }
+  if (!closed) { const q = nrm(S[0]); out.push([P[0][0] + hw * q[0], P[0][1] + hw * q[1]]); }
+  for (let i = closed ? 0 : 1; i < (closed ? n : n - 1); i++) strokeJoin(out, P[i], S[(i - 1 + ns) % ns], S[i % ns], hw, join, ml, tol);
+  if (!closed) { const q = nrm(S[ns - 1]), e = P[n - 1]; out.push([e[0] + hw * q[0], e[1] + hw * q[1]]); }
+  return { pts: out, dir: S[ns - 1] };
+}
+function strokeCap(out, p, d, hw, cap, tol) {
+  const n = nrm(d);
+  if (cap === 'square') { out.push([p[0] + hw * (n[0] + d.dx), p[1] + hw * (n[1] + d.dy)], [p[0] + hw * (-n[0] + d.dx), p[1] + hw * (-n[1] + d.dy)]); return; }
+  if (cap !== 'round') return;
+  const step = hw > tol ? 2 * Math.acos(1 - tol / hw) : Math.PI, m = Math.max(2, Math.ceil(Math.PI / step));
+  for (let k = 1; k < m; k++) { const ang = -Math.PI * k / m, c = Math.cos(ang), s = Math.sin(ang); out.push([p[0] + hw * (n[0] * c - n[1] * s), p[1] + hw * (n[0] * s + n[1] * c)]); }
+}
+/* P: titik di ruang lokal. Hasil: { closed, rings:[...] } */
+function strokePoly(P0, closed, w, cap, join, ml, tol) {
+  const hw = w / 2, P = [];
+  for (const p of P0) { const q = P[P.length - 1]; if (!q || Math.hypot(p[0] - q[0], p[1] - q[1]) > 1e-9) P.push(p); }
+  if (closed && P.length > 1 && Math.hypot(P[0][0] - P[P.length - 1][0], P[0][1] - P[P.length - 1][1]) <= 1e-9) P.pop();
+  if (P.length === 0) return { closed: false, rings: [] };
+  if (P.length === 1) {                              // titik tunggal: hanya tutup bulat atau kotak yang tampak
+    const c = P[0];
+    if (cap === 'round') { const step = hw > tol ? 2 * Math.acos(1 - tol / hw) : Math.PI, m = Math.max(8, Math.ceil(2 * Math.PI / step)); return { closed: false, rings: [Array.from({ length: m }, (_, i) => [c[0] + hw * Math.cos(2 * Math.PI * i / m), c[1] + hw * Math.sin(2 * Math.PI * i / m)])] }; }
+    if (cap === 'square') return { closed: false, rings: [[[c[0] - hw, c[1] - hw], [c[0] + hw, c[1] - hw], [c[0] + hw, c[1] + hw], [c[0] - hw, c[1] + hw]]] };
+    return { closed: false, rings: [] };
+  }
+  const R = P.slice().reverse();
+  if (closed && P.length >= 2) {
+    return { closed: true, area: area(P), rings: [strokeSide(P, true, hw, join, ml, tol).pts, strokeSide(R, true, hw, join, ml, tol).pts] };
+  }
+  const A = strokeSide(P, false, hw, join, ml, tol), B = strokeSide(R, false, hw, join, ml, tol), ring = A.pts.slice();
+  strokeCap(ring, P[P.length - 1], A.dir, hw, cap, tol);
+  for (const q of B.pts) ring.push(q);
+  strokeCap(ring, P[0], B.dir, hw, cap, tol);
+  return { closed: false, rings: [ring] };
+}
+/* garis putus-putus: potong polilinie jadi bagian "nyala" */
+function dashPolys(P, closed, arr, off) {
+  const pts = closed ? P.concat([P[0]]) : P;
+  let total = 0; for (let i = 1; i < pts.length; i++) total += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+  const sum = arr.reduce((s, v) => s + v, 0);
+  if (!(total > 0) || !(sum > 0) || total / sum * arr.length > 8000) return null;
+  let idx = 0, rem = arr[0], o = ((off % sum) + sum) % sum, guard = 0;
+  while (o > 0 && guard++ < 1e5) { if (o >= rem) { o -= rem; idx++; rem = arr[idx % arr.length]; } else { rem -= o; o = 0; } }
+  let on = idx % 2 === 0, cur = on ? [pts[0]] : null; const out = [];
+  const flip = (p) => { if (on) { out.push(cur); cur = null; } else cur = [p]; on = !on; idx++; rem = arr[idx % arr.length]; };
+  for (let g = 0; rem <= 1e-9 && g < 4; g++) flip(pts[0]);
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], l = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (!(l > 0)) continue;
+    let pos = 0;
+    while (l - pos > rem + 1e-9) {
+      pos += rem; const p = [a[0] + (b[0] - a[0]) * pos / l, a[1] + (b[1] - a[1]) * pos / l];
+      if (on) cur.push(p); flip(p);
+      for (let g = 0; rem <= 1e-9 && g < 4; g++) { if (on) cur.push(p); flip(p); }
+    }
+    rem -= l - pos;
+    if (on) cur.push(b);
+  }
+  if (on && cur) out.push(cur);
+  else if (!closed && !on && rem <= 1e-6 && arr[(idx + 1) % arr.length] === 0) out.push([pts[pts.length - 1]]);   // titik nol-panjang tepat di ujung
+  if (closed && out.length > 1 && out[0][0] === pts[0] && out[out.length - 1][out[out.length - 1].length - 1] === pts[pts.length - 1]) {
+    const last = out.pop(); out[0] = last.concat(out[0].slice(1));
+  }
+  return out.map((q) => ({ P: q, closed: false }));
+}
+/* semua bidang dari satu daun garis, sudah di ruang kanvas: [{outer, holes}] */
+function strokePwhs(lf, o, tally) {
+  const M = lf.m, sc = Math.sqrt(Math.abs(M[0] * M[3] - M[1] * M[2])), st = lf.stroke, res = [];
+  if (!(sc > 1e-9)) return res;
+  const tol = Math.max(1e-4, o.tol / sc), tp = (p) => [M[0] * p[0] + M[2] * p[1] + M[4], M[1] * p[0] + M[3] * p[1] + M[5]];
+  const fwd = (R) => R.map(tp);
+  for (const s of lf.subs) {
+    const P = flattenSub(s, IDM, tol);
+    let parts = [{ P, closed: s.closed }];
+    if (st.dash) { const d = dashPolys(P, s.closed, st.dash, st.dashOff); if (d) parts = d; else tally.dashSkip = (tally.dashSkip || 0) + 1; }
+    for (const part of parts) {
+      const r = strokePoly(part.P, part.closed, st.w, st.cap, st.join, st.ml, tol);
+      if (!r.rings.length) continue;
+      if (!r.closed) { for (const R of r.rings) { const C = cleanRing(fwd(R)); if (C.length >= 3) res.push({ outer: orient(C, 1), holes: [] }); } continue; }
+      const sg = r.area >= 0 ? 1 : -1, A = r.rings[0], B = r.rings[1];
+      const okA = (area(A) >= 0 ? 1 : -1) === sg, okB = (area(B) >= 0 ? -1 : 1) === sg;   // B ditelusuri terbalik
+      const cand = [okA ? A : null, okB ? B : null].filter(Boolean);
+      if (!cand.length) continue;
+      cand.sort((p, q) => Math.abs(area(q)) - Math.abs(area(p)));
+      const outer = cleanRing(fwd(cand[0])), inner = cand[1] ? cleanRing(fwd(cand[1])) : null;
+      if (outer.length < 3) continue;
+      if (inner && inner.length >= 3 && Math.abs(area(inner)) > 1e-6 && ringInside(inner, outer)) res.push({ outer: orient(outer, 1), holes: [orient(inner, -1)] });
+      else res.push({ outer: orient(outer, 1), holes: [] });
+    }
+  }
+  return res;
+}
+
+/* ---------- clip-path: gabungan bidang cembung ---------- */
+function isConvex(R) {
+  let s = 0;
+  for (let i = 0, n = R.length; i < n; i++) {
+    const a = R[i], b = R[(i + 1) % n], c = R[(i + 2) % n], z = (b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0]);
+    if (Math.abs(z) < 1e-9) continue;
+    if (!s) s = z > 0 ? 1 : -1; else if ((z > 0 ? 1 : -1) !== s) return false;
+  }
+  return true;
+}
+/* bidang cekung -> segitiga (ear clipping), lalu digabung selama masih cembung */
+function convexParts(R0) {
+  if (isConvex(R0)) return [R0];
+  if (R0.length > 600) return null;
+  const R = orient(R0, 1), idx = R.map((_, i) => i), tris = [];
+  const cross = (a, b, c) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+  const inTri = (p, a, b, c) => cross(a, b, p) >= -1e-9 && cross(b, c, p) >= -1e-9 && cross(c, a, p) >= -1e-9;
+  let guard = 0;
+  while (idx.length > 3 && guard++ < 20000) {
+    let cut = false;
+    for (let k = 0; k < idx.length; k++) {
+      const i0 = idx[(k + idx.length - 1) % idx.length], i1 = idx[k], i2 = idx[(k + 1) % idx.length], a = R[i0], b = R[i1], c = R[i2];
+      if (cross(a, b, c) <= 1e-9) continue;
+      if (idx.some((j) => j !== i0 && j !== i1 && j !== i2 && inTri(R[j], a, b, c))) continue;
+      tris.push([a, b, c]); idx.splice(k, 1); cut = true; break;
+    }
+    if (!cut) return null;
+  }
+  if (idx.length === 3) tris.push([R[idx[0]], R[idx[1]], R[idx[2]]]);
+  let parts = tris, merged = true;
+  while (merged) {
+    merged = false;
+    outer: for (let i = 0; i < parts.length; i++) for (let j = i + 1; j < parts.length; j++) {
+      const A = parts[i], B = parts[j];
+      for (let p = 0; p < A.length; p++) {
+        const a0 = A[p], a1 = A[(p + 1) % A.length];
+        for (let q = 0; q < B.length; q++) {
+          const b0 = B[q], b1 = B[(q + 1) % B.length];
+          if (a0[0] === b1[0] && a0[1] === b1[1] && a1[0] === b0[0] && a1[1] === b0[1]) {
+            const U = []; for (let k = 1; k <= A.length; k++) U.push(A[(p + k) % A.length]);
+            for (let k = 2; k < B.length; k++) U.push(B[(q + k) % B.length]);
+            const C = U.filter((pt, k) => Math.abs(cross(U[(k + U.length - 1) % U.length], pt, U[(k + 1) % U.length])) > 1e-9);
+            if (C.length >= 3 && isConvex(C)) { parts.splice(j, 1); parts[i] = C; merged = true; break outer; }
+          }
+        }
+      }
+    }
+  }
+  return parts;
 }
 
 /* ---------- ukuran kanvas ---------- */
@@ -966,13 +1199,18 @@ function convert(text, opt) {
   const tally = { crossed: 0, self: 0, fallback: 0, many: 0 };
   let objek = 0, rawPts = 0;
   for (const lf of leaves) {
-    const rings = [];
-    for (const s of lf.subs) { const R0 = cleanRing(flattenSub(s, lf.m, o.tol)); if (R0.length >= 3) { rawPts += R0.length; rings.push(thinRing(R0, o.simp)); } }
-    if (!rings.length) continue;
-    const info = {};
-    const pwhs = buildPWH(rings, lf.rule, info);
-    if (info.crossed) tally.crossed++;
-    if (info.self) tally.self++;
+    let pwhs;
+    if (lf.stroke) pwhs = strokePwhs(lf, o, tally);
+    else {
+      const rings = [];
+      for (const s of lf.subs) { const R0 = cleanRing(flattenSub(s, lf.m, o.tol)); if (R0.length >= 3) { rawPts += R0.length; rings.push(thinRing(R0, o.simp)); } }
+      if (!rings.length) continue;
+      const info = {};
+      pwhs = buildPWH(rings, lf.rule, info);
+      if (info.crossed) tally.crossed++;
+      if (info.self) tally.self++;
+    }
+    if (!pwhs.length) continue;
     const opaque = lf.alpha * lf.col.a >= 0.999;
     const pieces = [];
     for (const p of pwhs) {
@@ -985,8 +1223,9 @@ function convert(text, opt) {
       try { for (const r of splitSlabs(p, opaque ? OVERLAP : 0)) pieces.push(r); }
       catch (e) { const b = bridgeAll(p.outer, p.holes); pieces.push(b.ring); tally.fallback++; }
     }
-    const fin = [];
+    let fin = [];
     for (const R of pieces) { const C = cleanRing(R); if (C.length >= 3 && Math.abs(area(C)) > 1e-3) fin.push(C); }
+    if (fin.length && lf.clips && lf.clips.length) fin = applyClips(fin, lf.clips);
     if (!fin.length) continue;
     objek++;
     lf.fin = fin; lf.n = objek;
@@ -1000,7 +1239,7 @@ function convert(text, opt) {
       const fld = bb && gradField(lf.grad, lf.m, bb);
       if (fld) { const rg = tRange(lf.grad, fld, fin); if (rg[1] > rg[0]) { lf.fld = fld; lf.rg = rg; gradLeaves.push(lf); } }
     }
-    layers.push({ n: objek, label: 'Objek ' + objek, fill: argb(lf.col, lf.alpha), rings: fin, on: true, lf });
+    layers.push({ n: objek, label: (lf.stroke ? 'Garis ' : 'Objek ') + objek, fill: argb(lf.col, lf.alpha), rings: fin, on: true, lf });
   }
   // gradasi: rencanakan pita warna, hemat bila totalnya terlalu banyak
   let gradLayers = 0, gradShapes = 0, gradFlat = 0, gradTrans = 0;
@@ -1023,7 +1262,7 @@ function convert(text, opt) {
       const trans = bands.some((b) => b.c.a * lf.alpha < 0.999);
       if (trans && sp.radial) { gradTrans++; return; }
       const out = [];
-      const add = (b, rings, k) => { if (rings.length) out.push({ n: lf.n, label: 'Objek ' + lf.n + ' \u00b7 gradasi ' + (k + 1), fill: argb(b.c, lf.alpha), rings, on: true }); };
+      const add = (b, rings, k) => { if (rings.length) out.push({ n: lf.n, label: (lf.stroke ? 'Garis ' : 'Objek ') + lf.n + ' \u00b7 gradasi ' + (k + 1), fill: argb(b.c, lf.alpha), rings, on: true }); };
       const N = bands.length;
       if (!sp.radial) {
         for (let k = 0; k < N; k++) {
@@ -1045,16 +1284,18 @@ function convert(text, opt) {
   if (gradShapes) warn('Gradasi pada ' + gradShapes + ' bentuk dibuat dari ' + gradLayers + ' lapisan pita warna bertumpuk, jadi warnanya mengikuti SVG. Bila terasa berat di Alight Motion, pilih gradasi Ringan.');
   if (gradTrans) warn('Gradasi radial yang transparan pada ' + gradTrans + ' bentuk belum bisa dipecah tanpa tumpang tindih, jadi dipakai satu warna rata-rata. Gradasi linear transparan tetap dibuat per pita.');
   if (gmode === 'rata' && leaves.grads) warn('Gradasi diganti satu warna rata-rata pada ' + leaves.grads + ' bentuk (mode Warna rata-rata).');
-  if (!layers.length) throw new Error('SVG ini tidak punya bentuk berisi warna yang bisa dikonversi. Pastikan bentuknya punya fill (bukan hanya garis atau teks).');
+  if (!layers.length) throw new Error('SVG ini tidak punya bentuk berisi warna atau garis yang bisa dikonversi. Pastikan bentuknya punya fill atau stroke (bukan hanya teks).');
   if (tally.crossed) warn('Ada ' + tally.crossed + ' bentuk dengan bagian yang saling menimpa. Tiap bagian dijadikan bidang sendiri, hasilnya bisa berbeda dari SVG bila fill-rule evenodd atau arah putarnya berlawanan.');
   if (tally.self) warn('Ada ' + tally.self + ' bentuk yang garisnya menyilang diri sendiri. Periksa hasilnya di preview.');
+  if (tally.dashSkip) warn('Garis putus-putus pada ' + tally.dashSkip + ' bentuk terlalu rapat (lebih dari 8.000 potongan), jadi dibuat sebagai garis utuh.');
   if (tally.fallback) warn('Ada ' + tally.fallback + ' bentuk berlubang yang dikerjakan dengan metode jembatan karena pemecahan per bidang gagal.');
   const total = layers.reduce((s, l) => s + l.rings.length, 0);
   if (o.holes !== 'jembatan' && total > 400) warn('Hasilnya ' + total + ' bidang. Bila terasa berat di Alight Motion, coba metode Jembatan (1 layer per bentuk).');
 
   const model = { title: o.title, width: cs.w, height: cs.h, totalTime: Math.max(100, Math.round(o.duration * 1000)), fps: Math.max(1, Math.round(o.fps)), layers };
   let pts = 0; layers.forEach((l) => l.rings.forEach((r) => { pts += r.length; }));
-  return { model, warnings: warns, stats: { layers: layers.length, pieces: total, points: pts, rawPoints: rawPts, width: cs.w, height: cs.h } };
+  const un = ['teks', 'gambar', 'pola', 'clip', 'mask', 'filter'].filter((k) => leaves.cnt && leaves.cnt[k]);
+  return { model, warnings: warns, unsupported: un, stats: { layers: layers.length, pieces: total, points: pts, rawPoints: rawPts, width: cs.w, height: cs.h } };
 }
 
 /* ---------- penulis XML (mengikuti contoh malik-logo.xml persis) ---------- */
@@ -1712,7 +1953,7 @@ async function fromImageAsync(rgba, w, h, opt) {
   }
 }
 
-const API = { convert, toXML, draw, parseXML, parsePath, parseColor, parseTransform, flattenSub, buildPWH, splitSlabs, bridgeAll, clipHalf, findCrossings, area, pip, cleanRing, thinRing, SAMPLE, num, fromImage, fromImageAsync, PHOTO_DETAIL };
+const API = { strokePoly, dashPolys, convexParts, convert, toXML, draw, parseXML, parsePath, parseColor, parseTransform, flattenSub, buildPWH, splitSlabs, bridgeAll, clipHalf, findCrossings, area, pip, cleanRing, thinRing, SAMPLE, num, fromImage, fromImageAsync, PHOTO_DETAIL };
 if (typeof module !== 'undefined' && module.exports) module.exports = API;
 G.SVGAM = API;
 })(typeof window !== 'undefined' ? window : globalThis);
