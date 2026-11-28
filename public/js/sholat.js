@@ -82,7 +82,7 @@
       + '<path d="M' + cx + ' ' + top + 'V' + (top - 7) + '" stroke="' + f + '" stroke-width="1.5"/><circle cx="' + cx + '" cy="' + (top - 8) + '" r="1.8" fill="' + g + '"/>';
   }
   function arch(cx, y0, y1, w) {
-    var r = w / 2; return '<path d="M' + (cx - r) + ' ' + y1 + 'V' + y0 + 'a' + r + ' ' + r + ' 0 0 1 ' + w + ' 0V' + y1 + 'Z" fill="#f6d58a" opacity=".9"/>';
+    var r = w / 2; return '<path d="M' + (cx - r) + ' ' + y1 + 'V' + y0 + 'a' + r + ' ' + r + ' 0 0 1 ' + w + ' 0V' + y1 + 'Z" class="wn" style="animation-delay:-' + ((cx * 7) % 5) + 's" fill="#f6d58a" opacity=".9"/>';
   }
   var STARS = [[30, 18, 1.2], [70, 34, 1], [118, 16, 1.4], [160, 28, 1], [236, 22, 1.2], [270, 40, 1], [300, 14, 1.3], [380, 46, 1], [52, 62, 1], [18, 50, 1.1], [352, 72, 1], [200, 20, 1.1]];
   var ART = '<svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">'
@@ -90,7 +90,11 @@
     + '<radialGradient id="sltglow" cx=".5" cy="1" r=".62"><stop offset="0" style="stop-color:var(--acc,#e5232e)" stop-opacity=".5"/><stop offset="1" style="stop-color:var(--acc,#e5232e)" stop-opacity="0"/></radialGradient>'
     + '<mask id="sltmoon" maskUnits="userSpaceOnUse" x="0" y="0" width="400" height="140"><rect width="400" height="140" fill="#fff"/><circle cx="288" cy="58" r="11.5" fill="#000"/></mask></defs>'
     + '<rect width="400" height="140" fill="url(#sltsky)"/><rect width="400" height="140" fill="url(#sltglow)"/>'
-    + STARS.map(function (s) { return '<circle cx="' + s[0] + '" cy="' + s[1] + '" r="' + s[2] + '" fill="#fff" opacity=".8"/>'; }).join('')
+    + STARS.map(function (s) { return '<circle class="tw" style="animation-delay:-' + ((s[0] * 3) % 7 / 2) + 's;animation-duration:' + (2.4 + (s[1] % 4) * .8) + 's" cx="' + s[0] + '" cy="' + s[1] + '" r="' + s[2] + '" fill="#fff" opacity=".8"/>'; }).join('')
+    + '<circle class="mh" cx="282" cy="62" r="24" fill="#f6d58a" opacity=".12"/>'
+    + '<path class="ss" d="M262 30L284 20" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity="0"/>'
+    + '<g class="cl1" fill="#fff" opacity=".07"><ellipse cx="60" cy="98" rx="36" ry="5"/><ellipse cx="88" cy="93" rx="22" ry="4"/></g>'
+    + '<g class="cl2" fill="#fff" opacity=".06"><ellipse cx="300" cy="104" rx="40" ry="5"/><ellipse cx="270" cy="99" rx="24" ry="4"/></g>'
     + '<circle cx="282" cy="62" r="14" fill="#f6d58a" mask="url(#sltmoon)"/>'
     + '<rect y="124" width="400" height="16" fill="#0d1424"/>'
     + '<path d="M0 124c0-10 22-10 22 0zM378 124c0-10 22-10 22 0z" fill="#0d1424"/>'
@@ -144,6 +148,20 @@
       + '.slto.on svg{opacity:1}'
       + '.slto.act{background:color-mix(in srgb,var(--ink) 9%,transparent)}'
       + '.slto.on.act{background:color-mix(in srgb,var(--acc) 22%,transparent)}'
+      + '.sltb svg *{transform-box:fill-box}'
+      + '.sltb .tw{animation:sltw 3s ease-in-out infinite}'
+      + '.sltb .wn{animation:sltwn 4s ease-in-out infinite}'
+      + '.sltb .mh{transform-origin:center;animation:sltmh 5s ease-in-out infinite}'
+      + '.sltb .cl1{animation:sltdr 46s linear infinite alternate}'
+      + '.sltb .cl2{animation:sltdr 58s linear -20s infinite alternate-reverse}'
+      + '.sltb .ss{animation:sltss 9s ease-in 2s infinite}'
+      + '@keyframes sltw{0%,100%{opacity:.85}50%{opacity:.15}}'
+      + '@keyframes sltwn{0%,100%{opacity:.95}50%{opacity:.62}}'
+      + '@keyframes sltmh{0%,100%{transform:scale(1);opacity:.12}50%{transform:scale(1.18);opacity:.22}}'
+      + '@keyframes sltdr{from{transform:translateX(-50px)}to{transform:translateX(90px)}}'
+      + '@keyframes sltss{0%,86%{opacity:0;transform:translate(0,0)}88%{opacity:.95}100%{opacity:0;transform:translate(-70px,32px)}}'
+      + '.slt.sltz .sltb svg *{animation-play-state:paused!important}'
+      + '@media (prefers-reduced-motion:reduce){.sltb svg *{animation:none!important}}'
       + '.sltg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}'
       + '.slti{border:1px solid var(--line,var(--bd));border-radius:12px;padding:9px 10px;background:var(--s1,var(--field));min-width:0}'
       + '.slti small{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}'
@@ -222,6 +240,7 @@
     document.addEventListener('click', away);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && isOpen) setOpen(false); });
     document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(); });
+    if (window.IntersectionObserver) new IntersectionObserver(function (en) { host.classList.toggle('sltz', !en[0].isIntersecting); }).observe(host);
     renderList(); paint(); timer = setInterval(tick, 1000);
   }
   function scan() { var l = document.querySelectorAll('[data-sholat]:not([data-ok])'); for (var i = 0; i < l.length; i++) mount(l[i]); }

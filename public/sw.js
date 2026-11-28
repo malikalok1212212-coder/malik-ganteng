@@ -1,4 +1,4 @@
-const V='mt-v219',CORE=['/','/offline.html','/style.css?v=484','/js/core.js?v=485','/js/ui.js?v=485','/icon-192.png?v=464','/yuu.jpg','/icon-192.png?v=464','/favicon.ico?v=464','/favicon-32.png','/hero.jpg','/bg.jpg'],LAZY=['/js/fx.js?v=392','/js/sholat.js?v=486','/js/guide.js?v=464','/pemandu.png?v=464','/js/tools.js?v=485','/js/pages.js?v=485','/js/chat.js?v=485'];
+const V='mt-v219',CORE=['/','/offline.html','/style.css?v=484','/js/core.js?v=485','/js/ui.js?v=485','/icon-192.png?v=464','/yuu.jpg','/icon-192.png?v=464','/favicon.ico?v=464','/favicon-32.png','/hero.jpg','/bg.jpg'],LAZY=['/js/fx.js?v=392','/js/sholat.js?v=487','/js/guide.js?v=464','/pemandu.png?v=464','/js/tools.js?v=485','/js/pages.js?v=485','/js/chat.js?v=485'];
 // Pasang: shell wajib lengkap, modul lazy (Tools, Halaman, Chat) dicoba terpisah supaya satu kegagalan tidak menggagalkan install. Hasilnya: situs bisa dibuka tanpa internet.
 const pre=c=>c.addAll(CORE).then(()=>Promise.all(LAZY.map(u=>c.add(u).catch(()=>{}))));
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(pre).then(()=>self.skipWaiting()))});
