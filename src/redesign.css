@@ -129,7 +129,7 @@
 /* ---------- dekorasi v461b: isi bagian yang polos (CSS saja, tanpa ubah fungsi) ---------- */
 § body::after{display:block!important;content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.075) 1px,transparent 1.6px) 0 0/22px 22px;-webkit-mask:linear-gradient(#000,transparent 60%);mask:linear-gradient(#000,transparent 60%)}
 §[data-theme=light] body::after{background-image:radial-gradient(circle at 1px 1px,rgba(11,11,13,.09) 1px,transparent 1.6px)}
-§ main[data-tool]::after{content:"";display:block;height:240px;margin-top:30px;background:url(/logo-malik-tools.svg?v=461) center 40px/116px no-repeat;opacity:.07;filter:grayscale(1);pointer-events:none}
+§ main[data-tool]::after{content:"";display:block;height:240px;margin-top:30px;background:url(/logo-malik-tools.svg?v=498) center 40px/116px no-repeat;opacity:.07;filter:grayscale(1);pointer-events:none}
 § .panel:not(.cpanel)::before{content:"";display:block;height:3px;background:linear-gradient(90deg,var(--acc),color-mix(in srgb,var(--acc) 0%,transparent) 75%)}
 § .thero .tile{width:56px!important;height:56px!important;background:linear-gradient(145deg,color-mix(in srgb,var(--acc) 24%,var(--s3)),var(--s3))!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--acc) 32%,transparent),0 10px 26px -10px color-mix(in srgb,var(--acc) 70%,transparent)!important}
 § .lhc{background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.07) 1px,transparent 1.6px) 0 0/16px 16px,radial-gradient(120% 100% at 100% 0%,rgba(227,38,46,.2),transparent 58%),var(--s2)!important}

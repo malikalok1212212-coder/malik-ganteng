@@ -1914,6 +1914,45 @@ function simplifyRing(P, tol) {
 
 /* garis tipis: piksel yang jadi lembah gelap sempit (lebar 1 sampai 2 px) dibanding sekitarnya.
    Garis 1 px hasil antialias sering terputus-putus kalau hanya mengandalkan pengelompokan warna. */
+/* v496: perapihan titik hasil foto. Titik yang menumpuk di sudut/ujung lancip digabung jadi satu (diambil yang paling runcing),
+   lalu titik di sisi lurus dibuang. Toleransi dalam piksel foto; dibatasi relatif terhadap ukuran bentuk supaya bentuk kecil tetap rinci. */
+function mergeNear(R, r) {
+  let P = R.slice();
+  for (let pass = 0; pass < 3 && P.length > 3; pass++) {
+    const n = P.length, r2 = r * r, grp = new Int32Array(n).fill(-1);
+    let g = 0, changed = false;
+    for (let i = 0; i < n; i++) {
+      if (grp[i] >= 0) continue;
+      grp[i] = g; let j = i;
+      while (j + 1 < n && (P[j + 1][0] - P[j][0]) ** 2 + (P[j + 1][1] - P[j][1]) ** 2 <= r2) { j++; grp[j] = g; }
+      g++;
+    }
+    if (g > 1 && grp[n - 1] === g - 1 && grp[0] === 0 && (P[0][0] - P[n - 1][0]) ** 2 + (P[0][1] - P[n - 1][1]) ** 2 <= r2) { for (let i = 0; i < n; i++) if (grp[i] === g - 1) grp[i] = 0; g--; }
+    if (g < 3) break;
+    const runs = []; for (let k = 0; k < g; k++) runs.push([]);
+    for (let i = 0; i < n; i++) runs[grp[i]].push(i);
+    const rep = runs.map((ix) => {
+      if (ix.length === 1) return P[ix[0]];
+      changed = true;
+      const f = ix[0], l = ix[ix.length - 1], a = P[(f - 1 + n) % n], b = P[(l + 1) % n];
+      let best = P[f], bd = -1;
+      for (const i of ix) { const d = distSeg(P[i], a, b); if (d > bd) { bd = d; best = P[i]; } }
+      return best;
+    });
+    P = rep;
+    if (!changed) break;
+  }
+  return P;
+}
+function tidyPhotoRing(R, tolPx) {
+  if (R.length < 5) return R;
+  const a = Math.abs(area(R)), sz = Math.sqrt(a);
+  const tol = Math.max(0.15, Math.min(tolPx, 0.03 * sz)), rad = Math.max(1, Math.min(0.09 * sz, 3 * tolPx + 4));
+  let P = mergeNear(R, rad);
+  if (P.length >= 6) P = simplifyRing(P, tol);
+  P = mergeNear(P, rad);
+  return P.length >= 3 ? P : R;
+}
 function inkPixels(px, w, h, T) {
   const N = w * h, Y = new Float32Array(N), out = new Uint8Array(N);
   for (let i = 0; i < N; i++) Y[i] = px[i * 4 + 3] < 128 ? 255 : 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
@@ -2043,7 +2082,7 @@ function* photoGen(rgba, w, h, opt) {
   const ringsOf = (lv, tol, sg, smoothed) => {
     const outers = [], holes = [];
     for (const lp of contours(mask, w, h, S, lv, sg)) {
-      const R = smoothed ? refineRing(lp, tol || D.tol, D.sm, false) : simplifyRing(lp, tol || D.tol), a = area(R);
+      const R0 = smoothed ? refineRing(lp, tol || D.tol, D.sm, false) : simplifyRing(lp, tol || D.tol), R = tidyPhotoRing(R0, Math.max(0.5, 0.9 / Math.max(kx, 1e-6))), a = area(R);
       if (R.length < 3 || Math.abs(a) < 0.8) continue;
       (a > 0 ? outers : holes).push({ R, a, bb: bboxOf(R), own: [] });
     }

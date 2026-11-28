@@ -1,4 +1,4 @@
-const V='mt-v222',CORE=['/','/offline.html','/style.css?v=495','/js/core.js?v=495','/js/ui.js?v=495','/icon-192.png?v=464','/yuu.jpg','/icon-192.png?v=464','/favicon.ico?v=464','/favicon-32.png','/hero.jpg','/bg.jpg'],LAZY=['/js/fx.js?v=392','/js/sholat.js?v=491','/js/hidup.js?v=492','/js/guide.js?v=464','/pemandu.png?v=464','/js/tools.js?v=495','/js/pages.js?v=495','/js/chat.js?v=495'];
+const V='mt-v225',CORE=['/','/offline.html','/style.css?v=498','/js/core.js?v=498','/js/ui.js?v=498','/icon-192.png?v=498','/yuu.jpg','/icon-192.png?v=498','/favicon.ico?v=498','/favicon-32.png?v=498','/hero.jpg','/bg.jpg'],LAZY=['/js/fx.js?v=392','/js/sholat.js?v=491','/js/hidup.js?v=492','/js/guide.js?v=464','/pemandu.png?v=498','/js/tools.js?v=498','/js/pages.js?v=498','/js/chat.js?v=498'];
 // Pasang: shell wajib lengkap, modul lazy (Tools, Halaman, Chat) dicoba terpisah supaya satu kegagalan tidak menggagalkan install. Hasilnya: situs bisa dibuka tanpa internet.
 const pre=c=>c.addAll(CORE).then(()=>Promise.all(LAZY.map(u=>c.add(u).catch(()=>{}))));
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(pre).then(()=>self.skipWaiting()))});
@@ -46,7 +46,7 @@ self.addEventListener('push',e=>{
   const url=typeof d.url==='string'&&d.url.charAt(0)==='/'?d.url:'/#chat';
   e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{
     if(cs.some(c=>c.visibilityState==='visible'&&c.focused))return;
-    return self.registration.showNotification(String(d.title||'Malik Tools').slice(0,80),{body:String(d.body||'').slice(0,120),icon:'/icon-192.png?v=464',badge:'/icon-192.png?v=464',tag:String(d.tag||'mt-chat'),renotify:true,data:{url}});
+    return self.registration.showNotification(String(d.title||'Malik Tools').slice(0,80),{body:String(d.body||'').slice(0,120),icon:'/icon-192.png?v=498',badge:'/icon-192.png?v=498',tag:String(d.tag||'mt-chat'),renotify:true,data:{url}});
   }));
 });
 // Kunci langganan diganti browser: daftar ulang otomatis supaya push tidak berhenti diam-diam.

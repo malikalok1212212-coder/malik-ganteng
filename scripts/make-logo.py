@@ -3,17 +3,22 @@
 import pathlib, cv2, numpy as np
 from PIL import Image, ImageDraw, ImageFont
 R = pathlib.Path(__file__).resolve().parent.parent; P = R / 'public'
-src = Image.open(R / 'src' / 'logo-source.png').convert('L')
-a = np.array(src); mask = a > 128
-ys, xs = np.where(mask); x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
-mark = Image.fromarray((mask[y0:y1, x0:x1] * 255).astype('uint8'))      # putih = logo
+src = Image.open(R / 'src' / 'logo-source.png').convert('RGB')    # logo asli berwarna (putih + mata merah) di latar hitam
+a = np.array(src); lum = a.astype(int).sum(axis=2) / 3
+ys, xs = np.where(lum > 40); x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
+mark = src.crop((x0, y0, x1, y1))                                    # piksel logo apa adanya (tanpa diwarnai ulang)
 mw, mh = mark.size
+sub_rgb = a[y0:y1, x0:x1].astype(int)
+white = (sub_rgb.min(axis=2) > 128)                                   # badan putih
+red = (sub_rgb[:, :, 0] > 150) & (sub_rgb[:, :, 1] < 140) & (sub_rgb[:, :, 2] < 140)   # mata merah
+RED_HEX = '#%02x%02x%02x' % tuple(int(v) for v in sub_rgb[red].mean(axis=0)) if red.any() else '#ff4444'
+mask = white
 def tile(size, pad, shape='square', alpha=False):
     s = size * 4
     bg = Image.new('RGBA', (s, s), (0, 0, 0, 255))
     k = s * (1 - 2 * pad) / max(mw, mh)
     m = mark.resize((round(mw * k), round(mh * k)), Image.LANCZOS)
-    white = Image.new('RGBA', m.size, (255, 255, 255, 255)); bg.paste(white, ((s - m.width) // 2, (s - m.height) // 2), m)
+    bg.paste(m.convert('RGBA'), ((s - m.width) // 2, (s - m.height) // 2))
     if shape == 'circle':
         mk = Image.new('L', (s, s), 0); ImageDraw.Draw(mk).ellipse((0, 0, s - 1, s - 1), fill=255); bg.putalpha(mk)
     elif shape == 'round':
@@ -33,15 +38,17 @@ tile(256, .16).save(P / 'logo.jpg', quality=93)
 tile(480, .16).save(P / 'intro.jpg', quality=92)
 tile(256, .16, 'circle', True).save(P / 'pemandu.png')
 # vektor
-sub = (mask[y0:y1, x0:x1] * 255).astype('uint8')
-cs, hier = cv2.findContours(sub, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
-d = ''
-for c in cs:
-    ap = cv2.approxPolyDP(c, 1.6, True).reshape(-1, 2)
-    if len(ap) >= 3: d += 'M' + ' '.join('%d %d' % (x, y) for x, y in ap) + 'Z'
+def contour_d(m, eps):
+    cs, hier = cv2.findContours((m * 255).astype('uint8'), cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
+    d = ''
+    for c in cs:
+        ap = cv2.approxPolyDP(c, eps, True).reshape(-1, 2)
+        if len(ap) >= 3: d += 'M' + ' '.join('%d %d' % (x, y) for x, y in ap) + 'Z'
+    return d
+d = contour_d(white, 1.6); dr = contour_d(red, 0.8)
 def path(box, pad):
     k = box * (1 - 2 * pad) / max(mw, mh); tx = (box - mw * k) / 2; ty = (box - mh * k) / 2
-    return '<path fill="#fff" fill-rule="evenodd" transform="translate(%.2f %.2f) scale(%.5f)" d="%s"/>' % (tx, ty, k, d)
+    return '<g transform="translate(%.2f %.2f) scale(%.5f)"><path fill="#fff" fill-rule="evenodd" d="%s"/><path fill="%s" fill-rule="evenodd" d="%s"/></g>' % (tx, ty, k, d, RED_HEX, dr)
 (P / 'favicon.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><circle cx="256" cy="256" r="256" fill="#000"/>%s</svg>' % path(512, .2))
 (P / 'logo-malik-tools.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"><rect width="512" height="512" rx="96" fill="#000"/>%s</svg>' % path(512, .16))
 g = '<g transform="translate(24 24)">%s</g>' % path(252, .0)
