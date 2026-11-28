@@ -282,3 +282,190 @@
 § .pfp .sech{margin-top:22px!important}
 § .pfp .pbs button{border:1px solid var(--line2)!important;border-radius:14px!important;box-shadow:none!important}
 § .pfp .pbs button[aria-pressed=true]{border-color:var(--acc)!important;outline:2px solid var(--acc);outline-offset:1px}
+
+/* ---------- v467: PANEL DEVELOPER modern (hanya .owp dan sheet .osw) ----------
+   Satu aksen violet, kartu netral, warna status hanya sebagai titik/tint kecil. Role badge dibedakan lagi per role. */
+§ .owp,§ .osw{--oa:#8b7cf6;--oa2:#a99bff;--oc:#17171b;--oc2:#1d1d22;--ol:rgba(255,255,255,.08);--ol2:rgba(255,255,255,.14);--ok2:#34d399;--wn2:#fbbf24;--bd2:#f87171;--in2:#60a5fa;--rd:#a78bfa;--ro:#f472b6;--rp:#22d3ee;--rv:#fbbf24;--rm:#a1a1a9}
+§[data-theme=light] .owp,§[data-theme=light] .osw{--oa:#6d5ef0;--oa2:#5a4bd8;--oc:#fff;--oc2:#f4f4f7;--ol:rgba(17,17,24,.09);--ol2:rgba(17,17,24,.16);--ok2:#059669;--wn2:#b45309;--bd2:#dc2626;--in2:#2563eb;--rd:#6d5ef0;--ro:#db2777;--rp:#0e7490;--rv:#b45309;--rm:#5d5d66}
+§ .owp{background:var(--s1)!important;border:1px solid var(--ol2)!important;border-radius:24px!important;box-shadow:0 18px 44px -24px rgba(0,0,0,.6)!important}
+§ .owp::before,§ .owp::after{display:none!important}
+§ .owp .bar{display:flex!important;align-items:center;justify-content:space-between;gap:10px;background:transparent!important;border-bottom:1px solid var(--ol)!important;padding:13px 16px!important;color:var(--muted)!important;font:700 11px var(--f-ui)!important;letter-spacing:.09em!important}
+§ .owp .bar>span:first-child{display:inline-flex;align-items:center;gap:9px}
+§ .owp .bar>span:first-child::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--oa);box-shadow:0 0 0 4px color-mix(in srgb,var(--oa) 20%,transparent)}
+§ .owp .bar .pill{background:var(--oc2)!important;border:1px solid var(--ol)!important;color:var(--ink)!important;font:500 12px var(--f-ui)!important;letter-spacing:0!important;border-radius:999px!important}
+§ .owp .in{padding:16px!important}
+§ .owp .thero{background:linear-gradient(135deg,color-mix(in srgb,var(--oa) 14%,var(--oc)),var(--oc) 70%)!important;border:1px solid color-mix(in srgb,var(--oa) 26%,var(--ol))!important;border-radius:20px!important;padding:16px!important;margin-bottom:16px!important}
+§ .owp .thero .tile{background:color-mix(in srgb,var(--oa) 18%,var(--oc))!important;color:var(--oa)!important;border:1px solid color-mix(in srgb,var(--oa) 34%,transparent)!important;border-radius:16px!important;width:52px!important;height:52px!important}
+§ .owp .thero .tile svg{stroke:var(--oa)!important}
+§ .owp .thero h2{font-size:21px!important;color:var(--ink)!important}
+§ .owp .thero .sub{color:var(--muted)!important}
+/* tab utama + sub tab */
+§ .owp .ogr{display:grid!important;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;margin:0 0 12px!important;background:var(--oc2)!important;border:1px solid var(--ol)!important;border-radius:16px!important}
+§ .owp .ogr button{background:transparent!important;color:var(--muted)!important;border:0!important;border-radius:12px!important;padding:10px 2px!important;font:700 13px var(--f-ui)!important;box-shadow:none!important;transition:background .2s,color .2s,transform .15s}
+§ .owp .ogr button[aria-pressed=true]{background:var(--oa)!important;color:#fff!important;box-shadow:0 6px 16px -8px var(--oa)!important}
+§ .owp .osb{display:flex!important;gap:6px;overflow-x:auto;margin:0 0 12px!important;scrollbar-width:none}
+§ .owp .osb::-webkit-scrollbar{display:none}
+§ .owp .osb button{flex:none;background:transparent!important;color:var(--muted)!important;border:1px solid var(--ol)!important;border-radius:999px!important;padding:7px 14px!important;font:600 13px var(--f-ui)!important;box-shadow:none!important;transition:all .2s}
+§ .owp .osb button[aria-pressed=true]{background:color-mix(in srgb,var(--oa) 16%,transparent)!important;color:var(--oa)!important;border-color:color-mix(in srgb,var(--oa) 40%,transparent)!important}
+/* kolom cari, filter, chip */
+§ .owp .oqr{display:flex;gap:8px;margin:0 0 10px!important}
+§ .owp input,§ .owp select,§ .owp textarea,§ .osw input,§ .osw select,§ .osw textarea{background:var(--oc2)!important;color:var(--ink)!important;border:1px solid var(--ol)!important;border-radius:14px!important;box-shadow:none!important}
+§ .owp input:focus,§ .owp select:focus,§ .owp textarea:focus,§ .osw input:focus,§ .osw select:focus,§ .osw textarea:focus{border-color:var(--oa)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--oa) 24%,transparent)!important;outline:0}
+§ .owp .ofb,§ .owp .qch,§ .owp .acts button,§ .owp .seg button,§ .owp .dvb button,§ .osw .acts button,§ .osw .osx{background:var(--oc2)!important;color:var(--ink)!important;border:1px solid var(--ol)!important;border-radius:999px!important;box-shadow:none!important;font-weight:600!important;transition:background .15s,border-color .15s,transform .15s}
+§ .owp .ofb[aria-pressed=true],§ .owp .qch[aria-pressed=true],§ .owp .qch.on{background:color-mix(in srgb,var(--oa) 16%,transparent)!important;color:var(--oa)!important;border-color:color-mix(in srgb,var(--oa) 42%,transparent)!important}
+§ .owp .qch b,§ .owp .qch i{color:var(--muted)!important;font-style:normal}
+§ .owp button.primary,§ .osw button.primary{background:var(--oa)!important;color:#fff!important;border:1px solid var(--oa)!important;border-radius:999px!important}
+§ .owp button.dg,§ .osw button.dg{background:color-mix(in srgb,var(--bd2) 12%,transparent)!important;color:var(--bd2)!important;border-color:color-mix(in srgb,var(--bd2) 34%,transparent)!important}
+@media (hover:hover){§ .owp .acts button:hover,§ .owp .qch:hover,§ .owp .ofb:hover,§ .osw .acts button:hover{border-color:color-mix(in srgb,var(--oa) 50%,transparent)!important}}
+§ .owp button:active,§ .osw button:active{transform:scale(.97);background:color-mix(in srgb,var(--oa) 20%,var(--oc2))!important;border-color:var(--oa)!important}
+§ .owp button.primary:active,§ .osw button.primary:active,§ .owp .ogr button[aria-pressed=true]:active{background:var(--oa2)!important;color:#fff!important}
+/* kartu statistik */
+§ .owp .ost{display:grid!important;grid-template-columns:repeat(2,1fr);gap:10px!important;margin:0 0 14px!important}
+§ .owp .ost.dvs{grid-template-columns:repeat(3,1fr);gap:8px!important}
+§ .owp .ost>div{display:block!important;position:relative;background:var(--oc)!important;border:1px solid var(--ol)!important;border-radius:18px!important;box-shadow:none!important;padding:14px 14px 13px!important;min-width:0;text-align:left!important;--k:var(--oa)}
+§ .owp .ost>div::before{content:"";display:block;width:8px;height:8px;border-radius:50%;background:var(--k);box-shadow:0 0 0 4px color-mix(in srgb,var(--k) 18%,transparent);margin-bottom:10px}
+§ .owp #os>div:nth-child(1){--k:var(--oa)}
+§ .owp #os>div:nth-child(2){--k:var(--ok2)}
+§ .owp #os>div:nth-child(3){--k:var(--in2)}
+§ .owp #os>div:nth-child(4){--k:var(--wn2)}
+§ .owp #lvst .ost>div:nth-child(1){--k:var(--in2)}
+§ .owp #lvst .ost>div:nth-child(2){--k:var(--ok2)}
+§ .owp #lvst .ost>div:nth-child(3){--k:var(--bd2)}
+§ .owp #lvst .ost>div:nth-child(4){--k:var(--oa)}
+§ .owp .dvs>div:nth-child(1){--k:var(--in2)}
+§ .owp .dvs>div:nth-child(2){--k:var(--wn2)}
+§ .owp .dvs>div:nth-child(3){--k:var(--oa)}
+§ .owp .ost b{display:block!important;color:var(--ink)!important;font:800 clamp(22px,7vw,28px)/1.1 var(--f-d)!important;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+§ .owp .ost span{display:block;margin-top:4px;color:var(--muted)!important;font:600 12px/1.3 var(--f-ui)!important}
+/* bilah LIVE */
+§ .owp .dvb{display:flex!important;align-items:center;gap:10px;margin:0 0 12px!important;padding:8px 8px 8px 14px!important;background:var(--oc)!important;border:1px solid var(--ol)!important;border-radius:16px!important}
+§ .owp .dvb span{min-width:0!important}
+§ .owp .dvd{position:relative;flex:none!important;min-width:0!important;width:9px!important;height:9px!important;border-radius:50%!important;background:var(--ok2)!important;box-shadow:none!important}
+§ .owp .dvd::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--ok2);opacity:0}
+@media (prefers-reduced-motion:no-preference){§ .owp .dvb[data-st=ok] .dvd::after{animation:dvring 1.8s ease-out infinite}§ .owp .dvb[data-st=wait] .dvd,§ .owp .dvb[data-st=retry] .dvd{animation:dvblink 1s ease-in-out infinite!important}}
+@keyframes dvring{0%{transform:scale(.5);opacity:.8}100%{transform:scale(1.9);opacity:0}}
+@keyframes dvblink{50%{opacity:.35}}
+§ .owp .dvb[data-st=wait] .dvd,§ .owp .dvb[data-st=wait] .dvd::after{background:var(--wn2)!important;border-color:var(--wn2)}
+§ .owp .dvb[data-st=retry] .dvd{background:var(--bd2)!important}
+§ .owp .dvb[data-st=off] .dvd{background:var(--muted)!important}
+§ .owp .dvb #lvl{flex:none;font:800 11px var(--f-ui)!important;letter-spacing:.1em;color:var(--ok2)!important}
+§ .owp .dvb[data-st=wait] #lvl{color:var(--wn2)!important}
+§ .owp .dvb[data-st=retry] #lvl{color:var(--bd2)!important}
+§ .owp .dvb[data-st=off] #lvl{color:var(--muted)!important}
+§ .owp .dvb #lvt{flex:1;min-width:0;color:var(--muted)!important;font:500 12px var(--f-ui)!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+§ .owp .dvb button{flex:none;white-space:nowrap;padding:7px 14px!important;font-size:12px!important}
+/* kartu besar online + sparkline */
+§ .owp .dvh{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 0 10px;padding:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--oa) 16%,var(--oc)),var(--oc) 75%);border:1px solid color-mix(in srgb,var(--oa) 28%,var(--ol));border-radius:20px;overflow:hidden}
+§ .owp .dvhl{min-width:0}
+§ .owp .dvhl span{display:block;color:var(--muted);font:600 12px var(--f-ui)}
+§ .owp .dvhl b{display:block;margin:4px 0 2px;color:var(--ink);font:800 44px/1 var(--f-d);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+§ .owp .dvhl small{display:block;color:var(--muted);font:500 12px var(--f-ui)}
+§ .owp .dvhr{flex:1;max-width:48%;min-width:90px;height:52px}
+§ .owp .dvsp{display:block;width:100%;height:100%;overflow:visible}
+§ .owp .dvsp .l{fill:none;stroke:var(--oa);stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+§ .owp .dvsp .a{fill:color-mix(in srgb,var(--oa) 18%,transparent);stroke:none}
+§ .owp .dvh2{margin:16px 0 8px!important;color:var(--muted)!important;font:700 11px var(--f-ui)!important;letter-spacing:.08em;text-transform:uppercase}
+§ .owp .dvm{display:flex;align-items:center;gap:10px;margin:0 0 8px;padding:10px 12px;background:var(--oc);border:1px solid var(--ol);border-radius:16px}
+§ .owp .dvm>.g{flex:1;min-width:0}
+§ .owp .dvm>.g>b{display:flex;align-items:center;flex-wrap:wrap;gap:6px;color:var(--ink);font:700 14px var(--f-ui)}
+§ .owp .dvm>.g>small{display:block;margin-top:2px;color:var(--muted);font:500 12px var(--f-ui)}
+§ .owp .dvt{flex:none;color:var(--muted);font:500 11px var(--f-ui);white-space:nowrap}
+§ .owp .cav{display:inline-grid;place-items:center;flex:none;width:38px;height:38px;border-radius:50%;background:color-mix(in srgb,var(--oa) 18%,var(--oc2))!important;color:var(--oa)!important;border:1px solid color-mix(in srgb,var(--oa) 30%,transparent)!important;font:800 15px var(--f-d)!important;overflow:hidden}
+§ .owp .cav img{width:100%;height:100%;object-fit:cover;display:block}
+§ .owp .cav.o{background:color-mix(in srgb,var(--ro) 18%,var(--oc2))!important;color:var(--ro)!important;border-color:color-mix(in srgb,var(--ro) 34%,transparent)!important}
+§ .owp .dvc{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+§ .owp .dvr{display:flex;justify-content:space-between;gap:10px;padding:10px 2px;border-bottom:1px solid var(--ol)!important;font-size:14px}
+§ .owp .dvr:last-child{border-bottom:0!important}
+§ .owp .dvr b{color:var(--ink);font-weight:600}
+§ .owp .dvr span{color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){§ .owp .dvf{animation:dvflash .9s ease-out!important}}
+@keyframes dvflash{0%{color:var(--oa);transform:scale(1.06)}100%{transform:none}}
+§ .owp .dvc .tg2.g{background:color-mix(in srgb,var(--oa) 13%,transparent)!important;color:var(--oa)!important;border-color:color-mix(in srgb,var(--oa) 30%,transparent)!important}
+/* segmen rentang + kartu daftar */
+§ .owp .seg{display:grid!important;grid-template-columns:1fr 1fr auto;gap:4px;padding:4px;margin:0 0 12px!important;background:var(--oc2)!important;border:1px solid var(--ol)!important;border-radius:14px!important}
+§ .owp .seg button{background:transparent!important;border:0!important;color:var(--muted)!important;border-radius:10px!important;padding:8px 12px!important;font-size:13px!important;white-space:nowrap}
+§ .owp .seg button[aria-pressed=true]{background:var(--oa)!important;color:#fff!important}
+§ .owp .ur,§ .owp .uc{background:var(--oc)!important;border:1px solid var(--ol)!important;border-radius:18px!important;box-shadow:none!important}
+§ .owp .uc.bn{border-color:color-mix(in srgb,var(--bd2) 45%,var(--ol))!important}
+§ .owp .uc.wn,§ .owp .ur.wn{border-left:3px solid var(--wn2)!important}
+§ .owp .ur .srow b,§ .owp .uc .g b{color:var(--ink)!important}
+§ .owp .ur small,§ .owp .uc small,§ .owp .umeta,§ .owp .um{color:var(--muted)!important}
+§ .owp .bar2{height:8px!important;background:var(--oc2)!important;border:0!important;border-radius:99px!important;overflow:hidden}
+§ .owp .bar2 i{display:block;height:100%;border-radius:99px!important;background:linear-gradient(90deg,var(--oa),var(--in2))!important;box-shadow:none!important}
+§ .owp .bar2 i.r{background:linear-gradient(90deg,var(--wn2),var(--bd2))!important}
+§ .owp .msg.bad{background:color-mix(in srgb,var(--bd2) 10%,transparent)!important;border:1px solid color-mix(in srgb,var(--bd2) 30%,transparent)!important;color:var(--ink)!important;border-radius:14px!important}
+§ .owp .msg.good{background:color-mix(in srgb,var(--ok2) 10%,transparent)!important;border:1px solid color-mix(in srgb,var(--ok2) 30%,transparent)!important;color:var(--ink)!important;border-radius:14px!important}
+§ .owp .hint,§ .owp .note{color:var(--muted)!important}
+§ .owp .osec h4,§ .osw .osec h4{color:var(--muted)!important;font:700 11px var(--f-ui)!important;letter-spacing:.08em;text-transform:uppercase}
+§ .owp .osec,§ .osw .osec{border-top:1px solid var(--ol)!important}
+§ .owp .chv{color:var(--muted)!important}
+/* chip status + badge role per role (hanya di panel developer) */
+§ .owp .tg2,§ .osw .tg2{background:var(--oc2)!important;color:var(--muted)!important;border:1px solid var(--ol)!important;border-radius:999px!important;box-shadow:none!important;font:700 10.5px var(--f-ui)!important;letter-spacing:.04em;padding:2px 9px!important}
+§ .owp .tg2.g:not([class*=rl-]),§ .osw .tg2.g:not([class*=rl-]){background:color-mix(in srgb,var(--ok2) 13%,transparent)!important;color:var(--ok2)!important;border-color:color-mix(in srgb,var(--ok2) 30%,transparent)!important}
+§ .owp .tg2.r:not([class*=rl-]),§ .osw .tg2.r:not([class*=rl-]){background:color-mix(in srgb,var(--bd2) 13%,transparent)!important;color:var(--bd2)!important;border-color:color-mix(in srgb,var(--bd2) 30%,transparent)!important}
+§ .owp .tg2.rl-dev,§ .osw .tg2.rl-dev{--rc:var(--rd)}
+§ .owp .tg2.rl-own,§ .osw .tg2.rl-own{--rc:var(--ro)}
+§ .owp .tg2.rl-pre,§ .osw .tg2.rl-pre{--rc:var(--rp)}
+§ .owp .tg2.rl-vip,§ .osw .tg2.rl-vip{--rc:var(--rv)}
+§ .owp .tg2.rl-mem,§ .osw .tg2.rl-mem{--rc:var(--rm)}
+§ .owp .tg2[class*=rl-],§ .osw .tg2[class*=rl-]{background:color-mix(in srgb,var(--rc) 15%,transparent)!important;color:var(--rc)!important;border:1px solid color-mix(in srgb,var(--rc) 34%,transparent)!important}
+/* sheet atur pengguna */
+§ .osw .osh{background:var(--s1)!important;border:1px solid var(--ol2)!important;border-radius:24px 24px 0 0!important}
+§ .osw .osh0 i{background:var(--ol2)!important}
+§ .osw .cav{background:color-mix(in srgb,var(--oa) 18%,var(--oc2))!important;color:var(--oa)!important;border:1px solid color-mix(in srgb,var(--oa) 30%,transparent)!important}
+§ .osw .cav.o{background:color-mix(in srgb,var(--ro) 18%,var(--oc2))!important;color:var(--ro)!important}
+§[data-theme=light] .owp{box-shadow:0 12px 32px -22px rgba(17,17,24,.35)!important}
+§ .owp .ost[style*="none"],§ .owp .osb[style*="none"]{display:none!important}
+§ .osw .osh .uh .g>b>.tg2,§ .osw .osh .uh .g>b>.vck{margin-left:6px}
+
+/* ===== Animasi halaman tool (v471): masuk berurutan, ikon melayang, tombol berkilau, hasil muncul membal. Hanya gerak transform/opacity (ringan). ===== */
+@keyframes tfIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes tfUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes tfPop{0%{opacity:0;transform:scale(.4) rotate(-12deg)}60%{opacity:1;transform:scale(1.12) rotate(3deg)}100%{transform:none}}
+@keyframes tfFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes tfLine{0%{background-position:0 0}100%{background-position:200% 0}}
+@keyframes tfShine{0%{transform:translateX(-120%) skewX(-20deg)}100%{transform:translateX(320%) skewX(-20deg)}}
+@keyframes tfRes{0%{opacity:0;transform:translateY(16px) scale(.96)}65%{opacity:1;transform:translateY(-3px) scale(1.01)}100%{transform:none}}
+@keyframes tfShake{0%,100%{transform:none}20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+@keyframes tfBusy{0%{background-position:0 0}100%{background-position:40px 0}}
+@media (prefers-reduced-motion:no-preference){
+§ [data-tool] .panel{animation:tfIn .55s cubic-bezier(.2,.8,.2,1) backwards}
+§ [data-tool] .panel .bar{animation:tfUp .45s .08s cubic-bezier(.2,.8,.2,1) backwards}
+§ [data-tool] .thero .tile{animation:tfPop .7s .15s cubic-bezier(.2,.9,.3,1.2) backwards,tfFloat 3.6s 1s ease-in-out infinite}
+§ [data-tool] .thero h2{animation:tfUp .5s .22s cubic-bezier(.2,.8,.2,1) backwards}
+§ [data-tool] .thero .sub{animation:tfUp .5s .3s cubic-bezier(.2,.8,.2,1) backwards}
+§ [data-tool] #c>*{animation:tfUp .5s cubic-bezier(.2,.8,.2,1) backwards}
+§ [data-tool] #c>:nth-child(1){animation-delay:.34s}§ [data-tool] #c>:nth-child(2){animation-delay:.4s}§ [data-tool] #c>:nth-child(3){animation-delay:.46s}§ [data-tool] #c>:nth-child(4){animation-delay:.52s}§ [data-tool] #c>:nth-child(5){animation-delay:.58s}§ [data-tool] #c>:nth-child(6){animation-delay:.64s}§ [data-tool] #c>:nth-child(n+7){animation-delay:.7s}
+§ [data-tool] .panel:not(.cpanel)::before{background-size:200% 100%!important;background-image:linear-gradient(90deg,var(--acc),color-mix(in srgb,var(--acc) 25%,transparent),var(--acc))!important;animation:tfLine 4s linear infinite}
+§ [data-tool] input,§ [data-tool] textarea,§ [data-tool] select{transition:box-shadow .25s ease,border-color .25s ease,transform .25s ease}
+§ [data-tool] input:focus,§ [data-tool] textarea:focus,§ [data-tool] select:focus{box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent)!important;transform:translateY(-1px)}
+§ [data-tool] button.primary,§ [data-tool] .btn.primary{position:relative;overflow:hidden;transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s ease,filter .2s ease}
+§ [data-tool] button.primary::after,§ [data-tool] .btn.primary::after{content:"";position:absolute;inset:0 auto 0 0;width:35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.38),transparent);transform:translateX(-120%) skewX(-20deg);pointer-events:none}
+§ [data-tool] button.primary:hover:not(:disabled)::after,§ [data-tool] .btn.primary:hover::after{animation:tfShine .8s ease}
+§ [data-tool] button.primary:hover:not(:disabled),§ [data-tool] .btn.primary:hover{transform:translateY(-2px)}
+§ [data-tool] button.primary:active:not(:disabled),§ [data-tool] .btn.primary:active{transform:scale(.96)}
+§ [data-tool] button.primary:disabled{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.22) 0 10px,transparent 10px 20px)!important;background-size:40px 40px;animation:tfBusy .8s linear infinite}
+§ [data-tool] #res>*,§ [data-tool] .out,§ [data-tool] .msg.good{animation:tfRes .6s cubic-bezier(.2,.9,.3,1.1) backwards}
+§ [data-tool] .msg.bad{animation:tfShake .45s ease backwards}
+§ [data-tool] #res img,§ [data-tool] #res video,§ [data-tool] #res canvas{animation:tfIn .6s .1s cubic-bezier(.2,.8,.2,1) backwards}
+}
+
+/* ===== Penyesuaian halaman (v472): semua halaman (Changelog, Beli Koin, Feedback, Stats, Info, Riwayat, Profil) memakai gerak yang sama dan tidak melebar di layar kecil ===== */
+§ #main{overflow-x:clip}
+§ #main .panel,§ #main .panel .in{min-width:0;max-width:100%}
+§ #main .panel .in>*{min-width:0;max-width:100%}
+§ #main img,§ #main video,§ #main canvas,§ #main svg{max-width:100%}
+§ #main img,§ #main video,§ #main canvas{height:auto}
+§ #main pre,§ #main code,§ #main .out code{overflow-wrap:anywhere;white-space:pre-wrap}
+§ #main .out pre{overflow-x:auto}
+§ #main table{display:block;max-width:100%;overflow-x:auto}
+§ #main input,§ #main select,§ #main textarea{max-width:100%;box-sizing:border-box}
+§ #main .row{flex-wrap:wrap}
+@media (prefers-reduced-motion:no-preference){
+§ #main:not([data-tool]) .panel{animation:tfIn .55s cubic-bezier(.2,.8,.2,1) backwards}
+§ #main:not([data-tool]) .panel .bar{animation:tfUp .45s .08s cubic-bezier(.2,.8,.2,1) backwards}
+§ #main:not([data-tool]) .panel:not(.cpanel)::before{background-size:200% 100%!important;background-image:linear-gradient(90deg,var(--acc),color-mix(in srgb,var(--acc) 25%,transparent),var(--acc))!important;animation:tfLine 4s linear infinite}
+§ #main:not([data-tool]) .panel .in>*{animation:tfUp .5s cubic-bezier(.2,.8,.2,1) backwards}
+§ #main:not([data-tool]) .panel .in>:nth-child(1){animation-delay:.14s}§ #main:not([data-tool]) .panel .in>:nth-child(2){animation-delay:.2s}§ #main:not([data-tool]) .panel .in>:nth-child(3){animation-delay:.26s}§ #main:not([data-tool]) .panel .in>:nth-child(4){animation-delay:.32s}§ #main:not([data-tool]) .panel .in>:nth-child(5){animation-delay:.38s}§ #main:not([data-tool]) .panel .in>:nth-child(n+6){animation-delay:.44s}
+§ #main:not([data-tool]) button.primary:disabled{animation:tfBusy .8s linear infinite}
+}
