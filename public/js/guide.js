@@ -109,7 +109,7 @@
       '<p class="mgt" aria-hidden="true"></p><span class="mgsr" role="status" aria-live="polite"></span>' +
       '<ol class="mgl" hidden></ol><div class="mga"></div>' +
       '<button type="button" class="mgo"></button><button type="button" class="mgh">Sembunyikan pemandu</button></div>' +
-      '<button type="button" class="mgf" aria-label="Buka pemandu Malik" aria-expanded="false"><img src="/pemandu.png?v=499" alt="" width="42" height="42"></button>';
+      '<button type="button" class="mgf" aria-label="Buka pemandu Malik" aria-expanded="false"><img src="/pemandu.png?v=500" alt="" width="42" height="42"></button>';
     D.body.appendChild(root);
     fab = q('.mgf', root); bub = q('.mgb', root); txt = q('.mgt', root); sr = q('.mgsr', root);
     lst = q('.mgl', root); acts = q('.mga', root);
@@ -250,7 +250,7 @@
       var bk = D.createElement('div'); bk.className = 'mgk';
       var sp = D.createElement('div'); sp.className = 'mgs';
       var cd = D.createElement('div'); cd.className = 'mgtc bot'; cd.setAttribute('role', 'dialog'); cd.setAttribute('aria-label', 'Tur singkat');
-      cd.innerHTML = '<img src="/pemandu.png?v=499" alt=""><p class="mgp" aria-live="polite"></p><div class="mgtn"><div class="mgd"></div><div class="mgtb"></div></div>';
+      cd.innerHTML = '<img src="/pemandu.png?v=500" alt=""><p class="mgp" aria-live="polite"></p><div class="mgtn"><div class="mgd"></div><div class="mgtb"></div></div>';
       D.body.append(bk, sp, cd);
       tourEls = { bk: bk, sp: sp, cd: cd, steps: steps, i: 0 };
       root.hidden = true;

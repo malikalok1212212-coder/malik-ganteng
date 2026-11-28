@@ -44,15 +44,15 @@ PAGE = """<!DOCTYPE html>
 <meta name="robots" content="index,follow">
 <meta name="theme-color" content="#0b0c0f">
 <link rel="canonical" href="@URL@">
-<link rel="icon" href="/favicon.ico?v=499" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=499">
+<link rel="icon" href="/favicon.ico?v=500" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=500">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Malik Tools">
 <meta property="og:locale" content="id_ID">
 <meta property="og:title" content="@TITLE@">
 <meta property="og:description" content="@DESC@">
 <meta property="og:url" content="@URL@">
-<meta property="og:image" content="@SITE@/og.jpg?v=499">
+<meta property="og:image" content="@SITE@/og.jpg?v=500">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">@LD@</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,7 +62,7 @@ PAGE = """<!DOCTYPE html>
 <script>try{document.documentElement.dataset.theme=localStorage.getItem('theme')||'dark'}catch(e){document.documentElement.dataset.theme='dark'}</script>
 </head>
 <body>
-<header class="bar"><div class="wrap"><a class="brand" href="/"><img src="/logo.jpg?v=499" alt="" width="34" height="34"><span>Malik Tools</span></a><button type="button" class="ib" id="th" aria-label="Ganti tema"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></svg></button><a class="go" href="/">Buka</a></div></header>
+<header class="bar"><div class="wrap"><a class="brand" href="/"><img src="/logo.jpg?v=500" alt="" width="34" height="34"><span>Malik Tools</span></a><button type="button" class="ib" id="th" aria-label="Ganti tema"><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></svg></button><a class="go" href="/">Buka</a></div></header>
 <main class="wrap">
 <span class="tag">Tool gratis</span>
 <h1>@NAME@</h1>
