@@ -71,42 +71,60 @@
     for (var i = 0; i < CITIES.length; i++) if (CITIES[i][0] === v) return i;
     return 0;
   }
-  function minaret(cx, top, w) {
-    var g = '#f6d58a';
-    return '<polygon class="mf" points="' + (cx - w * .7) + ',' + (top + 12) + ' ' + (cx + w * .7) + ',' + (top + 12) + ' ' + cx + ',' + top + '"/>'
-      + '<rect class="mf" x="' + (cx - w * .4) + '" y="' + (top + 12) + '" width="' + (w * .8) + '" height="9"/>'
-      + '<rect class="mf" x="' + (cx - w * .95) + '" y="' + (top + 21) + '" width="' + (w * 1.9) + '" height="4" rx="1"/>'
-      + '<rect class="mf" x="' + (cx - w / 2) + '" y="' + (top + 25) + '" width="' + w + '" height="' + (140 - top - 25) + '"/>'
-      + '<rect x="' + (cx - 1) + '" y="' + (top + 36) + '" width="2" height="9" rx="1" fill="' + g + '" style="opacity:var(--wo)"/>'
-      + '<rect x="' + (cx - 1) + '" y="' + (top + 56) + '" width="2" height="9" rx="1" fill="' + g + '" style="opacity:var(--wo)"/>'
-      + '<path class="mfs" d="M' + cx + ' ' + top + 'V' + (top - 7) + '" stroke-width="1.5" fill="none"/><circle cx="' + cx + '" cy="' + (top - 8) + '" r="1.8" fill="' + g + '"/>';
+  function minaret(cx, top) {
+    var b = 152;
+    return '<path class="mf" d="M' + (cx - 6) + ' ' + (top + 15) + 'C' + (cx - 6) + ' ' + (top + 6) + ' ' + (cx - 2) + ' ' + (top + 4) + ' ' + cx + ' ' + top + 'C' + (cx + 2) + ' ' + (top + 4) + ' ' + (cx + 6) + ' ' + (top + 6) + ' ' + (cx + 6) + ' ' + (top + 15) + 'Z"/>'
+      + '<path class="mfs" d="M' + cx + ' ' + top + 'V' + (top - 9) + '" stroke-width="1.4" fill="none"/><circle cx="' + cx + '" cy="' + (top - 10) + '" r="1.8" fill="#f6d58a"/>'
+      + '<rect class="mf" x="' + (cx - 8.5) + '" y="' + (top + 15) + '" width="17" height="3" rx="1"/>'
+      + '<rect class="mf" x="' + (cx - 4) + '" y="' + (top + 18) + '" width="8" height="24"/>'
+      + '<rect class="mf" x="' + (cx - 10) + '" y="' + (top + 42) + '" width="20" height="3.5" rx="1"/>'
+      + '<path class="mf" d="M' + (cx - 5.5) + ' ' + (top + 45.5) + 'H' + (cx + 5.5) + 'L' + (cx + 7) + ' ' + b + 'H' + (cx - 7) + 'Z"/>';
+  }
+  function slits(cx, top) {
+    var s = '', i, o = [[22, 10], [54, 14], [76, 10]];
+    for (i = 0; i < 3; i++) s += '<rect class="wn" x="' + (cx - 1.2) + '" y="' + (top + o[i][0]) + '" width="2.4" height="' + o[i][1] + '" rx="1.2" fill="#f6d58a" style="animation-delay:-' + (i * 1.3) + 's"/>';
+    return s;
   }
   function arch(cx, y0, y1, w) {
-    var r = w / 2; return '<path d="M' + (cx - r) + ' ' + y1 + 'V' + y0 + 'a' + r + ' ' + r + ' 0 0 1 ' + w + ' 0V' + y1 + 'Z" class="wn" style="animation-delay:-' + ((cx * 7) % 5) + 's" fill="#f6d58a" opacity=".9"/>';
+    var r = w / 2; return '<path d="M' + (cx - r) + ' ' + y1 + 'V' + y0 + 'a' + r + ' ' + r + ' 0 0 1 ' + w + ' 0V' + y1 + 'Z" class="wn" style="animation-delay:-' + ((cx * 7) % 5) + 's" fill="url(#sltwin)"/>';
   }
-  var STARS = [[30, 18, 1.2], [70, 34, 1], [118, 16, 1.4], [160, 28, 1], [236, 22, 1.2], [270, 40, 1], [300, 14, 1.3], [380, 46, 1], [52, 62, 1], [18, 50, 1.1], [352, 72, 1], [200, 20, 1.1]];
-  var ART = '<svg viewBox="0 0 400 140" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">'
+  function palm(x, h, f, dl) {
+    var tx = x + f * 5, ty = 152 - h;
+    return '<g class="pm" style="animation-delay:-' + dl + 's"><path class="mfs" d="M' + x + ' 152Q' + (x + f * 8) + ' ' + (152 - h / 2) + ' ' + tx + ' ' + ty + '" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+      + '<path class="mfs" d="M' + tx + ' ' + ty + 'q-16 -2 -23 13M' + tx + ' ' + ty + 'q16 -2 23 13M' + tx + ' ' + ty + 'q-12 -11 -21 -5M' + tx + ' ' + ty + 'q12 -11 21 -5M' + tx + ' ' + ty + 'q-2 -9 3 -13" stroke-width="2" fill="none" stroke-linecap="round"/></g>';
+  }
+  var STARS = [[24, 22, 1.2], [60, 44, 1], [100, 18, 1.4], [136, 36, 1], [196, 24, 1.2], [226, 48, 1], [270, 16, 1.3], [320, 52, 1], [44, 74, 1], [14, 56, 1.1], [300, 86, 1], [170, 20, 1.1], [88, 66, .9], [240, 30, .9], [124, 10, .9], [292, 34, 1]];
+  var FF = [[56, 146, 7, 5.2], [88, 142, -6, 6.4], [124, 150, 8, 4.8], [216, 148, -7, 5.8], [252, 144, 6, 6.8], [290, 148, -8, 5], [178, 154, 5, 7]];
+  var ART = '<svg viewBox="0 0 340 176" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">'
     + '<defs><linearGradient id="sltsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--k1)"/><stop offset=".62" style="stop-color:var(--k2)"/><stop offset="1" style="stop-color:var(--k3)"/></linearGradient>'
     + '<radialGradient id="sltglow" cx=".5" cy="1" r=".62"><stop offset="0" style="stop-color:var(--acc,#e5232e)" stop-opacity=".5"/><stop offset="1" style="stop-color:var(--acc,#e5232e)" stop-opacity="0"/></radialGradient>'
-    + '<mask id="sltmoon" maskUnits="userSpaceOnUse" x="-30" y="-30" width="60" height="60"><rect x="-30" y="-30" width="60" height="60" fill="#fff"/><circle cx="6" cy="-4" r="11.5" fill="#000"/></mask></defs>'
-    + '<rect width="400" height="140" fill="url(#sltsky)"/><rect class="gl" width="400" height="140" fill="url(#sltglow)"/>'
+    + '<linearGradient id="sltwin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffeab0"/><stop offset="1" stop-color="#e0a94a"/></linearGradient>'
+    + '<mask id="sltmoon" maskUnits="userSpaceOnUse" x="-30" y="-30" width="60" height="60"><rect x="-30" y="-30" width="60" height="60" fill="#fff"/><circle cx="6" cy="-4" r="11.5" fill="#000"/></mask>'
+    + '<mask id="sltfin" maskUnits="userSpaceOnUse" x="-8" y="-8" width="16" height="16"><rect x="-8" y="-8" width="16" height="16" fill="#fff"/><circle cx="0" cy="-2.2" r="3.7" fill="#000"/></mask></defs>'
+    + '<rect width="340" height="176" fill="url(#sltsky)"/><rect class="gl" width="340" height="176" fill="url(#sltglow)"/>'
     + '<g class="strs">' + STARS.map(function (s) { return '<circle class="tw" style="animation-delay:-' + ((s[0] * 3) % 7 / 2) + 's;animation-duration:' + (2.4 + (s[1] % 4) * .8) + 's" cx="' + s[0] + '" cy="' + s[1] + '" r="' + s[2] + '" fill="#fff" opacity=".8"/>'; }).join('')
-    + '<path class="ss" d="M262 30L284 20" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity="0"/></g>'
-    + '<g class="bdy"><g class="moon"><circle class="mh" r="20" fill="#f6d58a" opacity=".07"/><circle r="14" fill="#f6d58a" mask="url(#sltmoon)"/></g>'
-    + '<g class="sun"><circle r="22" style="fill:var(--bc)" opacity=".13"/><circle r="13" style="fill:var(--bc)"/></g></g>'
-    + '<g class="cl1" fill="#fff"><ellipse cx="60" cy="98" rx="36" ry="5"/><ellipse cx="88" cy="93" rx="22" ry="4"/></g>'
-    + '<g class="cl2" fill="#fff"><ellipse cx="300" cy="104" rx="40" ry="5"/><ellipse cx="270" cy="99" rx="24" ry="4"/></g>'
-    + '<rect class="mf" y="124" width="400" height="16" opacity=".85"/>'
-    + '<path class="mf" d="M0 124c0-10 22-10 22 0zM378 124c0-10 22-10 22 0z" opacity=".85"/>'
-    + minaret(36, 74, 8) + minaret(364, 74, 8)
-    + minaret(84, 44, 11) + minaret(316, 44, 11)
-    + '<rect class="mf" x="100" y="112" width="42" height="28"/><path class="mf" d="M100 112C100 92 142 92 142 112Z"/>'
-    + '<rect class="mf" x="258" y="112" width="42" height="28"/><path class="mf" d="M258 112C258 92 300 92 300 112Z"/>'
-    + '<rect class="mf" x="140" y="92" width="120" height="48"/><rect class="mf" x="166" y="86" width="68" height="8" rx="2"/>'
-    + '<path class="mf" d="M146 92C146 52 254 52 254 92Z"/><path class="mfs" d="M200 62V46" stroke-width="1.6" fill="none"/>'
-    + '<rect class="mf" y="134" width="400" height="6"/>'
-    + '<circle cx="200" cy="43" r="3.2" fill="#f6d58a"/>'
-    + '<g style="opacity:var(--wo)">' + arch(176, 110, 132, 10) + arch(200, 106, 132, 12) + arch(224, 110, 132, 10) + arch(121, 122, 134, 9) + arch(279, 122, 134, 9) + '</g>'
+    + '<path class="ss" d="M214 30L240 18" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity="0"/></g>'
+    + '<g class="bdy"><g class="moon"><circle class="mh" r="22" fill="#f6d58a" opacity=".07"/><circle r="14" fill="#f6d58a" mask="url(#sltmoon)"/></g>'
+    + '<g class="sun"><circle r="24" style="fill:var(--bc)" opacity=".13"/><g class="ry"><path d="M0 -18V-24M0 18V24M-18 0H-24M18 0H24M12.7 12.7L17 17M-12.7 -12.7L-17 -17M12.7 -12.7L17 -17M-12.7 12.7L-17 17" stroke-width="1.6" stroke-linecap="round" fill="none" style="stroke:var(--bc)" opacity=".6"/></g><circle r="13" style="fill:var(--bc)"/></g></g>'
+    + '<g class="cl1" fill="#fff"><ellipse cx="70" cy="88" rx="32" ry="4.5"/><ellipse cx="96" cy="83" rx="20" ry="3.5"/></g>'
+    + '<g class="cl2" fill="#fff"><ellipse cx="270" cy="100" rx="36" ry="4.5"/><ellipse cx="244" cy="95" rx="22" ry="3.5"/></g>'
+    + '<g class="brd" style="opacity:var(--su)"><path class="mfs" d="M0 40q3 -3.5 6 0q3 -3.5 6 0" fill="none" stroke-width="1.3" stroke-linecap="round"/><path class="mfs" style="animation-delay:-9s" d="M0 56q2.5 -3 5 0q2.5 -3 5 0" fill="none" stroke-width="1.2" stroke-linecap="round"/></g>'
+    + '<path class="mf" opacity=".4" d="M0 140Q40 126 96 137T200 132T340 136V160H0Z"/>'
+    + palm(26, 62, 1, 0) + palm(316, 50, -1, 2.5)
+    + '<rect class="mf" y="150" width="340" height="26"/>'
+    + minaret(66, 58) + minaret(274, 58)
+    + '<rect class="mf" x="100" y="118" width="140" height="34"/>'
+    + '<path class="mf" d="M104 119C104 102 136 102 136 119Z"/><path class="mf" d="M204 119C204 102 236 102 236 119Z"/>'
+    + '<path class="mfs" d="M120 105V98M220 105V98" stroke-width="1.4" fill="none"/><circle cx="120" cy="96.6" r="1.5" fill="#f6d58a"/><circle cx="220" cy="96.6" r="1.5" fill="#f6d58a"/>'
+    + '<rect class="mf" x="140" y="96" width="60" height="24"/><rect class="mf" x="136" y="93" width="68" height="4" rx="1.5"/>'
+    + '<path class="mf" d="M140 94C140 72 156 60 170 52C184 60 200 72 200 94Z"/>'
+    + '<path d="M170 52C184 60 200 72 200 94" fill="none" stroke="#f6d58a" stroke-width=".9" style="opacity:calc(var(--mo)*.4)"/>'
+    + '<path class="mfs" d="M170 52V41" stroke-width="1.6" fill="none"/><circle cx="170" cy="40" r="2.3" fill="#f6d58a"/><g transform="translate(170,32)"><circle r="4.6" fill="#f6d58a" mask="url(#sltfin)"/></g>'
+    + '<g style="opacity:var(--wo)">' + arch(158, 101, 118, 6) + arch(170, 98, 118, 7) + arch(182, 101, 118, 6)
+    + arch(170, 126, 152, 16) + arch(148, 133, 152, 9) + arch(192, 133, 152, 9) + arch(121, 134, 152, 8) + arch(219, 134, 152, 8)
+    + slits(66, 58) + slits(274, 58)
+    + '<rect class="rf" x="162" y="156" width="16" height="2" rx="1" fill="#f6d58a"/><rect class="rf" style="animation-delay:-1.2s" x="165" y="161" width="10" height="2" rx="1" fill="#f6d58a"/><rect class="rf" style="animation-delay:-2.4s" x="167" y="166" width="6" height="1.6" rx=".8" fill="#f6d58a"/></g>'
+    + '<g style="opacity:var(--so)">' + FF.map(function (f) { return '<circle class="ff" style="--dx:' + f[2] + 'px;animation-delay:-' + (f[3] / 2) + 's;animation-duration:' + f[3] + 's" cx="' + f[0] + '" cy="' + f[1] + '" r="1.3" fill="#ffe7a8"/>'; }).join('') + '</g>'
     + '</svg>';
   var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>';
   var CHEV = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
@@ -128,12 +146,12 @@
     s.textContent = '.slt{margin:14px 0}'
       + '.sltc{position:relative;background:var(--s2,var(--panel));border:1px solid var(--line,var(--bd));border-radius:22px;padding:18px 16px 16px;color:var(--ink)}'
       + '.sltc::before{content:\"\";position:absolute;left:16px;top:0;width:34px;height:4px;border-radius:0 0 6px 6px;background:var(--acc);z-index:3}'
-      + '.sltb{--k1:#090f1f;--k2:#16233d;--k3:#2b3452;--mf:#070b14;--co:.07;--so:1;--wo:1;--mo:1;--su:0;--bx:282px;--by:62px;--bc:#f6d58a;--go:.5;position:relative;height:176px;margin:-18px -16px 0;overflow:hidden;border-radius:21px 21px 0 0;background:var(--k1)}'
-      + '.sltb[data-m=dawn]{--k1:#1a2547;--k2:#5d5388;--k3:#f0a27e;--mf:#0b1020;--co:.14;--so:.35;--wo:.8;--mo:0;--su:.95;--bx:318px;--by:104px;--bc:#ffd9a0;--go:.6}'
-      + '.sltb[data-m=morn]{--k1:#3a86d6;--k2:#86c3ee;--k3:#fbe6b8;--mf:#10213d;--co:.5;--so:0;--wo:0;--mo:0;--su:1;--bx:296px;--by:70px;--bc:#fff3c4;--go:.15}'
-      + '.sltb[data-m=day]{--k1:#1c68c9;--k2:#4fa0e6;--k3:#b4def6;--mf:#0e2140;--co:.6;--so:0;--wo:0;--mo:0;--su:1;--bx:240px;--by:52px;--bc:#fff6c8;--go:.1}'
-      + '.sltb[data-m=aft]{--k1:#2f63ad;--k2:#e8a766;--k3:#f8d79a;--mf:#1a1f38;--co:.38;--so:0;--wo:.15;--mo:0;--su:1;--bx:296px;--by:78px;--bc:#ffe2a3;--go:.35}'
-      + '.sltb[data-m=dusk]{--k1:#171a4a;--k2:#7b3f7e;--k3:#f0805c;--mf:#090b18;--co:.1;--so:.55;--wo:1;--mo:.85;--su:0;--bx:282px;--by:62px;--bc:#f6d58a;--go:.5}'
+      + '.sltb{--k1:#090f1f;--k2:#16233d;--k3:#2b3452;--mf:#070b14;--co:.07;--so:1;--wo:1;--mo:1;--su:0;--bx:254px;--by:52px;--bc:#f6d58a;--go:.5;position:relative;height:176px;margin:-18px -16px 0;overflow:hidden;border-radius:21px 21px 0 0;background:var(--k1)}'
+      + '.sltb[data-m=dawn]{--k1:#1a2547;--k2:#5d5388;--k3:#f0a27e;--mf:#0b1020;--co:.14;--so:.35;--wo:.8;--mo:0;--su:.95;--bx:296px;--by:112px;--bc:#ffd9a0;--go:.6}'
+      + '.sltb[data-m=morn]{--k1:#3a86d6;--k2:#86c3ee;--k3:#fbe6b8;--mf:#10213d;--co:.5;--so:0;--wo:0;--mo:0;--su:1;--bx:262px;--by:76px;--bc:#fff3c4;--go:.15}'
+      + '.sltb[data-m=day]{--k1:#1c68c9;--k2:#4fa0e6;--k3:#b4def6;--mf:#0e2140;--co:.6;--so:0;--wo:0;--mo:0;--su:1;--bx:214px;--by:36px;--bc:#fff6c8;--go:.1}'
+      + '.sltb[data-m=aft]{--k1:#2f63ad;--k2:#e8a766;--k3:#f8d79a;--mf:#1a1f38;--co:.38;--so:0;--wo:.15;--mo:0;--su:1;--bx:262px;--by:84px;--bc:#ffe2a3;--go:.35}'
+      + '.sltb[data-m=dusk]{--k1:#171a4a;--k2:#7b3f7e;--k3:#f0805c;--mf:#090b18;--co:.1;--so:.55;--wo:1;--mo:.85;--su:0;--bx:254px;--by:66px;--bc:#f6d58a;--go:.5}'
       + '.sltb>svg{display:block;width:100%;height:100%}'
       + '.sltb .mf{fill:var(--mf)}.sltb .mfs{stroke:var(--mf)}'
       + '.sltb .gl{opacity:var(--go)}.sltb .strs{opacity:var(--so)}.sltb .cl1,.sltb .cl2{opacity:var(--co)}'
@@ -184,8 +202,20 @@
       + '@keyframes sltmh{0%,100%{transform:scale(1);opacity:.06}50%{transform:scale(1.2);opacity:.13}}'
       + '@keyframes sltdr{from{transform:translateX(-50px)}to{transform:translateX(90px)}}'
       + '@keyframes sltss{0%,86%{opacity:0;transform:translate(0,0)}88%{opacity:.95}100%{opacity:0;transform:translate(-70px,32px)}}'
+      + '.sltb .pm{transform-origin:50% 100%;animation:sltpm 5s ease-in-out infinite}'
+      + '.sltb .ff{opacity:0;animation:sltff 6s ease-out infinite}'
+      + '.sltb .rf{animation:sltrf 3.6s ease-in-out infinite}'
+      + '.sltb .brd{animation:sltbd 32s linear infinite}'
+      + '.sltb .ry{transform-origin:center;animation:sltry 40s linear infinite}'
+      + '.sltb .moon{animation:sltfl 7s ease-in-out infinite}'
+      + '@keyframes sltpm{0%,100%{transform:rotate(-1.8deg)}50%{transform:rotate(1.8deg)}}'
+      + '@keyframes sltff{0%{opacity:0;transform:translate(0,0)}25%{opacity:.95}100%{opacity:0;transform:translate(var(--dx,6px),-38px)}}'
+      + '@keyframes sltrf{0%,100%{opacity:.55}50%{opacity:.15}}'
+      + '@keyframes sltbd{from{transform:translateX(-40px)}to{transform:translateX(390px)}}'
+      + '@keyframes sltry{to{transform:rotate(360deg)}}'
+      + '@keyframes sltfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}'
       + '.slt.sltz .sltb svg *{animation-play-state:paused!important}'
-      + '@media (prefers-reduced-motion:reduce){.sltb .cl1,.sltb .cl2,.sltb .ss{animation:none!important}.sltb .tw{animation-duration:5s}.sltb .wn{animation-duration:7s}.sltb .mh{animation-duration:8s}.sltpb s{transition:none}}'
+      + '@media (prefers-reduced-motion:reduce){.sltb .pm,.sltb .ff,.sltb .rf,.sltb .brd,.sltb .ry,.sltb .moon{animation:none!important}.sltb .cl1,.sltb .cl2,.sltb .ss{animation:none!important}.sltb .tw{animation-duration:5s}.sltb .wn{animation-duration:7s}.sltb .mh{animation-duration:8s}.sltpb s{transition:none}}'
       + '.sltg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}'
       + '.slti{border:1px solid var(--line,var(--bd));border-radius:14px;padding:9px 10px 10px;background:var(--s1,var(--field));min-width:0}'
       + '.sltit{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:3px}'
