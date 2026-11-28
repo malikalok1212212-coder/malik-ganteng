@@ -5382,11 +5382,12 @@ html:not(#_):not(#__):not(#___):not(#____):not(#_____):root:root:root:root:root[
 .mldn{margin:0;font:800 22px/1 "Plus Jakarta Sans",Inter,system-ui,sans-serif;letter-spacing:-.02em}
 .mldb{position:relative;width:min(200px,56vw);height:5px;border-radius:99px;background:color-mix(in srgb,var(--ink) 14%,transparent);overflow:hidden}
 .mldb i{position:absolute;inset:0;border-radius:inherit;background:var(--acc);transform-origin:left center;transform:scaleX(var(--p,0))}
-@media (prefers-reduced-motion:no-preference){
+/* v480: cincin loading berputar di semua pengaturan (indikator loading termasuk gerak esensial; HP dengan "hapus animasi" tadi melewati loading begitu saja) */
 .mlda{animation:mldspin 1.1s linear infinite}
-.mldlg img{animation:mldpulse 1.6s ease-in-out infinite}
 @keyframes mldspin{to{transform:rotate(360deg)}}
 @keyframes mldpulse{0%,100%{transform:scale(1)}50%{transform:scale(.93)}}
+@media (prefers-reduced-motion:no-preference){
+.mldlg img{animation:mldpulse 1.6s ease-in-out infinite}
 }
 /* v419: logo kucing di header (PNG transparan, tanpa latar kuning) */
 html:not(#_):not(#__):not(#___):root:root:root:root .top .logo:has(>img){background:transparent!important;border:0!important;box-shadow:none!important;border-radius:10px!important}
@@ -5976,5 +5977,67 @@ html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:ro
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav a:active svg{transform:scale(.86)}
 @media (prefers-reduced-motion:no-preference){html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav a[aria-current=page] svg{animation:bnPop .45s cubic-bezier(.3,1.25,.4,1)}}
 @media (prefers-reduced-motion:reduce){html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav .bni.go{transition:none!important}}
+
+/* ===== v479: rapikan kolom input tool (.tk2) dan kartu LIVE beranda ===== */
+/* Tool: satu kolom input saja (tanpa kotak di dalam kotak), form tidak jadi kartu di dalam kartu */
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form .fld{display:flex!important;align-items:center!important;gap:4px!important;height:54px!important;padding:0 7px 0 14px!important;background:var(--field)!important;border:1px solid var(--line2)!important;border-radius:14px!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form .fld>svg{flex:none;width:20px;height:20px;margin-right:6px;opacity:.7}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form .fld input{flex:1 1 auto!important;min-width:0!important;width:100%!important;height:100%!important;padding:0!important;margin:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;font-size:15px!important;text-overflow:ellipsis}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form .fld .ib{flex:none;width:38px!important;height:38px!important;border-radius:10px!important;background:var(--s3)!important;border:0!important;color:var(--ink)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form .fld:focus-within{border-color:var(--acc)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 22%,transparent)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form .gob{margin-top:12px!important;height:52px!important;border-radius:14px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form .chips{display:flex!important;flex-wrap:nowrap!important;gap:5px!important;margin:14px 0 2px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form .chip{height:28px!important;padding:0 8px!important;gap:4px!important;font-size:11.5px!important;white-space:nowrap;flex:0 1 auto;min-width:0;background:transparent!important;border:1px solid var(--line2)!important;color:var(--muted)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form .chip svg{width:14px;height:14px;flex:none}
+
+/* LIVE: satu bahasa visual dengan kartu lain (netral, aksen hijau hanya untuk status online, merah hanya untuk merek) */
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live{border-radius:22px!important;overflow:hidden;box-shadow:var(--e1)!important;margin-bottom:84px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvin{padding:14px 16px 12px!important;border-radius:0!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvh{margin:0 0 2px!important;padding:0 0 12px!important;background:transparent!important;color:var(--ink)!important;border:0!important;border-bottom:1px solid var(--line)!important;font:600 12px var(--f-ui)!important;letter-spacing:0!important;text-transform:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvp{padding:4px 10px!important;gap:7px!important;background:color-mix(in srgb,var(--ok) 14%,transparent)!important;color:var(--ok)!important;border:1px solid color-mix(in srgb,var(--ok) 38%,transparent)!important;border-radius:99px!important;font:700 11px var(--f-ui)!important;letter-spacing:.12em!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvd{width:7px!important;height:7px!important;background:var(--ok)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 25%,transparent)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvh b.lvm{padding:4px 11px!important;background:transparent!important;color:var(--muted)!important;border:1px solid var(--line2)!important;box-shadow:none!important;border-radius:99px!important;font:600 11px var(--f-ui)!important;letter-spacing:.02em!important;text-transform:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvh b.lvm[data-s=normal]{color:var(--ok)!important;border-color:color-mix(in srgb,var(--ok) 40%,transparent)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvh b.lvm[data-s=ramai]{color:#e8a13a!important;border-color:rgba(232,161,58,.45)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvh b.lvm[data-s=rekor]{color:var(--acct)!important;border-color:color-mix(in srgb,var(--acc) 45%,transparent)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvb{margin-top:14px!important;align-items:center!important;gap:12px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvn{font:800 56px/1 var(--f-ui)!important;letter-spacing:-.03em!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvt{padding-bottom:0!important;font:600 14px/1.3 var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvt small{font:500 12px var(--f-ui)!important;color:var(--muted)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvw{width:34%!important;bottom:50%!important;transform:translateY(50%);right:0!important;opacity:.55}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvw path{stroke:var(--ok)!important;stroke-width:1.8!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvw path.g{stroke:var(--line2)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvg{width:34%!important;height:44px!important;bottom:50%!important;transform:translateY(50%);right:0!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvg .l{stroke:var(--ok)!important;stroke-width:2!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvg .a{fill:color-mix(in srgb,var(--ok) 14%,transparent)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvq{background:var(--ok)!important;border:2px solid var(--panel)!important;right:-3px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lva{margin:12px 0 12px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lva i{width:26px!important;height:26px!important;margin-left:-7px!important;border:2px solid var(--panel)!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lva i:first-child{margin-left:0!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lva i svg{width:13px!important;height:13px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lva em{color:var(--muted)!important;font:600 12px var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvmt{margin:0 0 14px!important;gap:7px 10px!important;font:500 12px var(--f-ui)!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvmt em{color:var(--ink)!important;font-weight:700!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvmt i{height:6px!important;background:var(--s3)!important;border:0!important;border-radius:99px!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvmt i:before{background:var(--ok)!important;border-radius:99px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvk{gap:8px!important;margin:0 0 16px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvk div{padding:12px 6px 10px!important;background:var(--field)!important;border:1px solid var(--line)!important;border-radius:14px!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvk div b{background:none!important;color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important;font:800 22px/1.1 var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvk div:last-child b{color:var(--ok)!important;-webkit-text-fill-color:var(--ok)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvk div span{color:var(--muted)!important;font:500 11px/1.3 var(--f-ui)!important;letter-spacing:0!important;text-transform:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvs>small,html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvf>small{margin-bottom:9px!important;color:var(--muted)!important;font:600 12px var(--f-ui)!important;letter-spacing:0!important;text-transform:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvs>small:after,html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvf>small:after{background:var(--line)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvr{gap:12px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvr span{font:600 13px var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvr em{color:var(--muted)!important;font:700 12px var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvr i{height:6px!important;background:var(--s3)!important;border:0!important;border-radius:99px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvr i:before{height:100%!important;border-radius:99px!important;background:var(--acc)!important;background-image:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvi{gap:12px!important;padding:8px 12px!important;background:var(--field)!important;border:1px solid var(--line)!important;border-radius:14px!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvi .tri{width:34px!important;height:34px!important;border:1px solid var(--line2)!important;border-radius:10px!important;background:var(--s3)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvi:after{background:var(--ok)!important;box-shadow:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvi b{font:700 13px/1.25 var(--f-ui)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lvx{margin:12px 0 0!important;color:var(--muted)!important;opacity:.8}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .live .lve{border:1px dashed var(--line2)!important}
 
 /* ===== REDESIGN-END ===== */

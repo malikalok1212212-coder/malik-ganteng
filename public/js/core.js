@@ -899,16 +899,16 @@ function mtLoader(){
  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,sleep=ms=>new Promise(r=>setTimeout(r,ms));
  // loading biasa: logo berputar + bar. Buka pertama di sesi sedikit lebih lama, refresh berikutnya singkat.
  let seen=false;try{seen=sessionStorage.getItem('mt_seen')==='1';sessionStorage.setItem('mt_seen','1')}catch(e){}
- const MIN=reduce?0:seen?250:700;
+ const MIN=seen?650:1100; // v480: loading selalu terlihat (juga saat 'kurangi animasi' aktif)
  const bar=ld.querySelector('.mldb i');
  let shown=0,target=0,raf=0,closed=false;
- const paint=()=>{shown=reduce?target:shown+(target-shown)*.18;if(target-shown<.004)shown=target;bar.style.setProperty('--p',shown.toFixed(3));if(shown<1)raf=requestAnimationFrame(paint)};
+ const paint=()=>{shown=shown+(target-shown)*.12;if(target-shown<.004)shown=target;bar.style.setProperty('--p',shown.toFixed(3));if(shown<1)raf=requestAnimationFrame(paint)};
  raf=requestAnimationFrame(paint);
  const out=async()=>{
   if(closed)return;closed=true;cancelAnimationFrame(raf);
   bar.style.setProperty('--p',1);root.classList.add('ldin');
   ld.classList.add('out');
-  await sleep(reduce?60:320);done()};
+  await sleep(reduce?160:320);done()};
  (async()=>{
   try{
    const timed=f=>new Promise(r=>f(()=>r(1)));
