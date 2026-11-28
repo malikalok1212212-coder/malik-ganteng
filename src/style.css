@@ -5738,8 +5738,8 @@ html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:ro
 
 /* ---------- v467: PANEL DEVELOPER modern (hanya .owp dan sheet .osw) ----------
    Satu aksen violet, kartu netral, warna status hanya sebagai titik/tint kecil. Role badge dibedakan lagi per role. */
-html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .owp,html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .osw{--oa:#8b7cf6;--oa2:#a99bff;--oc:#17171b;--oc2:#1d1d22;--ol:rgba(255,255,255,.08);--ol2:rgba(255,255,255,.14);--ok2:#34d399;--wn2:#fbbf24;--bd2:#f87171;--in2:#60a5fa;--rd:#a78bfa;--ro:#f472b6;--rp:#22d3ee;--rv:#fbbf24;--rm:#a1a1a9}
-html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .owp,html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .osw{--oa:#6d5ef0;--oa2:#5a4bd8;--oc:#fff;--oc2:#f4f4f7;--ol:rgba(17,17,24,.09);--ol2:rgba(17,17,24,.16);--ok2:#059669;--wn2:#b45309;--bd2:#dc2626;--in2:#2563eb;--rd:#6d5ef0;--ro:#db2777;--rp:#0e7490;--rv:#b45309;--rm:#5d5d66}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .owp,html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .osw{--oa:#e3262e;--oa2:#ff5b62;--oc:#17171b;--oc2:#1d1d22;--ol:rgba(255,255,255,.08);--ol2:rgba(255,255,255,.14);--ok2:#34d399;--wn2:#fbbf24;--bd2:#f87171;--in2:#60a5fa;--rd:#ff5b62;--ro:#f472b6;--rp:#22d3ee;--rv:#fbbf24;--rm:#a1a1a9}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .owp,html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .osw{--oa:#d91f26;--oa2:#b9181f;--oc:#fff;--oc2:#f4f4f7;--ol:rgba(17,17,24,.09);--ol2:rgba(17,17,24,.16);--ok2:#059669;--wn2:#b45309;--bd2:#dc2626;--in2:#2563eb;--rd:#c4161d;--ro:#db2777;--rp:#0e7490;--rv:#b45309;--rm:#5d5d66}
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .owp{background:var(--s1)!important;border:1px solid var(--ol2)!important;border-radius:24px!important;box-shadow:0 18px 44px -24px rgba(0,0,0,.6)!important}
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .owp::before,html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .owp::after{display:none!important}
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .owp .bar{display:flex!important;align-items:center;justify-content:space-between;gap:10px;background:transparent!important;border-bottom:1px solid var(--ol)!important;padding:13px 16px!important;color:var(--muted)!important;font:700 11px var(--f-ui)!important;letter-spacing:.09em!important}
@@ -5875,6 +5875,7 @@ html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:ro
 @keyframes tfIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes tfUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes tfPop{0%{opacity:0;transform:scale(.4) rotate(-12deg)}60%{opacity:1;transform:scale(1.12) rotate(3deg)}100%{transform:none}}
+@keyframes tfTile{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
 @keyframes tfFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes tfLine{0%{background-position:0 0}100%{background-position:200% 0}}
 @keyframes tfShine{0%{transform:translateX(-120%) skewX(-20deg)}100%{transform:translateX(320%) skewX(-20deg)}}
@@ -5884,7 +5885,7 @@ html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:ro
 @media (prefers-reduced-motion:no-preference){
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root [data-tool] .panel{animation:tfIn .55s cubic-bezier(.2,.8,.2,1) backwards}
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root [data-tool] .panel .bar{animation:tfUp .45s .08s cubic-bezier(.2,.8,.2,1) backwards}
-html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root [data-tool] .thero .tile{animation:tfPop .7s .15s cubic-bezier(.2,.9,.3,1.2) backwards,tfFloat 3.6s 1s ease-in-out infinite}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root [data-tool] .thero .tile{animation:tfTile .45s .12s cubic-bezier(.2,.8,.2,1) backwards}
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root [data-tool] .thero h2{animation:tfUp .5s .22s cubic-bezier(.2,.8,.2,1) backwards}
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root [data-tool] .thero .sub{animation:tfUp .5s .3s cubic-bezier(.2,.8,.2,1) backwards}
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root [data-tool] #c>*{animation:tfUp .5s cubic-bezier(.2,.8,.2,1) backwards}
@@ -5922,5 +5923,58 @@ html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:ro
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root #main:not([data-tool]) .panel .in>:nth-child(1){animation-delay:.14s}html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root #main:not([data-tool]) .panel .in>:nth-child(2){animation-delay:.2s}html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root #main:not([data-tool]) .panel .in>:nth-child(3){animation-delay:.26s}html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root #main:not([data-tool]) .panel .in>:nth-child(4){animation-delay:.32s}html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root #main:not([data-tool]) .panel .in>:nth-child(5){animation-delay:.38s}html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root #main:not([data-tool]) .panel .in>:nth-child(n+6){animation-delay:.44s}
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root #main:not([data-tool]) button.primary:disabled{animation:tfBusy .8s linear infinite}
 }
+
+/* ===== Kolom link kartu .tk2 (AM Preset, TikTok V2): input menyatu dengan kotak pembungkus, tanpa kotak ganda (v473) ===== */
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .fld{transition:border-color .25s ease,box-shadow .25s ease}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .fld input{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;outline:0!important;transform:none!important;flex:1 1 auto;min-width:0;padding-left:4px!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .fld:focus-within{border-color:var(--acc)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent)!important}
+
+/* ===== Beranda lebih hidup (v475): kartu sambutan berlapis cahaya + pola titik + garis diagonal, tombol cepat dan statistik bernuansa aksen, tombol Semua tool berkilau ===== */
+@keyframes hGlow{0%,100%{background-position:0 0,100% 0,0 100%,0 0}50%{background-position:0 0,86% 14%,12% 88%,0 0}}
+@keyframes hShine{0%,62%{transform:translateX(-130%) skewX(-20deg)}100%{transform:translateX(420%) skewX(-20deg)}}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .lhc{background:radial-gradient(circle at 1px 1px,color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1.6px) 0 0/16px 16px,radial-gradient(60% 80% at 100% 0%,color-mix(in srgb,var(--acc) 30%,transparent),transparent 70%) 100% 0/100% 100% no-repeat,radial-gradient(55% 70% at 0% 100%,color-mix(in srgb,var(--acc) 16%,transparent),transparent 72%) 0 100%/100% 100% no-repeat,repeating-linear-gradient(135deg,color-mix(in srgb,var(--acc) 7%,transparent) 0 2px,transparent 2px 14px),var(--s2)!important;background-blend-mode:normal!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .lhc .lhtip{background:linear-gradient(90deg,color-mix(in srgb,var(--acc) 14%,var(--s1)),var(--s1) 70%)!important;border-left:3px solid var(--acc)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .lhq{background:radial-gradient(90% 70% at 100% 0%,color-mix(in srgb,var(--acc) 18%,transparent),transparent 70%),var(--s2)!important;border-color:color-mix(in srgb,var(--acc) 22%,var(--line))!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .lhq span{background:color-mix(in srgb,var(--acc) 16%,var(--s3))!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 30%,transparent)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .hst{position:relative;overflow:hidden;background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 12%,var(--s2)),var(--s2) 70%)!important;border-color:color-mix(in srgb,var(--acc) 20%,var(--line))!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .hst::before{content:"";position:absolute;left:14px;top:0;width:34px;height:4px;border-radius:0 0 6px 6px;background:var(--acc)}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root #hgo{position:relative;overflow:hidden}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root #hgo::after{content:"";position:absolute;inset:0 auto 0 0;width:28%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transform:translateX(-130%) skewX(-20deg);pointer-events:none}
+@media (prefers-reduced-motion:no-preference){
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .lhc{background-size:16px 16px,200% 200%,200% 200%,auto,auto!important;animation:tfIn .55s cubic-bezier(.2,.8,.2,1) backwards,hGlow 9s ease-in-out infinite}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .lhq{animation:tfUp .5s cubic-bezier(.2,.8,.2,1) backwards}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .lhq:nth-child(1){animation-delay:.12s}html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .lhq:nth-child(2){animation-delay:.18s}html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .lhq:nth-child(3){animation-delay:.24s}html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .lhq:nth-child(4){animation-delay:.3s}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .hst{animation:tfUp .5s cubic-bezier(.2,.8,.2,1) backwards}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .hst:nth-child(1){animation-delay:.34s}html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .hst:nth-child(2){animation-delay:.4s}html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .hst:nth-child(3){animation-delay:.46s}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root #hgo::after{animation:hShine 4.2s ease-in-out infinite 1.2s}
+}
+
+/* ===== Beranda mode terang (v476): warna solid pastel, tidak transparan/pudar ===== */
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhc{background:radial-gradient(circle at 1px 1px,rgba(11,11,13,.12) 1px,transparent 1.6px) 0 0/16px 16px,repeating-linear-gradient(135deg,rgba(11,11,13,.045) 0 2px,transparent 2px 14px),linear-gradient(135deg,#d9f9e8,#9cf0c3)!important;border:1.5px solid rgba(11,11,13,.22)!important;box-shadow:0 14px 30px -20px rgba(11,11,13,.45)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhc .lht small{background:#fff!important;color:#3a3a42!important;border-color:rgba(11,11,13,.14)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhc .lht h2{color:#2f4a3c!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhc .lhtip{background:#fff!important;border:1px solid rgba(11,11,13,.14)!important;border-left:3px solid var(--acc)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhq{border:1.5px solid rgba(11,11,13,.2)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhq:nth-child(1){background:#d6f8e6!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhq:nth-child(2){background:#ffeaa7!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhq:nth-child(3){background:#ffd6d9!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhq:nth-child(4){background:#d3ebff!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhq span{background:#fff!important;box-shadow:inset 0 0 0 1px rgba(11,11,13,.12)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .hst{border:1.5px solid rgba(11,11,13,.2)!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .hst:nth-child(1){background:#ffeaa7!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .hst:nth-child(2){background:#d6f8e6!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .hst:nth-child(3){background:#ffd6d9!important}
+@media (prefers-reduced-motion:no-preference){html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root[data-theme=light] .lhc{background-size:16px 16px,auto,auto!important;animation:tfIn .55s cubic-bezier(.2,.8,.2,1) backwards}}
+
+/* ===== Bottom bar mulus (v477): penanda aktif meluncur antar item, ikon membal kecil, warna berpindah halus ===== */
+@keyframes bnPop{0%{transform:scale(.82)}55%{transform:scale(1.18) translateY(-2px)}100%{transform:translateY(-1px) scale(1)}}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav a[aria-current=page]::before{display:none!important}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav .bni{position:absolute;top:-1px;left:0;width:26px;height:3px;border-radius:0 0 4px 4px;background:var(--acc);opacity:0;pointer-events:none;will-change:transform}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav .bni.go{transition:transform .42s cubic-bezier(.3,1.25,.4,1),opacity .2s ease}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav a svg,html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav a span{transition:color .25s ease,transform .3s cubic-bezier(.3,1.25,.4,1),opacity .25s ease}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav a[aria-current=page] svg{transform:translateY(-1px)}
+html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav a:active svg{transform:scale(.86)}
+@media (prefers-reduced-motion:no-preference){html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav a[aria-current=page] svg{animation:bnPop .45s cubic-bezier(.3,1.25,.4,1)}}
+@media (prefers-reduced-motion:reduce){html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .bnav .bni.go{transition:none!important}}
 
 /* ===== REDESIGN-END ===== */
