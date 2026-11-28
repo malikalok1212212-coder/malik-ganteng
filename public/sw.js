@@ -1,4 +1,4 @@
-const V='mt-v201',CORE=['/','/offline.html','/style.css?v=465','/js/core.js?v=465','/js/ui.js?v=373','/icon-192.png?v=464','/yuu.jpg','/icon-192.png?v=464','/favicon.ico?v=464','/favicon-32.png','/hero.jpg','/bg.jpg'],LAZY=['/js/fx.js?v=392','/js/guide.js?v=464','/pemandu.png?v=464','/js/tools.js?v=465','/js/pages.js?v=465','/js/chat.js?v=465'];
+const V='mt-v208',CORE=['/','/offline.html','/style.css?v=472','/js/core.js?v=472','/js/ui.js?v=373','/icon-192.png?v=464','/yuu.jpg','/icon-192.png?v=464','/favicon.ico?v=464','/favicon-32.png','/hero.jpg','/bg.jpg'],LAZY=['/js/fx.js?v=392','/js/guide.js?v=464','/pemandu.png?v=464','/js/tools.js?v=472','/js/pages.js?v=472','/js/chat.js?v=472'];
 // Pasang: shell wajib lengkap, modul lazy (Tools, Halaman, Chat) dicoba terpisah supaya satu kegagalan tidak menggagalkan install. Hasilnya: situs bisa dibuka tanpa internet.
 const pre=c=>c.addAll(CORE).then(()=>Promise.all(LAZY.map(u=>c.add(u).catch(()=>{}))));
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(pre).then(()=>self.skipWaiting()))});
@@ -9,7 +9,7 @@ function netFirst(r,last){
   return new Promise(ok=>{
     let done=false;
     const fall=()=>caches.match(r).then(m=>m||last());
-    const t=setTimeout(()=>{fall().then(m=>{if(m&&!done){done=true;ok(m)}})},3000);
+    const t=setTimeout(()=>{fall().then(m=>{if(m&&!done){done=true;ok(m)}})},1200);
     fetch(r).then(res=>{clearTimeout(t);put(r,res);if(!done){done=true;ok(res)}}).catch(()=>{clearTimeout(t);if(!done){done=true;fall().then(m=>ok(m||Response.error()))}});
   });
 }
@@ -24,6 +24,10 @@ self.addEventListener('fetch',e=>{
   // Pindah halaman: beranda (termasuk ?url= dari Bagikan) memakai shell '/', halaman lain memakai /offline.html bila belum pernah dibuka.
   if(r.mode==='navigate'){
     e.respondWith(netFirst(r,()=>caches.match(r,{ignoreSearch:true}).then(m=>m||caches.match(u.pathname==='/'?'/':'/offline.html'))));
+    return;
+  }
+  if(u.search.indexOf('v=')>-1&&/\.(css|js)$/i.test(u.pathname)){
+    e.respondWith(caches.match(r).then(m=>m||fetch(r).then(res=>put(r,res))));
     return;
   }
   e.respondWith(netFirst(r,()=>undefined));
