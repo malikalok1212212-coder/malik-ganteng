@@ -460,3 +460,123 @@ test('clip-path yang belum didukung (objectBoundingBox) memberi catatan; mask da
   assert.deepEqual(m.unsupported, ['mask']); assert.match(m.warnings.join('|'), /Mask/);
   assert.deepEqual(conv(sv('<rect width="10" height="10" stroke="#000"/>')).unsupported, []);
 });
+
+/* ---------- pembersih vektor dobel ---------- */
+function paint(model, W = 120, H = 120) {
+  const sx = model.width / W, sy = model.height / H, out = [];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const p = [(x + 0.5) * sx + 0.137, (y + 0.5) * sy + 0.071]; let c = [0, 0, 0, 0];
+    for (const L of model.layers) {
+      if (!L.rings.some((R) => S.pip(p, R))) continue;
+      const a = parseInt(L.fill.slice(1, 3), 16) / 255, rgb = [1, 2, 3].map((k) => parseInt(L.fill.slice(1 + 2 * k, 3 + 2 * k), 16)), ao = a + c[3] * (1 - a);
+      c = ao ? [0, 1, 2].map((k) => (rgb[k] * a + c[k] * c[3] * (1 - a)) / ao).concat([ao]) : [0, 0, 0, 0];
+    }
+    out.push(c);
+  }
+  return out;
+}
+function sameLook(a, b) {
+  const A = paint(a), B = paint(b); let bad = 0;
+  for (let i = 0; i < A.length; i++) if (Math.max(...[0, 1, 2].map((k) => Math.abs(A[i][k] - B[i][k])), Math.abs(A[i][3] - B[i][3]) * 255) > 2.5) bad++;
+  assert.equal(bad, 0);
+}
+const wrap = (inner) => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' + inner + '</svg>';
+
+test('rapikan: layer opak yang kembar persis tinggal satu, tampilan tidak berubah', () => {
+  const svg = wrap('<rect width="100" height="100" fill="#123"/><circle cx="50" cy="50" r="30" fill="#e33"/><circle cx="50" cy="50" r="30" fill="#e33"/><circle cx="50" cy="50" r="30" fill="#e33"/>');
+  const a = conv(svg, { tidy: false }), b = conv(svg);
+  assert.equal(a.model.layers.length, 4); assert.equal(b.model.layers.length, 2);
+  assert.equal(b.stats.tidy.same, 2);
+  assert.ok(b.warnings.some((w) => /Dirapikan/.test(w)));
+  sameLook(a.model, b.model);
+});
+
+test('rapikan: bentuk yang tertutup penuh bentuk opak di atasnya dibuang, yang sebagian tertutup dipertahankan', () => {
+  const svg = wrap('<rect x="40" y="40" width="10" height="10" fill="#0f0"/><rect x="5" y="5" width="30" height="30" fill="#0f0"/><rect x="30" y="30" width="30" height="30" fill="#00f"/><rect x="20" y="20" width="60" height="60" fill="#f00"/>');
+  const a = conv(svg, { tidy: false }), b = conv(svg);
+  assert.equal(a.model.layers.length, 4);
+  assert.equal(b.model.layers.length, 2);            // hijau kecil dan biru tertutup penuh oleh merah; hijau besar hanya sebagian, jadi tetap
+  assert.deepEqual(b.model.layers.map((l) => l.fill), ['#ff00ff00', '#ffff0000']);
+  assert.equal(b.stats.tidy.hidden, 2);
+  sameLook(a.model, b.model);
+});
+
+test('rapikan: bentuk di dalam bentuk sewarna dibuang hanya bila tak ada warna lain di antaranya', () => {
+  const free = wrap('<rect x="10" y="10" width="80" height="80" fill="#f80"/><rect x="30" y="30" width="20" height="20" fill="#f80"/>');
+  assert.equal(conv(free).model.layers.length, 1);
+  const blocked = wrap('<rect x="10" y="10" width="80" height="80" fill="#f80"/><rect x="20" y="20" width="60" height="60" fill="#00f"/><rect x="30" y="30" width="20" height="20" fill="#f80"/>');
+  const a = conv(blocked, { tidy: false }), b = conv(blocked);
+  assert.equal(b.model.layers.length, 3);             // oranye kecil menimpa biru, tidak boleh dibuang
+  sameLook(a.model, b.model);
+});
+
+test('rapikan: layer transparan kembar yang bersebelahan digabung dengan alfa gabungan, bukan dibuang', () => {
+  const svg = wrap('<circle cx="50" cy="50" r="30" fill="#00f" fill-opacity=".4"/><circle cx="50" cy="50" r="30" fill="#00f" fill-opacity=".4"/>');
+  const a = conv(svg, { tidy: false }), b = conv(svg);
+  assert.equal(b.model.layers.length, 1);
+  near(parseInt(b.model.layers[0].fill.slice(1, 3), 16), Math.round((1 - 0.6 * 0.6) * 255), 2);
+  sameLook(a.model, b.model);
+  // transparan kembar yang dipisah layer lain tidak digabung (urutan tumpukan ikut menentukan warna)
+  const sep = wrap('<circle cx="50" cy="50" r="30" fill="#00f" fill-opacity=".4"/><rect width="100" height="100" fill="#f00" fill-opacity=".5"/><circle cx="50" cy="50" r="30" fill="#00f" fill-opacity=".4"/>');
+  assert.equal(conv(sep).model.layers.length, 3);
+});
+
+test('rapikan: bidang kembar di satu layer dan titik sejajar atau duri dibuang', () => {
+  const svg = wrap('<path fill="#0a0" d="M10 10L10 10L50 10L90 10L90 90L50 90L10 90zM10 10L50 10L90 10L90 90L10 90z"/>');
+  const a = conv(svg, { tidy: false, simp: 0.2 }), b = conv(svg, { simp: 0.2 });
+  assert.ok(b.stats.points < a.stats.points);
+  b.model.layers.forEach((l) => l.rings.forEach((R) => assert.equal(R.length, 4)));   // persegi bersih: 4 titik
+  const R = S.cleanRing([[0, 0], [10, 0], [10, 10], [10, 4], [0, 10]]);               // ujung duri (10,10) menjorok lalu kembali
+  assert.ok(R.length >= 4);
+  sameLook(a.model, b.model);
+});
+
+test('rapikan: tidy false mematikan semuanya, dan titik apa adanya dihormati saat penyederhanaan mati', () => {
+  const svg = wrap('<rect width="100" height="100" fill="#123"/><circle cx="50" cy="50" r="30" fill="#e33"/><circle cx="50" cy="50" r="30" fill="#e33"/>');
+  assert.equal(conv(svg, { tidy: false }).model.layers.length, 3);
+  assert.equal(conv(svg, { tidy: false }).stats.tidy, null);
+  const off = conv(wrap('<path fill="#0a0" d="M10 10L50 10L90 10L90 90L10 90z"/>'), { simp: 0 });
+  assert.equal(off.model.layers[0].rings[0].length, 5);   // titik sejajar tetap ada bila penyederhanaan Mati
+});
+
+test('rapikan: nama layer dinomori ulang berurutan setelah ada yang dibuang', () => {
+  const svg = wrap('<rect width="100" height="100" fill="#123"/><rect x="10" y="10" width="10" height="10" fill="#0f0"/><rect x="5" y="5" width="40" height="40" fill="#f00"/><circle cx="70" cy="70" r="20" fill="#ff0"/>');
+  const b = conv(svg);
+  assert.deepEqual(b.model.layers.map((l) => l.label), ['Objek 1', 'Objek 2', 'Objek 3']);
+});
+
+test('rapikan: 40 SVG acak penuh bentuk kembar dan bertumpuk tampil sama persis sebelum dan sesudah', () => {
+  const pal = ['#e33', '#3e3', '#33e', '#ee3', '#fff', '#222'];
+  let removed = 0;
+  for (let seed = 1; seed <= 40; seed++) {
+    const r = lcg(seed * 7919), els = [], n = 8 + Math.floor(r() * 30);
+    for (let i = 0; i < n; i++) {
+      const c = pal[Math.floor(r() * pal.length)], op = r() < 0.25 ? ' fill-opacity="' + (0.3 + r() * 0.5).toFixed(2) + '"' : '', k = r(), x = r() * 70, y = r() * 70, w = 8 + r() * 40, h = 8 + r() * 40;
+      let el;
+      if (k < 0.3) el = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"${op}/>`;
+      else if (k < 0.55) el = `<circle cx="${x + 15}" cy="${y + 15}" r="${6 + r() * 15}" fill="${c}"${op}/>`;
+      else if (k < 0.75) el = `<path fill="${c}"${op} fill-rule="evenodd" d="M${x} ${y}h${w}v${h}h${-w}zM${x + w * .25} ${y + h * .25}h${w * .5}v${h * .5}h${-w * .5}z"/>`;
+      else el = `<polygon fill="${c}"${op} points="${x},${y} ${x + w},${y + h * .3} ${x + w * .4},${y + h}"/>`;
+      els.push(el); if (r() < 0.3) els.push(el);
+    }
+    for (const holes of ['pecah', 'jembatan']) {
+      const svg = wrap(els.join('')), a = conv(svg, { tidy: false, holes }), b = conv(svg, { holes });
+      removed += a.stats.pieces - b.stats.pieces;
+      sameLook(a.model, b.model);
+    }
+  }
+  assert.ok(removed > 100);
+});
+
+test('rapikan: mode foto juga dirapikan tanpa mengubah tampilan', () => {
+  const W = 120, H = 120, px = new Uint8ClampedArray(W * H * 4);
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = (y * W + x) * 4; let c = [240, 240, 235];
+    if ((x - 40) ** 2 + (y - 60) ** 2 < 900) c = [220, 50, 50];
+    if (Math.abs(y - 100) < 1.5) c = [10, 10, 10];
+    px[i] = c[0]; px[i + 1] = c[1]; px[i + 2] = c[2]; px[i + 3] = 255;
+  }
+  const a = S.fromImage(px, W, H, { tidy: false, bersih: false, ink: true }), b = S.fromImage(px, W, H, { bersih: false, ink: true });
+  assert.ok(b.model.layers.length <= a.model.layers.length && b.stats.points <= a.stats.points);
+  sameLook(a.model, b.model);
+});

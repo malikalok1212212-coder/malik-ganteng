@@ -1173,9 +1173,159 @@ function canvasSize(box, o) {
   return { w: Math.max(16, Math.round(w * s)), h: Math.max(16, Math.round(h * s)), fit: false, s };
 }
 
+/* ---------- pembersih vektor dobel ---------- */
+/* Dijalankan setelah semua layer jadi, sebelum XML ditulis. Tampilan akhir tidak berubah, hanya bentuk berlebih yang dibuang:
+   1) titik kembar, titik sejajar, dan ujung "duri" tanpa lebar pada cincin; bidang kembar di satu layer
+   2) layer opak yang bentuk dan warnanya persis sama (yang di bawah dibuang); layer transparan kembar yang bersebelahan digabung alfanya
+   3) bidang yang tertutup penuh oleh satu bidang opak di atasnya
+   4) bidang opak yang seluruhnya berada di dalam bidang sewarna di bawahnya tanpa ada warna lain di antaranya */
+const TIDY_TOL = 5e-4;
+const isOpaqueFill = (f) => String(f).slice(1, 3).toLowerCase() === 'ff';
+function distLine(b, a, c) {
+  const dx = c[0] - a[0], dy = c[1] - a[1], l = Math.hypot(dx, dy);
+  if (l < 1e-9) return 0;                                  // a = c: b hanyalah ujung duri
+  return Math.abs(dx * (b[1] - a[1]) - dy * (b[0] - a[0])) / l;
+}
+function tidyRing(P, tol) {
+  const out = [], same = (p, q) => Math.abs(p[0] - q[0]) < tol && Math.abs(p[1] - q[1]) < tol;
+  for (const p of P) {
+    for (;;) {
+      const n = out.length;
+      if (n && same(out[n - 1], p)) break;
+      if (n >= 2 && distLine(out[n - 1], out[n - 2], p) < tol) { out.pop(); continue; }
+      out.push(p); break;
+    }
+  }
+  for (let g = 0; g < 8 && out.length >= 3; g++) {
+    const n = out.length;
+    if (same(out[0], out[n - 1])) { out.pop(); continue; }
+    if (distLine(out[n - 1], out[n - 2], out[0]) < tol) { out.pop(); continue; }
+    if (distLine(out[0], out[n - 1], out[1]) < tol) { out.shift(); continue; }
+    break;
+  }
+  return out.length >= 3 ? out : P;
+}
+const q2 = (v) => Math.round(v * 100);
+function ringSig(R) {
+  let P = R.map((p) => [q2(p[0]), q2(p[1])]);
+  P = P.filter((p, i) => !i || p[0] !== P[i - 1][0] || p[1] !== P[i - 1][1]);
+  while (P.length > 1 && P[0][0] === P[P.length - 1][0] && P[0][1] === P[P.length - 1][1]) P.pop();
+  if (area(P) < 0) P.reverse();
+  let s = 0;
+  for (let i = 1; i < P.length; i++) if (P[i][0] < P[s][0] || (P[i][0] === P[s][0] && P[i][1] < P[s][1])) s = i;
+  const t = []; for (let i = 0; i < P.length; i++) { const p = P[(s + i) % P.length]; t.push(p[0] + ',' + p[1]); }
+  return t.join(' ');
+}
+const bbHas = (A, B, e) => A[0] <= B[0] + e && A[1] <= B[1] + e && A[2] >= B[2] - e && A[3] >= B[3] - e;
+const bbHit = (A, B, e) => A[0] <= B[2] + e && A[2] >= B[0] - e && A[1] <= B[3] + e && A[3] >= B[1] - e;
+/* R seluruhnya berada di dalam (atau menempel di tepi) cincin H? Hati-hati: bila ragu, jawabannya tidak. */
+function ringWithin(R, H, bg) {
+  if (bg.n <= 0 || R.length * H.length > 400000) return false;
+  bg.n -= R.length * H.length * 3;
+  for (const p of R) if (!pip(p, H) && !onBoundary(p, H, 1e-3)) return false;
+  for (let i = 0, n = R.length; i < n; i++) {
+    const a = R[i], b = R[(i + 1) % n];
+    for (let j = 0, m = H.length; j < m; j++) if (properCross(a, b, H[j], H[(j + 1) % m])) return false;
+  }
+  return true;
+}
+function tidyLayers(layers, o, mode) {
+  const st = { rings: 0, same: 0, hidden: 0, under: 0, pts: 0 };
+  const bg = { n: mode === 'photo' ? 2e7 : 6e7 };
+  const count = () => layers.reduce((s, l) => s + l.rings.reduce((a, r) => a + r.length, 0), 0);
+  const p0 = count();
+  // 1) cincin: titik berlebih dan bidang kembar dalam satu layer
+  for (const L of layers) {
+    const seen = new Set(), keep = [];
+    for (const R0 of L.rings) {
+      const R = mode === 'photo' || o.simp > 0 ? tidyRing(R0, TIDY_TOL) : R0;
+      if (R.length < 3 || Math.abs(area(R)) <= 1e-3) { st.rings++; continue; }
+      const k = ringSig(R);
+      if (seen.has(k)) { st.rings++; continue; }
+      seen.add(k); keep.push(R);
+    }
+    L.rings = keep;
+  }
+  const sigOf = (L) => L.rings.map(ringSig).sort().join('|');
+  // 2) layer kembar: yang opak, yang di bawah dibuang; yang transparan bersebelahan digabung alfanya
+  {
+    const seen = new Set(), drop = new Set();
+    for (let i = layers.length - 1; i >= 0; i--) {
+      const L = layers[i]; if (!L.rings.length || !isOpaqueFill(L.fill)) continue;
+      const k = L.fill + '#' + sigOf(L);
+      if (seen.has(k)) { drop.add(i); st.same++; } else seen.add(k);
+    }
+    if (drop.size) { const keep = layers.filter((l, i) => !drop.has(i)); layers.length = 0; keep.forEach((l) => layers.push(l)); }
+    for (let i = layers.length - 1; i > 0; i--) {
+      const a = layers[i - 1], b = layers[i];
+      if (!a.rings.length || isOpaqueFill(a.fill) || isOpaqueFill(b.fill) || a.fill.slice(3).toLowerCase() !== b.fill.slice(3).toLowerCase()) continue;
+      if (sigOf(a) !== sigOf(b)) continue;
+      const al = 1 - (1 - parseInt(a.fill.slice(1, 3), 16) / 255) * (1 - parseInt(b.fill.slice(1, 3), 16) / 255);
+      b.fill = '#' + hex2(ch8(al * 255)) + b.fill.slice(3);
+      layers.splice(i - 1, 1); st.same++;
+    }
+  }
+  // 3) bidang yang tertutup penuh oleh satu bidang opak di atasnya
+  {
+    const cov = [];
+    for (let i = layers.length - 1; i >= 0; i--) {
+      const L = layers[i], keep = [];
+      for (const R of L.rings) {
+        const bb = bboxOf(R);
+        if (cov.some((c) => bbHas(c.bb, bb, 1e-6) && ringWithin(R, c.R, bg))) st.hidden++; else keep.push(R);
+      }
+      L.rings = keep;
+      if (isOpaqueFill(L.fill)) for (const R of keep) cov.push({ bb: bboxOf(R), R });
+    }
+  }
+  // 4) bidang opak di dalam bidang sewarna yang ada di bawahnya, tanpa warna lain di antaranya
+  {
+    const LB = layers.map((L) => { let b = null; for (const R of L.rings) { const q = bboxOf(R); b = b ? [Math.min(b[0], q[0]), Math.min(b[1], q[1]), Math.max(b[2], q[2]), Math.max(b[3], q[3])] : q; } return b; });
+    const RB = layers.map((L) => L.rings.map(bboxOf));
+    const gone = layers.map((L) => new Set());
+    for (let j = 0; j < layers.length; j++) {
+      const Lj = layers[j]; if (!isOpaqueFill(Lj.fill)) continue;
+      Lj.rings.forEach((U, u) => {
+        const bu = RB[j][u];
+        for (let i = j - 1; i >= 0 && bg.n > 0; i--) {
+          const Li = layers[i]; if (!LB[i] || !bbHit(LB[i], bu, 1e-6)) continue;
+          if (isOpaqueFill(Li.fill) && Li.fill === Lj.fill) {
+            for (let h = 0; h < Li.rings.length; h++) if (!gone[i].has(h) && bbHas(RB[i][h], bu, 1e-6) && ringWithin(U, Li.rings[h], bg)) { gone[j].add(u); st.under++; return; }
+            continue;
+          }
+          let blocked = false;
+          for (let h = 0; h < Li.rings.length; h++) if (!gone[i].has(h) && bbHit(RB[i][h], bu, 1e-6)) { blocked = true; break; }
+          if (blocked) return;
+        }
+      });
+    }
+    layers.forEach((L, j) => { if (gone[j].size) L.rings = L.rings.filter((R, u) => !gone[j].has(u)); });
+  }
+  // 5) layer kosong dibuang, nomor di nama layer dirapikan lagi
+  { const keep = layers.filter((l) => l.rings.length); layers.length = 0; keep.forEach((l) => layers.push(l)); }
+  const map = new Map(), cnt = {};
+  for (const L of layers) {
+    const m = /^(Objek|Garis|Warna) (\d+)(.*)$/.exec(L.label); if (!m) continue;
+    const grp = mode === 'photo' ? m[1] : 'x', key = m[1] + ' ' + m[2];
+    if (!map.has(key)) map.set(key, (cnt[grp] = (cnt[grp] || 0) + 1));
+    L.label = m[1] + ' ' + map.get(key) + m[3];
+  }
+  layers.forEach((L, i) => { L.n = i + 1; });
+  st.pts = Math.max(0, p0 - count());
+  return st;
+}
+function tidyNote(st) {
+  const bits = [];
+  if (st.same) bits.push(st.same + ' layer kembar dibuang');
+  if (st.hidden) bits.push(st.hidden + ' bidang yang tertutup penuh dibuang');
+  if (st.under) bits.push(st.under + ' bidang sewarna yang menumpuk dibuang');
+  if (st.rings) bits.push(st.rings + ' bidang kembar atau kosong dibuang');
+  return bits.length ? 'Dirapikan otomatis, tampilannya tetap sama: ' + bits.join(', ') + '.' : '';
+}
+
 /* ---------- konversi utama ---------- */
 function convert(text, opt) {
-  const o = Object.assign({ title: 'svg', duration: 3, fps: 30, canvas: 'auto', width: 1080, height: 1080, holes: 'pecah', tol: 0.05, simp: 0.2, grad: 'sedang' }, opt || {});
+  const o = Object.assign({ title: 'svg', duration: 3, fps: 30, canvas: 'auto', width: 1080, height: 1080, holes: 'pecah', tol: 0.05, simp: 0.2, grad: 'sedang', tidy: true }, opt || {});
   const warns = [], warn = (m) => { if (warns.indexOf(m) < 0) warns.push(m); };
   const doc = readSVG(text, warn);
   let box = intrinsic(doc.svg);
@@ -1281,6 +1431,8 @@ function convert(text, opt) {
     });
   }
   layers.forEach((l) => { delete l.lf; });
+  let tidySt = null;
+  if (o.tidy !== false) { tidySt = tidyLayers(layers, o, 'svg'); const tn = tidyNote(tidySt); if (tn) warn(tn); }
   if (gradShapes) warn('Gradasi pada ' + gradShapes + ' bentuk dibuat dari ' + gradLayers + ' lapisan pita warna bertumpuk, jadi warnanya mengikuti SVG. Bila terasa berat di Alight Motion, pilih gradasi Ringan.');
   if (gradTrans) warn('Gradasi radial yang transparan pada ' + gradTrans + ' bentuk belum bisa dipecah tanpa tumpang tindih, jadi dipakai satu warna rata-rata. Gradasi linear transparan tetap dibuat per pita.');
   if (gmode === 'rata' && leaves.grads) warn('Gradasi diganti satu warna rata-rata pada ' + leaves.grads + ' bentuk (mode Warna rata-rata).');
@@ -1295,7 +1447,7 @@ function convert(text, opt) {
   const model = { title: o.title, width: cs.w, height: cs.h, totalTime: Math.max(100, Math.round(o.duration * 1000)), fps: Math.max(1, Math.round(o.fps)), layers };
   let pts = 0; layers.forEach((l) => l.rings.forEach((r) => { pts += r.length; }));
   const un = ['teks', 'gambar', 'pola', 'clip', 'mask', 'filter'].filter((k) => leaves.cnt && leaves.cnt[k]);
-  return { model, warnings: warns, unsupported: un, stats: { layers: layers.length, pieces: total, points: pts, rawPoints: rawPts, width: cs.w, height: cs.h } };
+  return { model, warnings: warns, unsupported: un, stats: { layers: layers.length, pieces: total, points: pts, rawPoints: rawPts, width: cs.w, height: cs.h, tidy: tidySt } };
 }
 
 /* ---------- penulis XML (mengikuti contoh malik-logo.xml persis) ---------- */
@@ -1930,6 +2082,7 @@ function* photoGen(rgba, w, h, opt) {
       }
     }
   }
+  if (o.tidy !== false && layers.length) { yield 'Merapikan vektor dobel...'; const tn = tidyNote(tidyLayers(layers, o, 'photo')); if (tn) warn(tn); }
   if (!layers.length) throw new Error('Tidak ada bentuk yang bisa dibuat dari foto ini.');
   if (tally.fallback) warn(tally.fallback + ' bentuk berlubang dikerjakan dengan cara lain karena penyambungan lubang gagal.');
   if (tally.lost) warn('Ada ' + tally.lost + ' lubang kecil yang tidak bisa dibuat. Warna di area itu bisa sedikit berbeda dari foto.');
