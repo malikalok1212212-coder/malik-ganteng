@@ -15,6 +15,7 @@ function chatInit(r){const fmn=$(r,'#fmn');if(fmn)fmn.onclick=()=>{const m=docum
  const prev=m=>m.text||(m.img?'[Foto]':'[Sticker]');
  const fit=()=>{const vh=window.visualViewport?visualViewport.height:innerHeight;const top=pan.getBoundingClientRect().top+scrollY;pan.style.height=Math.max(380,Math.round(vh-top-(document.querySelector('.shell>.top')&&getComputedStyle(document.querySelector('.shell>.top')).display==='none'?0:8)))+'px'};
  fit();addEventListener('resize',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);
+ {const seen=new Set();let init=false;new MutationObserver(()=>{const ms=[...box.querySelectorAll('.cmsg[data-id]')],fresh=ms.filter(e=>!seen.has(e.dataset.id));ms.forEach(e=>seen.add(e.dataset.id));if(!init){if(ms.length)init=true;return}if(fresh.length&&fresh.length<=3)fresh.forEach(e=>e.classList.add('cpop'))}).observe(box,{childList:true})}
  function draw(){const k=cur.map(m=>m.id+(m.rx?JSON.stringify(m.rx):'')+(m.pin?'p':'')+(m.edited?'e'+m.text:'')+'|'+(m.name||'')+'|'+(m.pic||'')+'|'+(m.role||'')+(m.badge?m.badge.t+m.badge.c:'')).join()+(AUTH.user?'#'+AUTH.user.name+'|'+AUTH.user.picture:'')+(more?'m':'');if(k===key)return;key=k;const near=box.scrollHeight-box.scrollTop-box.clientHeight<80;
   const day=ts=>{const d=new Date(ts),n=new Date(),y=new Date(n.getTime()-864e5),same=(a,b)=>a.toDateString()===b.toDateString();return same(d,n)?'Hari ini':same(d,y)?'Kemarin':d.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})};
   let prevM=null;
