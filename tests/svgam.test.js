@@ -580,3 +580,35 @@ test('rapikan: mode foto juga dirapikan tanpa mengubah tampilan', () => {
   assert.ok(b.model.layers.length <= a.model.layers.length && b.stats.points <= a.stats.points);
   sameLook(a.model, b.model);
 });
+
+test('rapikan: bentuk di dalam lubang (garis bingkai, donat) tidak dianggap tertutup, walau sudutnya menempel di tepi lubang', () => {
+  const frame = wrap('<rect x="15" y="15" width="30" height="30" fill="#f00"/><rect x="10" y="10" width="80" height="80" fill="none" stroke="#0a0" stroke-width="10"/>');
+  const donut = wrap('<circle cx="50" cy="50" r="12" fill="#00f"/><path fill="#fa0" fill-rule="evenodd" d="M10 10h80v80h-80zM25 25h50v50h-50z"/>');
+  for (const holes of ['pecah', 'jembatan']) for (const svg of [frame, donut]) {
+    const a = conv(svg, { tidy: false, holes }), b = conv(svg, { holes });
+    assert.equal(b.model.layers.length, a.model.layers.length, holes);
+    sameLook(a.model, b.model);
+  }
+});
+
+test('rapikan: gradasi bertumpuk, garis, clip-path, dan use yang kembar tampil sama persis (acak, termasuk Jembatan)', () => {
+  const pal = ['#e33', '#3e3', '#33e', '#ee3', '#fff', '#222', '#f80'];
+  const defs = '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f00"/><stop offset="1" stop-color="#00f"/></linearGradient><clipPath id="c"><circle cx="60" cy="60" r="45"/></clipPath><g id="u"><rect width="30" height="30" fill="#e33"/></g></defs>';
+  for (const seed of [4, 30, 42, 47, 60]) {
+    const r = lcg(seed * 104729), els = [], n = 8 + Math.floor(r() * 25);
+    for (let i = 0; i < n; i++) {
+      const k = r(), c = pal[Math.floor(r() * pal.length)], x = r() * 120, y = r() * 120, w = 10 + r() * 60, h = 10 + r() * 60;
+      const fill = r() < 0.2 ? 'url(#g)' : c, op = r() < 0.2 ? ' opacity=".6"' : '';
+      const stroke = r() < 0.3 ? ` stroke="${pal[Math.floor(r() * pal.length)]}" stroke-width="${1 + r() * 6}" stroke-linejoin="round"` : '';
+      let el;
+      if (k < 0.3) el = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}"${stroke}${op}/>`;
+      else if (k < 0.55) el = `<circle cx="${x}" cy="${y}" r="${5 + r() * 30}" fill="${fill}"${stroke}${op}/>`;
+      else if (k < 0.7) el = `<path fill="${fill}" fill-rule="evenodd"${stroke} d="M${x} ${y}h${w}v${h}h${-w}zM${x + w * .25} ${y + h * .25}h${w * .5}v${h * .5}h${-w * .5}z"/>`;
+      else if (k < 0.8) el = `<use href="#u" transform="translate(${x} ${y}) rotate(${r() * 90})"/>`;
+      else el = `<g clip-path="url(#c)"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}"/></g>`;
+      els.push(el); if (r() < 0.3) els.push(el);
+    }
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">' + defs + els.join('') + '</svg>';
+    for (const holes of ['pecah', 'jembatan']) { const a = conv(svg, { tidy: false, holes }), b = conv(svg, { holes }); sameLook(a.model, b.model); }
+  }
+});

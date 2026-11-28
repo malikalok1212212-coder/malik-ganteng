@@ -334,13 +334,19 @@
       tries++;
       if (!D.getElementById('ld') || tries > 40) {
         clearInterval(wait);
-        setTimeout(function () {
+        var late = 0;
+        (function hello() {
+          // jangan tumpuk dengan dialog Channel Resmi yang muncul tepat setelah intro
+          if (D.querySelector('.fcm') && late++ < 90) return setTimeout(hello, 1000);
+          setTimeout(offer, 1800);
+        })();
+        function offer() {
           if (tourEls || !bub.hidden || ls.g('mt_guide') || root.hidden) return;
           fab.classList.add('new');
           say('Halo, aku Malik! Mau kupandu keliling sebentar? Cuma sekitar 30 detik.', {
             acts: [{ t: 'Mulai tur', fn: tour }, { t: 'Nanti saja', p: false, fn: function () { ls.s('mt_guide', '1'); close(); } }]
           });
-        }, 1800);
+        }
       }
     }, 400);
   }

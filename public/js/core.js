@@ -890,45 +890,53 @@ function mtChannel(){
  m.addEventListener('click',e=>{if(e.target===m)close()});
  requestAnimationFrame(()=>{m.classList.add('on');m.querySelector('#fcf').focus()});
 }
-const LOADER_ON=true,LOADER_MS=10000; // v482: durasi intro 10 detik (ubah LOADER_MS untuk memperpendek/memperpanjang)
+const LOADER_ON=true,LOADER_MS=10000; // durasi intro (ms). Ubah LOADER_MS untuk memperpendek/memperpanjang
+const LOADER_STEPS=[[0,'Menyiapkan akun'],[.28,'Memuat logo dan font'],[.58,'Merapikan tampilan'],[.86,'Hampir selesai']];
 function mtLoader(){
  const ld=document.getElementById('ld');if(!ld)return;
- const root=document.documentElement,done=()=>{ld.remove();root.classList.remove('ldon');setTimeout(()=>root.classList.remove('ldin'),1500);setTimeout(mtChannel,400)};
+ const root=document.documentElement,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,sleep=ms=>new Promise(r=>setTimeout(r,ms));
+ const bar=ld.querySelector('.mldb i'),txt=ld.querySelector('.mldt'),pct=ld.querySelector('.mldp'),skip=ld.querySelector('.mlds'),track=ld.querySelector('.mldb');
+ let closed=false,raf=0,lastTxt='',lastPct=-1,fallback=0,T0=Date.now();
+ const done=()=>{clearTimeout(fallback);cancelAnimationFrame(raf);document.removeEventListener('visibilitychange',onVis);ld.remove();root.classList.remove('ldon','ldwait','ldgate');setTimeout(()=>root.classList.remove('ldin'),1500);setTimeout(mtChannel,400)};
  if(!LOADER_ON||root.classList.contains('noload')){done();return}
- root.classList.add('ldon');
- const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,sleep=ms=>new Promise(r=>setTimeout(r,ms));
- // loading biasa: logo berputar + bar. Buka pertama di sesi sedikit lebih lama, refresh berikutnya singkat.
- let seen=false;try{seen=sessionStorage.getItem('mt_seen')==='1';sessionStorage.setItem('mt_seen','1')}catch(e){}
- const MIN=LOADER_MS; // loading selalu terlihat penuh (juga saat 'kurangi animasi' aktif)
- const bar=ld.querySelector('.mldb i');
- let shown=0,target=0,raf=0,closed=false;const T0=Date.now();
- const paint=()=>{target=Math.min(1,(Date.now()-T0)/LOADER_MS);shown=target;bar.style.setProperty('--p',shown.toFixed(3));if(shown<1)raf=requestAnimationFrame(paint)};
- raf=requestAnimationFrame(paint);
+ ld.classList.remove('out');root.classList.add('ldon');
+ const paint=()=>{
+  if(closed)return;
+  const p=Math.min(1,(Date.now()-T0)/LOADER_MS);
+  bar.style.setProperty('--p',p.toFixed(3));
+  const n=Math.round(p*100);if(n!==lastPct){lastPct=n;if(pct)pct.textContent=n+'%';if(track)track.setAttribute('aria-valuenow',n)}
+  let s=LOADER_STEPS[0][1];for(const[t,l]of LOADER_STEPS)if(p>=t)s=l;
+  if(txt&&s!==lastTxt){lastTxt=s;txt.textContent=s}
+  if(p<1)raf=requestAnimationFrame(paint)};
+ // satu jalur penutup: dipanggil timer, tombol Lewati, atau tab yang kembali terlihat
  const out=async()=>{
   if(closed)return;closed=true;cancelAnimationFrame(raf);
-  bar.style.setProperty('--p',1);root.classList.add('ldin');
-  ld.classList.add('out');
-  await sleep(reduce?160:320);done()};
+  bar.style.setProperty('--p',1);if(pct)pct.textContent='100%';if(txt)txt.textContent='Selesai';
+  root.classList.add('ldin');ld.classList.add('out');
+  await sleep(reduce?160:340);done()};
+ function onVis(){if(!document.hidden&&!closed&&Date.now()-T0>=LOADER_MS)out()}
+ document.addEventListener('visibilitychange',onVis);
+ if(skip)skip.onclick=()=>out();
+ raf=requestAnimationFrame(paint);
  (async()=>{
   try{
    const timed=f=>new Promise(r=>f(()=>r(1)));
    const logo=timed(d=>{const i=new Image();i.onload=i.onerror=d;i.src=LOGO});
    const fonts=(document.fonts?document.fonts.ready:Promise.resolve()).then(()=>1);
-   const steps=[authP,logo,fonts].map(st=>Promise.resolve(st).catch(()=>1)),t0=Date.now();
-   let n=0;
-   steps.forEach(st=>st.then(()=>{n++}));
+   const steps=[authP,logo,fonts].map(st=>Promise.resolve(st).catch(()=>1));
    await Promise.race([Promise.all(steps),sleep(2500)]);
-   if(closed)return;
-   const rest=MIN-(Date.now()-t0);if(rest>0)await sleep(rest);
   }catch(e){}
+  const rest=LOADER_MS-(Date.now()-T0);if(rest>0)await sleep(rest);
   out();
  })();
- setTimeout(done,LOADER_MS+3000);
+ fallback=setTimeout(()=>{closed=true;done()},LOADER_MS+3000); // jaring pengaman bila sesuatu macet
 }
-// Loader baru jalan setelah pengguna login (layar login tampil dulu), sekali per sesi.
-(function(){const root=document.documentElement,l=document.getElementById('ld');
- setTimeout(()=>{const x=document.getElementById('ld');if(x&&!root.classList.contains('ldgate')){root.classList.remove('ldwait','ldon');x.remove()}},LOADER_MS+5000);
+// Loader jalan setelah pengguna login (layar login tampil dulu). Tamu belum login: loader memudar halus, lalu jalan sesudah login.
+(function(){const root=document.documentElement,l=document.getElementById('ld');let started=false;
+ setTimeout(()=>{const x=document.getElementById('ld');if(x&&!root.classList.contains('ldgate')&&!started){root.classList.remove('ldwait','ldon');x.remove()}},LOADER_MS+5000);
  if(root.classList.contains('noload')){if(l)l.remove();root.classList.remove('ldwait');setTimeout(mtChannel,800);return}
- const start=()=>{root.classList.remove('ldwait','ldgate');mtLoader()};
- const chk=()=>{if(AUTH.user||!AUTH.ready){start();return}root.classList.add('ldgate');const iv=setInterval(()=>{if(AUTH.user){clearInterval(iv);start()}},400)};
+ const start=()=>{if(started)return;started=true;root.classList.remove('ldwait','ldgate');mtLoader()};
+ const gate=()=>{if(l){l.classList.add('out');setTimeout(()=>{if(!started)root.classList.add('ldgate')},340)}else root.classList.add('ldgate');
+  const iv=setInterval(()=>{if(AUTH.user){clearInterval(iv);start()}},400)};
+ const chk=()=>{if(AUTH.user||!AUTH.ready){start();return}gate()};
  Promise.race([Promise.resolve(authP).catch(()=>1),new Promise(r=>setTimeout(r,1800))]).then(chk,chk)})();

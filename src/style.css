@@ -6062,3 +6062,14 @@ html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:ro
 html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .chip svg,html:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):root:root:root:root:root:root .tk2 .card.form .chip svg{flex:none!important}
 
 /* ===== REDESIGN-END ===== */
+
+/* ===== v495: intro/loading dilengkapi: tagline, status langkah, persen, tombol Lewati; tamu memudar halus ===== */
+.mld .mldb{width:min(240px,64vw);height:6px}
+.mldg{margin:-6px 0 0;font:500 13px/1.3 "Plus Jakarta Sans",Inter,system-ui,sans-serif;color:var(--muted,currentColor);opacity:.85;text-align:center}
+.mldi{display:flex;justify-content:space-between;gap:12px;width:min(240px,64vw);margin-top:-6px;font:600 12px/1.2 "Plus Jakarta Sans",Inter,system-ui,sans-serif;color:var(--muted,currentColor)}
+.mldp{font-variant-numeric:tabular-nums}
+.mlds{margin-top:8px;min-height:40px;padding:8px 18px;border-radius:99px;border:1.5px solid color-mix(in srgb,var(--ink) 22%,transparent);background:transparent;color:var(--ink);font:700 13px/1 "Plus Jakarta Sans",Inter,system-ui,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mlds:active{transform:scale(.96)}
+.mlds:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.mld{overflow:hidden;padding-bottom:env(safe-area-inset-bottom,0)}
+.mldc{max-width:100%}

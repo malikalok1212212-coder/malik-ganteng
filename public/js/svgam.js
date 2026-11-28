@@ -1218,6 +1218,25 @@ function ringSig(R) {
 }
 const bbHas = (A, B, e) => A[0] <= B[0] + e && A[1] <= B[1] + e && A[2] >= B[2] - e && A[3] >= B[3] - e;
 const bbHit = (A, B, e) => A[0] <= B[2] + e && A[2] >= B[0] - e && A[1] <= B[3] + e && A[3] >= B[1] - e;
+/* beberapa titik yang pasti ada di dalam R (bukan di tepi), diambil dari garis mendatar yang memotong R */
+function innerPoints(R, want) {
+  const b = bboxOf(R), out = [], n = R.length;
+  for (const f of [0.5, 0.37, 0.63, 0.25, 0.75, 0.43, 0.57]) {
+    const y = b[1] + (b[3] - b[1]) * f, xs = [];
+    for (let i = 0; i < n; i++) {
+      const a = R[i], c = R[(i + 1) % n];
+      if ((a[1] <= y) !== (c[1] <= y)) xs.push(a[0] + (y - a[1]) / (c[1] - a[1]) * (c[0] - a[0]));
+    }
+    xs.sort((p, q) => p - q);
+    for (let k = 0; k + 1 < xs.length; k += 2) {
+      if (xs[k + 1] - xs[k] < 1e-4) continue;
+      const q = [(xs[k] + xs[k + 1]) / 2, y];
+      if (pip(q, R) && !onBoundary(q, R, 1e-4)) { out.push(q); break; }
+    }
+    if (out.length >= want) break;
+  }
+  return out;
+}
 /* R seluruhnya berada di dalam (atau menempel di tepi) cincin H? Hati-hati: bila ragu, jawabannya tidak. */
 function ringWithin(R, H, bg) {
   if (bg.n <= 0 || R.length * H.length > 400000) return false;
@@ -1227,6 +1246,12 @@ function ringWithin(R, H, bg) {
     const a = R[i], b = R[(i + 1) % n];
     for (let j = 0, m = H.length; j < m; j++) if (properCross(a, b, H[j], H[(j + 1) % m])) return false;
   }
+  // lubang H (cincin berjembatan atau berputar ganda) yang seluruhnya ada di dalam R berarti R tidak tertutup penuh
+  for (const q of H) if (pip(q, R) && !onBoundary(q, R, 1e-3)) return false;
+  // semua titik sudut R boleh menempel di tepi H sementara isi R ada di luar H (mis. di dalam lubangnya), jadi isi R diperiksa juga
+  const ip = innerPoints(R, 3);
+  if (!ip.length) return false;
+  for (const q of ip) if (!pip(q, H)) return false;
   return true;
 }
 function tidyLayers(layers, o, mode) {
