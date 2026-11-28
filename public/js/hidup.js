@@ -33,32 +33,11 @@
     + '.top .ib{position:relative;overflow:hidden}'
     + '.mtrp{position:absolute;border-radius:50%;pointer-events:none;background:color-mix(in srgb,var(--acc,#e5232e) 45%,transparent);transform:scale(0);animation:mtrp .6s ease-out forwards}'
     + '@keyframes mtrp{to{transform:scale(1);opacity:0}}'
-    + '}'
-    /* garis progres scroll di dasar header */
-    + '.mtsp{position:absolute;left:0;right:0;bottom:0;height:2px;pointer-events:none;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--acc,#e5232e),#f6d58a);opacity:0;transition:opacity .25s}'
-    + '.top.mtsc .mtsp{opacity:1}';
+    + '}';
   var st = document.createElement('style'); st.id = 'mtcss'; st.textContent = css; document.head.appendChild(st);
 
   function boot() {
     var top = document.querySelector('header.top'); if (!top) return;
-    var bar = document.createElement('i'); bar.className = 'mtsp'; bar.setAttribute('aria-hidden', 'true'); top.appendChild(bar);
-    var raf = 0, el = null;
-    function upd() {
-      raf = 0;
-      var h = 0, y = 0;
-      if (!el || el === document || el === document.documentElement || el === document.body) {
-        var de = document.documentElement; h = de.scrollHeight - window.innerHeight; y = window.pageYOffset || de.scrollTop || 0;
-      } else { h = el.scrollHeight - el.clientHeight; y = el.scrollTop; }
-      bar.style.transform = 'scaleX(' + (h > 24 ? Math.max(0, Math.min(1, y / h)) : 0).toFixed(3) + ')';
-      top.classList.toggle('mtsc', y > 8 && h > 24);
-    }
-    document.addEventListener('scroll', function (e) {
-      var t = e.target;
-      if (t !== document && !(t.clientHeight > window.innerHeight * .5)) return;
-      el = t; if (!raf) raf = requestAnimationFrame(upd);
-    }, { capture: true, passive: true });
-    upd();
-
     top.addEventListener('pointerdown', function (e) {
       var b = e.target.closest ? e.target.closest('.ib') : null; if (!b || !top.contains(b)) return;
       var r = b.getBoundingClientRect(), d = Math.max(r.width, r.height) * 1.6, s = document.createElement('span');
