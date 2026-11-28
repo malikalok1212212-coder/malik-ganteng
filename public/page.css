@@ -29,7 +29,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--ink);outline-offset
 /* isi */
 main{padding:26px 0 6px}
 .tag{display:inline-block;margin:0 0 14px;padding:5px 14px;border-radius:999px;border:3px solid var(--bd);background:var(--acc);color:#16130d;box-shadow:3px 3px 0 var(--sh);font:700 .74rem "Space Mono",ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;transform:rotate(-2deg)}
-h1{margin:0 0 12px;font:800 clamp(2rem,9vw,2.8rem)/1.08 "Space Grotesk",Inter,sans-serif;letter-spacing:-.03em;text-wrap:balance;text-shadow:3px 3px 0 color-mix(in srgb,var(--acc) 85%,transparent)}
+h1{margin:0 0 12px;font:800 clamp(2rem,9vw,2.8rem)/1.08 "Space Grotesk",Inter,sans-serif;letter-spacing:-.03em;text-wrap:balance;text-shadow:none}
 .lead{margin:0 0 14px;max-width:56ch;color:var(--muted);font-size:1.05rem}
 .upd{display:inline-block;margin:0 0 4px;padding:3px 12px;border-radius:999px;border:3px solid var(--bd);background:var(--panel);color:var(--ink);font:700 .76rem "Space Mono",ui-monospace,monospace;letter-spacing:.04em}
 /* kartu: kepala berwarna (judul) + isi, seperti kartu Dokumentasi */
@@ -73,7 +73,7 @@ body::before,body::after{display:none}
 a{text-decoration-thickness:1.5px;text-underline-offset:3px;text-decoration-color:color-mix(in srgb,var(--acc) 70%,transparent)}
 a:hover,a:active{background:transparent;color:var(--acct)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.bar{background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(16px);backdrop-filter:saturate(1.4) blur(16px);border-bottom:1px solid var(--line)}
+.bar{background:var(--bg);border-bottom:1px solid var(--line)}
 .brand{font:800 1.08rem var(--fd);font-style:normal;letter-spacing:-.015em}
 .brand img{border:1px solid var(--bd);box-shadow:none;background:var(--acc)}
 .ib{background:var(--panel);color:var(--ink);border:1px solid var(--line);box-shadow:var(--e2);border-radius:12px}

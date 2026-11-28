@@ -533,8 +533,8 @@
 § .tk2 .card.form .fld .ib{flex:none;width:38px!important;height:38px!important;border-radius:10px!important;background:var(--s3)!important;border:0!important;color:var(--ink)!important}
 § .tk2 .card.form .fld:focus-within{border-color:var(--acc)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 22%,transparent)!important}
 § .tk2 .card.form .gob{margin-top:12px!important;height:52px!important;border-radius:14px!important}
-§ .tk2 .card.form .chips{display:flex!important;flex-wrap:nowrap!important;gap:5px!important;margin:14px 0 2px!important}
-§ .tk2 .card.form .chip{height:28px!important;padding:0 8px!important;gap:4px!important;font-size:11.5px!important;white-space:nowrap;flex:0 1 auto;min-width:0;background:transparent!important;border:1px solid var(--line2)!important;color:var(--muted)!important}
+§ .tk2 .card.form .chips{display:flex!important;flex-wrap:wrap!important;gap:6px!important;margin:14px 0 8px!important}
+§ .tk2 .card.form .chip{height:28px!important;padding:0 8px!important;gap:4px!important;font-size:11.5px!important;white-space:nowrap;flex:0 0 auto;max-width:100%;background:transparent!important;border:1px solid var(--line2)!important;color:var(--muted)!important}
 § .tk2 .card.form .chip svg{width:14px;height:14px;flex:none}
 
 /* LIVE: satu bahasa visual dengan kartu lain (netral, aksen hijau hanya untuk status online, merah hanya untuk merek) */
@@ -585,3 +585,19 @@
 § .live .lvi b{font:700 13px/1.25 var(--f-ui)!important}
 § .live .lvx{margin:12px 0 0!important;color:var(--muted)!important;opacity:.8}
 § .live .lve{border:1px dashed var(--line2)!important}
+
+/* ===== v483: semua efek glow dihapus (berat di HP): cahaya radial, kilau tombol, bayangan berwarna berblur, backdrop blur, blur latar ===== */
+@keyframes lrise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* Beranda: kartu sambutan & kartu cepat/statistik jadi warna rata (tanpa cahaya radial, tanpa animasi hGlow/hShine) */
+§ .lhc,§ .lhq,§ .hst{background:var(--s2)!important;border-color:var(--line)!important}
+§ .lhc .lhtip{background:var(--s1)!important}
+§ .lhq span{background:var(--s3)!important}
+§ #hgo::after{display:none!important;content:none!important;animation:none!important}
+@media (prefers-reduced-motion:no-preference){§ .lhc{animation:tfIn .55s cubic-bezier(.2,.8,.2,1) backwards!important}§ #hgo::after{animation:none!important}}
+/* Bayangan berwarna/berblur: dibuang */
+§ #hgo,§ .lhi button,§ button.primary,§ .btn.primary,§ #go.primary,§ .lpb1,§ .thero .tile,§ .hc .tri,§ .owp,§ .owp .ogr button[aria-pressed=true],§[data-theme=light] .owp,§[data-theme=light] .lhc,§ .bnav,§ .dock{box-shadow:none!important}
+/* Blur latar (backdrop-filter) dibuang di semua tempat */
+§ .top,§ .bnav,§ .dock,§ .bar,§ .lhc .lhtip,§ .lht,§ .fcm,§ .ann,§ .csb,§ .wc,§ .cmp figcaption{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+§ .bar{background:var(--bg)!important}
+/* Latar Spotify: tanpa blur besar */
+§ .spbg{filter:brightness(.62)!important}
