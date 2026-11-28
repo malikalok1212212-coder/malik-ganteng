@@ -523,3 +523,6 @@ Satu paket karena ketiganya menyentuh service worker (`public/sw.js`, cache `mt-
 
 ## Search Anime
 Tool `anime-search` (kategori Anime): `GET https://gateway.gencipta.com/api/anime/search?q=` (kunci GenCipta dari server). Balasan `{ status, data:{ success, query, total, results:[{ title, slug, link, poster, status, rating, genres[] }] }, creator }` dibaca `gcAnime()` di `api/tool.js` (hanya tautan https yang diteruskan, akhiran "Subtitle Indonesia" dibuang dari judul). Parameter dikirim sebagai `q` dan `query`; bila docs memakai nama lain, isi `GENCIPTA_PARAM_ANIME` di Vercel. Path bisa diganti lewat `GENCIPTA_PATH_ANIME_SEARCH`. Tampilan ada di `aniHtml/aniInit` pada `public/js/tools.js`.
+
+## SVG ke XML (public/js/svgam.js)
+Mode **Otomatis** (bawaan) mencoba konversi vektor dulu; bila `convert()` mengembalikan `unsupported` tidak kosong (teks, mask, filter, pola, gambar, clip-path rumit), tampilan memakai mode **Render** (render di kanvas lalu trace). Mode **Vektor** mendukung fill, gradasi (pita warna), **stroke** (lebar, cap, join, miterlimit, dash, dashoffset, opasitas, gradasi; dihitung di ruang lokal lalu ditransform) dan **clip-path** userSpaceOnUse (bentuk cekung dipecah jadi bidang cembung). Tes: `npm test` (tests/svgam.test.js memakai referensi jarak ke garis tengah dan titik acak).
