@@ -611,32 +611,64 @@ function aniCss(){tk2Css();if(document.getElementById('anicss'))return;const s=d
  +'.ani .go2{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;border-radius:11px;background:var(--ac);color:#fff;font-size:12.5px;font-weight:600;box-shadow:none}'
  +'.ani .nt{display:flex;gap:8px;align-items:flex-start;margin:12px 2px 0;font-size:12px;color:var(--dm);line-height:1.5}.ani .nt .tk2i{width:15px;height:15px;margin-top:2px}'
  +'.ani .empty{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:26px 16px;color:var(--mu);font-size:13.5px}.ani .empty .tk2i{width:30px;height:30px;color:var(--dm)}'
+ +'.ani .aw{position:relative;min-width:0}.ani .aw .ac{height:100%;box-sizing:border-box}'
+ +'.ani .aw .fv{position:absolute;right:20px;top:20px;left:auto;z-index:3;width:30px!important;height:30px!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;border-radius:50%!important;border:0!important;box-shadow:none!important;display:grid;place-items:center;line-height:1;background:rgba(0,0,0,.58);color:#fff;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);transition:transform .15s,background .15s;-webkit-tap-highlight-color:transparent}.ani .fv .tk2i{width:16px;height:16px;fill:none;stroke:currentColor}.ani .aw .fv.on{background:var(--ac)!important}.ani .fv.on .tk2i{fill:currentColor}.ani .fv:active{transform:scale(.88)}.ani .fv.pop{animation:anipop .42s cubic-bezier(.3,1.6,.5,1)}@keyframes anipop{0%{transform:scale(.7)}60%{transform:scale(1.3)}100%{transform:scale(1)}}'
+ +'.ani .gt{margin:-2px 0 12px}.ani .gt .tab{height:30px;font-size:12px}.ani .tab .n,.ani .sgb .n{min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:rgba(255,255,255,.14);font-size:11px;display:inline-grid;place-items:center}.ani .sgb .n{background:var(--ac);color:#fff}.ani .sgb .n[hidden]{display:none}'
+ +'.ani .hs{margin-top:12px}.ani .hs:empty{display:none}.ani .hs .hh{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.ani .hs .hh b{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mu)}.ani .hs .hx{border:0;background:none;color:var(--dm);font:inherit;font-size:12px;cursor:pointer;padding:4px 6px;margin:0}.ani .hs .ec{max-width:100%;cursor:pointer;font-family:inherit}.ani .hs .ec span{display:block;max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
  +'@media(max-width:380px){.ani .pv{width:82px}}';
  document.head.appendChild(s)}
 function aniHtml(){return `<div class="tk2 ani"><div class="card form"><div class="fld">${tk2I('scan')}<input id="e" type="text" inputmode="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Cari judul anime, contoh: naruto" aria-label="Judul anime"><button type="button" class="ib" id="tkx" aria-label="Hapus" hidden>${tk2I('x','sm')}</button></div>
 <div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div>
 <button type="button" class="gob" id="go">${tk2I('tv')}<span>Cari anime</span></button>
-<div class="sg" aria-label="Coba cari">${['Naruto','One Piece','Bleach','Jujutsu Kaisen'].map(x=>`<button type="button" class="sgb" data-q="${x}">${tk2I('spark')}${x}</button>`).join('')}</div>
+<div class="sg" aria-label="Coba cari">${['Naruto','One Piece','Bleach','Jujutsu Kaisen'].map(x=>`<button type="button" class="sgb" data-q="${x}">${tk2I('spark')}${x}</button>`).join('')}<button type="button" class="sgb" data-rnd>${tk2I('spark')}Acak</button><button type="button" class="sgb" data-fvv>${tk2I('heart')}Favorit <span class="n" data-fvn hidden>0</span></button></div>
 <div class="chips"><span class="chip">${tk2I('img')}Poster</span><span class="chip">${tk2I('star')}Rating</span><span class="chip">${tk2I('tag')}Genre</span><span class="chip">${tk2I('tv')}Otakudesu</span></div>
 <p class="nt">${tk2I('info')}<span>Hasil diambil apa adanya dari Otakudesu. Tombol Tonton membuka halaman anime di situs sumber.</span></p></div>
 <p class="msg" id="m" role="status"></p><div id="res"></div></div>`}
 function aniStat(t){const x=String(t||'').toLowerCase();return/ongoing|tayang|berjalan/.test(x)?['on','Tayang']:/complete|tamat|selesai|finish/.test(x)?['ok','Tamat']:/drop/.test(x)?['dr','Drop']:['',String(t||'')]}
-function aniGrid(list){return list.map((a,i)=>{const st=aniStat(a.status);return`<a class="ac" style="animation-delay:${Math.min(i,12)*30}ms" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer"><div class="pv">${tk2I('tv')}${a.poster&&/^https:/.test(a.poster)?`<img src="${esc(a.poster)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${a.rating?`<span class="rt2">${tk2I('star')}${Number(a.rating).toFixed(1).replace('.',',')}</span>`:''}</div><div class="ab"><h3>${esc(a.judul)}</h3>${st[1]?`<span class="st ${st[0]}"><i></i>${esc(st[1])}</span>`:''}${a.genre&&a.genre.length?`<div class="gn">${a.genre.slice(0,5).map(g=>`<span>${esc(g)}</span>`).join('')}</div>`:''}<span class="go2">${tk2I('play','sm')}Tonton${tk2I('ext','sm')}</span></div></a>`}).join('')}
-function aniResult(d,sf,mode){
+/* Pengembangan tool anime: favorit (hati di kartu) dan riwayat episode disimpan di perangkat lewat localStorage, tanpa server. */
+Object.assign(TK2P,{heart:'<path d="M12 20.5s-8-4.7-8-10.6A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.9c0 5.9-8 10.6-8 10.6z"/>'});
+const ANI_FK='mt_ani_fav',ANI_HK='mt_ani_hist',ANI_POP=['Naruto','One Piece','Bleach','Jujutsu Kaisen','Attack on Titan','Demon Slayer','Fullmetal Alchemist','Death Note','Hunter x Hunter','One Punch Man','Spy x Family','Chainsaw Man','Tokyo Ghoul','Sword Art Online','Dragon Ball','Haikyuu','Black Clover','Boruto','Mob Psycho','Vinland Saga','Frieren','Oshi no Ko','Kaguya-sama','Re Zero','Konosuba','Gintama','Blue Lock','Dr Stone','Fairy Tail','Detective Conan'];
+function aniLs(k){try{const v=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(v)?v:[]}catch(e){return[]}}
+function aniLsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
+function aniFavs(){return aniLs(ANI_FK).filter(a=>a&&a.judul&&/^https:/.test(a.link||''))}
+function aniFavTog(a){const L=aniFavs(),i=L.findIndex(x=>x.link===a.link);
+ if(i>=0)L.splice(i,1);else L.unshift({judul:String(a.judul).slice(0,200),link:a.link,poster:/^https:/.test(a.poster||'')?a.poster:'',status:String(a.status||'').slice(0,30),rating:+a.rating||0,episode:String(a.episode||'').slice(0,40),hari:String(a.hari||'').slice(0,20),genre:(Array.isArray(a.genre)?a.genre:[]).slice(0,5).map(g=>String(g).slice(0,30))});
+ aniLsSet(ANI_FK,L.slice(0,120));return i<0}
+function aniFvBtn(a,on){const j=JSON.stringify({judul:a.judul,link:a.link,poster:a.poster||'',status:a.status||'',rating:a.rating||0,episode:a.episode||'',hari:a.hari||'',genre:a.genre||[]});
+ return`<button type="button" class="fv${on?' on':''}" data-fv="${esc(j)}" aria-pressed="${on?'true':'false'}" aria-label="${on?'Hapus dari favorit':'Simpan ke favorit'}">${tk2I('heart')}</button>`}
+function aniFavHtml(back){const L=aniFavs();
+ const bk=back?`<button type="button" class="tab" data-fvback>${tk2I('epPrv','sm')}Kembali</button>`:'';
+ if(!L.length)return`<section class="sec" data-favview><div class="bar"><div><b>Favorit</b><small>Tersimpan di perangkat ini</small></div><div class="tabs">${bk}</div></div><div class="card empty">${tk2I('heart')}<span>Belum ada favorit. Ketuk ikon hati di poster anime untuk menyimpannya.</span></div></section>`;
+ return`<section class="sec" data-favview><div class="bar"><div><b>${L.length} favorit</b><small>Tersimpan di perangkat ini</small></div><div class="tabs">${bk}<button type="button" class="tab" data-fvclr>${tk2I('x','sm')}Hapus semua</button></div></div><div class="ag">${aniGrid(L)}</div></section>`}
+function aniBindFv(r,res,redraw){
+ const cnt=()=>{const c=aniFavs().length;r.querySelectorAll('[data-fvn]').forEach(n=>{n.textContent=c;n.hidden=!c})};cnt();
+ res.addEventListener('click',ev=>{const t=ev.target.closest?ev.target.closest('.fv,[data-fvclr],[data-fvback]'):null;if(!t)return;
+  if(t.classList.contains('fv')){ev.preventDefault();ev.stopPropagation();let a;try{a=JSON.parse(t.dataset.fv)}catch(e){return}
+   const on=aniFavTog(a);t.classList.toggle('on',on);t.setAttribute('aria-pressed',on?'true':'false');t.setAttribute('aria-label',on?'Hapus dari favorit':'Simpan ke favorit');
+   t.classList.remove('pop');void t.offsetWidth;t.classList.add('pop');cnt();
+   if(t.closest('[data-favview]'))setTimeout(()=>redraw('fav'),220);return}
+  if(t.hasAttribute('data-fvclr')){if(confirm('Hapus semua favorit anime di perangkat ini?')){aniLsSet(ANI_FK,[]);cnt();redraw('fav')}return}
+  redraw('back')});
+ r.querySelectorAll('[data-fvv]').forEach(b=>{b.onclick=()=>redraw('fav')})}
+function ongToday(){return ONG_D[(new Date(Date.now()+252e5).getUTCDay()+6)%7]}
+function aniGrid(list){const FS=new Set(aniFavs().map(x=>x.link));return list.map((a,i)=>{const st=aniStat(a.status);return`<div class="aw">${aniFvBtn(a,FS.has(a.link))}<a class="ac" style="animation-delay:${Math.min(i,12)*30}ms" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer"><div class="pv">${tk2I('tv')}${a.poster&&/^https:/.test(a.poster)?`<img src="${esc(a.poster)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${a.rating?`<span class="rt2">${tk2I('star')}${Number(a.rating).toFixed(1).replace('.',',')}</span>`:''}</div><div class="ab"><h3>${esc(a.judul)}</h3>${st[1]?`<span class="st ${st[0]}"><i></i>${esc(st[1])}</span>`:''}${a.genre&&a.genre.length?`<div class="gn">${a.genre.slice(0,5).map(g=>`<span>${esc(g)}</span>`).join('')}</div>`:''}<span class="go2">${tk2I('play','sm')}Tonton${tk2I('ext','sm')}</span></div></a></div>`}).join('')}
+function aniResult(d,sf,mode,gf){
  const all=Array.isArray(d.hasil)?d.hasil.filter(a=>a&&a.judul&&/^https:/.test(a.link||'')):[];
  if(!all.length)return`<div class="sec err" role="alert">${tk2I('alert')}<div>Anime tidak ditemukan. Coba judul lain.</div></div>`;
  const keys=['on','ok','dr'],cnt={on:0,ok:0,dr:0};all.forEach(a=>{const k=aniStat(a.status)[0];if(cnt[k]!=null)cnt[k]++});
- let list=sf?all.filter(a=>aniStat(a.status)[0]===sf):all;if(mode==='rt')list=list.slice().sort((a,b)=>(b.rating||0)-(a.rating||0));
+ let list=sf?all.filter(a=>aniStat(a.status)[0]===sf):all;if(gf)list=list.filter(a=>(a.genre||[]).includes(gf));if(mode==='rt')list=list.slice().sort((a,b)=>(b.rating||0)-(a.rating||0));
+ const gc={};all.forEach(a=>(a.genre||[]).forEach(g=>{gc[g]=(gc[g]||0)+1}));const gl=Object.keys(gc).filter(g=>gc[g]>=2).sort((a,b)=>gc[b]-gc[a]).slice(0,8),gt=gl.length?`<div class="tabs gt" role="group" aria-label="Filter genre">${gl.map(g=>`<button type="button" class="tab${gf===g?' on':''}" data-ag="${esc(g)}">${esc(g)} <span class="n">${gc[g]}</span></button>`).join('')}</div>`:'';
  const lbl={on:'Tayang',ok:'Tamat',dr:'Drop'},tb=(k,ic,t,n)=>`<button type="button" class="tab${sf===k?' on':''}" data-af="${k}">${ic?tk2I(ic,'sm'):''}${t}${n!=null?` <span class="n">${n}</span>`:''}</button>`;
- return`<section class="sec"><div class="bar"><div><b>${all.length} anime</b><small>untuk “<em>${esc(d.kata||'')}</em>” · Otakudesu</small></div><div class="tabs" role="tablist">${tb('', 'layers','Semua',all.length)}${keys.filter(k=>cnt[k]).map(k=>tb(k,'',lbl[k],cnt[k])).join('')}<button type="button" class="tab${mode==='rt'?' on':''}" data-am="rt">${tk2I('star','sm')}Rating</button></div></div>${list.length?`<div class="ag">${aniGrid(list)}</div>`:`<div class="card empty">${tk2I('filter')}<span>Tidak ada anime dengan status ini.</span></div>`}</section>`}
+ return`<section class="sec"><div class="bar"><div><b>${all.length} anime</b><small>untuk “<em>${esc(d.kata||'')}</em>” · Otakudesu</small></div><div class="tabs" role="tablist">${tb('', 'layers','Semua',all.length)}${keys.filter(k=>cnt[k]).map(k=>tb(k,'',lbl[k],cnt[k])).join('')}<button type="button" class="tab${mode==='rt'?' on':''}" data-am="rt">${tk2I('star','sm')}Rating</button></div></div>${gt}${list.length?`<div class="ag">${aniGrid(list)}</div>`:`<div class="card empty">${tk2I('filter')}<span>Tidak ada anime yang cocok dengan filter ini.</span></div>`}</section>`}
 function aniCard(res,d){
- let sf='',mode='src';
- const draw=()=>{res.innerHTML=aniResult(d,sf,mode);res.querySelectorAll('img').forEach(i=>{i.onerror=()=>i.remove()});
+ let sf='',mode='src',gf='';
+ const draw=()=>{res.innerHTML=aniResult(d,sf,mode,gf);res.querySelectorAll('img').forEach(i=>{i.onerror=()=>i.remove()});
   res.querySelectorAll('[data-af]').forEach(b=>{b.onclick=()=>{sf=b.dataset.af;draw()}});
+  res.querySelectorAll('[data-ag]').forEach(b=>{b.onclick=()=>{gf=gf===b.dataset.ag?'':b.dataset.ag;draw()}});
   res.querySelectorAll('[data-am]').forEach(b=>{b.onclick=()=>{mode=mode==='rt'?'src':'rt';draw()}})};
  draw()}
 function aniInit(r){
- aniCss();
+ aniCss();let lastD=null;
  const e=$(r,'#e'),go=$(r,'#go'),m=$(r,'#m'),res=$(r,'#res'),clr=$(r,'#tkx');
  const sync=()=>{clr.hidden=!e.value},setGo=b=>{go.disabled=b;go.innerHTML=b?tk2I('loader','spin')+'<span>Mencari...</span>':tk2I('tv')+'<span>Cari anime</span>'};
  const bad=t=>{res.innerHTML=`<div class="sec err" role="alert">${tk2I('alert')}<div>${esc(t)}</div></div>`};
@@ -646,10 +678,12 @@ function aniInit(r){
   setGo(true);res.innerHTML='<div class="sec ag">'+'<div class="card skel"><div class="sk" style="width:96px;height:134px;border-radius:14px"></div><div style="flex:1;display:grid;gap:10px;align-content:start"><div class="sk" style="height:16px;width:80%"></div><div class="sk" style="height:22px;width:35%"></div><div class="sk" style="height:14px"></div><div class="sk" style="height:36px;margin-top:6px"></div></div></div>'.repeat(4)+'</div>';
   const j=await api('anime-search',v,$(r,'#k').value);setGo(false);
   if(!j.ok){bad(j.error||'Gagal.');if(j.code===401)$(r,'#ac').style.display='block';return}
-  aniCard(res,j.data||{})};
+  lastD=j.data||{};aniCard(res,lastD)};
  e.oninput=sync;e.onkeydown=ev=>{if(ev.key==='Enter')run()};
  clr.onclick=()=>{e.value='';sync();e.focus()};
  r.querySelectorAll('[data-q]').forEach(b=>{b.onclick=()=>{e.value=b.dataset.q;sync();run()}});
+ r.querySelectorAll('[data-rnd]').forEach(b=>{b.onclick=()=>{const L=ANI_POP.filter(x=>x.toLowerCase()!==e.value.trim().toLowerCase());e.value=L[Math.floor(Math.random()*L.length)];sync();run()}});
+ aniBindFv(r,res,md=>{if(md==='fav'){res.innerHTML=aniFavHtml(!!lastD);res.querySelectorAll('img').forEach(i=>{i.onerror=()=>i.remove()})}else if(lastD)aniCard(res,lastD);else res.innerHTML=''});
  go.onclick=run;sync()}
 /* Anime Ongoing + Completed: daftar anime per halaman. Tampilan memakai kelas yang sama dengan Search Anime (aniCss). Input API = nomor halaman. */
 const ONG_D=['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu','Random'];
@@ -658,13 +692,14 @@ const ONG_T={'anime-ongoing':{done:false,ph:'Filter judul di daftar tayang',lead
 function ongHtml(id){const c=ONG_T[id];return `<div class="tk2 ani"><div class="card form"><div class="fld">${tk2I('scan')}<input id="e" type="text" inputmode="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${c.ph}" aria-label="Filter judul anime"><button type="button" class="ib" id="tkx" aria-label="Hapus" hidden>${tk2I('x','sm')}</button></div>
 <div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div>
 <button type="button" class="gob" id="go">${tk2I('tv')}<span>Muat ulang</span></button>
+<div class="sg"><button type="button" class="sgb" data-fvv>${tk2I('heart')}Favorit <span class="n" data-fvn hidden>0</span></button></div>
 <div class="chips">${c.chips.map(x=>`<span class="chip">${tk2I(x[0])}${x[1]}</span>`).join('')}</div>
 <p class="nt">${tk2I('info')}<span>${c.lead}</span></p></div>
 <p class="msg" id="m" role="status"></p><div id="res"></div></div>`}
 function ongEps(v){const x=String(v||'').trim(),n=x.match(/^(\d+)(?:\s*episode)?$/i);return n?n[1]+' eps':x.replace(/^Episode\s*/i,'Eps ')}
-function ongGrid(list,done){return list.map((a,i)=>{const bd=done&&a.rating?`${tk2I('star')}${Number(a.rating).toFixed(1).replace('.',',')}`:a.episode?`${tk2I('play','sm')}${esc(ongEps(a.episode))}`:'';
+function ongGrid(list,done){const FS=new Set(aniFavs().map(x=>x.link));return list.map((a,i)=>{const bd=done&&a.rating?`${tk2I('star')}${Number(a.rating).toFixed(1).replace('.',',')}`:a.episode?`${tk2I('play','sm')}${esc(ongEps(a.episode))}`:'';
  const pill=done?`<span class="st ok"><i></i>Tamat${a.episode?' · '+esc(ongEps(a.episode)):''}</span>`:a.hari?`<span class="st on"><i></i>${a.hari==='Random'?'Jadwal acak':'Tiap '+esc(a.hari)}</span>`:'';
- return`<a class="ac" style="animation-delay:${Math.min(i,12)*30}ms" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer"><div class="pv">${tk2I('tv')}${a.poster&&/^https:/.test(a.poster)?`<img src="${esc(a.poster)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${bd?`<span class="rt2">${bd}</span>`:''}</div><div class="ab"><h3>${esc(a.judul)}</h3>${pill}<span class="go2">${tk2I('play','sm')}Tonton${tk2I('ext','sm')}</span></div></a>`}).join('')}
+ return`<div class="aw">${aniFvBtn(Object.assign({status:done?'Completed':'Ongoing'},a),FS.has(a.link))}<a class="ac" style="animation-delay:${Math.min(i,12)*30}ms" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer"><div class="pv">${tk2I('tv')}${a.poster&&/^https:/.test(a.poster)?`<img src="${esc(a.poster)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:''}${bd?`<span class="rt2">${bd}</span>`:''}</div><div class="ab"><h3>${esc(a.judul)}</h3>${pill}<span class="go2">${tk2I('play','sm')}Tonton${tk2I('ext','sm')}</span></div></a></div>`}).join('')}
 function ongResult(st){
  const c=ONG_T[st.id],all=st.list;
  if(!all.length)return`<div class="sec err" role="alert">${tk2I('alert')}<div>${c.empty}</div></div>`;
@@ -672,14 +707,14 @@ function ongResult(st){
  if(!c.done)base.forEach(a=>{cnt[a.hari]=(cnt[a.hari]||0)+1});
  const days=ONG_D.filter(d=>cnt[d]),day=days.includes(st.day)?st.day:'',srt=c.done&&st.mode==='rt',f=day?base.filter(a=>a.hari===day):base,list=srt?f.slice().sort((a,b)=>(b.rating||0)-(a.rating||0)):f;
  const tb=(k,t,n)=>`<button type="button" class="tab${day===k?' on':''}" data-od="${k}">${t} <span class="n">${n}</span></button>`;
- const tabs=c.done?`<button type="button" class="tab${srt?' on':''}" data-om="rt">${tk2I('star','sm')}Rating</button>`:`${tb('','Semua',base.length)}${days.map(d=>tb(d,d,cnt[d])).join('')}`;
+ const tabs=c.done?`<button type="button" class="tab${srt?' on':''}" data-om="rt">${tk2I('star','sm')}Rating</button>`:`${tb('','Semua',base.length)}${days.map(d=>tb(d,d+(d===ongToday()?' · hari ini':''),cnt[d])).join('')}`;
  return`<section class="sec"><div class="bar"><div><b>${base.length} ${c.cnt}</b><small>${q?'untuk “<em>'+esc(st.q.trim())+'</em>” · ':''}Otakudesu · ${st.page} halaman dimuat</small></div><div class="tabs" role="tablist">${tabs}</div></div>${list.length?`<div class="ag">${ongGrid(list,c.done)}</div>`:`<div class="card empty">${tk2I('filter')}<span>Tidak ada anime yang cocok.</span></div>`}${st.next?`<div style="margin-top:14px"><button type="button" class="gob" id="more">${tk2I('down')}<span>Muat lebih banyak</span></button></div>`:''}</section>`}
 function ongInit(r,id){
  aniCss();
- const e=$(r,'#e'),go=$(r,'#go'),m=$(r,'#m'),res=$(r,'#res'),clr=$(r,'#tkx'),st={id,list:[],day:'',mode:'src',q:'',page:0,next:false};
+ const e=$(r,'#e'),go=$(r,'#go'),m=$(r,'#m'),res=$(r,'#res'),clr=$(r,'#tkx'),st={id,list:[],day:'',mode:'src',q:'',page:0,next:false,fav:false};
  const sync=()=>{clr.hidden=!e.value},setGo=b=>{go.disabled=b;go.innerHTML=b?tk2I('loader','spin')+'<span>Memuat...</span>':tk2I('tv')+'<span>Muat ulang</span>'};
  const bad=t=>{res.innerHTML=`<div class="sec err" role="alert">${tk2I('alert')}<div>${esc(t)}</div></div>`};
- const draw=()=>{res.innerHTML=ongResult(st);res.querySelectorAll('img').forEach(i=>{i.onerror=()=>i.remove()});
+ const draw=()=>{res.innerHTML=st.fav?aniFavHtml(true):ongResult(st);res.querySelectorAll('img').forEach(i=>{i.onerror=()=>i.remove()});
   res.querySelectorAll('[data-od]').forEach(b=>{b.onclick=()=>{st.day=b.dataset.od;draw()}});
   res.querySelectorAll('[data-om]').forEach(b=>{b.onclick=()=>{st.mode=st.mode==='rt'?'src':'rt';draw()}});
   const mb=res.querySelector('#more');if(mb)mb.onclick=()=>{mb.disabled=true;mb.innerHTML=tk2I('loader','spin')+'<span>Memuat...</span>';load(st.page+1,true)}};
@@ -689,10 +724,11 @@ function ongInit(r,id){
   const j=await api(id,String(p),$(r,'#k').value);if(!add)setGo(false);
   if(!j.ok){if(j.code===401)$(r,'#ac').style.display='block';if(add){m.textContent=j.error||'Gagal memuat halaman berikutnya.';draw()}else bad(j.error||'Gagal.');return}
   const d=j.data||{},h=Array.isArray(d.hasil)?d.hasil.filter(a=>a&&a.judul&&/^https:/.test(a.link||'')):[];
-  if(add){const seen=new Set(st.list.map(a=>a.link));h.forEach(a=>{if(!seen.has(a.link))st.list.push(a)})}else{st.list=h;st.day=''}
+  if(add){const seen=new Set(st.list.map(a=>a.link));h.forEach(a=>{if(!seen.has(a.link))st.list.push(a)})}else{st.list=h;const td=ongToday();st.day=h.some(a=>a.hari===td)?td:''}
   st.page=p;st.next=d.adaLagi===true;draw()};
- e.oninput=()=>{sync();st.q=e.value;if(st.list.length)draw()};e.onkeydown=ev=>{if(ev.key==='Enter')e.blur()};
+ e.oninput=()=>{sync();st.fav=false;st.q=e.value;if(st.list.length)draw()};e.onkeydown=ev=>{if(ev.key==='Enter')e.blur()};
  clr.onclick=()=>{e.value='';st.q='';sync();e.focus();if(st.list.length)draw()};
+ aniBindFv(r,res,md=>{st.fav=md==='fav';draw()});
  go.onclick=()=>load(1,false);sync();load(1,false)}
 /* Anime Episode: ambil server streaming, mirror, dan unduhan satu episode Otakudesu lewat slug atau link episode. Tampilan memakai kelas Search Anime (aniCss) plus gaya .ep. Server dibuka di tab baru (iframe pihak ketiga tidak diizinkan oleh CSP). */
 Object.assign(TK2P,{epPrv:'<path d="M15 18l-6-6 6-6"/>',epNxt:'<path d="M9 18l6-6-6-6"/>',epFilm:'<rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18M8 4v5M16 4v5"/><path d="M10.5 13.2l4 2.4-4 2.4z"/>',epSrv:'<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/>'});
@@ -709,7 +745,7 @@ function epHtml(id){const B=id==='anime-batch';return `<div class="tk2 ani ep"><
 <div id="ac"><label for="k">Kode akses</label><input id="k" type="password" autocomplete="off"></div>
 <button type="button" class="gob" id="go">${tk2I('epFilm')}<span>${B?'Ambil batch':'Ambil episode'}</span></button>
 <div class="chips">${B?`<span class="chip">${tk2I('layers')}Satu paket</span><span class="chip">${tk2I('down')}Unduhan</span><span class="chip">${tk2I('tv')}Otakudesu</span>`:`<span class="chip">${tk2I('play')}Streaming</span><span class="chip">${tk2I('epSrv')}Mirror server</span><span class="chip">${tk2I('down')}Unduhan</span><span class="chip">${tk2I('tv')}Otakudesu</span>`}</div>
-<p class="nt">${tk2I('info')}<span>${B?'Slug ada di bagian akhir link batch Otakudesu, misalnya otakudesu.blog/batch/<b>boruto-batch-sub-indo</b>. Link unduhan dibuka di situs sumber.':'Slug ada di bagian akhir link episode Otakudesu, misalnya otakudesu.blog/episode/<b>boruto-episode-1-sub-indo</b>. Server dan unduhan dibuka di situs sumber.'}</span></p></div>
+<div class="hs" id="hs"></div><p class="nt">${tk2I('info')}<span>${B?'Slug ada di bagian akhir link batch Otakudesu, misalnya otakudesu.blog/batch/<b>boruto-batch-sub-indo</b>. Link unduhan dibuka di situs sumber.':'Slug ada di bagian akhir link episode Otakudesu, misalnya otakudesu.blog/episode/<b>boruto-episode-1-sub-indo</b>. Server dan unduhan dibuka di situs sumber.'}</span></p></div>
 <p class="msg" id="m" role="status"></p><div id="res"></div></div>`}
 function epResult(d){
  const hs=u=>/^https:/.test(u||''),mir=(Array.isArray(d.mirror)?d.mirror:[]).filter(x=>x&&hs(x.url)),dl=(Array.isArray(d.unduh)?d.unduh:[]).map(g=>({grup:g&&g.grup,tautan:(g&&Array.isArray(g.tautan)?g.tautan:[]).filter(l=>l&&hs(l.url))})).filter(g=>g.tautan.length),nv=d.nav||{},nd=dl.reduce((a,g)=>a+g.tautan.length,0);
@@ -724,6 +760,14 @@ function epResult(d){
 function epInit(r,id){
  epCss();const B=id==='anime-batch',LB=B?'Ambil batch':'Ambil episode';
  const e=$(r,'#e'),go=$(r,'#go'),m=$(r,'#m'),res=$(r,'#res'),clr=$(r,'#tkx'),pst=$(r,'#tkp');
+
+ const hs=$(r,'#hs'),hKey=x=>String(x).trim().replace(/[?#].*$/,'').replace(/\/+$/,'').split('/').pop().toLowerCase();
+ const hDraw=()=>{const L=aniLs(ANI_HK).filter(x=>x&&x.id===id&&x.v);
+  hs.innerHTML=L.length?`<div class="hh"><b>${tk2I('clock','sm')}Terakhir dibuka</b><button type="button" class="hx" data-hx>Hapus</button></div><div class="el">${L.map((x,i)=>`<button type="button" class="ec" data-hv="${i}"><span>${esc(x.judul||x.k)}</span></button>`).join('')}</div>`:'';
+  hs.querySelectorAll('[data-hv]').forEach(b=>{b.onclick=()=>{const x=L[+b.dataset.hv];if(x){e.value=x.v;sync();run()}}});
+  const hx=hs.querySelector('[data-hx]');if(hx)hx.onclick=()=>{aniLsSet(ANI_HK,aniLs(ANI_HK).filter(x=>!x||x.id!==id));hDraw()}};
+ const hSave=(v,t)=>{const k=hKey(v);if(!k)return;const o=aniLs(ANI_HK).filter(x=>x&&!(x.id===id&&x.k===k));
+  aniLsSet(ANI_HK,[{id,k,v:String(v).slice(0,300),judul:String(t||'').slice(0,120),t:Date.now()}].concat(o.filter(x=>x.id===id).slice(0,5),o.filter(x=>x.id!==id)).slice(0,24))};
  const sync=()=>{clr.hidden=!e.value;pst.hidden=!!e.value},setGo=b=>{go.disabled=b;go.innerHTML=b?tk2I('loader','spin')+'<span>Mengambil...</span>':tk2I('epFilm')+'<span>'+LB+'</span>'};
  const bad=t=>{res.innerHTML=`<div class="sec err" role="alert">${tk2I('alert')}<div>${esc(t)}</div></div>`};
  const run=async()=>{
@@ -732,12 +776,12 @@ function epInit(r,id){
   setGo(true);res.innerHTML='<div class="sec"><div class="card skel"><div class="sk" style="width:44px;height:44px;border-radius:14px"></div><div style="flex:1;display:grid;gap:10px;align-content:start"><div class="sk" style="height:16px;width:70%"></div><div class="sk" style="height:36px"></div><div class="sk" style="height:36px"></div></div></div></div>';
   const j=await api(id,v,$(r,'#k').value);setGo(false);
   if(!j.ok){bad(j.error||'Gagal.');if(j.code===401)$(r,'#ac').style.display='block';return}
-  res.innerHTML=epResult(j.data||{});
+  res.innerHTML=epResult(j.data||{});hSave(v,(j.data||{}).judul);hDraw();
   res.querySelectorAll('[data-ep]').forEach(b=>{b.onclick=()=>{e.value=b.dataset.ep;sync();run()}})};
  e.oninput=sync;e.onkeydown=ev=>{if(ev.key==='Enter')run()};
  clr.onclick=()=>{e.value='';sync();e.focus()};
  pst.onclick=async()=>{try{const t=await navigator.clipboard.readText();if(t){e.value=t.trim();sync();e.focus()}}catch(x){m.textContent='Izin tempel ditolak. Tempel manual ke kolom di atas.'}};
- go.onclick=run;sync()}
+ go.onclick=run;sync();hDraw()}
 /* MangaPlus (api-cloud /komik/mangaplus, type=home): update 24 jam, terbaru, dan ranking. Kartu memakai kelas Search Anime (aniCss). Baca/Buka membuka mangaplus.shueisha.co.jp di tab baru. */
 function mpCss(){aniCss();if(document.getElementById('mpcss'))return;const s=document.createElement('style');s.id='mpcss';
  s.textContent='.mp .mpl{display:flex;align-items:center;gap:10px;margin-bottom:12px}.mp .mpl label{font-size:12.5px;color:var(--mu);font-weight:600;flex:none}.mp .mpl select{flex:1;min-width:0;height:42px;padding:0 12px;border-radius:12px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:inherit;font-size:14px}.mp .rk{position:absolute;left:6px;top:6px;z-index:1;background:rgba(0,0,0,.7);color:#fff;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:99px}.mp .bb{color:var(--mu);font-size:12.5px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}.mp .au{color:var(--dm);font-size:11.5px}';
