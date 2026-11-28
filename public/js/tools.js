@@ -959,7 +959,7 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
     m.textContent='Selesai. Ukuran awal '+fs(x.size)+', sekarang '+fs(out.size)+'.'}
    catch(e){bad('Foto tidak bisa diproses. Coba foto lain.')}}}},
 {id:'svg-ke-xml',name:'SVG ke XML Alight Motion',desc:'Ubah file SVG atau foto berwarna (PNG, JPG, WebP) jadi layer vektor XML untuk Alight Motion: atur durasi, FPS, ukuran kanvas, jumlah warna, dan detail, lalu periksa layernya sebelum mengunduh. Diproses di perangkatmu, tidak diunggah ke server.',
- html:()=>`<label class="drop" id="sxd" for="sxf">${svg(IC.up)}<span><b>Pilih file SVG atau foto</b><span id="sxi">SVG, PNG, JPG, atau WebP, maksimal 10 MB. Untuk SVG, ubah teks menjadi outline dulu.</span></span></label><input id="sxf" type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp,text/xml,application/xml">
+ html:()=>`<label class="drop" id="sxd" for="sxf">${svg(IC.up)}<span><b>Pilih file SVG atau foto</b><span id="sxi">SVG, PNG, JPG, atau WebP, maksimal 10 MB. Teks, mask, dan filter di SVG dibaca otomatis lewat mode Render.</span></span></label><input id="sxf" type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp,text/xml,application/xml">
 <div class="chips"><button type="button" id="sxs">Coba file contoh</button></div>
 <div class="sxsec"><label for="sxt">Nama XML</label><input id="sxt" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="Otomatis dari nama file"><p class="hint" id="sxfn">Dipakai sebagai nama file dan judul proyek di Alight Motion.</p></div>
 <div class="sx2"><div><label for="sxu">Durasi (detik)</label><input id="sxu" type="number" inputmode="decimal" min="0.5" max="600" step="0.5" value="3"></div><div><label for="sxp">FPS</label><select id="sxp"><option>24</option><option>25</option><option selected>30</option><option>50</option><option>60</option></select></div></div>
@@ -971,7 +971,7 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
 <label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="sxg" checked> Pertahankan garis tipis (outline)</label>
 <p class="msg">Foto dipecah jadi bentuk berwarna yang bertumpuk. Makin banyak warna dan detail, makin mirip aslinya tapi makin berat di Alight Motion.</p></div>
 <details class="sxadv"><summary>Pengaturan lanjutan</summary><label for="sxh">Bentuk berlubang</label><select id="sxh"><option value="pecah">Pecah per bidang (seperti file contoh)</option><option value="jembatan">Jembatan (1 layer per bentuk)</option></select>
-<label for="sxm">Cara membaca SVG</label><select id="sxm"><option value="render" selected>Render dulu lalu trace (hasil sama dengan tampilan SVG, bersih seperti foto)</option><option value="vektor">Vektor langsung (untuk SVG bergradasi atau bentuk sangat presisi)</option></select>
+<label for="sxm">Cara membaca SVG</label><select id="sxm"><option value="auto" selected>Otomatis (vektor presisi bila bisa, render bila SVG memakai teks, mask, atau filter)</option><option value="render">Render dulu lalu trace (hasil sama dengan tampilan SVG, bersih seperti foto)</option><option value="vektor">Vektor langsung (garis, gradasi, dan clip-path dibaca presisi)</option></select>
 <label for="sxs">Penyederhanaan titik</label><select id="sxs"><option value="0.2" selected>Otomatis (titik sejajar dan rapat digabung)</option><option value="0.5">Kuat (lebih ringan, sedikit kurang halus)</option><option value="0">Mati (titik apa adanya)</option></select><label for="sxr">Warna gradasi</label><select id="sxr"><option value="sedang" selected>Sedang (pita warna bertumpuk)</option><option value="tinggi">Halus (lapisan lebih banyak)</option><option value="rendah">Ringan (lapisan sedikit)</option><option value="rata">Warna rata-rata (1 warna per bentuk)</option></select></details>
 <div class="row"><button class="primary" id="go">Buat XML</button></div><p class="msg" id="m" role="status"></p><div id="res"></div>`,
  init:r=>{const f=$(r,'#sxf'),dz=$(r,'#sxd'),fi=$(r,'#sxi'),h0=fi.textContent,m=$(r,'#m'),res=$(r,'#res'),cs=$(r,'#sxc');let url='',useSample=false,defName='',curUpd=null;
@@ -980,7 +980,7 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
    refName=()=>{const n=cleanName()||defName;fnl.textContent=n?'Disimpan sebagai '+fname()+'.xml, juga jadi judul proyek di Alight Motion.':'Dipakai sebagai nama file dan judul proyek di Alight Motion.'};
   nm.oninput=()=>{refName();if(curUpd)curUpd()};
   cs.onchange=()=>{$(r,'#sxw').hidden=cs.value!=='custom'};
-  const showOpt=()=>{const x=f.files[0],on=isImg(x)||(!!x&&$(r,'#sxm').value==='render');$(r,'#sxo').hidden=!on;if(on){$(r,'#sxh').value='jembatan';if(!isImg(x))$(r,'#sxq').value='tinggi'}};
+  const showOpt=()=>{const x=f.files[0],sm=$(r,'#sxm').value,on=isImg(x)||(!!x&&sm!=='vektor');$(r,'#sxo').hidden=!on;if(on){$(r,'#sxh').value=isImg(x)||sm==='render'?'jembatan':'pecah';if(!isImg(x))$(r,'#sxq').value='tinggi'}};
   $(r,'#sxm').onchange=showOpt;
   const isImg=x=>!!x&&(/^image\/(png|jpe?g|webp)$/.test(x.type)||/\.(png|jpe?g|webp)$/i.test(x.name));
   f.onchange=()=>{const x=f.files[0];useSample=false;defName=x?x.name.replace(/\.[^.]+$/,'').replace(/[^\w\- ]+/g,'-').trim().slice(0,40):'';nm.placeholder=defName||'Otomatis dari nama file';refName();dz.classList.toggle('on',!!x);fi.textContent=x?x.name+' · '+(x.size>=1048576?mb(x.size):Math.round(x.size/1024)+' KB'):h0;showOpt()};
@@ -995,15 +995,21 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
    m.className='msg';m.textContent='Memproses...';res.innerHTML='';
    try{await loadMod('svgam');await new Promise(k=>setTimeout(k,30));
     const base=(x?x.name.replace(/\.[^.]+$/,''):'contoh').replace(/[^\w\- ]+/g,'-').trim().slice(0,40)||(ras?'foto':'svg'),ttl=(defName=base,cleanName()||base),opt={title:ttl,duration:dur,fps:parseInt($(r,'#sxp').value,10),canvas:cs.value,width:cw,height:ch,holes:$(r,'#sxh').value,grad:$(r,'#sxr').value,simp:parseFloat($(r,'#sxs').value)};
-    let out;
-    const rend=!ras&&!!x&&$(r,'#sxm').value==='render';
-    if(ras||rend){
+    let out=null,note='';
+    const sm=$(r,'#sxm').value,UN={teks:'teks',gambar:'gambar',pola:'pola',clip:'clip-path rumit',mask:'mask',filter:'filter'};
+    let rend=!ras&&!!x&&sm==='render';
+    if(!ras&&!!x&&sm==='auto'){let vo=null;
+     try{vo=SVGAM.convert(await x.text(),Object.assign({},opt,{holes:'pecah'}))}catch(_){}
+     if(vo&&!vo.unsupported.length)out=vo;
+     else{rend=true;opt.holes='jembatan';note=vo?'SVG ini memakai '+vo.unsupported.map(k=>UN[k]||k).join(', ')+', jadi dibaca lewat mode Render supaya hasilnya sama dengan tampilan aslinya.':'SVG ini tidak punya bentuk yang bisa dibaca langsung, jadi dibaca lewat mode Render.'}}
+    if(!out&&(ras||rend)){
      const det=$(r,'#sxq').value,u=URL.createObjectURL(rend?new Blob([await x.text()],{type:'image/svg+xml'}):x);let im;
      try{im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error(rend?'SVG tidak bisa dirender browser. Pastikan filenya SVG yang valid.':'Foto tidak bisa dibuka. Coba foto lain.'));i.src=u})}finally{setTimeout(()=>URL.revokeObjectURL(u),2000)}
      const iw=im.naturalWidth||1024,ih=im.naturalHeight||1024,sd=SVGAM.PHOTO_DETAIL[det].side,mx=Math.max(iw,ih),k=rend?sd/mx:(mx<sd*0.7?Math.min(3,sd*0.75/mx):Math.min(1,sd/mx)),W=Math.max(2,Math.round(iw*k)),H=Math.max(2,Math.round(ih*k)),c=document.createElement('canvas');
      c.width=W;c.height=H;const cx=c.getContext('2d',{willReadFrequently:true});cx.imageSmoothingQuality='high';cx.drawImage(im,0,0,W,H);
      out=await SVGAM.fromImageAsync(cx.getImageData(0,0,W,H).data,W,H,Object.assign(opt,{colors:parseInt($(r,'#sxk').value,10),detail:det,bersih:$(r,'#sxb').checked,ink:$(r,'#sxg').checked&&!$(r,'#sxb').checked,srcW:iw,srcH:ih,onStep:t=>{m.textContent=t}}))}
-    else out=SVGAM.convert(x?await x.text():SVGAM.SAMPLE,opt);
+    else if(!out)out=SVGAM.convert(x?await x.text():SVGAM.SAMPLE,opt);
+    if(note)out.warnings.unshift(note);
     const md=out.model,st=out.stats;
     const sw=l=>{const a=parseInt(l.fill.slice(1,3),16)/255;return 'rgba('+parseInt(l.fill.slice(3,5),16)+','+parseInt(l.fill.slice(5,7),16)+','+parseInt(l.fill.slice(7,9),16)+','+a+')'};
     res.innerHTML=`<div class="out"><div class="chk" style="border-radius:12px;overflow:hidden"><canvas id="sxv" style="display:block;width:100%;height:auto" aria-label="Pratinjau hasil"></canvas></div>
@@ -1011,7 +1017,7 @@ promptTool({id:'image-to-prompt',name:'Image to Prompt',desc:'Analisis sebuah ga
 <p class="sxlh"><b>Layer (${md.layers.length})</b><span>${md.layers.length>1?'Centang yang mau dibawa ke Alight Motion':'Akan dibawa ke Alight Motion'}</span></p>
 <div id="sxl" class="sxly">${md.layers.map((l,i)=>`<label class="sxr">${md.layers.length>1?`<input type="checkbox" data-i="${i}" checked>`:''}<i class="sxsw" style="--c:${sw(l)}"></i><span class="sxrn">${esc(l.label)}</span><small>${l.rings.length} bidang · ${l.rings.reduce((s,q)=>s+q.length,0)} titik</small></label>`).join('')}</div>
 <div class="row"><a class="btn primary dlb" id="sxa" href="#">${DLI}Unduh XML</a></div>
-<p class="msg">Impor file XML ke Alight Motion, lalu periksa bentuk, warna, dan urutan layer. ${ras?'Hasil foto berupa bentuk berwarna datar bertumpuk, jadi gradasi halus tampak seperti poster.':'Garis (stroke), teks, gradasi, dan efek belum ikut diubah.'}</p></div>`;
+<p class="msg">Impor file XML ke Alight Motion, lalu periksa bentuk, warna, dan urutan layer. ${ras||rend?'Hasil berupa bentuk berwarna datar bertumpuk, jadi gradasi halus tampak seperti poster.':'Garis (stroke, termasuk putus-putus), gradasi, dan clip-path ikut diubah. Teks, mask, dan filter tidak, pakai mode Otomatis atau Render untuk SVG seperti itu.'}</p></div>`;
     const cv=$(res,'#sxv'),sc=Math.min(1,900/Math.max(md.width,md.height));cv.width=Math.round(md.width*sc);cv.height=Math.round(md.height*sc);
     const dl=$(res,'#sxa'),info=$(res,'#sxn');
     const upd=()=>{md.title=cleanName()||defName;const cx=cv.getContext('2d');cx.clearRect(0,0,cv.width,cv.height);SVGAM.draw(cx,md,sc);
