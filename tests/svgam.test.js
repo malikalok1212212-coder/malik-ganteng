@@ -179,13 +179,13 @@ test('peringatan: stroke, teks, gradasi, clip-path, filter, CSS rumit', () => {
   const svg = `<svg viewBox="0 0 100 100"><style>div p{fill:red}</style><defs><linearGradient id="g"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient></defs>
    <rect width="10" height="10" fill="url(#g)"/><path d="M0 0L50 50" stroke="red" fill="none"/><text x="1" y="1">a</text><rect x="20" width="10" height="10" clip-path="url(#c)" filter="url(#f)"/></svg>`;
   const r = conv(svg, { grad: 'rata' }), w = r.warnings.join('|');
-  assert.match(w, /Garis \(stroke\)/); assert.match(w, /Teks/); assert.match(w, /Gradasi/); assert.match(w, /Clip-path/); assert.match(w, /Filter/); assert.match(w, /CSS/);
+  assert.match(w, /Teks/); assert.match(w, /Gradasi/); assert.match(w, /Clip-path/); assert.match(w, /Filter/); assert.match(w, /CSS/);
   assert.equal(r.model.layers[0].fill, '#ff808080');
 });
 
 test('error yang jelas untuk file bukan SVG atau SVG tanpa bentuk berisi', () => {
   assert.throws(() => S.convert('halo dunia'), /bukan SVG/);
-  assert.throws(() => S.convert('<svg viewBox="0 0 10 10"><path d="M0 0L10 10" stroke="red"/></svg>'), /bentuk berisi warna/);
+  assert.throws(() => S.convert('<svg viewBox="0 0 10 10"><path d="M0 0L10 10" fill="none"/></svg>'), /bentuk berisi warna/);
 });
 
 test('SVG tanpa viewBox dan ukuran memakai kotak isi, entitas XML dan DOCTYPE tidak merusak', () => {
@@ -345,4 +345,118 @@ test('penyederhanaan titik: lengkungan jadi lebih ringan dengan luas nyaris sama
   assert.ok(Math.abs(A(on) - A(off)) / A(off) < 0.002);
   const r = S.thinRing([[0, 0], [1, 0], [2, 0], [2, 2], [0, 2]], 0.2);
   assert.equal(r.length, 4);
+});
+
+/* ---------- garis (stroke), clip-path, dan mode otomatis ---------- */
+const wn = (p, rings) => { let w = 0; for (const R of rings) for (let i = 0, n = R.length; i < n; i++) { const a = R[i], b = R[(i + 1) % n]; if (a[1] <= p[1]) { if (b[1] > p[1] && (b[0] - a[0]) * (p[1] - a[1]) - (p[0] - a[0]) * (b[1] - a[1]) > 0) w++; } else if (b[1] <= p[1] && (b[0] - a[0]) * (p[1] - a[1]) - (p[0] - a[0]) * (b[1] - a[1]) < 0) w--; } return w; };
+const covered = (model, p) => model.layers.some((l) => l.rings.some((R) => wn(p, [R]) !== 0));
+const polyDist = (p, pts) => Math.min(...pts.slice(1).map((q, i) => dist(p, pts[i], q)));
+const sv = (body) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${body}</svg>`;
+
+test('garis: ujung dan sambungan bulat sama dengan jarak ke garis tengah', () => {
+  const pts = [[20, 20], [80, 30], [50, 80], [15, 70]];
+  const r = conv(sv('<path d="M20 20L80 30L50 80L15 70" fill="none" stroke="#f00" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>'));
+  assert.equal(r.model.layers.length, 1); assert.equal(r.model.layers[0].label, 'Garis 1');
+  const rnd = lcg(5); let bad = 0, tot = 0;
+  for (let k = 0; k < 9000; k++) {
+    const p = [rnd() * 100, rnd() * 100], d = polyDist(p, pts);
+    if (Math.abs(d - 5) < 0.5) continue;
+    tot++; if (covered(r.model, p) !== d < 5) bad++;
+  }
+  assert.ok(tot > 6000); assert.equal(bad, 0);
+});
+
+test('garis: butt, square, dan jenis sambungan miter, bevel, round', () => {
+  const g = (a) => conv(sv(`<path d="M10 50H50V10" fill="none" stroke="#000" stroke-width="10" ${a}/>`)).model;
+  assert.ok(covered(g('stroke-linejoin="miter"'), [54.5, 54.5]));           // ujung miter
+  assert.ok(!covered(g('stroke-linejoin="bevel"'), [54.5, 54.5]));
+  assert.ok(!covered(g('stroke-linejoin="round"'), [54.5, 54.5]));
+  assert.ok(covered(g('stroke-linejoin="round"'), [53.5, 53.5]));
+  assert.ok(!covered(g('stroke-linejoin="miter" stroke-miterlimit="1.2"'), [54.5, 54.5]));   // melebihi batas -> bevel
+  assert.ok(!covered(g(''), [50, 4]) && covered(g(''), [50, 11]));                           // butt
+  assert.ok(covered(g('stroke-linecap="square"'), [50, 6]) && covered(g('stroke-linecap="square"'), [6, 50]));
+  assert.ok(covered(g('stroke-linecap="round"'), [50, 6]) && !covered(g('stroke-linecap="round"'), [46, 5.2]));
+});
+
+test('garis tertutup (rect, lingkaran) berlubang di tengah dan luasnya tepat', () => {
+  const a = conv(sv('<rect x="20" y="20" width="60" height="60" fill="none" stroke="#00f" stroke-width="10"/>')).model;
+  assert.ok(!covered(a, [50, 50]) && covered(a, [20, 50]) && covered(a, [16, 16]) && !covered(a, [12, 50]) && !covered(a, [30, 50]));
+  const sum = (m) => m.layers.reduce((t, l) => t + l.rings.reduce((u, R) => u + Math.abs(S.area(R)), 0), 0);
+  near(sum(a), 70 * 70 - 50 * 50, 60);
+  const c = conv(sv('<circle cx="50" cy="50" r="30" fill="none" stroke="#000" stroke-width="8"/>'), { holes: 'jembatan' }).model;
+  assert.ok(!covered(c, [50, 50]) && covered(c, [80, 50]) && covered(c, [50, 80]) && !covered(c, [50, 90]));
+  near(c.layers[0].rings.reduce((t, R) => t + S.area(R), 0), Math.PI * (34 * 34 - 26 * 26), 25);
+});
+
+test('garis: tikungan tajam dan tebal tetap cocok dengan jarak ke garis tengah (tanpa lubang di sisi dalam)', () => {
+  const pts = [[10, 90], [50, 20], [90, 90], [60, 95]];
+  const m = conv(sv('<path d="M10 90L50 20L90 90L60 95" fill="none" stroke="#000" stroke-width="30" stroke-linejoin="round" stroke-linecap="round"/>')).model;
+  const rnd = lcg(11); let bad = 0, tot = 0;
+  for (let k = 0; k < 9000; k++) {
+    const p = [rnd() * 100, rnd() * 100], d = polyDist(p, pts);
+    if (Math.abs(d - 15) < 0.6) continue;
+    tot++; if (covered(m, p) !== d < 15) bad++;
+  }
+  assert.ok(tot > 6000); assert.equal(bad, 0);
+});
+
+test('garis: fill dan stroke bersamaan, stroke ada di atas fill, opasitas dibaca', () => {
+  const r = conv(sv('<circle cx="50" cy="50" r="30" fill="#0f0" stroke="#f00" stroke-opacity=".5" stroke-width="6"/>'), { holes: 'jembatan' });
+  assert.equal(r.model.layers.length, 2); assert.equal(r.model.layers[0].fill, '#ff00ff00');
+  assert.equal(r.model.layers[1].fill, '#80ff0000'); assert.equal(r.model.layers[1].label, 'Garis 2');
+});
+
+test('garis: elemen line dan polyline, stroke diwariskan dari grup', () => {
+  const r = conv(sv('<g stroke="#123456" stroke-width="4"><line x1="10" y1="10" x2="90" y2="10"/><polyline points="10,30 50,60 90,30" fill="none"/></g>'));
+  assert.equal(r.model.layers.length, 2); assert.equal(r.model.layers[0].fill, '#ff123456');
+  assert.ok(covered(r.model, [50, 10]) && !covered(r.model, [50, 14]));
+});
+
+test('garis: stroke-width 0 atau stroke none tidak membuat layer, lebar mengikuti skala transform', () => {
+  assert.throws(() => conv(sv('<path d="M0 0L90 90" stroke="red" stroke-width="0" fill="none"/>')), /bentuk berisi/);
+  const m = conv(sv('<g transform="scale(2 1)"><path d="M10 50H40" stroke="#000" stroke-width="10" fill="none"/></g>')).model, b = bb(m.layers[0].rings);
+  near(b[2] - b[0], 60, 0.01); near(b[3] - b[1], 10, 0.01);      // x dilebarkan 2x, tebal vertikal tetap 10
+});
+
+test('garis putus-putus: jumlah potongan, offset, dan titik (panjang 0 + ujung bulat)', () => {
+  const m1 = conv(sv('<path d="M10 50H90" stroke="#000" stroke-width="4" stroke-dasharray="10 10" fill="none"/>')).model;
+  assert.equal(m1.layers[0].rings.length, 4);
+  assert.ok(covered(m1, [15, 50]) && !covered(m1, [25, 50]) && covered(m1, [35, 50]));
+  const m2 = conv(sv('<path d="M10 50H90" stroke="#000" stroke-width="4" stroke-dasharray="10 10" stroke-dashoffset="10" fill="none"/>')).model;
+  assert.ok(!covered(m2, [15, 50]) && covered(m2, [25, 50]));
+  const m3 = conv(sv('<path d="M10 50H90" stroke="#000" stroke-width="6" stroke-linecap="round" stroke-dasharray="0 20" fill="none"/>')).model;
+  assert.equal(m3.layers[0].rings.length, 5); assert.ok(covered(m3, [30, 50]) && !covered(m3, [20, 50]));
+  assert.equal(S.dashPolys([[0, 0], [10, 0]], false, [3, 3], 0).length, 2);
+});
+
+test('garis bergradasi dipecah per pita seperti fill', () => {
+  const r = conv(sv('<defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="10" y1="0" x2="90" y2="0"><stop offset="0" stop-color="#f00"/><stop offset="1" stop-color="#00f"/></linearGradient></defs><path d="M10 50H90" stroke="url(#g)" stroke-width="20" fill="none"/>'));
+  assert.ok(r.model.layers.length > 4); assert.match(r.warnings.join('|'), /Gradasi/);
+});
+
+test('clip-path: rect, lingkaran, dan clip bersarang memotong bentuk', () => {
+  const r = conv(sv('<defs><clipPath id="c"><rect x="0" y="0" width="50" height="100"/></clipPath></defs><circle cx="50" cy="50" r="30" fill="#f00" clip-path="url(#c)"/>'));
+  const b = bb(r.model.layers[0].rings); near(b[0], 20, 0.2); near(b[2], 50, 0.01);
+  assert.ok(!r.warnings.some((x) => /Clip/.test(x))); assert.deepEqual(r.unsupported, []);
+  const r2 = conv(sv('<defs><clipPath id="a"><circle cx="50" cy="50" r="20"/></clipPath><clipPath id="b"><rect x="50" y="0" width="50" height="100"/></clipPath></defs><g clip-path="url(#a)"><rect width="100" height="100" fill="#0f0" clip-path="url(#b)"/></g>'));
+  const b2 = bb(r2.model.layers[0].rings); near(b2[0], 50, 0.01); near(b2[2], 70, 0.2);
+  const r3 = conv(sv('<defs><clipPath id="c"><rect x="200" y="200" width="5" height="5"/></clipPath></defs><rect width="100" height="100" fill="#0f0" clip-path="url(#c)"/><rect width="10" height="10" fill="#00f"/>'));
+  assert.equal(r3.model.layers.length, 1); assert.equal(r3.model.layers[0].fill, '#ff0000ff');
+});
+
+test('clip-path berbentuk cekung (L) dipecah jadi bidang cembung dengan luas tepat', () => {
+  const r = conv(sv('<defs><clipPath id="c"><path d="M0 0H100V40H40V100H0Z"/></clipPath></defs><rect width="100" height="100" fill="#f00" clip-path="url(#c)"/>'), { holes: 'jembatan' });
+  const total = r.model.layers[0].rings.reduce((t, R) => t + Math.abs(S.area(R)), 0);
+  near(total, 100 * 40 + 40 * 60, 1);
+  assert.ok(covered(r.model, [10, 90]) && covered(r.model, [90, 20]) && !covered(r.model, [70, 70]));
+  const parts = S.convexParts([[0, 0], [100, 0], [100, 40], [40, 40], [40, 100], [0, 100]]);
+  assert.equal(parts.length, 2);
+});
+
+test('clip-path yang belum didukung (objectBoundingBox) memberi catatan; mask dan teks ditandai tidak didukung', () => {
+  const r = conv(sv('<defs><clipPath id="c" clipPathUnits="objectBoundingBox"><rect width=".5" height="1"/></clipPath></defs><rect width="100" height="100" fill="#f00" clip-path="url(#c)"/><text>a</text>'));
+  assert.match(r.warnings.join('|'), /Clip-path/); assert.deepEqual(r.unsupported.sort(), ['clip', 'teks']);
+  const m = conv(sv('<mask id="m"><rect width="50" height="100" fill="#fff"/></mask><rect width="100" height="100" fill="#f00" mask="url(#m)"/>'));
+  assert.deepEqual(m.unsupported, ['mask']); assert.match(m.warnings.join('|'), /Mask/);
+  assert.deepEqual(conv(sv('<rect width="10" height="10" stroke="#000"/>')).unsupported, []);
 });
